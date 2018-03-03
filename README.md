@@ -1,5 +1,9 @@
 # feedpushr
 
+[![Build Status](https://travis-ci.org/ncarlier/feedpushr.svg?branch=master)](https://travis-ci.org/ncarlier/feedpushr)
+[![Image size](https://images.microbadger.com/badges/image/ncarlier/feedpushr.svg)](https://microbadger.com/images/ncarlier/feedpushr)
+[![Docker pulls](https://img.shields.io/docker/pulls/ncarlier/feedpushr.svg)](https://hub.docker.com/r/ncarlier/feedpushr/)
+
 A simple feed aggregator daemon with sugar on top.
 
 ## Features

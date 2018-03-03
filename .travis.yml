@@ -1,0 +1,19 @@
+language: go
+go:
+- 1.8
+script:
+- make test
+- make distribution
+deploy:
+  provider: releases
+  api_key:
+    secure: KXdotihF4oJwzZBXKbfWL44dQJM/LfwL15d0t43nIiqjCoW/dVkJaGNlms1lyzgvqyRBOuw5KGFkF0VUXGOPbQH8wxrIXEyQbD5sSil1iYq2/86434NFyhUy5UyNATghaVA/caLL+9ClcCOGTZmyB9MGtUGU13ZYUkNrWLucOKZilmGWleykCHSy6r5gCURIZX88K5CJooC+1NnTa77D3oBNt9POKFVd1BFQEn144Jj85BYavTIrrjiYx3z+rfYfNFllnfRx5wKQalzwUuEc4exQdAb17sgxGq/q6llrOh5v+DCxolAI+JsXz+Ol+yHG1wv+ItFphvpQ+kcoUYWVf0XTP8CsdyOLdWr1gB6+NaLUoAwhC11o8+9RwQw2bxlD2OKoU7wkckWdFmHj7rtI3NsHp/TJa0CB4he2WzAZG6KYS0FwjYNsqzxa/FJDLRMk8c8qiPtXL/dWObo/lnemUordA02GgDXPbphyqgNhtvLPwoeGQTJMBC/YTovEZY1M4pKFFTtRhlz2xYtQcBXd0B8f9qlGXzKZhNfNVv7FktWAOKpNDGl2H9tXHBUCxEE3v+/TD19EFMbymwGv+qPt23ufRIODejYVfz9/isU8x/OCRFxdO7sIvKjWyU4iUrHU7YIFZuIm/lKpRXr93mAi3jP89DLbSGqgeLEvKMs38Oc=
+  file:
+  - release/feedpushr-linux-amd64.tgz
+  - release/feedpushr-linux-arm64.tgz
+  - release/feedpushr-linux-arm.tgz
+  - release/feedpushr-darwin-amd64.tgz
+  skip_cleanup: true
+  on:
+    repo: ncarlier/feedpushr
+    tags: true

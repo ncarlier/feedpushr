@@ -102,5 +102,4 @@ distribution:
 	GOARCH=arm64 make build gzip
 	GOARCH=arm make build gzip
 	GOOS=darwin make build gzip
-	GOOS=windows make build gzip
 .PHONY: distribution
