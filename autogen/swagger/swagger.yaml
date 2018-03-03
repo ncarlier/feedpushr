@@ -1,0 +1,506 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  Feed:
+    description: A RSS feed (default view)
+    example:
+      cdate: 2010-10-23T13:34:07Z
+      errorCount: 3.3369175e+17
+      errorMsg: Est suscipit.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: 1993-05-15T16:34:02Z
+      mdate: 1981-09-22T23:39:59Z
+      nextCheck: 1975-05-22T16:26:55Z
+      text: RSS Feed
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    properties:
+      cdate:
+        description: Date of creation
+        example: 2010-10-23T13:34:07Z
+        format: date-time
+        type: string
+      errorCount:
+        description: Number of consecutive aggregation errors
+        example: 3.3369175e+17
+        format: int64
+        type: integer
+      errorMsg:
+        description: Last aggregation error
+        example: Est suscipit.
+        type: string
+      htmlUrl:
+        description: URL of the feed website
+        example: http://www.hashicorp.com/blog
+        type: string
+      hubUrl:
+        description: URL of the PubSubHubbud hub
+        example: http://pubsubhubbub.appspot.com
+        type: string
+      id:
+        description: ID of feed (MD5 of the xmlUrl)
+        example: 5bfb841c028281c0051828c115fd1f50
+        type: string
+      lastCheck:
+        description: Last aggregation pass
+        example: 1993-05-15T16:34:02Z
+        format: date-time
+        type: string
+      mdate:
+        description: Date of modification
+        example: 1981-09-22T23:39:59Z
+        format: date-time
+        type: string
+      nextCheck:
+        description: Next aggregation pass
+        example: 1975-05-22T16:26:55Z
+        format: date-time
+        type: string
+      text:
+        description: Text attribute of the Feed
+        example: RSS Feed
+        type: string
+      title:
+        description: Title of the Feed
+        example: Hashicorp Blog
+        type: string
+      xmlUrl:
+        description: URL of the XML feed
+        example: http://www.hashicorp.com/feed.xml
+        type: string
+    required:
+    - id
+    - xmlUrl
+    - title
+    - cdate
+    - mdate
+    title: 'Mediatype identifier: application/vnd.feedpushr.feed.v1+json; view=default'
+    type: object
+  FeedCollection:
+    description: FeedCollection is the media type for an array of Feed (default view)
+    example:
+    - cdate: 2010-10-23T13:34:07Z
+      errorCount: 3.3369175e+17
+      errorMsg: Est suscipit.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: 1993-05-15T16:34:02Z
+      mdate: 1981-09-22T23:39:59Z
+      nextCheck: 1975-05-22T16:26:55Z
+      text: RSS Feed
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - cdate: 2010-10-23T13:34:07Z
+      errorCount: 3.3369175e+17
+      errorMsg: Est suscipit.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: 1993-05-15T16:34:02Z
+      mdate: 1981-09-22T23:39:59Z
+      nextCheck: 1975-05-22T16:26:55Z
+      text: RSS Feed
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    items:
+      $ref: '#/definitions/Feed'
+    title: 'Mediatype identifier: application/vnd.feedpushr.feed.v1+json; type=collection;
+      view=default'
+    type: array
+  error:
+    description: Error response media type (default view)
+    example:
+      code: invalid_value
+      detail: Value of ID must be an integer
+      id: 3F1FKVRR
+      meta:
+        timestamp: 1.458609e+09
+      status: "400"
+    properties:
+      code:
+        description: an application-specific error code, expressed as a string value.
+        example: invalid_value
+        type: string
+      detail:
+        description: a human-readable explanation specific to this occurrence of the
+          problem.
+        example: Value of ID must be an integer
+        type: string
+      id:
+        description: a unique identifier for this particular occurrence of the problem.
+        example: 3F1FKVRR
+        type: string
+      meta:
+        additionalProperties: true
+        description: a meta object containing non-standard meta-information about
+          the error.
+        example:
+          timestamp: 1.458609e+09
+        type: object
+      status:
+        description: the HTTP status code applicable to this problem, expressed as
+          a string value.
+        example: "400"
+        type: string
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+externalDocs:
+  description: feedpushr guide
+  url: https://github.com/ncarlier/feedpusher/README.md
+host: localhost:8080
+info:
+  contact:
+    name: Nicolas Carlier
+    url: https://github.com/ncarlier
+  description: A simple feed aggregator daemon with sugar on top.
+  license:
+    name: MIT
+    url: https://github.com/goadesign/goa/blob/master/LICENSE
+  title: The feedpushr API
+  version: ""
+paths:
+  /swagger.json:
+    get:
+      operationId: swagger#/swagger.json
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+      schemes:
+      - http
+      summary: Download var/public/swagger.json
+  /v1/feeds:
+    get:
+      description: Retrieve all feeds
+      operationId: feed#list
+      parameters:
+      - default: 10
+        description: Fetch limit
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: false
+        type: integer
+      - default: 1
+        description: Page to fetch
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      produces:
+      - application/vnd.feedpushr.feed.v1+json; type=collection
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FeedCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: list feed
+      tags:
+      - feed
+    post:
+      description: Create a new feed
+      operationId: feed#create
+      parameters:
+      - description: Feed URL
+        format: uri
+        in: query
+        name: url
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "201":
+          description: Resource created
+          headers:
+            Location:
+              description: href to created resource
+              pattern: /feeds/[0-9a-f]+
+              type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: create feed
+      tags:
+      - feed
+  /v1/feeds/{id}:
+    delete:
+      description: Delete a feed
+      operationId: feed#delete
+      parameters:
+      - description: Feed ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: delete feed
+      tags:
+      - feed
+    get:
+      description: Retrieve feed with given id
+      operationId: feed#get
+      parameters:
+      - description: Feed ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.feedpushr.feed.v1+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Feed'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: get feed
+      tags:
+      - feed
+  /v1/feeds/{id}/start:
+    post:
+      description: Start feed aggregation
+      operationId: feed#start
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: start feed
+      tags:
+      - feed
+  /v1/feeds/{id}/stop:
+    post:
+      description: Stop feed aggregation
+      operationId: feed#stop
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: stop feed
+      tags:
+      - feed
+  /v1/healthz:
+    get:
+      description: Perform health check.
+      operationId: health#get
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+      schemes:
+      - http
+      summary: get health
+      tags:
+      - health
+  /v1/opml:
+    get:
+      description: Get all feeds as an OMPL format
+      operationId: opml#get
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: get opml
+      tags:
+      - opml
+    post:
+      description: Upload an OPML file to create feeds
+      operationId: opml#upload
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "201":
+          description: Resource created
+          headers:
+            Location:
+              description: href to created resource
+              pattern: /feeds
+              type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: upload opml
+      tags:
+      - opml
+  /v1/pshb:
+    get:
+      description: Callback to validate the (un)subscription to the topic of a Hub
+      operationId: pshb#sub
+      parameters:
+      - description: A hub-generated random string
+        in: query
+        name: hub.challenge
+        required: true
+        type: string
+      - description: The hub-determined number of seconds that the subscription will
+          stay active before expiring
+        in: query
+        name: hub.lease_seconds
+        required: false
+        type: integer
+      - description: The literal string "subscribe" or "unsubscribe"
+        enum:
+        - subscribe
+        - unsubscribe
+        in: query
+        name: hub.mode
+        required: true
+        type: string
+      - description: The topic URL given in the corresponding subscription request
+        format: uri
+        in: query
+        name: hub.topic
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: sub pshb
+      tags:
+      - pshb
+    post:
+      description: Publication endpoint for PSHB hubs
+      operationId: pshb#pub
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: pub pshb
+      tags:
+      - pshb
+  /v1/vars:
+    get:
+      description: Get all internals exp vars
+      operationId: vars#get
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: get vars
+      tags:
+      - vars
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  Accepted:
+    description: Accepted
+  NoContent:
+    description: No Content
+  NotFound:
+    description: Not Found
+  OK:
+    description: OK
+    schema:
+      $ref: '#/definitions/Feed'
+schemes:
+- http
+swagger: "2.0"
