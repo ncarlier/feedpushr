@@ -9,7 +9,7 @@ import (
 var Version = "snapshot"
 
 var (
-	version = flag.Bool("v", false, "Print version")
+	version = flag.Bool("version", false, "Print version")
 )
 
 func printVersion() {

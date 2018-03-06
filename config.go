@@ -13,7 +13,7 @@ type Configuration struct {
 	PublicURL      string        `split_words:"true"`
 	Store          string        `default:"boltdb://data.db"`
 	Output         string        `default:"stdout"`
-	LogLevel       string        `split_words:"true"`
+	LogLevel       string        `default:"info" split_words:"true"`
 	LogPretty      bool          `default:"false" split_words:"true"`
 	Delay          time.Duration `default:"1m"`
 	CacheRetention time.Duration `default:"72h" split_words:"true"`

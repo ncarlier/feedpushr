@@ -22,10 +22,30 @@ import (
 )
 
 var (
-	importFilename = flag.String("import", "", "Import a OPML file at boostrap")
-	outputURI      = flag.String("output", Config.Output, "Output destination URI")
-	clearCache     = flag.Bool("clear-cache", false, "Clear cache at bootstrap")
+	listenAddr,
+	dataStore,
+	outputURI,
+	importFilename,
+	publicURL,
+	logLevel *string
+	delay,
+	cacheRetention *time.Duration
+	clearCache,
+	logPretty *bool
 )
+
+func init() {
+	listenAddr = flag.String("addr", Config.ListenAddr, "HTTP server address")
+	dataStore = flag.String("db", Config.Store, "Data store location")
+	outputURI = flag.String("output", Config.Output, "Output destination")
+	importFilename = flag.String("import", "", "Import a OPML file at boostrap")
+	publicURL = flag.String("public-url", Config.PublicURL, "Public URL used for PSHB subscriptions")
+	delay = flag.Duration("delay", Config.Delay, "Delay between aggregations")
+	clearCache = flag.Bool("clear-cache", false, "Clear cache at bootstrap")
+	cacheRetention = flag.Duration("cache-retention", Config.CacheRetention, "Cache retention duration")
+	logPretty = flag.Bool("log-pretty", Config.LogPretty, "Writes log using plain text format")
+	logLevel = flag.String("log-level", Config.LogLevel, "Logging level")
+}
 
 func main() {
 	flag.Parse()
@@ -36,13 +56,13 @@ func main() {
 	}
 
 	// Log configuration
-	logging.Configure(Config.LogLevel, Config.LogPretty)
+	logging.Configure(*logLevel, *logPretty)
 
 	// Metric configuration
 	metric.Configure()
 
 	// Init the data store
-	db, err := store.Configure(Config.Store)
+	db, err := store.Configure(*dataStore)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init data store")
 	}
@@ -58,9 +78,9 @@ func main() {
 	// Starts cache-buster
 	cleanCacheTicker := time.NewTicker(24 * time.Hour)
 	go func() {
-		log.Debug().Str("retention", Config.CacheRetention.String()).Msg("cache-buster started")
-		for _ = range cleanCacheTicker.C {
-			maxAge := time.Now().Add(-Config.CacheRetention)
+		log.Debug().Str("retention", (*cacheRetention).String()).Msg("cache-buster started")
+		for range cleanCacheTicker.C {
+			maxAge := time.Now().Add(-*cacheRetention)
 			err := db.EvictFromCache(maxAge)
 			if err != nil {
 				log.Error().Err(err).Msg("unable clean the cache")
@@ -70,7 +90,7 @@ func main() {
 	}()
 
 	// Init output manager
-	om, err := output.NewManager(db, *outputURI, Config.CacheRetention)
+	om, err := output.NewManager(db, *outputURI, *cacheRetention)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init output manager")
 	}
@@ -89,10 +109,10 @@ func main() {
 	}
 	// Init aggregator daemon
 	var callbackURL string
-	if Config.PublicURL != "" {
-		callbackURL = Config.PublicURL + "/v1/pshb"
+	if *publicURL != "" {
+		callbackURL = *publicURL + "/v1/pshb"
 	}
-	am, err := aggregator.NewManager(db, om, Config.Delay, callbackURL)
+	am, err := aggregator.NewManager(db, om, *delay, callbackURL)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
@@ -126,7 +146,7 @@ func main() {
 	vc := controller.NewVarsController(service)
 	app.MountVarsController(service, vc)
 	// Mount "pshb" controller (only if public URL is configured)
-	if Config.PublicURL != "" {
+	if *publicURL != "" {
 		pc := controller.NewPshbController(service, db, am, om)
 		app.MountPshbController(service, pc)
 	}
@@ -153,7 +173,7 @@ func main() {
 	}()
 
 	// Start service
-	if err := service.ListenAndServe(Config.ListenAddr); err != nil && err != http.ErrServerClosed {
+	if err := service.ListenAndServe(*listenAddr); err != nil && err != http.ErrServerClosed {
 		log.Fatal().Err(err).Msg("unable to start server")
 	}
 

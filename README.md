@@ -46,17 +46,17 @@ You can configure the daemon by setting environment variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `APP_LISTEN_ADDR` | `:8080` | Daemon HTTP listen address |
+| `APP_LISTEN_ADDR` | `:8080` | HTTP server address |
 | `PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] format) |
 | `APP_OUTPUT` | `stdout` | Output destination (`stdout` or HTTP URL) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
-| `APP_CACHE_RETENTION` | `72h` | Duration of the cache retention (ex: `24h`, `48h`, ...) |
-| `APP_LOG_LEVEL` | `info` | Log output level (`debug`, `info`, `warn` or `error`) |
-| `APP_LOG_PRETTY` | `false` | Textual log output format if true (JSON otherwise)|
+| `APP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
+| `APP_LOG_LEVEL` | `info` | Logging level (`debug`, `info`, `warn` or `error`) |
+| `APP_LOG_PRETTY` | `false` | Plain text log output format if true (JSON otherwise) |
 | `APP_LOG_OUTPUT` | `stdout` | Log output target (`stdout` or `file://sample.log`) |
 
-You can override some of this settings by using program parameters.
+You can override this settings by using program parameters.
 Type `feedpushr --help` to see those parameters.
 
 ## Use cases
