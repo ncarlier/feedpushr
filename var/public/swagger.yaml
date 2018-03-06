@@ -7,27 +7,28 @@ definitions:
   Feed:
     description: A RSS feed (default view)
     example:
-      cdate: 2010-10-23T13:34:07Z
-      errorCount: 3.3369175e+17
+      cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
       errorMsg: Est suscipit.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: 1993-05-15T16:34:02Z
-      mdate: 1981-09-22T23:39:59Z
-      nextCheck: 1975-05-22T16:26:55Z
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nextCheck: "1975-05-22T16:26:55Z"
+      status: stopped
       text: RSS Feed
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
     properties:
       cdate:
         description: Date of creation
-        example: 2010-10-23T13:34:07Z
+        example: "2010-10-23T13:34:07Z"
         format: date-time
         type: string
       errorCount:
         description: Number of consecutive aggregation errors
-        example: 3.3369175e+17
+        example: 3.336917582948419e+17
         format: int64
         type: integer
       errorMsg:
@@ -48,18 +49,25 @@ definitions:
         type: string
       lastCheck:
         description: Last aggregation pass
-        example: 1993-05-15T16:34:02Z
+        example: "1993-05-15T16:34:02Z"
         format: date-time
         type: string
       mdate:
         description: Date of modification
-        example: 1981-09-22T23:39:59Z
+        example: "1981-09-22T23:39:59Z"
         format: date-time
         type: string
       nextCheck:
         description: Next aggregation pass
-        example: 1975-05-22T16:26:55Z
+        example: "1975-05-22T16:26:55Z"
         format: date-time
+        type: string
+      status:
+        description: Aggregation status
+        enum:
+        - running
+        - stopped
+        example: stopped
         type: string
       text:
         description: Text attribute of the Feed
@@ -84,27 +92,29 @@ definitions:
   FeedCollection:
     description: FeedCollection is the media type for an array of Feed (default view)
     example:
-    - cdate: 2010-10-23T13:34:07Z
-      errorCount: 3.3369175e+17
+    - cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
       errorMsg: Est suscipit.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: 1993-05-15T16:34:02Z
-      mdate: 1981-09-22T23:39:59Z
-      nextCheck: 1975-05-22T16:26:55Z
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nextCheck: "1975-05-22T16:26:55Z"
+      status: stopped
       text: RSS Feed
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
-    - cdate: 2010-10-23T13:34:07Z
-      errorCount: 3.3369175e+17
+    - cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
       errorMsg: Est suscipit.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: 1993-05-15T16:34:02Z
-      mdate: 1981-09-22T23:39:59Z
-      nextCheck: 1975-05-22T16:26:55Z
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nextCheck: "1975-05-22T16:26:55Z"
+      status: stopped
       text: RSS Feed
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
@@ -120,7 +130,7 @@ definitions:
       detail: Value of ID must be an integer
       id: 3F1FKVRR
       meta:
-        timestamp: 1.458609e+09
+        timestamp: 1.458609066e+09
       status: "400"
     properties:
       code:
@@ -141,7 +151,7 @@ definitions:
         description: a meta object containing non-standard meta-information about
           the error.
         example:
-          timestamp: 1.458609e+09
+          timestamp: 1.458609066e+09
         type: object
       status:
         description: the HTTP status code applicable to this problem, expressed as

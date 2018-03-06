@@ -37,6 +37,8 @@ type Feed struct {
 	Mdate time.Time `form:"mdate" json:"mdate" xml:"mdate"`
 	// Next aggregation pass
 	NextCheck *time.Time `form:"nextCheck,omitempty" json:"nextCheck,omitempty" xml:"nextCheck,omitempty"`
+	// Aggregation status
+	Status *string `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
 	// Text attribute of the Feed
 	Text *string `form:"text,omitempty" json:"text,omitempty" xml:"text,omitempty"`
 	// Title of the Feed
@@ -57,6 +59,11 @@ func (mt *Feed) Validate() (err error) {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "title"))
 	}
 
+	if mt.Status != nil {
+		if !(*mt.Status == "running" || *mt.Status == "stopped") {
+			err = goa.MergeErrors(err, goa.InvalidEnumValueError(`response.status`, *mt.Status, []interface{}{"running", "stopped"}))
+		}
+	}
 	return
 }
 

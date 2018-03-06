@@ -49,6 +49,7 @@ var Feed = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 		Attribute("hubUrl")
 		Attribute("title")
 		Attribute("text")
+		Attribute("status")
 		Attribute("lastCheck")
 		Attribute("nextCheck")
 		Attribute("errorMsg")

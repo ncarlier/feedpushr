@@ -136,6 +136,8 @@ func (fa *FeedAggregator) StartWithDelay(delay time.Duration) {
 // GetFeedWithAggregationStatus get a copy of the aggregator feed hydrated with aggregation status.
 func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.Feed {
 	result := *fa.feed
+	status := fa.status.String()
+	result.Status = &status
 	lastCheck := fa.lastCheck
 	result.LastCheck = &lastCheck
 	nextCheck := fa.nextCheck

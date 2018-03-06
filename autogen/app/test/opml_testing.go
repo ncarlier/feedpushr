@@ -100,9 +100,8 @@ func GetOpmlOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	// Setup service
 	var (
 		logBuf bytes.Buffer
-		resp   interface{}
 
-		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
 	)
 	if service == nil {
 		service = goatest.Service(&logBuf, respSetter)
@@ -229,9 +228,8 @@ func UploadOpmlCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup service
 	var (
 		logBuf bytes.Buffer
-		resp   interface{}
 
-		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
 	)
 	if service == nil {
 		service = goatest.Service(&logBuf, respSetter)
