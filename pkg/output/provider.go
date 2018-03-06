@@ -35,15 +35,15 @@ func newOutputProvider(uri string) (model.OutputProvider, error) {
 		pluginName := fmt.Sprintf("feedpushr-%s.so", scheme)
 		plug, err := plugin.Open(pluginName)
 		if err != nil {
-			return nil, fmt.Errorf("unsuported output provider: %s", scheme, err)
+			return nil, fmt.Errorf("unsuported output provider: %s - %v", scheme, err)
 		}
 		getOutputProvider, err := plug.Lookup("GetOutputProvider")
 		if err != nil {
-			return nil, fmt.Errorf("unsuported output provider: %s", scheme, err)
+			return nil, fmt.Errorf("unsuported output provider: %s - %v", scheme, err)
 		}
 		provider, err = getOutputProvider.(func() (model.OutputProvider, error))()
 		if err != nil {
-			return nil, fmt.Errorf("unsuported output provider: %s", scheme, err)
+			return nil, fmt.Errorf("unsuported output provider: %s - %v", scheme, err)
 		}
 	}
 	return provider, nil
