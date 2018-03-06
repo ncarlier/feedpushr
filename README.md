@@ -47,8 +47,8 @@ You can configure the daemon by setting environment variables:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `APP_LISTEN_ADDR` | `:8080` | HTTP server address |
-| `PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
-| `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] format) |
+| `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
+| `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
 | `APP_OUTPUT` | `stdout` | Output destination (`stdout` or HTTP URL) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
 | `APP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
@@ -58,6 +58,29 @@ You can configure the daemon by setting environment variables:
 
 You can override this settings by using program parameters.
 Type `feedpushr --help` to see those parameters.
+
+## Outputs
+
+New articles are sent to an output.
+There are two built-in output providers:
+
+- `stdout`: New articles are sent as JSON document to the standard output of the
+  process.
+  This can be useful if you want to pipe the command to another shell command.
+  *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL
+  tool such as [Logstash][logstash], etc.*
+- `http`: New articles are sent as JSON document to an HTTP endpoint (POST).
+
+You can also use external providers.
+The system can be extended using plugins.
+
+A plugin is a compiled library file that should be located into the working
+directory in order to be loaded.
+It must respect the following naming convention: `feedpushr-<NAME>.so` with
+`<NAME>` the plugin name.
+
+You can find some external plugins (such as for Twitter) into this
+[repository][contrib].
 
 ## Use cases
 
@@ -142,5 +165,6 @@ Type `make help` to see other possibilities.
 [openapi]: https://www.openapis.org/
 [pubsubhubbud]: https://github.com/pubsubhubbub/
 [boltdb]: https://github.com/coreos/bbolt
-
+[logstash]: https://www.elastic.co/fr/products/logstash
+[contrib]: https://github.com/ncarlier/feedpushr-contrib/
 
