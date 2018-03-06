@@ -8,7 +8,9 @@ import (
 
 	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -43,10 +45,10 @@ func NewFeedHandler(feed *app.Feed) *FeedHandler {
 }
 
 // Refresh fetch feed items
-func (fh *FeedHandler) Refresh() (FeedStatus, []*gofeed.Item) {
+func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	// defer timer.ExecutionTime(fh.log, time.Now(), "refresh")
 
-	var items []*gofeed.Item
+	var items []*model.Article
 
 	// Set timeout context
 	ctx, cancel := context.WithCancel(context.TODO())
@@ -122,5 +124,5 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*gofeed.Item) {
 
 	// fh.log.Debug().Int("items", len(feed.Items)).Msg("feed fetched")
 
-	return *fh.status, feed.Items
+	return *fh.status, builder.NewArticles(feed.Items)
 }

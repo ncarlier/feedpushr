@@ -5,15 +5,15 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/pkg/cache"
+	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
-// GetArticleKey computes the key of a GoFeed item.
-func getArticleKey(article *gofeed.Item) string {
+// GetArticleKey computes the key of a Article.
+func getArticleKey(article *model.Article) string {
 	key := article.GUID
 	if key == "" {
 		key = article.Link
@@ -25,7 +25,7 @@ func getArticleKey(article *gofeed.Item) string {
 
 // Manager of output channel.
 type Manager struct {
-	provider       Provider
+	provider       model.OutputProvider
 	db             store.DB
 	cacheRetention time.Duration
 	log            zerolog.Logger
@@ -46,7 +46,7 @@ func NewManager(db store.DB, uri string, cacheRetention time.Duration) (*Manager
 }
 
 // Send feeds to the output provider
-func (m *Manager) Send(articles []*gofeed.Item) error {
+func (m *Manager) Send(articles []*model.Article) error {
 	m.log.Debug().Int("items", len(articles)).Msg("processing articles")
 	maxAge := time.Now().Add(-m.cacheRetention)
 	for _, article := range articles {

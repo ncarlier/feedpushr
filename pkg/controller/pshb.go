@@ -9,6 +9,7 @@ import (
 	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/output"
 	"github.com/ncarlier/feedpushr/pkg/store"
@@ -44,7 +45,7 @@ func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
-	c.output.Send(feed.Items)
+	c.output.Send(builder.NewArticles(feed.Items))
 
 	return ctx.OK([]byte("ok"))
 }

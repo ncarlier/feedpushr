@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/mmcdole/gofeed"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 // HTTPOutputProvider HTTP output provider
@@ -21,7 +21,7 @@ func newHTTPOutputProvider(uri string) *HTTPOutputProvider {
 }
 
 // Send article to HTTP endpoint.
-func (op *HTTPOutputProvider) Send(article *gofeed.Item) error {
+func (op *HTTPOutputProvider) Send(article *model.Article) error {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(article)
 	resp, err := http.Post(op.uri, "application/json; charset=utf-8", b)

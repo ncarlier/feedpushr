@@ -3,18 +3,14 @@ package output
 import (
 	"fmt"
 	"net/url"
+	"plugin"
 
-	"github.com/mmcdole/gofeed"
+	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/rs/zerolog/log"
 )
 
-// Provider is the output provider interface
-type Provider interface {
-	Send(article *gofeed.Item) error
-}
-
 // newOutputProvider creates new output provider.
-func newOutputProvider(uri string) (Provider, error) {
+func newOutputProvider(uri string) (model.OutputProvider, error) {
 	logger := log.With().Str("component", "output").Logger()
 	var scheme string
 	if uri == "" || uri == "stdout" {
@@ -26,7 +22,7 @@ func newOutputProvider(uri string) (Provider, error) {
 		}
 		scheme = u.Scheme
 	}
-	var provider Provider
+	var provider model.OutputProvider
 	switch scheme {
 	case "stdout":
 		provider = newStdOutputProvider()
@@ -35,7 +31,20 @@ func newOutputProvider(uri string) (Provider, error) {
 		provider = newHTTPOutputProvider(uri)
 		logger.Info().Str("url", uri).Msg("using HTTP output provider")
 	default:
-		return nil, fmt.Errorf("unsuported output provider: %s", scheme)
+		// Try to load plugin regarding the scheme
+		pluginName := fmt.Sprintf("feedpushr-%s.so", scheme)
+		plug, err := plugin.Open(pluginName)
+		if err != nil {
+			return nil, fmt.Errorf("unsuported output provider: %s", scheme, err)
+		}
+		getOutputProvider, err := plug.Lookup("GetOutputProvider")
+		if err != nil {
+			return nil, fmt.Errorf("unsuported output provider: %s", scheme, err)
+		}
+		provider, err = getOutputProvider.(func() (model.OutputProvider, error))()
+		if err != nil {
+			return nil, fmt.Errorf("unsuported output provider: %s", scheme, err)
+		}
 	}
 	return provider, nil
 }

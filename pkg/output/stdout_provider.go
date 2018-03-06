@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/mmcdole/gofeed"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 // StdOutputProvider STDOUT output provider
@@ -16,7 +16,7 @@ func newStdOutputProvider() *StdOutputProvider {
 }
 
 // Send article to STDOUT.
-func (op *StdOutputProvider) Send(article *gofeed.Item) error {
+func (op *StdOutputProvider) Send(article *model.Article) error {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(article)
 	fmt.Println(b.String())
