@@ -93,7 +93,8 @@ changelog:
 
 ## GZIP executable
 gzip:
-	tar cvzf $(ARTEFACT).tgz $(ARTEFACT)
+	gzip $(ARTEFACT)
+	gzip $(ARTEFACT_CTL)
 .PHONY: gzip
 
 ## Create distribution binaries
