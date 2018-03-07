@@ -38,17 +38,18 @@ func NewManager(db store.DB, uri string, cacheRetention time.Duration) (*Manager
 		return nil, err
 	}
 	manager := &Manager{
-		provider: provider,
-		db:       db,
-		log:      log.With().Str("component", "output").Logger(),
+		provider:       provider,
+		db:             db,
+		cacheRetention: cacheRetention,
+		log:            log.With().Str("component", "output").Logger(),
 	}
 	return manager, nil
 }
 
 // Send feeds to the output provider
 func (m *Manager) Send(articles []*model.Article) error {
-	m.log.Debug().Int("items", len(articles)).Msg("processing articles")
 	maxAge := time.Now().Add(-m.cacheRetention)
+	m.log.Debug().Int("items", len(articles)).Str("before", maxAge.String()).Msg("processing articles")
 	for _, article := range articles {
 		// Ignore old articles
 		var date *time.Time
@@ -64,7 +65,7 @@ func (m *Manager) Send(articles []*model.Article) error {
 		}
 		if date.Before(maxAge) {
 			// Article too old: ignore
-			// m.log.Debug().Msg("unable to push article: article too old")
+			// m.log.Debug().Str("GUID", article.GUID).Str("date", (*date).String()).Msg("unable to push article: article too old")
 			continue
 		}
 		// Ignore already sent articles
@@ -83,9 +84,10 @@ func (m *Manager) Send(articles []*model.Article) error {
 		// Send article...
 		err = m.provider.Send(article)
 		if err != nil {
-			m.log.Error().Err(err).Str("guid", article.GUID).Msg("unable to send article")
+			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to send article")
 			continue
 		}
+		m.log.Debug().Str("GUID", article.GUID).Msg("article sent")
 		// Set article as sent by updating the cache
 		item = &cache.Item{
 			Value: article.GUID,
@@ -93,7 +95,7 @@ func (m *Manager) Send(articles []*model.Article) error {
 		}
 		err = m.db.StoreToCache(key, item)
 		if err != nil {
-			m.log.Error().Err(err).Str("guid", article.GUID).Msg("unable to store article into the cache")
+			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to store article into the cache")
 		}
 	}
 	return nil
