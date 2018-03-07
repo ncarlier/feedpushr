@@ -11,6 +11,7 @@ func NewArticle(item *gofeed.Item) *model.Article {
 	article.Content = item.Content
 	article.Description = item.Description
 	article.GUID = item.GUID
+	article.Link = item.Link
 	article.Title = item.Title
 	article.Published = item.Published
 	article.PublishedParsed = item.PublishedParsed
