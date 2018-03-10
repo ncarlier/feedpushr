@@ -9,6 +9,8 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // FeedController implements the feed resource.
@@ -16,6 +18,7 @@ type FeedController struct {
 	*goa.Controller
 	db         store.DB
 	aggregator *aggregator.Manager
+	log        zerolog.Logger
 }
 
 // NewFeedController creates a feed controller.
@@ -24,6 +27,7 @@ func NewFeedController(service *goa.Service, db store.DB, am *aggregator.Manager
 		Controller: service.NewController("FeedController"),
 		db:         db,
 		aggregator: am,
+		log:        log.With().Str("component", "feed-ctrl").Logger(),
 	}
 }
 
@@ -39,6 +43,8 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	}
 	fa := c.aggregator.RegisterFeedAggregator(feed)
 	fa.Start()
+	c.log.Info().Str("id", feed.ID).Msg("feed created and aggregation started")
+
 	return ctx.Created()
 }
 
@@ -52,6 +58,7 @@ func (c *FeedController) Delete(ctx *app.DeleteFeedContext) error {
 		}
 		return goa.ErrInternal(err)
 	}
+	c.log.Info().Str("id", ctx.ID).Msg("feed removed and aggregation stopped")
 	return ctx.NoContent()
 }
 
@@ -106,6 +113,7 @@ func (c *FeedController) Start(ctx *app.StartFeedContext) error {
 		return goa.ErrInternal(fmt.Errorf("feed aggregator not registered"))
 	}
 	fa.Start()
+	c.log.Info().Str("id", feed.ID).Msg("feed aggregation started")
 	return ctx.Accepted()
 }
 
@@ -123,5 +131,6 @@ func (c *FeedController) Stop(ctx *app.StopFeedContext) error {
 		return goa.ErrInternal(fmt.Errorf("feed aggregator not registered"))
 	}
 	fa.Stop()
+	c.log.Info().Str("id", feed.ID).Msg("feed aggregation stopped")
 	return ctx.Accepted()
 }

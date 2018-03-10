@@ -45,6 +45,7 @@ func newOutputProvider(uri string) (model.OutputProvider, error) {
 		if err != nil {
 			return nil, fmt.Errorf("unsuported output provider: %s - %v", scheme, err)
 		}
+		logger.Info().Str("url", uri).Str("provider", scheme).Msg("using external output provider")
 	}
 	return provider, nil
 }

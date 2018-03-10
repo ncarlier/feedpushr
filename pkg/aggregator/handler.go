@@ -21,7 +21,7 @@ const (
 	errCreateRequest = "unable to create request"
 	errDoRequest     = "unable to fetch feed (bad request)"
 	errEmptyBody     = "unable to fetch feed (empty)"
-	errParssingBody  = "ubanle to fetch feed (bad body)"
+	errParssingBody  = "unable to fetch feed (bad body)"
 	errBadStatus     = "unable to fetch feed (status: %d)"
 )
 

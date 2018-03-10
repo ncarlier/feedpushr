@@ -83,7 +83,7 @@ func (m *Manager) UnRegisterFeedAggregator(id string) {
 	m.feedAggregators[id] = nil
 	delete(m.feedAggregators, id)
 	m.shutdownWaitGroup.Done()
-	m.log.Info().Str("feed", id).Msg("feed aggregator unregistered")
+	m.log.Debug().Str("feed", id).Msg("feed aggregator unregistered")
 }
 
 // RestartFeedAggregator restart feed aggregator with delay

@@ -84,10 +84,10 @@ func (m *Manager) Send(articles []*model.Article) error {
 		// Send article...
 		err = m.provider.Send(article)
 		if err != nil {
-			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to send article")
+			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to push article")
 			continue
 		}
-		m.log.Debug().Str("GUID", article.GUID).Msg("article sent")
+		m.log.Info().Str("GUID", article.GUID).Msg("article pushed")
 		// Set article as sent by updating the cache
 		item = &cache.Item{
 			Value: article.GUID,

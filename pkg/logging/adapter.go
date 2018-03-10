@@ -29,7 +29,7 @@ func Logger(ctx context.Context) *zerolog.Logger {
 
 // Info logs messages using zerolog.
 func (a *adapter) Info(msg string, data ...interface{}) {
-	a.Logger.Info().Fields(data2fields(data)).Msg(msg)
+	a.Logger.Debug().Fields(data2fields(data)).Msg(msg)
 }
 
 // Error logs errors using zerolog.

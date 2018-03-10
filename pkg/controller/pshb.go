@@ -13,6 +13,8 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/output"
 	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // PshbController implements the pshb resource.
@@ -22,6 +24,7 @@ type PshbController struct {
 	parser     *gofeed.Parser
 	output     *output.Manager
 	aggregator *aggregator.Manager
+	log        zerolog.Logger
 }
 
 // NewPshbController creates a pshb controller.
@@ -32,6 +35,7 @@ func NewPshbController(service *goa.Service, db store.DB, am *aggregator.Manager
 		output:     om,
 		aggregator: am,
 		parser:     gofeed.NewParser(),
+		log:        log.With().Str("component", "pshb-ctrl").Logger(),
 	}
 }
 
@@ -71,9 +75,11 @@ func (c *PshbController) Sub(ctx *app.SubPshbContext) error {
 		// Notify the aggregator to wait until the lease is over
 		delay := time.Duration(*ctx.HubLeaseSeconds) * time.Second
 		c.aggregator.RestartFeedAggregator(id, delay)
+		c.log.Info().Str("id", id).Msg("PSHB subscription activated")
 	} else if ctx.HubMode == "unsubscribe" {
 		// Notify the aggregator to resume
 		c.aggregator.RestartFeedAggregator(id, 0)
+		c.log.Info().Str("id", id).Msg("PSHB subscription deactivated")
 	}
 
 	return ctx.OK([]byte(ctx.HubChallenge))
