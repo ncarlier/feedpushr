@@ -14,6 +14,7 @@ import (
 // DB is the data store
 type DB interface {
 	ListFeeds(page, limit int) (*app.FeedCollection, error)
+	ExistsFeed(url string) bool
 	GetFeed(id string) (*app.Feed, error)
 	DeleteFeed(id string) (*app.Feed, error)
 	SaveFeed(feed *app.Feed) error

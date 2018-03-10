@@ -1,6 +1,8 @@
 package store
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 
 	bolt "github.com/coreos/bbolt"
@@ -10,6 +12,19 @@ import (
 
 // FEED_BUCKET bucket name
 var FEED_BUCKET = []byte("FEED")
+
+// ExistsFeed returns true if a feed exists for this url.
+func (store *BoltStore) ExistsFeed(url string) bool {
+	hasher := md5.New()
+	hasher.Write([]byte(url))
+	id := hex.EncodeToString(hasher.Sum(nil))
+
+	exists, err := store.exists(FEED_BUCKET, id)
+	if err != nil {
+		return false
+	}
+	return exists
+}
 
 // GetFeed returns a stored Feed.
 func (store *BoltStore) GetFeed(id string) (*app.Feed, error) {

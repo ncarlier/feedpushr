@@ -64,6 +64,24 @@ func (store *BoltStore) save(bucketName []byte, key string, dataStruct interface
 	return err
 }
 
+func (store *BoltStore) exists(bucketName []byte, key string) (bool, error) {
+	result := false
+	err := store.db.View(func(tx *bolt.Tx) error {
+		// Get the bucket
+		b := tx.Bucket(bucketName)
+		if b == nil {
+			return bolt.ErrBucketNotFound
+		}
+
+		// Retrieve the record
+		v := b.Get([]byte(key))
+		result = v != nil
+		return nil
+	})
+
+	return result, err
+}
+
 func (store *BoltStore) get(bucketName []byte, key string, dataStruct interface{}) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
 		// Get the bucket
