@@ -2,6 +2,7 @@ package aggregator_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/ncarlier/feedpushr/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/pkg/assert"
@@ -14,7 +15,8 @@ func TestNewFeedHandler(t *testing.T) {
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, feed, "feed shouldn't be nil")
 
-	handler := aggregator.NewFeedHandler(feed)
+	timeout := time.Duration(5) * time.Second
+	handler := aggregator.NewFeedHandler(feed, timeout)
 	status, items := handler.Refresh()
 	assert.NotNil(t, status, "items shouldn't be nil")
 	assert.NotNil(t, items, "items feed shouldn't be nil")
