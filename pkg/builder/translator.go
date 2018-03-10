@@ -36,6 +36,9 @@ func (ct *CustomAtomTranslator) Translate(feed interface{}) (*gofeed.Feed, error
 
 	hub := firstLinkWithType("hub", rss.Links)
 	if hub != nil {
+		if f.Custom == nil {
+			f.Custom = make(map[string]string)
+		}
 		f.Custom["hub"] = hub.Href
 	}
 
