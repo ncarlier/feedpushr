@@ -20,17 +20,19 @@ type Manager struct {
 	output            *output.Manager
 	log               zerolog.Logger
 	delay             time.Duration
+	timeout           time.Duration
 	callbackURL       string
 }
 
 // NewManager creates a new manager
-func NewManager(db store.DB, om *output.Manager, delay time.Duration, callbackURL string) (*Manager, error) {
+func NewManager(db store.DB, om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) (*Manager, error) {
 	manager := &Manager{
 		feedAggregators: make(map[string]*FeedAggregator),
 		db:              db,
 		output:          om,
 		log:             log.With().Str("component", "aggregator").Logger(),
 		delay:           delay,
+		timeout:         timeout,
 		callbackURL:     callbackURL,
 	}
 	manager.log.Debug().Msg("loading feed aggregators...")
@@ -64,7 +66,7 @@ func (m *Manager) RegisterFeedAggregator(feed *app.Feed) *FeedAggregator {
 		m.log.Debug().Str("source", feed.ID).Msg("feed aggregator already registered")
 		return fa
 	}
-	fa = NewFeedAggregator(feed, m.output, m.delay, m.callbackURL)
+	fa = NewFeedAggregator(feed, m.output, m.delay, m.timeout, m.callbackURL)
 	m.feedAggregators[feed.ID] = fa
 	m.shutdownWaitGroup.Add(1)
 	fa.Start()

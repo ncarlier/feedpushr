@@ -29,6 +29,7 @@ var (
 	publicURL,
 	logLevel *string
 	delay,
+	timeout,
 	cacheRetention *time.Duration
 	clearCache,
 	logPretty *bool
@@ -41,6 +42,7 @@ func init() {
 	importFilename = flag.String("import", "", "Import a OPML file at boostrap")
 	publicURL = flag.String("public-url", Config.PublicURL, "Public URL used for PSHB subscriptions")
 	delay = flag.Duration("delay", Config.Delay, "Delay between aggregations")
+	timeout = flag.Duration("timeout", Config.Timeout, "Aggregation timeout")
 	clearCache = flag.Bool("clear-cache", false, "Clear cache at bootstrap")
 	cacheRetention = flag.Duration("cache-retention", Config.CacheRetention, "Cache retention duration")
 	logPretty = flag.Bool("log-pretty", Config.LogPretty, "Writes log using plain text format")
@@ -112,7 +114,7 @@ func main() {
 	if *publicURL != "" {
 		callbackURL = *publicURL + "/v1/pshb"
 	}
-	am, err := aggregator.NewManager(db, om, *delay, callbackURL)
+	am, err := aggregator.NewManager(db, om, *delay, *timeout, callbackURL)
 	if err != nil {
 		log.Fatal().Err(err)
 	}

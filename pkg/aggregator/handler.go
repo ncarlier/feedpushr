@@ -15,8 +15,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const defaultTimeout = time.Duration(2) * time.Second
-
 const (
 	errCreateRequest = "unable to create request"
 	errDoRequest     = "unable to fetch feed (bad request)"
@@ -27,19 +25,21 @@ const (
 
 // FeedHandler handles feed refresh
 type FeedHandler struct {
-	log    zerolog.Logger
-	feed   *app.Feed
-	status *FeedStatus
-	parser *gofeed.Parser
+	log     zerolog.Logger
+	feed    *app.Feed
+	status  *FeedStatus
+	parser  *gofeed.Parser
+	timeout time.Duration
 }
 
 // NewFeedHandler creats new feed handler
-func NewFeedHandler(feed *app.Feed) *FeedHandler {
+func NewFeedHandler(feed *app.Feed, timeout time.Duration) *FeedHandler {
 	handler := FeedHandler{
-		log:    log.With().Str("handler", feed.ID).Logger(),
-		feed:   feed,
-		status: &FeedStatus{},
-		parser: gofeed.NewParser(),
+		log:     log.With().Str("handler", feed.ID).Logger(),
+		feed:    feed,
+		status:  &FeedStatus{},
+		parser:  gofeed.NewParser(),
+		timeout: timeout,
 	}
 	return &handler
 }
@@ -52,7 +52,7 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 
 	// Set timeout context
 	ctx, cancel := context.WithCancel(context.TODO())
-	timeout := time.AfterFunc(defaultTimeout, func() {
+	timeout := time.AfterFunc(fh.timeout, func() {
 		cancel()
 	})
 

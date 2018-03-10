@@ -51,6 +51,7 @@ You can configure the daemon by setting environment variables:
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
 | `APP_OUTPUT` | `stdout` | Output destination (`stdout` or HTTP URL) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
+| `APP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
 | `APP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
 | `APP_LOG_LEVEL` | `info` | Logging level (`debug`, `info`, `warn` or `error`) |
 | `APP_LOG_PRETTY` | `false` | Plain text log output format if true (JSON otherwise) |

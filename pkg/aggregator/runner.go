@@ -28,8 +28,8 @@ type FeedAggregator struct {
 }
 
 // NewFeedAggregator creats a new feed aggregator
-func NewFeedAggregator(feed *app.Feed, om *output.Manager, delay time.Duration, callbackURL string) *FeedAggregator {
-	handler := NewFeedHandler(feed)
+func NewFeedAggregator(feed *app.Feed, om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *FeedAggregator {
+	handler := NewFeedHandler(feed, timeout)
 	aggregator := FeedAggregator{
 		id:                feed.ID,
 		managementChannel: make(chan Action),

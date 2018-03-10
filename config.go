@@ -16,6 +16,7 @@ type Configuration struct {
 	LogLevel       string        `default:"info" split_words:"true"`
 	LogPretty      bool          `default:"false" split_words:"true"`
 	Delay          time.Duration `default:"1m"`
+	Timeout        time.Duration `default:"5s"`
 	CacheRetention time.Duration `default:"72h" split_words:"true"`
 }
 
