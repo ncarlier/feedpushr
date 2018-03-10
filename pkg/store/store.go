@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/cache"
+	"github.com/ncarlier/feedpushr/pkg/model"
 	bolt "github.com/ncarlier/feedpushr/pkg/store/bolt"
 	"github.com/rs/zerolog/log"
 )
@@ -19,8 +19,8 @@ type DB interface {
 	DeleteFeed(id string) (*app.Feed, error)
 	SaveFeed(feed *app.Feed) error
 	ForEachFeed(cb func(*app.Feed) error) error
-	GetFromCache(key string) (*cache.Item, error)
-	StoreToCache(key string, item *cache.Item) error
+	GetFromCache(key string) (*model.CacheItem, error)
+	StoreToCache(key string, item *model.CacheItem) error
 	ClearCache() error
 	EvictFromCache(before time.Time) error
 	Close() error

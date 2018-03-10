@@ -1,11 +1,11 @@
-package cache
+package model
 
 import (
 	"time"
 )
 
 // Item stored into the cache.
-type Item struct {
+type CacheItem struct {
 	Value string    `json:"value"`
 	Date  time.Time `json:"date"`
 }

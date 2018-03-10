@@ -5,15 +5,15 @@ import (
 	"time"
 
 	bolt "github.com/coreos/bbolt"
-	"github.com/ncarlier/feedpushr/pkg/cache"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 // CACHE_BUCKET bucket name
 var CACHE_BUCKET = []byte("CACHE")
 
 // GetFromCache returns a cached item.
-func (store *BoltStore) GetFromCache(key string) (*cache.Item, error) {
-	var result cache.Item
+func (store *BoltStore) GetFromCache(key string) (*model.CacheItem, error) {
+	var result model.CacheItem
 	err := store.get(CACHE_BUCKET, key, &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
@@ -25,7 +25,7 @@ func (store *BoltStore) GetFromCache(key string) (*cache.Item, error) {
 }
 
 // StoreToCache stores a item into the cache.
-func (store *BoltStore) StoreToCache(key string, item *cache.Item) error {
+func (store *BoltStore) StoreToCache(key string, item *model.CacheItem) error {
 	return store.save(CACHE_BUCKET, key, &item)
 }
 
@@ -51,7 +51,7 @@ func (store *BoltStore) EvictFromCache(before time.Time) error {
 		b := tx.Bucket(CACHE_BUCKET)
 		c := b.Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			var item cache.Item
+			var item model.CacheItem
 			if err := json.Unmarshal(v, &item); err != nil {
 				// Unable to decode? OK delete!
 				b.Delete(k)

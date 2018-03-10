@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/ncarlier/feedpushr/pkg/cache"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
@@ -89,7 +88,7 @@ func (m *Manager) Send(articles []*model.Article) error {
 		}
 		m.log.Info().Str("GUID", article.GUID).Msg("article pushed")
 		// Set article as sent by updating the cache
-		item = &cache.Item{
+		item = &model.CacheItem{
 			Value: article.GUID,
 			Date:  *date,
 		}
