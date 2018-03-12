@@ -77,7 +77,7 @@ func (c *OpmlController) Upload(ctx *app.UploadOpmlContext) error {
 		if err != nil {
 			return ctx.BadRequest(err)
 		}
-		o, err := opml.NewOPMLFormBytes(b)
+		o, err := opml.NewOPMLFromBytes(b)
 		if err != nil {
 			return ctx.BadRequest(err)
 		}

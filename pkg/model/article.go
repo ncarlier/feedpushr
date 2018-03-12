@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// Article model structure.
 type Article struct {
 	Title           string     `json:"title,omitempty"`
 	Description     string     `json:"description,omitempty"`

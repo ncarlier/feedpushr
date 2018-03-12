@@ -56,12 +56,12 @@ func NewOPMLFromFile(filename string) (*OPML, error) {
 	if err != nil {
 		return nil, err
 	}
-	o, err := NewOPMLFormBytes(b)
+	o, err := NewOPMLFromBytes(b)
 	return o, err
 }
 
-// NewOPML creates a new OPML object from a byte array.
-func NewOPMLFormBytes(b []byte) (*OPML, error) {
+// NewOPMLFromBytes creates a new OPML object from a byte array.
+func NewOPMLFromBytes(b []byte) (*OPML, error) {
 	var result OPML
 	err := xml.Unmarshal(b, &result)
 	if err != nil {

@@ -71,6 +71,7 @@ $(ARTEFACT): build
 
 ## Run tests
 test:
+	-golint pkg/...
 	cd $(APPBASE)/$(APPNAME) && go test `go list ./... | grep -v vendor`
 .PHONY: test
 
