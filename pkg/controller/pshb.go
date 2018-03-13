@@ -17,6 +17,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+var maxSubscriptionTTL = time.Duration(72) * time.Hour
+
 // PshbController implements the pshb resource.
 type PshbController struct {
 	*goa.Controller
@@ -74,6 +76,9 @@ func (c *PshbController) Sub(ctx *app.SubPshbContext) error {
 	if ctx.HubMode == "subscribe" && ctx.HubLeaseSeconds != nil {
 		// Notify the aggregator to wait until the lease is over
 		delay := time.Duration(*ctx.HubLeaseSeconds) * time.Second
+		if delay > maxSubscriptionTTL {
+			delay = maxSubscriptionTTL
+		}
 		c.aggregator.RestartFeedAggregator(id, delay)
 		c.log.Info().Str("id", id).Msg("PSHB subscription activated")
 	} else if ctx.HubMode == "unsubscribe" {
