@@ -2,6 +2,7 @@ package pshb
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -28,6 +29,10 @@ func post(hub, mode, topic, callback string) error {
 	form.Add("hub.callback", callback)
 	form.Add("hub.topic", topic)
 	form.Add("hub.mode", mode)
+	// Required by PuSHPress the Wordpress plugin.
+	// Non standard. Don't ask me why...
+	form.Add("hub.verify", "foo")
+
 	payload := form.Encode()
 
 	// Build the request
@@ -47,7 +52,9 @@ func post(hub, mode, topic, callback string) error {
 
 	// Verify Hub response
 	if resp.StatusCode != 202 {
-		return fmt.Errorf("bad subscription response: %s", resp.Status)
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("bad subscription response: %s (%s)", body, resp.Status)
 	}
 	return nil
 }
