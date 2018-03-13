@@ -15,7 +15,7 @@ type BoltStore struct {
 
 // NewBoltStore creates a data store backed by BoltDB
 func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
-	db, err := bolt.Open(datasource.Host, 0600, nil)
+	db, err := bolt.Open(datasource.Host+datasource.Path, 0600, nil)
 	if err != nil {
 		return nil, fmt.Errorf("could not open db, %v", err)
 	}
