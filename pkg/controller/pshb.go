@@ -43,7 +43,7 @@ func NewPshbController(service *goa.Service, db store.DB, am *aggregator.Manager
 
 // Pub is the Hub callback to send topic updates.
 func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
-	body, err := common.GetNormalizedBody(ctx.Response)
+	body, err := common.GetNormalizedBodyFromRequest(ctx.Request)
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}

@@ -106,7 +106,7 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	}
 
 	// Decode body content
-	body, err := common.GetNormalizedBody(resp)
+	body, err := common.GetNormalizedBodyFromResponse(resp)
 	if err != nil {
 		fh.log.Error().Err(err).Msg(errParssingBody)
 		fh.status.Err(err)
