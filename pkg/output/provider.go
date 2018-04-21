@@ -3,9 +3,9 @@ package output
 import (
 	"fmt"
 	"net/url"
-	"plugin"
 
 	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/rs/zerolog/log"
 )
 
@@ -32,19 +32,11 @@ func newOutputProvider(uri string) (model.OutputProvider, error) {
 		logger.Info().Str("url", uri).Msg("using HTTP output provider")
 	default:
 		// Try to load plugin regarding the scheme
-		pluginName := fmt.Sprintf("feedpushr-%s.so", scheme)
-		plug, err := plugin.Open(pluginName)
-		if err != nil {
-			return nil, fmt.Errorf("unsuported output provider: %s - %v", scheme, err)
+		plug := plugin.LookupOutputPlugin(scheme)
+		if plug == nil {
+			return nil, fmt.Errorf("unsuported output provider: %s", scheme)
 		}
-		getOutputProvider, err := plug.Lookup("GetOutputProvider")
-		if err != nil {
-			return nil, fmt.Errorf("unsuported output provider: %s - %v", scheme, err)
-		}
-		provider, err = getOutputProvider.(func() (model.OutputProvider, error))()
-		if err != nil {
-			return nil, fmt.Errorf("unsuported output provider: %s - %v", scheme, err)
-		}
+		provider = plug.Provider
 		logger.Info().Str("url", uri).Str("provider", scheme).Msg("using external output provider")
 	}
 	return provider, nil

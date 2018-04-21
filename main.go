@@ -17,6 +17,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/metric"
 	"github.com/ncarlier/feedpushr/pkg/opml"
 	"github.com/ncarlier/feedpushr/pkg/output"
+	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog/log"
 )
@@ -47,6 +48,7 @@ func init() {
 	cacheRetention = flag.Duration("cache-retention", Config.CacheRetention, "Cache retention duration")
 	logPretty = flag.Bool("log-pretty", Config.LogPretty, "Writes log using plain text format")
 	logLevel = flag.String("log-level", Config.LogLevel, "Logging level")
+	flag.Var(plugin.LocalRegistry, "plugin", "Plugin to load")
 }
 
 func main() {
