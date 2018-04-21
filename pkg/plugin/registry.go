@@ -67,7 +67,7 @@ func NewPluginRegistry(plugins []string) (*Registry, error) {
 				Filter: filter,
 			}
 		default:
-			return nil, fmt.Errorf("plugin type unknown: %s", info.Type)
+			return nil, fmt.Errorf("plugin type unknown: %d", info.Type)
 		}
 	}
 
