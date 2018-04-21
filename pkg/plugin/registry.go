@@ -13,55 +13,81 @@ type OutputPlugin struct {
 	Provider model.OutputProvider
 }
 
+// FilterPlugin is the scructure of an filter plugin
+type FilterPlugin struct {
+	Name   string
+	Filter model.Filter
+}
+
 // Registry contains registered output and filter plugins
 type Registry struct {
 	outputPlugins map[string]OutputPlugin
+	filterPlugins map[string]FilterPlugin
 }
 
-// LocalRegistry is the local plugin registry
-var LocalRegistry = &Registry{}
+// NewPluginRegistry creates a new plugin registry
+func NewPluginRegistry(plugins []string) (*Registry, error) {
+	reg := &Registry{}
+	for _, filename := range plugins {
+		plug, err := _plugin.Open(filename)
+		if err != nil {
+			return nil, fmt.Errorf("unsuported plugin file: %s - %v", filename, err)
+		}
+		getPluginInfo, err := plug.Lookup("GetPluginInfo")
+		if err != nil {
+			return nil, fmt.Errorf("unsuported plugin type: %s - %v", filename, err)
+		}
+		info := getPluginInfo.(func() model.PluginInfo)()
+
+		switch info.Type {
+		case model.OUTPUT_PLUGIN:
+			getOutputProvider, err := plug.Lookup("GetOutputProvider")
+			if err != nil {
+				return nil, fmt.Errorf("unsuported output plugin: %s - %v", info.Name, err)
+			}
+			provider, err := getOutputProvider.(func() (model.OutputProvider, error))()
+			if err != nil {
+				return nil, fmt.Errorf("unable to configure pugin output provider: %s - %v", info.Name, err)
+			}
+			reg.outputPlugins[info.Name] = OutputPlugin{
+				Name:     info.Name,
+				Provider: provider,
+			}
+		case model.FILTER_PLUGIN:
+			getFilter, err := plug.Lookup("GetFilter")
+			if err != nil {
+				return nil, fmt.Errorf("unsuported filter plugin: %s - %v", info.Name, err)
+			}
+			filter, err := getFilter.(func() (model.Filter, error))()
+			if err != nil {
+				return nil, fmt.Errorf("unable to configure pugin filter: %s - %v", info.Name, err)
+			}
+			reg.filterPlugins[info.Name] = FilterPlugin{
+				Name:   info.Name,
+				Filter: filter,
+			}
+		default:
+			return nil, fmt.Errorf("plugin type unknown: %s", info.Type)
+		}
+	}
+
+	return reg, nil
+}
 
 // LookupOutputPlugin retrieve an output plugin by its name
-func LookupOutputPlugin(name string) *OutputPlugin {
-	plug, ok := LocalRegistry.outputPlugins[name]
+func (r *Registry) LookupOutputPlugin(name string) *OutputPlugin {
+	plug, ok := r.outputPlugins[name]
 	if !ok {
 		return nil
 	}
 	return &plug
 }
 
-// String get the registry string value
-// This is used to match the flag interface
-func (r *Registry) String() string {
-	return "plugin registry"
-}
-
-// Set loads a plugin by its filename into the registry
-// This is used to match the flag interface
-func (r *Registry) Set(filename string) error {
-	plug, err := _plugin.Open(filename)
-	if err != nil {
-		return fmt.Errorf("unsuported plugin file: %s - %v", filename, err)
+// LookupFilterPlugin retrieve a filter plugin by its name
+func (r *Registry) LookupFilterPlugin(name string) *FilterPlugin {
+	plug, ok := r.filterPlugins[name]
+	if !ok {
+		return nil
 	}
-	getPluginInfo, err := plug.Lookup("GetPluginInfo")
-	if err != nil {
-		return fmt.Errorf("unsuported plugin type: %s - %v", filename, err)
-	}
-	info := getPluginInfo.(func() model.PluginInfo)()
-	if info.Type == model.OUTPUT_PLUGIN {
-		getOutputProvider, err := plug.Lookup("GetOutputProvider")
-		if err != nil {
-			return fmt.Errorf("unsuported output plugin: %s - %v", info.Name, err)
-		}
-		provider, err := getOutputProvider.(func() (model.OutputProvider, error))()
-		if err != nil {
-			return fmt.Errorf("unable to configure pugin output provider: %s - %v", info.Name, err)
-		}
-		r.outputPlugins[info.Name] = OutputPlugin{
-			Name:     info.Name,
-			Provider: provider,
-		}
-	}
-
-	return nil
+	return &plug
 }

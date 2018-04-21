@@ -12,7 +12,9 @@ import (
 	"github.com/goadesign/goa/middleware"
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/controller"
+	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/logging"
 	"github.com/ncarlier/feedpushr/pkg/metric"
 	"github.com/ncarlier/feedpushr/pkg/opml"
@@ -34,6 +36,8 @@ var (
 	cacheRetention *time.Duration
 	clearCache,
 	logPretty *bool
+	plugins,
+	filters common.ArrayFlags
 )
 
 func init() {
@@ -48,7 +52,10 @@ func init() {
 	cacheRetention = flag.Duration("cache-retention", Config.CacheRetention, "Cache retention duration")
 	logPretty = flag.Bool("log-pretty", Config.LogPretty, "Writes log using plain text format")
 	logLevel = flag.String("log-level", Config.LogLevel, "Logging level")
-	flag.Var(plugin.LocalRegistry, "plugin", "Plugin to load")
+
+	flag.Var(&plugins, "plugin", "Plugin to load")
+	filters = Config.Filters
+	flag.Var(&filters, "filter", "Filter to apply")
 }
 
 func main() {
@@ -61,6 +68,12 @@ func main() {
 
 	// Log configuration
 	logging.Configure(*logLevel, *logPretty)
+
+	// Load plugins
+	pr, err := plugin.NewPluginRegistry(plugins)
+	if err != nil {
+		log.Fatal().Err(err).Msg("unable to init plugins")
+	}
 
 	// Metric configuration
 	metric.Configure()
@@ -93,8 +106,14 @@ func main() {
 		}
 	}()
 
+	// Init chain filter
+	cf, err := filter.NewChainFilter(filters, pr)
+	if err != nil {
+		log.Fatal().Err(err).Msg("unable to init filter chain")
+	}
+
 	// Init output manager
-	om, err := output.NewManager(db, *outputURI, *cacheRetention)
+	om, err := output.NewManager(db, *outputURI, *cacheRetention, pr, cf)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init output manager")
 	}

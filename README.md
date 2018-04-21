@@ -13,6 +13,7 @@ A simple feed aggregator daemon with sugar on top.
 - Import/Export feed subscriptions with [OPML][opml] files.
 - Aggressive and tunable aggregation process.
 - Manage feed aggregation individually.
+- Apply modifications on articles with a pluggable filter system.
 - Push new articles to a pluggable output system (STDOUT, HTTP endpoint, ...).
 - Support of [PubSubHubbud][pubsubhubbud] the open, simple, web-scale and
   decentralized pubsub protocol.
@@ -49,6 +50,7 @@ You can configure the daemon by setting environment variables:
 | `APP_LISTEN_ADDR` | `:8080` | HTTP server address |
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
+| `APP_FILTERS` | none | Filter chain (`foo` or `fetch`) |
 | `APP_OUTPUT` | `stdout` | Output destination (`stdout` or HTTP URL) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
 | `APP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
@@ -60,10 +62,26 @@ You can configure the daemon by setting environment variables:
 You can override this settings by using program parameters.
 Type `feedpushr --help` to see those parameters.
 
+## Filters
+
+Before being sent articles can be modified through a filter chain.
+Currently, there are two built-in filter:
+
+- `foo`:
+  This filter will prefix the title of the article with the name of the
+  application.
+- `fetch`:
+  This filter will attempt to extract the content of the article from the source
+  URL.
+
+You can chain all the filters you need.
+
+Filters can be extended using plugins.
+
 ## Outputs
 
 New articles are sent to an output.
-There are two built-in output providers:
+Currently, there are two built-in output providers:
 
 - `stdout`: New articles are sent as JSON document to the standard output of the
   process.
@@ -72,13 +90,20 @@ There are two built-in output providers:
   tool such as [Logstash][logstash], etc.*
 - `http`: New articles are sent as JSON document to an HTTP endpoint (POST).
 
-You can also use external providers.
-The system can be extended using plugins.
+Outputs can be extended using plugins.
 
-A plugin is a compiled library file that should be located into the working
-directory in order to be loaded.
-It must respect the following naming convention: `feedpushr-<NAME>.so` with
-`<NAME>` the plugin name.
+## Plugins
+
+You can easily extend the application by adding plugins.
+
+A plugin is a compiled library file that must be loaded when the application
+starts.
+
+To load a plugin you have to use the `--plugin` parameter. Example:
+
+```bash
+$ feedpushr --plugin ./feedpushr-twitter-linux-amd64.so
+```
 
 You can find some external plugins (such as for Twitter) into this
 [repository][contrib].

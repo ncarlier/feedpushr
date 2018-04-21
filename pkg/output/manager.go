@@ -5,7 +5,9 @@ import (
 	"encoding/hex"
 	"time"
 
+	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -26,19 +28,21 @@ func getArticleKey(article *model.Article) string {
 type Manager struct {
 	provider       model.OutputProvider
 	db             store.DB
+	chainFilter    *filter.Chain
 	cacheRetention time.Duration
 	log            zerolog.Logger
 }
 
 // NewManager creates a new manager
-func NewManager(db store.DB, uri string, cacheRetention time.Duration) (*Manager, error) {
-	provider, err := newOutputProvider(uri)
+func NewManager(db store.DB, uri string, cacheRetention time.Duration, pr *plugin.Registry, cf *filter.Chain) (*Manager, error) {
+	provider, err := newOutputProvider(uri, pr)
 	if err != nil {
 		return nil, err
 	}
 	manager := &Manager{
 		provider:       provider,
 		db:             db,
+		chainFilter:    cf,
 		cacheRetention: cacheRetention,
 		log:            log.With().Str("component", "output").Logger(),
 	}
@@ -80,6 +84,14 @@ func (m *Manager) Send(articles []*model.Article) error {
 				continue
 			}
 		}
+
+		// Apply filter chain on article
+		err = m.chainFilter.Apply(article)
+		if err != nil {
+			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to apply chain filter on article")
+			continue
+		}
+
 		// Send article...
 		err = m.provider.Send(article)
 		if err != nil {
