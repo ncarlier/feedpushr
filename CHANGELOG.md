@@ -1,5 +1,17 @@
 <a name=""></a>
-#  (2018-03-13)
+#  (2018-04-22)
+
+
+### Bug Fixes
+
+* fix bad error format string ([74ab0a8](https://github.com/ncarlier/feedpushr/commit/74ab0a8))
+
+
+### Features
+
+* **filter:** add fetch filter ([0e72749](https://github.com/ncarlier/feedpushr/commit/0e72749))
+* **filter:** add filter system (with plugins) ([8d6fd44](https://github.com/ncarlier/feedpushr/commit/8d6fd44))
+* **plugin:** refactoring of the plugin system ([12c009f](https://github.com/ncarlier/feedpushr/commit/12c009f))
 
 
 
