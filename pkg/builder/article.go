@@ -17,6 +17,7 @@ func NewArticle(item *gofeed.Item) *model.Article {
 	article.PublishedParsed = item.PublishedParsed
 	article.Updated = item.Updated
 	article.UpdatedParsed = item.UpdatedParsed
+	article.Meta = make(map[string]interface{})
 	return article
 }
 

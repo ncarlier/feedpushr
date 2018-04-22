@@ -8,6 +8,18 @@
   version = "v1.3.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/RadhiFadlillah/go-readability"
+  packages = ["."]
+  revision = "c5ea8f8edeeb1803d03b3fa291d580c41e4b2170"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/abadojack/whatlanggo"
+  packages = ["."]
+  revision = "9f160b17f219010bda89f55045aeab1e01e9f38e"
+
+[[projects]]
   name = "github.com/andybalholm/cascadia"
   packages = ["."]
   revision = "901648c87902174f774fac311d7f176f8647bdaa"
@@ -191,6 +203,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fadb15e0124f1dafe86fe8c8d9f4f6f448245f5b0180d180279934b0e37a73da"
+  inputs-digest = "0bbf214f14c89b9b9487cb26b165041ab80db7b529d475bbc929f22eeac911db"
   solver-name = "gps-cdcl"
   solver-version = 1

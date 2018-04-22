@@ -20,6 +20,8 @@ func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 		switch name {
 		case "foo":
 			chain.filters = append(chain.filters, newFooFilter())
+		case "fetch":
+			chain.filters = append(chain.filters, newFetchFilter())
 		default:
 			// Try to load plugin regarding the name
 			plug := pr.LookupFilterPlugin(name)
