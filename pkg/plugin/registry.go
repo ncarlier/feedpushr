@@ -27,7 +27,10 @@ type Registry struct {
 
 // NewPluginRegistry creates a new plugin registry
 func NewPluginRegistry(plugins []string) (*Registry, error) {
-	reg := &Registry{}
+	reg := &Registry{
+		outputPlugins: make(map[string]OutputPlugin),
+		filterPlugins: make(map[string]FilterPlugin),
+	}
 	for _, filename := range plugins {
 		plug, err := _plugin.Open(filename)
 		if err != nil {
