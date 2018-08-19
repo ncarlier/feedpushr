@@ -101,8 +101,9 @@ func PubPshbOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	// Setup service
 	var (
 		logBuf bytes.Buffer
+		resp   interface{}
 
-		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
 	)
 	if service == nil {
 		service = goatest.Service(&logBuf, respSetter)
@@ -263,8 +264,9 @@ func SubPshbOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	// Setup service
 	var (
 		logBuf bytes.Buffer
+		resp   interface{}
 
-		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
 	)
 	if service == nil {
 		service = goatest.Service(&logBuf, respSetter)

@@ -24,8 +24,9 @@ var _ = API("feedpushr", func() {
 	Scheme("http")
 	BasePath("/v1")
 
-	Origin("http://swagger.goa.design", func() {
+	Origin("*", func() {
 		Methods("GET", "POST", "PUT", "PATCH", "DELETE")
+		Headers("content-type")
 		MaxAge(600)
 		Credentials()
 	})
