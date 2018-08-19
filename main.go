@@ -12,6 +12,7 @@ import (
 	"github.com/goadesign/goa/middleware"
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/pkg/assets"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/controller"
 	"github.com/ncarlier/feedpushr/pkg/filter"
@@ -156,6 +157,12 @@ func main() {
 	// Mount "feed" controller
 	fc := controller.NewFeedController(service, db, am)
 	app.MountFeedController(service, fc)
+	// Mount "filter" controller
+	fic := controller.NewFilterController(service, cf)
+	app.MountFilterController(service, fic)
+	// Mount "output" controller
+	oc := controller.NewOutputController(service, om)
+	app.MountOutputController(service, oc)
 	// Mount "health" controller
 	hc := controller.NewHealthController(service)
 	app.MountHealthController(service, hc)
@@ -163,8 +170,8 @@ func main() {
 	sc := controller.NewSwaggerController(service)
 	app.MountSwaggerController(service, sc)
 	// Mount "opml" controller
-	oc := controller.NewOpmlController(service, db)
-	app.MountOpmlController(service, oc)
+	opc := controller.NewOpmlController(service, db)
+	app.MountOpmlController(service, opc)
 	// Mount "vars" controller
 	vc := controller.NewVarsController(service)
 	app.MountVarsController(service, vc)
@@ -173,6 +180,9 @@ func main() {
 		pc := controller.NewPshbController(service, db, am, om)
 		app.MountPshbController(service, pc)
 	}
+	// Mount custom handlers (aka: not generated)...
+	service.Mux.Handle("GET", "/ui/*asset", assets.Handler())
+	service.Mux.Handle("GET", "/ui/", assets.Handler())
 
 	// Graceful shutdown handle
 	done := make(chan bool)
@@ -196,6 +206,7 @@ func main() {
 	}()
 
 	// Start service
+	log.Info().Str("listen", *listenAddr).Msg("starting HTTP server...")
 	if err := service.ListenAndServe(*listenAddr); err != nil && err != http.ErrServerClosed {
 		log.Fatal().Err(err).Msg("unable to start server")
 	}

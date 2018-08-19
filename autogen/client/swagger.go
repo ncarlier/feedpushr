@@ -13,43 +13,35 @@ package client
 import (
 	"context"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 )
 
-// DownloadSwaggerJSON downloads swagger.json and writes it to the file dest.
-// It returns the number of bytes downloaded in case of success.
-func (c *Client) DownloadSwaggerJSON(ctx context.Context, dest string) (int64, error) {
+// GetSwaggerPath computes a request path to the get action of swagger.
+func GetSwaggerPath() string {
+
+	return fmt.Sprintf("/v1/swagger.json")
+}
+
+// Get OpenAPI specifications
+func (c *Client) GetSwagger(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewGetSwaggerRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewGetSwaggerRequest create the request corresponding to the get action endpoint of the swagger resource.
+func (c *Client) NewGetSwaggerRequest(ctx context.Context, path string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
 	}
-	u := url.URL{Host: c.Host, Scheme: scheme, Path: "/swagger.json"}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	resp, err := c.Client.Do(ctx, req)
-	if err != nil {
-		return 0, err
-	}
-	if resp.StatusCode != 200 {
-		var body string
-		if b, err := ioutil.ReadAll(resp.Body); err != nil {
-			if len(b) > 0 {
-				body = ": " + string(b)
-			}
-		}
-		return 0, fmt.Errorf("%s%s", resp.Status, body)
-	}
-	defer resp.Body.Close()
-	out, err := os.Create(dest)
-	if err != nil {
-		return 0, err
-	}
-	defer out.Close()
-	return io.Copy(out, resp.Body)
+	return req, nil
 }

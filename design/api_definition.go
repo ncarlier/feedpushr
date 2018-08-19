@@ -14,7 +14,7 @@ var _ = API("feedpushr", func() {
 	})
 	License(func() {
 		Name("MIT")
-		URL("https://github.com/goadesign/goa/blob/master/LICENSE")
+		URL("https://github.com/ncarlier/feedpushr/blob/master/LICENSE")
 	})
 	Docs(func() {
 		Description("feedpushr guide")

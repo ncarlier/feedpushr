@@ -45,3 +45,12 @@ func (c *Chain) Apply(article *model.Article) error {
 	}
 	return nil
 }
+
+// GetSpec return specification of the chain filter
+func (c *Chain) GetSpec() []model.FilterSpec {
+	result := make([]model.FilterSpec, len(c.filters))
+	for idx, filter := range c.filters {
+		result[idx] = filter.GetSpec()
+	}
+	return result
+}

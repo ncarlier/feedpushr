@@ -347,6 +347,36 @@ func (ctx *StopFeedContext) NotFound() error {
 	return nil
 }
 
+// ListFilterContext provides the filter list action context.
+type ListFilterContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewListFilterContext parses the incoming request URL and body, performs validations and creates the
+// context used by the filter controller list action.
+func NewListFilterContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListFilterContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ListFilterContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListFilterContext) OK(r FilterCollection) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.filter.v1+json; type=collection")
+	}
+	if r == nil {
+		r = FilterCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
 // GetHealthContext provides the health get action context.
 type GetHealthContext struct {
 	context.Context
@@ -398,7 +428,7 @@ func NewGetOpmlContext(ctx context.Context, r *http.Request, service *goa.Servic
 // OK sends a HTTP response with status code 200.
 func (ctx *GetOpmlContext) OK(resp []byte) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+		ctx.ResponseData.Header().Set("Content-Type", "application/xml")
 	}
 	ctx.ResponseData.WriteHeader(200)
 	_, err := ctx.ResponseData.Write(resp)
@@ -444,6 +474,33 @@ func (ctx *UploadOpmlContext) BadRequest(r error) error {
 		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// GetOutputContext provides the output get action context.
+type GetOutputContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewGetOutputContext parses the incoming request URL and body, performs validations and creates the
+// context used by the output controller get action.
+func NewGetOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*GetOutputContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := GetOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *GetOutputContext) OK(r *Output) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
 // PubPshbContext provides the pshb pub action context.
@@ -562,6 +619,35 @@ func (ctx *SubPshbContext) BadRequest(r error) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
 
+// GetSwaggerContext provides the swagger get action context.
+type GetSwaggerContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewGetSwaggerContext parses the incoming request URL and body, performs validations and creates the
+// context used by the swagger controller get action.
+func NewGetSwaggerContext(ctx context.Context, r *http.Request, service *goa.Service) (*GetSwaggerContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := GetSwaggerContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *GetSwaggerContext) OK(resp []byte) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}
+
 // GetVarsContext provides the vars get action context.
 type GetVarsContext struct {
 	context.Context
@@ -584,17 +670,9 @@ func NewGetVarsContext(ctx context.Context, r *http.Request, service *goa.Servic
 // OK sends a HTTP response with status code 200.
 func (ctx *GetVarsContext) OK(resp []byte) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
 	ctx.ResponseData.WriteHeader(200)
 	_, err := ctx.ResponseData.Write(resp)
 	return err
-}
-
-// BadRequest sends a HTTP response with status code 400.
-func (ctx *GetVarsContext) BadRequest(r error) error {
-	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
-	}
-	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }

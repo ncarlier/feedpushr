@@ -111,3 +111,8 @@ func (m *Manager) Send(articles []*model.Article) error {
 	}
 	return nil
 }
+
+// GetSpec return specification of the chain filter
+func (m *Manager) GetSpec() model.OutputSpec {
+	return m.provider.GetSpec()
+}

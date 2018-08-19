@@ -126,6 +126,12 @@
   revision = "77e4a51a73ed99ee3f33c1474dc166866304acbd"
 
 [[projects]]
+  name = "github.com/rakyll/statik"
+  packages = ["fs"]
+  revision = "19b88da8fc15428620782ba18f68423130e7ac7d"
+  version = "v0.1.3"
+
+[[projects]]
   name = "github.com/rs/zerolog"
   packages = [
     ".",
@@ -203,6 +209,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0bbf214f14c89b9b9487cb26b165041ab80db7b529d475bbc929f22eeac911db"
+  inputs-digest = "ccfb221b1b3e562fb56eacecc5e4ebc677b64ed7fdd0a51f27a4f3306f5fbade"
   solver-name = "gps-cdcl"
   solver-version = 1

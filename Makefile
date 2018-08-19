@@ -33,17 +33,18 @@ makefiles:=$(root_dir)/makefiles
 include $(makefiles)/help.Makefile
 
 $(APPBASE)/$(APPNAME):
-	echo "Creating GO src link: $(APPBASE)/$(APPNAME) ..."
+	echo ">>> Creating GO src link: $(APPBASE)/$(APPNAME) ..."
 	mkdir -p $(APPBASE)
 	ln -s $(root_dir) $(APPBASE)/$(APPNAME)
 
 ## Clean built files
 clean:
-	-rm -rf release autogen
+	echo ">>> Removing generated files ..."
+	-rm -rf release autogen var/assets/ui pkg/assets/statik.go
 .PHONY: clean
 
 deps:
-	echo "Installing dependencies ..."
+	echo ">>> Installing dependencies ..."
 	cd $(APPBASE)/$(APPNAME) && dep ensure
 .PHONY: deps
 
@@ -52,15 +53,36 @@ Gopkg.lock:
 
 ## Run code generation
 autogen:
+	echo ">>> Generating code ..."
+	#go get -u github.com/goadesign/goa/...
 	-mv vendor vendor_bak
-	cd $(APPBASE)/$(APPNAME) && goagen bootstrap -o autogen -d $(AUTHOR)/$(APPNAME)/design 
+	cd $(APPBASE)/$(APPNAME) && goagen bootstrap -o autogen -d $(AUTHOR)/$(APPNAME)/design
 	mv vendor_bak vendor
-	cp -f autogen/swagger/** var/public/
+	cp -f autogen/swagger/** var/assets/
+
+## Build web UI
+ui:
+	-rm -rf pkg/assets/statik.go var/assets/ui
+	make pkg/assets/statik.go
+.PHONY: ui
+
+# Build web UI
+var/assets/ui:
+	echo ">>> Building web UI ..."
+	cd ui && npm install && npm run-script build
+	mv ui/build var/assets/ui
+
+# Build assets as Go file
+pkg/assets/statik.go:
+	make var/assets/ui
+	echo ">>> Generating \"pkg/assets/statik.go\" ..."
+	go get -u github.com/rakyll/statik
+	statik -p assets -src var/assets -dest pkg -f
 
 ## Build executable
-build: Gopkg.lock autogen $(APPBASE)/$(APPNAME)
+build: Gopkg.lock autogen pkg/assets/statik.go $(APPBASE)/$(APPNAME)
 	-mkdir -p release
-	echo "Building: $(ARTEFACT) ..."
+	echo ">>> Building: $(ARTEFACT) ..."
 	cd $(APPBASE)/$(APPNAME) && \
 		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $(ARTEFACT)
 	cd $(APPBASE)/$(APPNAME)/autogen/tool/$(APPNAME)-cli && \
@@ -77,13 +99,13 @@ test:
 
 ## Install executable
 install: $(ARTEFACT)
-	echo "Installing $(ARTEFACT) to ${HOME}/.local/bin/$(APPNAME) ..."
+	echo ">>> Installing $(ARTEFACT) to ${HOME}/.local/bin/$(APPNAME) ..."
 	cp $(ARTEFACT) ${HOME}/.local/bin/$(APPNAME)
 .PHONY: install
 
 ## Create Docker image
 image:
-	echo "Building Docker inage ..."
+	echo ">>> Building Docker inage ..."
 	docker build --rm -t ncarlier/$(APPNAME) .
 .PHONY: image
 

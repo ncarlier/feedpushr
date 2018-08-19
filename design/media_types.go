@@ -71,3 +71,49 @@ var Feed = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 		Attribute("xmlUrl")
 	})
 })
+
+// Filter is the filter resource media type.
+var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
+	Description("A filter")
+	TypeName("Filter")
+	ContentType("application/json")
+	Attributes(func() {
+		Attribute("name", String, "Name of the filter", func() {
+			Example("fetch")
+		})
+		Attribute("desc", String, "Description of the filter", func() {
+			Example("This filter will...")
+		})
+		Attribute("props", HashOf(String, Any), "Filter properties", NoExample)
+		Required("name", "desc")
+	})
+
+	View("default", func() {
+		Attribute("name")
+		Attribute("desc")
+		Attribute("props")
+	})
+})
+
+// Output is the output resource media type.
+var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
+	Description("The output channel")
+	TypeName("Output")
+	ContentType("application/json")
+	Attributes(func() {
+		Attribute("name", String, "Name of the output channel", func() {
+			Example("fetch")
+		})
+		Attribute("desc", String, "Description of the output channel", func() {
+			Example("New articles are sent as JSON document to...")
+		})
+		Attribute("props", HashOf(String, Any), "Output channel properties", NoExample)
+		Required("name", "desc")
+	})
+
+	View("default", func() {
+		Attribute("name")
+		Attribute("desc")
+		Attribute("props")
+	})
+})

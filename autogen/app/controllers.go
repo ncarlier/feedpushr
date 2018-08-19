@@ -175,6 +175,61 @@ func handleFeedOrigin(h goa.Handler) goa.Handler {
 	}
 }
 
+// FilterController is the controller interface for the Filter actions.
+type FilterController interface {
+	goa.Muxer
+	List(*ListFilterContext) error
+}
+
+// MountFilterController "mounts" a Filter resource controller on the given service.
+func MountFilterController(service *goa.Service, ctrl FilterController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/v1/filters", ctrl.MuxHandler("preflight", handleFilterOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListFilterContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.List(rctx)
+	}
+	h = handleFilterOrigin(h)
+	service.Mux.Handle("GET", "/v1/filters", ctrl.MuxHandler("list", h, nil))
+	service.LogInfo("mount", "ctrl", "Filter", "action", "List", "route", "GET /v1/filters")
+}
+
+// handleFilterOrigin applies the CORS response headers corresponding to the origin.
+func handleFilterOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
 // HealthController is the controller interface for the Health actions.
 type HealthController interface {
 	goa.Muxer
@@ -302,6 +357,61 @@ func handleOpmlOrigin(h goa.Handler) goa.Handler {
 	}
 }
 
+// OutputController is the controller interface for the Output actions.
+type OutputController interface {
+	goa.Muxer
+	Get(*GetOutputContext) error
+}
+
+// MountOutputController "mounts" a Output resource controller on the given service.
+func MountOutputController(service *goa.Service, ctrl OutputController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/v1/output", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewGetOutputContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Get(rctx)
+	}
+	h = handleOutputOrigin(h)
+	service.Mux.Handle("GET", "/v1/output", ctrl.MuxHandler("get", h, nil))
+	service.LogInfo("mount", "ctrl", "Output", "action", "Get", "route", "GET /v1/output")
+}
+
+// handleOutputOrigin applies the CORS response headers corresponding to the origin.
+func handleOutputOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
 // PshbController is the controller interface for the Pshb actions.
 type PshbController interface {
 	goa.Muxer
@@ -377,19 +487,30 @@ func handlePshbOrigin(h goa.Handler) goa.Handler {
 // SwaggerController is the controller interface for the Swagger actions.
 type SwaggerController interface {
 	goa.Muxer
-	goa.FileServer
+	Get(*GetSwaggerContext) error
 }
 
 // MountSwaggerController "mounts" a Swagger resource controller on the given service.
 func MountSwaggerController(service *goa.Service, ctrl SwaggerController) {
 	initService(service)
 	var h goa.Handler
-	service.Mux.Handle("OPTIONS", "/swagger.json", ctrl.MuxHandler("preflight", handleSwaggerOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v1/swagger.json", ctrl.MuxHandler("preflight", handleSwaggerOrigin(cors.HandlePreflight()), nil))
 
-	h = ctrl.FileHandler("/swagger.json", "var/public/swagger.json")
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewGetSwaggerContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Get(rctx)
+	}
 	h = handleSwaggerOrigin(h)
-	service.Mux.Handle("GET", "/swagger.json", ctrl.MuxHandler("serve", h, nil))
-	service.LogInfo("mount", "ctrl", "Swagger", "files", "var/public/swagger.json", "route", "GET /swagger.json")
+	service.Mux.Handle("GET", "/v1/swagger.json", ctrl.MuxHandler("get", h, nil))
+	service.LogInfo("mount", "ctrl", "Swagger", "action", "Get", "route", "GET /v1/swagger.json")
 }
 
 // handleSwaggerOrigin applies the CORS response headers corresponding to the origin.

@@ -101,6 +101,36 @@ var _ = Resource("feed", func() {
 	})
 })
 
+var _ = Resource("filter", func() {
+	DefaultMedia(Filter)
+	BasePath("/filters")
+
+	Action("list", func() {
+		Routing(
+			GET(""),
+		)
+		Description("Retrieve all filters definitions")
+		Response(OK, func() {
+			Media(CollectionOf(Filter, func() {
+				View("default")
+			}))
+		})
+	})
+})
+
+var _ = Resource("output", func() {
+	DefaultMedia(Output)
+	BasePath("/output")
+
+	Action("get", func() {
+		Routing(
+			GET(""),
+		)
+		Description("Retrieve output definition")
+		Response(OK)
+	})
+})
+
 var _ = Resource("opml", func() {
 
 	BasePath("/opml")
@@ -110,7 +140,9 @@ var _ = Resource("opml", func() {
 			GET(""),
 		)
 		Description("Get all feeds as an OMPL format")
-		Response(OK)
+		Response(OK, func() {
+			Media("application/xml")
+		})
 		Response(BadRequest, ErrorMedia)
 	})
 
@@ -128,7 +160,15 @@ var _ = Resource("swagger", func() {
 	Origin("*", func() {
 		Methods("GET", "OPTIONS")
 	})
-	Files("/swagger.json", "var/public/swagger.json")
+	Action("get", func() {
+		Routing(
+			GET("/swagger.json"),
+		)
+		Description("Get OpenAPI specifications")
+		Response(OK, func() {
+			Media("application/json")
+		})
+	})
 })
 
 var _ = Resource("vars", func() {
@@ -139,8 +179,9 @@ var _ = Resource("vars", func() {
 			GET(""),
 		)
 		Description("Get all internals exp vars")
-		Response(OK)
-		Response(BadRequest, ErrorMedia)
+		Response(OK, func() {
+			Media("application/json")
+		})
 	})
 })
 

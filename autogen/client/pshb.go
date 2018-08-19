@@ -74,8 +74,8 @@ func (c *Client) NewSubPshbRequest(ctx context.Context, path string, hubChalleng
 	values.Set("hub.mode", hubMode)
 	values.Set("hub.topic", hubTopic)
 	if hubLeaseSeconds != nil {
-		tmp15 := strconv.Itoa(*hubLeaseSeconds)
-		values.Set("hub.lease_seconds", tmp15)
+		tmp18 := strconv.Itoa(*hubLeaseSeconds)
+		values.Set("hub.lease_seconds", tmp18)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)

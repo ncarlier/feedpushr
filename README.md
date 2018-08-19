@@ -18,7 +18,7 @@ A simple feed aggregator daemon with sugar on top.
 - Support of [PubSubHubbud][pubsubhubbud] the open, simple, web-scale and
   decentralized pubsub protocol.
 - REST API with complete [OpenAPI][openapi] documentation.
-- Full feature CLI to interact with the daemon's API.
+- Full feature Web UI and CLI to interact with the daemon's API.
 - Metrics production for monitoring.
 
 ## Installation
@@ -107,6 +107,12 @@ $ feedpushr --plugin ./feedpushr-twitter-linux-amd64.so
 
 You can find some external plugins (such as for Twitter) into this
 [repository][contrib].
+
+## UI
+
+You can access Web UI on http://localhost:8080/ui
+
+![Screenshot](screenshot.png)
 
 ## Use cases
 

@@ -110,9 +110,10 @@ func (c *FeedController) Start(ctx *app.StartFeedContext) error {
 	}
 	fa := c.aggregator.GetFeedAggregator(feed.ID)
 	if fa == nil {
-		return goa.ErrInternal(fmt.Errorf("feed aggregator not registered"))
+		fa = c.aggregator.RegisterFeedAggregator(feed)
+	} else {
+		fa.Start()
 	}
-	fa.Start()
 	c.log.Info().Str("id", feed.ID).Msg("feed aggregation started")
 	return ctx.Accepted()
 }

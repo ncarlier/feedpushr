@@ -21,21 +21,27 @@ func main() {
 	// Mount "feed" controller
 	c := NewFeedController(service)
 	app.MountFeedController(service, c)
+	// Mount "filter" controller
+	c2 := NewFilterController(service)
+	app.MountFilterController(service, c2)
 	// Mount "health" controller
-	c2 := NewHealthController(service)
-	app.MountHealthController(service, c2)
+	c3 := NewHealthController(service)
+	app.MountHealthController(service, c3)
 	// Mount "opml" controller
-	c3 := NewOpmlController(service)
-	app.MountOpmlController(service, c3)
+	c4 := NewOpmlController(service)
+	app.MountOpmlController(service, c4)
+	// Mount "output" controller
+	c5 := NewOutputController(service)
+	app.MountOutputController(service, c5)
 	// Mount "pshb" controller
-	c4 := NewPshbController(service)
-	app.MountPshbController(service, c4)
+	c6 := NewPshbController(service)
+	app.MountPshbController(service, c6)
 	// Mount "swagger" controller
-	c5 := NewSwaggerController(service)
-	app.MountSwaggerController(service, c5)
+	c7 := NewSwaggerController(service)
+	app.MountSwaggerController(service, c7)
 	// Mount "vars" controller
-	c6 := NewVarsController(service)
-	app.MountVarsController(service, c6)
+	c8 := NewVarsController(service)
+	app.MountVarsController(service, c8)
 
 	// Start service
 	if err := service.ListenAndServe(":8080"); err != nil {

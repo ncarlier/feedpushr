@@ -1,3 +1,4 @@
+basePath: /v1
 consumes:
 - application/json
 - application/xml
@@ -7,15 +8,15 @@ definitions:
   Feed:
     description: A RSS feed (default view)
     example:
-      cdate: 2010-10-23T13:34:07Z
-      errorCount: 3.3369175e+17
+      cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
       errorMsg: Est suscipit.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: 1993-05-15T16:34:02Z
-      mdate: 1981-09-22T23:39:59Z
-      nextCheck: 1975-05-22T16:26:55Z
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nextCheck: "1975-05-22T16:26:55Z"
       status: stopped
       text: RSS Feed
       title: Hashicorp Blog
@@ -23,12 +24,12 @@ definitions:
     properties:
       cdate:
         description: Date of creation
-        example: 2010-10-23T13:34:07Z
+        example: "2010-10-23T13:34:07Z"
         format: date-time
         type: string
       errorCount:
         description: Number of consecutive aggregation errors
-        example: 3.3369175e+17
+        example: 3.336917582948419e+17
         format: int64
         type: integer
       errorMsg:
@@ -49,17 +50,17 @@ definitions:
         type: string
       lastCheck:
         description: Last aggregation pass
-        example: 1993-05-15T16:34:02Z
+        example: "1993-05-15T16:34:02Z"
         format: date-time
         type: string
       mdate:
         description: Date of modification
-        example: 1981-09-22T23:39:59Z
+        example: "1981-09-22T23:39:59Z"
         format: date-time
         type: string
       nextCheck:
         description: Next aggregation pass
-        example: 1975-05-22T16:26:55Z
+        example: "1975-05-22T16:26:55Z"
         format: date-time
         type: string
       status:
@@ -92,28 +93,15 @@ definitions:
   FeedCollection:
     description: FeedCollection is the media type for an array of Feed (default view)
     example:
-    - cdate: 2010-10-23T13:34:07Z
-      errorCount: 3.3369175e+17
+    - cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
       errorMsg: Est suscipit.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: 1993-05-15T16:34:02Z
-      mdate: 1981-09-22T23:39:59Z
-      nextCheck: 1975-05-22T16:26:55Z
-      status: stopped
-      text: RSS Feed
-      title: Hashicorp Blog
-      xmlUrl: http://www.hashicorp.com/feed.xml
-    - cdate: 2010-10-23T13:34:07Z
-      errorCount: 3.3369175e+17
-      errorMsg: Est suscipit.
-      htmlUrl: http://www.hashicorp.com/blog
-      hubUrl: http://pubsubhubbub.appspot.com
-      id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: 1993-05-15T16:34:02Z
-      mdate: 1981-09-22T23:39:59Z
-      nextCheck: 1975-05-22T16:26:55Z
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nextCheck: "1975-05-22T16:26:55Z"
       status: stopped
       text: RSS Feed
       title: Hashicorp Blog
@@ -123,6 +111,74 @@ definitions:
     title: 'Mediatype identifier: application/vnd.feedpushr.feed.v1+json; type=collection;
       view=default'
     type: array
+  Filter:
+    description: A filter (default view)
+    example:
+      desc: This filter will...
+      name: fetch
+      props: '-'
+    properties:
+      desc:
+        description: Description of the filter
+        example: This filter will...
+        type: string
+      name:
+        description: Name of the filter
+        example: fetch
+        type: string
+      props:
+        additionalProperties: true
+        description: Filter properties
+        example: '-'
+        type: object
+    required:
+    - name
+    - desc
+    title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; view=default'
+    type: object
+  FilterCollection:
+    description: FilterCollection is the media type for an array of Filter (default
+      view)
+    example:
+    - desc: This filter will...
+      name: fetch
+      props: '-'
+    - desc: This filter will...
+      name: fetch
+      props: '-'
+    - desc: This filter will...
+      name: fetch
+      props: '-'
+    items:
+      $ref: '#/definitions/Filter'
+    title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; type=collection;
+      view=default'
+    type: array
+  Output:
+    description: The output channel (default view)
+    example:
+      desc: New articles are sent as JSON document to...
+      name: fetch
+      props: '-'
+    properties:
+      desc:
+        description: Description of the output channel
+        example: New articles are sent as JSON document to...
+        type: string
+      name:
+        description: Name of the output channel
+        example: fetch
+        type: string
+      props:
+        additionalProperties: true
+        description: Output channel properties
+        example: '-'
+        type: object
+    required:
+    - name
+    - desc
+    title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; view=default'
+    type: object
   error:
     description: Error response media type (default view)
     example:
@@ -130,7 +186,7 @@ definitions:
       detail: Value of ID must be an integer
       id: 3F1FKVRR
       meta:
-        timestamp: 1.458609e+09
+        timestamp: 1.458609066e+09
       status: "400"
     properties:
       code:
@@ -151,7 +207,7 @@ definitions:
         description: a meta object containing non-standard meta-information about
           the error.
         example:
-          timestamp: 1.458609e+09
+          timestamp: 1.458609066e+09
         type: object
       status:
         description: the HTTP status code applicable to this problem, expressed as
@@ -171,22 +227,11 @@ info:
   description: A simple feed aggregator daemon with sugar on top.
   license:
     name: MIT
-    url: https://github.com/goadesign/goa/blob/master/LICENSE
+    url: https://github.com/ncarlier/feedpushr/blob/master/LICENSE
   title: The feedpushr API
   version: ""
 paths:
-  /swagger.json:
-    get:
-      operationId: swagger#/swagger.json
-      responses:
-        "200":
-          description: File downloaded
-          schema:
-            type: file
-      schemes:
-      - http
-      summary: Download var/public/swagger.json
-  /v1/feeds:
+  /feeds:
     get:
       description: Retrieve all feeds
       operationId: feed#list
@@ -254,7 +299,7 @@ paths:
       summary: create feed
       tags:
       - feed
-  /v1/feeds/{id}:
+  /feeds/{id}:
     delete:
       description: Delete a feed
       operationId: feed#delete
@@ -308,7 +353,7 @@ paths:
       summary: get feed
       tags:
       - feed
-  /v1/feeds/{id}/start:
+  /feeds/{id}/start:
     post:
       description: Start feed aggregation
       operationId: feed#start
@@ -333,7 +378,7 @@ paths:
       summary: start feed
       tags:
       - feed
-  /v1/feeds/{id}/stop:
+  /feeds/{id}/stop:
     post:
       description: Stop feed aggregation
       operationId: feed#stop
@@ -358,7 +403,23 @@ paths:
       summary: stop feed
       tags:
       - feed
-  /v1/healthz:
+  /filters:
+    get:
+      description: Retrieve all filters definitions
+      operationId: filter#list
+      produces:
+      - application/vnd.feedpushr.filter.v1+json; type=collection
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FilterCollection'
+      schemes:
+      - http
+      summary: list filter
+      tags:
+      - filter
+  /healthz:
     get:
       description: Perform health check.
       operationId: health#get
@@ -372,13 +433,13 @@ paths:
       summary: get health
       tags:
       - health
-  /v1/opml:
+  /opml:
     get:
       description: Get all feeds as an OMPL format
       operationId: opml#get
       produces:
       - application/vnd.goa.error
-      - text/plain
+      - application/xml
       responses:
         "200":
           description: OK
@@ -413,7 +474,23 @@ paths:
       summary: upload opml
       tags:
       - opml
-  /v1/pshb:
+  /output:
+    get:
+      description: Retrieve output definition
+      operationId: output#get
+      produces:
+      - application/vnd.feedpushr.output.v1+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Output'
+      schemes:
+      - http
+      summary: get output
+      tags:
+      - output
+  /pshb:
     get:
       description: Callback to validate the (un)subscription to the topic of a Hub
       operationId: pshb#sub
@@ -476,20 +553,25 @@ paths:
       summary: pub pshb
       tags:
       - pshb
-  /v1/vars:
+  /swagger.json:
     get:
-      description: Get all internals exp vars
-      operationId: vars#get
-      produces:
-      - application/vnd.goa.error
-      - text/plain
+      description: Get OpenAPI specifications
+      operationId: swagger#get
       responses:
         "200":
           description: OK
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: get swagger
+      tags:
+      - swagger
+  /vars:
+    get:
+      description: Get all internals exp vars
+      operationId: vars#get
+      responses:
+        "200":
+          description: OK
       schemes:
       - http
       summary: get vars
