@@ -22,7 +22,7 @@ RUN make
 ENV REPOSITORY=${REPOSITORY}
 ENV ARTIFACT=${ARTIFACT}
 RUN git clone https://${REPOSITORY}/${ARTIFACT}-contrib.git plugins \
-      && make -C plugins
+      && make -C plugins plugins
 
 #########################################
 # Distribution stage
