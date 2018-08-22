@@ -1,5 +1,26 @@
 <a name=""></a>
-#  (2018-04-22)
+#  (2018-08-22)
+
+
+
+<a name="1.0.0-rc"></a>
+# [1.0.0-rc](https://github.com/ncarlier/feedpushr/compare/1.0.0-beta.5...1.0.0-rc) (2018-08-22)
+
+
+### Bug Fixes
+
+* **plugin:** init output and filter plugin registry ([692c934](https://github.com/ncarlier/feedpushr/commit/692c934))
+
+
+### Features
+
+* configure CORS ([a6e53f1](https://github.com/ncarlier/feedpushr/commit/a6e53f1))
+* **ui:** add Web user interface ([aa8d50e](https://github.com/ncarlier/feedpushr/commit/aa8d50e))
+
+
+
+<a name="1.0.0-beta.5"></a>
+# [1.0.0-beta.5](https://github.com/ncarlier/feedpushr/compare/1.0.0-beta.4...1.0.0-beta.5) (2018-04-22)
 
 
 ### Bug Fixes
