@@ -6,7 +6,7 @@
 
 A simple feed aggregator daemon with sugar on top.
 
-![Logo](ui/src/logo.svg)
+![Logo](feedpushr.svg)
 
 ## Features
 
