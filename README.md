@@ -6,6 +6,8 @@
 
 A simple feed aggregator daemon with sugar on top.
 
+![Logo](ui/src/logo.svg)
+
 ## Features
 
 - Single executable with an embedded database.
