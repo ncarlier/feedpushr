@@ -45,7 +45,7 @@ RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT-linux-amd64 /usr/local/bin/$ARTIFACT
 
 # Install plugins
-COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/plugins/release/*.so .
+COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/plugins/release/*.so ./
 RUN for file in *.so; do mv $file `echo $file | sed 's/-linux-amd64//'`; done
 
 # Define command
