@@ -30,6 +30,7 @@ class App extends Component {
         <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '5em 0em' }}>
           <Container textAlign='center'>
             <Image centered size='mini' src={logo} />
+            <br/>
             <List horizontal inverted divided link>
               <List.Item as='a' href='https://github.com/ncarlier/feedpushr'>Sources</List.Item>
               <List.Item as='a' href='https://github.com/ncarlier/feedpushr/issues'>Feature request or bug report</List.Item>

@@ -33,13 +33,13 @@ class Feeds extends Component {
             feedXMLURL: ''
         }
     }
-    
+
     componentDidMount() {
         this.handleRefresh()
     }
 
     handleOpenAddModal = () => this.setState({ addModalOpen: true, feedXMLURL: '', addError: null })
-    
+
     handleCloseAddModal = () => this.setState({ addModalOpen: false })
 
     handleChange = (e, { name, value }) => this.setState({ [name]: value })
@@ -47,9 +47,9 @@ class Feeds extends Component {
     handleToggleAggregation = (id, status) => {
         const action = status ? FeedApi.start(id) : FeedApi.stop(id)
         action.then(
-                () => this.handleRefresh(),
-                (error) => this.setState({ error })
-            )
+            () => this.handleRefresh(),
+            (error) => this.setState({ error })
+        )
     }
 
     handleRemoveFeed = (id) => {
@@ -119,7 +119,7 @@ class Feeds extends Component {
             )
     }
 
-    get tableHeader () {
+    get tableHeader() {
         return (
             <Table.Header>
                 <Table.Row>
@@ -136,25 +136,23 @@ class Feeds extends Component {
         )
     }
 
-    get tableBody () {
+    get tableBody() {
         const { items } = this.state;
         return (
             <Table.Body>
                 {items.map(item => (
-                    <Table.Row key={item.id} error={item.errorCount}>
+                    <Table.Row key={item.id} error={item.errorCount > 0}>
                         <Table.Cell collapsing>
                             <Checkbox toggle
                                 defaultChecked={item.status === 'running'}
                                 title='Start/stop aggregation'
                                 onChange={(evt, data) => this.handleToggleAggregation(item.id, data.checked)}
-                             />
+                            />
                         </Table.Cell>
                         <Table.Cell selectable>
-                            <a href={item.xmlUrl} target='_blank'>
-                                {item.title}
-                            </a>
+                            <a href={item.xmlUrl} target='_blank'>{item.title}</a>
                         </Table.Cell>
-                        <Table.Cell textAlign='center'>{this.renderFeedStatus(item)}</Table.Cell>
+                        <Table.Cell textAlign='center' selectable>{this.renderFeedStatus(item)}</Table.Cell>
                         <Table.Cell>{this.renderDate(item.lastCheck)}</Table.Cell>
                         <Table.Cell>{this.renderDate(item.nextCheck)}</Table.Cell>
                         <Table.Cell>{this.renderDate(item.cdate)}</Table.Cell>
@@ -164,7 +162,7 @@ class Feeds extends Component {
                                 trigger={<Button icon negative size='tiny' title='Remove feed'><Icon name='remove' /></Button>}
                                 header='Remove feed?'
                                 content={<Modal.Content>Are you sure to remove feed: <b>{item.title}</b></Modal.Content>}
-                                actions={['No', { key: `delete-${item.id}`, content: 'Yes', positive: true, onClick: () => this.handleRemoveFeed(item.id)}]}
+                                actions={['No', { key: `delete-${item.id}`, content: 'Yes', positive: true, onClick: () => this.handleRemoveFeed(item.id) }]}
                             />
                         </Table.Cell>
                     </Table.Row>
@@ -173,7 +171,7 @@ class Feeds extends Component {
         )
     }
 
-    get tableFooter () {
+    get tableFooter() {
         return (
             <Table.Footer fullWidth>
                 <Table.Row>
@@ -181,15 +179,15 @@ class Feeds extends Component {
                     <Table.HeaderCell colSpan='7'>
                         {this.addFeedForm}
                         <UploadButton size='small' icon onSelectFile={this.handleImportOPML}><Icon name='upload' /> Import</UploadButton>
-                        <Button size='small' icon onClick={this.handleExportOPML}><Icon name='download'/> Export</Button>
+                        <Button size='small' icon onClick={this.handleExportOPML}><Icon name='download' /> Export</Button>
                     </Table.HeaderCell>
                 </Table.Row>
             </Table.Footer>
         )
     }
 
-    get addFeedForm () {
-        const {addModalOpen, feedXMLURL, addError} = this.state
+    get addFeedForm() {
+        const { addModalOpen, feedXMLURL, addError } = this.state
         return (
             <Modal open={addModalOpen} onClose={this.handleCloseAddModal} trigger={
                 <Button floated='right' icon labelPosition='left' primary size='small' onClick={this.handleOpenAddModal}>
@@ -223,7 +221,7 @@ class Feeds extends Component {
         )
     }
 
-    get errorMessage () {
+    get errorMessage() {
         const { error } = this.state;
         if (error) {
             return (
@@ -234,8 +232,8 @@ class Feeds extends Component {
             )
         }
     }
-    
-    get table () {
+
+    get table() {
         const { isLoaded } = this.state;
         return (
             <Segment>
@@ -252,7 +250,7 @@ class Feeds extends Component {
     }
 
     get feedFormError() {
-        const {addError} = this.state
+        const { addError } = this.state
         const label = addError ? addError.message || addError.detail : 'unknown'
         return (
             <Message
@@ -267,7 +265,17 @@ class Feeds extends Component {
         if (feed.errorCount) {
             return (
                 <Popup trigger={<Label circular color='red'>{feed.errorCount}</Label>}>
-                    {feed.error}
+                    {feed.errorMsg}
+                </Popup>
+            )
+        } else if (typeof feed.hubUrl !== 'undefined') {
+            const $icon = (<Icon.Group size='large'>
+                <Icon name='checkmark' color='green' />
+                <Icon corner name='cloud' color='green' />
+            </Icon.Group>)
+            return (
+                <Popup trigger={<a href={feed.hubUrl} target='_blank'>{$icon}</a>}>
+                    PubSubHubbub enabled
                 </Popup>
             )
         } else {
