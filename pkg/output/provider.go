@@ -12,18 +12,15 @@ import (
 // newOutputProvider creates new output provider.
 func newOutputProvider(uri string, pr *plugin.Registry) (model.OutputProvider, error) {
 	logger := log.With().Str("component", "output").Logger()
-	var scheme string
-	if uri == "" || uri == "stdout" {
-		scheme = "stdout"
-	} else {
-		u, err := url.ParseRequestURI(uri)
-		if err != nil {
-			return nil, fmt.Errorf("invalid output URL: %s", uri)
-		}
-		scheme = u.Scheme
+	if uri == "" {
+		uri = "stdout://"
+	}
+	u, err := url.Parse(uri)
+	if err != nil {
+		return nil, fmt.Errorf("invalid output URL: %s", uri)
 	}
 	var provider model.OutputProvider
-	switch scheme {
+	switch u.Scheme {
 	case "stdout":
 		provider = newStdOutputProvider()
 		logger.Info().Msg("using STDOUT output provider")
@@ -32,12 +29,15 @@ func newOutputProvider(uri string, pr *plugin.Registry) (model.OutputProvider, e
 		logger.Info().Str("url", uri).Msg("using HTTP output provider")
 	default:
 		// Try to load plugin regarding the scheme
-		plug := pr.LookupOutputPlugin(scheme)
+		plug := pr.LookupOutputPlugin(u.Scheme)
 		if plug == nil {
-			return nil, fmt.Errorf("unsuported output provider: %s", scheme)
+			return nil, fmt.Errorf("unsuported output provider: %s", u.Scheme)
 		}
-		provider = plug.Provider
-		logger.Info().Str("url", uri).Str("provider", scheme).Msg("using external output provider")
+		provider, err = plug.Build(u.Query())
+		if err != nil {
+			return nil, fmt.Errorf("unable to create output provider: %v", err)
+		}
+		logger.Info().Str("url", uri).Str("provider", u.Scheme).Msg("using external output provider")
 	}
 	return provider, nil
 }

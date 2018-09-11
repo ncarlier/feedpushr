@@ -2,6 +2,7 @@ package filter
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
@@ -16,19 +17,27 @@ type Chain struct {
 func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 	chain := &Chain{}
 
-	for _, name := range filters {
-		switch name {
-		case "foo":
-			chain.filters = append(chain.filters, newFooFilter())
+	for _, f := range filters {
+		u, err := url.Parse(f)
+		if err != nil {
+			return nil, fmt.Errorf("invalid filter URL: %s", f)
+		}
+		switch u.Scheme {
+		case "title":
+			chain.filters = append(chain.filters, newTitleFilter(u.Query()))
 		case "fetch":
 			chain.filters = append(chain.filters, newFetchFilter())
 		default:
 			// Try to load plugin regarding the name
-			plug := pr.LookupFilterPlugin(name)
+			plug := pr.LookupFilterPlugin(u.Scheme)
 			if plug == nil {
-				return nil, fmt.Errorf("unsuported filter: %s", name)
+				return nil, fmt.Errorf("unsuported filter: %s", u.Scheme)
 			}
-			chain.filters = append(chain.filters, plug.Filter)
+			fp, err := plug.Build(u.Query())
+			if err != nil {
+				return nil, fmt.Errorf("unable to create filter: %v", err)
+			}
+			chain.filters = append(chain.filters, fp)
 		}
 	}
 

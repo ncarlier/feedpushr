@@ -7,29 +7,17 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
-// OutputPlugin is the scructure of an ouptut plugin
-type OutputPlugin struct {
-	Name     string
-	Provider model.OutputProvider
-}
-
-// FilterPlugin is the scructure of an filter plugin
-type FilterPlugin struct {
-	Name   string
-	Filter model.Filter
-}
-
 // Registry contains registered output and filter plugins
 type Registry struct {
-	outputPlugins map[string]OutputPlugin
-	filterPlugins map[string]FilterPlugin
+	outputPlugins map[string]model.OutputPlugin
+	filterPlugins map[string]model.FilterPlugin
 }
 
 // NewPluginRegistry creates a new plugin registry
 func NewPluginRegistry(plugins []string) (*Registry, error) {
 	reg := &Registry{
-		outputPlugins: make(map[string]OutputPlugin),
-		filterPlugins: make(map[string]FilterPlugin),
+		outputPlugins: make(map[string]model.OutputPlugin),
+		filterPlugins: make(map[string]model.FilterPlugin),
 	}
 	for _, filename := range plugins {
 		plug, err := _plugin.Open(filename)
@@ -44,31 +32,25 @@ func NewPluginRegistry(plugins []string) (*Registry, error) {
 
 		switch info.Type {
 		case model.OUTPUT_PLUGIN:
-			getOutputProvider, err := plug.Lookup("GetOutputProvider")
+			getOutputPlugin, err := plug.Lookup("GetOutputPlugin")
 			if err != nil {
 				return nil, fmt.Errorf("unsuported output plugin: %s - %v", info.Name, err)
 			}
-			provider, err := getOutputProvider.(func() (model.OutputProvider, error))()
+			outputPlugin, err := getOutputPlugin.(func() (model.OutputPlugin, error))()
 			if err != nil {
-				return nil, fmt.Errorf("unable to configure pugin output provider: %s - %v", info.Name, err)
+				return nil, fmt.Errorf("unable to load ouput plugin: %s - %v", info.Name, err)
 			}
-			reg.outputPlugins[info.Name] = OutputPlugin{
-				Name:     info.Name,
-				Provider: provider,
-			}
+			reg.outputPlugins[info.Name] = outputPlugin
 		case model.FILTER_PLUGIN:
-			getFilter, err := plug.Lookup("GetFilter")
+			getFilter, err := plug.Lookup("GetFilterPlugin")
 			if err != nil {
 				return nil, fmt.Errorf("unsuported filter plugin: %s - %v", info.Name, err)
 			}
-			filter, err := getFilter.(func() (model.Filter, error))()
+			filterPlugin, err := getFilter.(func() (model.FilterPlugin, error))()
 			if err != nil {
-				return nil, fmt.Errorf("unable to configure pugin filter: %s - %v", info.Name, err)
+				return nil, fmt.Errorf("unable to load filter plugin: %s - %v", info.Name, err)
 			}
-			reg.filterPlugins[info.Name] = FilterPlugin{
-				Name:   info.Name,
-				Filter: filter,
-			}
+			reg.filterPlugins[info.Name] = filterPlugin
 		default:
 			return nil, fmt.Errorf("plugin type unknown: %d", info.Type)
 		}
@@ -78,19 +60,19 @@ func NewPluginRegistry(plugins []string) (*Registry, error) {
 }
 
 // LookupOutputPlugin retrieve an output plugin by its name
-func (r *Registry) LookupOutputPlugin(name string) *OutputPlugin {
+func (r *Registry) LookupOutputPlugin(name string) model.OutputPlugin {
 	plug, ok := r.outputPlugins[name]
 	if !ok {
 		return nil
 	}
-	return &plug
+	return plug
 }
 
 // LookupFilterPlugin retrieve a filter plugin by its name
-func (r *Registry) LookupFilterPlugin(name string) *FilterPlugin {
+func (r *Registry) LookupFilterPlugin(name string) model.FilterPlugin {
 	plug, ok := r.filterPlugins[name]
 	if !ok {
 		return nil
 	}
-	return &plug
+	return plug
 }

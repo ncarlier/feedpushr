@@ -52,7 +52,7 @@ You can configure the daemon by setting environment variables:
 | `APP_LISTEN_ADDR` | `:8080` | HTTP server address |
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
-| `APP_FILTERS` | none | Filter chain (`foo` or `fetch`) |
+| `APP_FILTERS` | none | Filter chain (ex: `foo://,fetch://`) |
 | `APP_OUTPUT` | `stdout` | Output destination (`stdout` or HTTP URL) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
 | `APP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
@@ -67,12 +67,15 @@ Type `feedpushr --help` to see those parameters.
 ## Filters
 
 Before being sent articles can be modified through a filter chain.
+
+A filter is declared as a URL. The scheme of the URL is the filter name.
+Other parts of the URL configure the filter.
+
 Currently, there are two built-in filter:
 
-- `foo`:
-  This filter will prefix the title of the article with the name of the
-  application.
-- `fetch`:
+- `title://?prefix=Feedpushr:`:
+  This filter will prefix the title of the article with a given value.
+- `fetch://`:
   This filter will attempt to extract the content of the article from the source
   URL.
 
@@ -83,14 +86,18 @@ Filters can be extended using plugins.
 ## Outputs
 
 New articles are sent to an output.
+
+An output is declared as a URL. The scheme of the URL is the output provider name.
+Other parts of the URL configure the output provider.
+
 Currently, there are two built-in output providers:
 
-- `stdout`: New articles are sent as JSON document to the standard output of the
+- `stdout://`: New articles are sent as JSON document to the standard output of the
   process.
   This can be useful if you want to pipe the command to another shell command.
   *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL
   tool such as [Logstash][logstash], etc.*
-- `http`: New articles are sent as JSON document to an HTTP endpoint (POST).
+- `http://<URL>`: New articles are sent as JSON document to an HTTP endpoint (POST).
 
 Outputs can be extended using plugins.
 
