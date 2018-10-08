@@ -27,5 +27,5 @@ type OutputPlugin interface {
 // FilterPlugin is the interface of an filter plugin
 type FilterPlugin interface {
 	// Build a filter
-	Build(params url.Values) (Filter, error)
+	Build(params url.Values, tags string) (Filter, error)
 }

@@ -29,6 +29,7 @@ func (c *FilterController) List(ctx *app.ListFilterContext) error {
 			Name:  spec.Name,
 			Desc:  spec.Desc,
 			Props: spec.Props,
+			Tags:  spec.Tags,
 		}
 		res = append(res, &f)
 	}

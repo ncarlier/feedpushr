@@ -25,8 +25,8 @@ func CreateFeedPath() string {
 }
 
 // Create a new feed
-func (c *Client) CreateFeed(ctx context.Context, path string, url_ string) (*http.Response, error) {
-	req, err := c.NewCreateFeedRequest(ctx, path, url_)
+func (c *Client) CreateFeed(ctx context.Context, path string, url_ string, tags *string) (*http.Response, error) {
+	req, err := c.NewCreateFeedRequest(ctx, path, url_, tags)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *Client) CreateFeed(ctx context.Context, path string, url_ string) (*htt
 }
 
 // NewCreateFeedRequest create the request corresponding to the create action endpoint of the feed resource.
-func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ string) (*http.Request, error) {
+func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ string, tags *string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
@@ -42,6 +42,9 @@ func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ str
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	values.Set("url", url_)
+	if tags != nil {
+		values.Set("tags", *tags)
+	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -134,12 +137,12 @@ func (c *Client) NewListFeedRequest(ctx context.Context, path string, limit *int
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	if limit != nil {
-		tmp16 := strconv.Itoa(*limit)
-		values.Set("limit", tmp16)
+		tmp17 := strconv.Itoa(*limit)
+		values.Set("limit", tmp17)
 	}
 	if page != nil {
-		tmp17 := strconv.Itoa(*page)
-		values.Set("page", tmp17)
+		tmp18 := strconv.Itoa(*page)
+		values.Set("page", tmp18)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)
@@ -203,6 +206,41 @@ func (c *Client) NewStopFeedRequest(ctx context.Context, path string) (*http.Req
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// UpdateFeedPath computes a request path to the update action of feed.
+func UpdateFeedPath(id string) string {
+	param0 := id
+
+	return fmt.Sprintf("/v1/feeds/%s", param0)
+}
+
+// Update a feed
+func (c *Client) UpdateFeed(ctx context.Context, path string, tags *string) (*http.Response, error) {
+	req, err := c.NewUpdateFeedRequest(ctx, path, tags)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewUpdateFeedRequest create the request corresponding to the update action endpoint of the feed resource.
+func (c *Client) NewUpdateFeedRequest(ctx context.Context, path string, tags *string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	values := u.Query()
+	if tags != nil {
+		values.Set("tags", *tags)
+	}
+	u.RawQuery = values.Encode()
+	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}

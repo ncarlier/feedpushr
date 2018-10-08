@@ -124,5 +124,5 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 
 	// fh.log.Debug().Int("items", len(feed.Items)).Msg("feed fetched")
 
-	return *fh.status, builder.NewArticles(feed.Items)
+	return *fh.status, builder.NewArticles(fh.feed, feed.Items)
 }

@@ -42,6 +42,7 @@ func (c *OpmlController) Get(ctx *app.GetOpmlContext) error {
 		if feed.HTMLURL != nil {
 			outline.HTMLURL = *feed.HTMLURL
 		}
+		outline.Category = strings.Join(feed.Tags, ",")
 		outline.Created = feed.Cdate.Format(time.RFC1123)
 		result.Body.Outlines = append(result.Body.Outlines, outline)
 		return nil

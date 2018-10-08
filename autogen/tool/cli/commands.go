@@ -30,6 +30,8 @@ import (
 type (
 	// CreateFeedCommand is the command line data structure for the create action of feed
 	CreateFeedCommand struct {
+		// Comma separated list of tags
+		Tags string
 		// Feed URL
 		URL         string
 		PrettyPrint bool
@@ -67,6 +69,15 @@ type (
 	// StopFeedCommand is the command line data structure for the stop action of feed
 	StopFeedCommand struct {
 		ID          string
+		PrettyPrint bool
+	}
+
+	// UpdateFeedCommand is the command line data structure for the update action of feed
+	UpdateFeedCommand struct {
+		// Feed ID
+		ID string
+		// Comma separated list of tags
+		Tags        string
 		PrettyPrint bool
 	}
 
@@ -294,17 +305,31 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "upload",
-		Short: `Upload an OPML file to create feeds`,
+		Use:   "update",
+		Short: `Update a feed`,
 	}
-	tmp15 := new(UploadOpmlCommand)
+	tmp15 := new(UpdateFeedCommand)
 	sub = &cobra.Command{
-		Use:   `opml ["/v1/opml"]`,
+		Use:   `feed ["/v1/feeds/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
 	}
 	tmp15.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp15.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "upload",
+		Short: `Upload an OPML file to create feeds`,
+	}
+	tmp16 := new(UploadOpmlCommand)
+	sub = &cobra.Command{
+		Use:   `opml ["/v1/opml"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp16.Run(c, args) },
+	}
+	tmp16.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp16.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 }
@@ -472,7 +497,7 @@ func (cmd *CreateFeedCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.CreateFeed(ctx, path, cmd.URL)
+	resp, err := c.CreateFeed(ctx, path, cmd.URL, stringFlagVal("tags", cmd.Tags))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -484,6 +509,8 @@ func (cmd *CreateFeedCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *CreateFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var tags string
+	cc.Flags().StringVar(&cmd.Tags, "tags", tags, `Comma separated list of tags`)
 	var url_ string
 	cc.Flags().StringVar(&cmd.URL, "url", url_, `Feed URL`)
 }
@@ -616,6 +643,34 @@ func (cmd *StopFeedCommand) Run(c *client.Client, args []string) error {
 func (cmd *StopFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id string
 	cc.Flags().StringVar(&cmd.ID, "id", id, ``)
+}
+
+// Run makes the HTTP request corresponding to the UpdateFeedCommand command.
+func (cmd *UpdateFeedCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v1/feeds/%v", url.QueryEscape(cmd.ID))
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.UpdateFeed(ctx, path, stringFlagVal("tags", cmd.Tags))
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *UpdateFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id string
+	cc.Flags().StringVar(&cmd.ID, "id", id, `Feed ID`)
+	var tags string
+	cc.Flags().StringVar(&cmd.Tags, "tags", tags, `Comma separated list of tags`)
 }
 
 // Run makes the HTTP request corresponding to the ListFilterCommand command.

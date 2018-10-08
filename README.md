@@ -175,6 +175,11 @@ $ # Get OpenAPI JSON
 $ curl  http://localhost:8080/swagger.json
 $ # Get runtime vars
 $ curl  http://localhost:8080/v1/vars
+$ # Here a quick ETL shell pipeline:
+$ # Send transformed articles to HTTP endpoint using shell tools (jq and httpie)
+$ feedpushr \
+  | jq -c "select(.title) | {title:.title, content:.description, origin: .link}" \
+  | while read next; do echo "$next" | http http://postb.in/b/i1J32KdO; done
 ```
 
 ## For development

@@ -24,7 +24,7 @@ func ImportOPMLToDB(opml *OPML, db store.DB) error {
 			continue
 		}
 		logger.Debug().Str("url", outline.XMLURL).Msg("importing feed")
-		feed, err := builder.NewFeed(outline.XMLURL)
+		feed, err := builder.NewFeed(outline.XMLURL, &outline.Category)
 		if err != nil {
 			logger.Warn().Err(err).Str("url", outline.XMLURL).Msg("unable to create feed: skipped")
 			result = multierror.Append(result, newItemError(idx, err))

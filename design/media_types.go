@@ -29,6 +29,9 @@ var Feed = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 		Attribute("title", String, "Title of the Feed", func() {
 			Example("Hashicorp Blog")
 		})
+		Attribute("tags", ArrayOf(String), "List of tags", func() {
+			Example([]string{"foo", "bar"})
+		})
 		Attribute("status", String, "Aggregation status", func() {
 			Enum("running", "stopped")
 		})
@@ -49,6 +52,7 @@ var Feed = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 		Attribute("hubUrl")
 		Attribute("title")
 		Attribute("text")
+		Attribute("tags")
 		Attribute("status")
 		Attribute("lastCheck")
 		Attribute("nextCheck")
@@ -63,6 +67,7 @@ var Feed = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 		Attribute("id")
 		Attribute("xmlUrl")
 		Attribute("title")
+		Attribute("tags")
 		Attribute("cdate")
 	})
 
@@ -85,6 +90,9 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 			Example("This filter will...")
 		})
 		Attribute("props", HashOf(String, Any), "Filter properties", NoExample)
+		Attribute("tags", ArrayOf(String), "List of tags", func() {
+			Example([]string{"foo", "bar"})
+		})
 		Required("name", "desc")
 	})
 
@@ -92,6 +100,7 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 		Attribute("name")
 		Attribute("desc")
 		Attribute("props")
+		Attribute("tags")
 	})
 })
 

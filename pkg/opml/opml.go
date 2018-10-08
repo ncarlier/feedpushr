@@ -26,7 +26,7 @@ type Body struct {
 	Outlines []Outline `xml:"outline"`
 }
 
-// Outline conatins details about thh subscription.
+// Outline contains details about the subscription.
 type Outline struct {
 	Outlines    []Outline `xml:"outline"`
 	Text        string    `xml:"text,attr"`

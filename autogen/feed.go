@@ -76,3 +76,14 @@ func (c *FeedController) Stop(ctx *app.StopFeedContext) error {
 	return nil
 	// FeedController_Stop: end_implement
 }
+
+// Update runs the update action.
+func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
+	// FeedController_Update: start_implement
+
+	// Put your logic here
+
+	res := &app.Feed{}
+	return ctx.OK(res)
+	// FeedController_Update: end_implement
+}

@@ -41,6 +41,7 @@ type FeedController interface {
 	List(*ListFeedContext) error
 	Start(*StartFeedContext) error
 	Stop(*StopFeedContext) error
+	Update(*UpdateFeedContext) error
 }
 
 // MountFeedController "mounts" a Feed resource controller on the given service.
@@ -147,6 +148,22 @@ func MountFeedController(service *goa.Service, ctrl FeedController) {
 	h = handleFeedOrigin(h)
 	service.Mux.Handle("POST", "/v1/feeds/:id/stop", ctrl.MuxHandler("stop", h, nil))
 	service.LogInfo("mount", "ctrl", "Feed", "action", "Stop", "route", "POST /v1/feeds/:id/stop")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewUpdateFeedContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Update(rctx)
+	}
+	h = handleFeedOrigin(h)
+	service.Mux.Handle("PUT", "/v1/feeds/:id", ctrl.MuxHandler("update", h, nil))
+	service.LogInfo("mount", "ctrl", "Feed", "action", "Update", "route", "PUT /v1/feeds/:id")
 }
 
 // handleFeedOrigin applies the CORS response headers corresponding to the origin.

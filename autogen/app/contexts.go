@@ -22,7 +22,8 @@ type CreateFeedContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	URL string
+	Tags *string
+	URL  string
 }
 
 // NewCreateFeedContext parses the incoming request URL and body, performs validations and creates the
@@ -34,6 +35,11 @@ func NewCreateFeedContext(ctx context.Context, r *http.Request, service *goa.Ser
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := CreateFeedContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramTags := req.Params["tags"]
+	if len(paramTags) > 0 {
+		rawTags := paramTags[0]
+		rctx.Tags = &rawTags
+	}
 	paramURL := req.Params["url"]
 	if len(paramURL) == 0 {
 		err = goa.MergeErrors(err, goa.MissingParamError("url"))
@@ -343,6 +349,75 @@ func (ctx *StopFeedContext) BadRequest(r error) error {
 
 // NotFound sends a HTTP response with status code 404.
 func (ctx *StopFeedContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// UpdateFeedContext provides the feed update action context.
+type UpdateFeedContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID   string
+	Tags *string
+}
+
+// NewUpdateFeedContext parses the incoming request URL and body, performs validations and creates the
+// context used by the feed controller update action.
+func NewUpdateFeedContext(ctx context.Context, r *http.Request, service *goa.Service) (*UpdateFeedContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := UpdateFeedContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		rctx.ID = rawID
+	}
+	paramTags := req.Params["tags"]
+	if len(paramTags) > 0 {
+		rawTags := paramTags[0]
+		rctx.Tags = &rawTags
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *UpdateFeedContext) OK(r *Feed) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKLink sends a HTTP response with status code 200.
+func (ctx *UpdateFeedContext) OKLink(r *FeedLink) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// OKTiny sends a HTTP response with status code 200.
+func (ctx *UpdateFeedContext) OKTiny(r *FeedTiny) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *UpdateFeedContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *UpdateFeedContext) NotFound() error {
 	ctx.ResponseData.WriteHeader(404)
 	return nil
 }

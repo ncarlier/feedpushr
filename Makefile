@@ -66,6 +66,11 @@ ui:
 	make pkg/assets/statik.go
 .PHONY: ui
 
+## Start web UI dev server
+ui-dev-server:
+	cd ui && REACT_APP_API_ROOT="http://localhost:8080/v1" npm start
+.PHONY: ui-dev-server
+
 # Build web UI
 var/assets/ui:
 	echo ">>> Building web UI ..."

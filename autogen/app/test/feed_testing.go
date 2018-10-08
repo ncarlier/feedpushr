@@ -29,7 +29,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, url_ string) (http.ResponseWriter, error) {
+func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, url_ string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -50,6 +50,10 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	// Setup request context
 	rw := httptest.NewRecorder()
 	query := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		query["tags"] = sliceVal
+	}
 	{
 		sliceVal := []string{url_}
 		query["url"] = sliceVal
@@ -63,6 +67,10 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		prms["tags"] = sliceVal
+	}
 	{
 		sliceVal := []string{url_}
 		prms["url"] = sliceVal
@@ -107,7 +115,7 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, url_ string) http.ResponseWriter {
+func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, url_ string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -127,6 +135,10 @@ func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	query := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		query["tags"] = sliceVal
+	}
 	{
 		sliceVal := []string{url_}
 		query["url"] = sliceVal
@@ -140,6 +152,10 @@ func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		prms["tags"] = sliceVal
+	}
 	{
 		sliceVal := []string{url_}
 		prms["url"] = sliceVal
@@ -1442,4 +1458,406 @@ func StopFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 
 	// Return results
 	return rw
+}
+
+// UpdateFeedBadRequest runs the method Update of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, error) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	query := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		query["tags"] = sliceVal
+	}
+	u := &url.URL{
+		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		RawQuery: query.Encode(),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		prms["tags"] = sliceVal
+	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "FeedTest"), rw, req, prms)
+	updateCtx, _err := app.NewUpdateFeedContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		return nil, e
+	}
+
+	// Perform action
+	_err = ctrl.Update(updateCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 400 {
+		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
+	}
+	var mt error
+	if resp != nil {
+		var _ok bool
+		mt, _ok = resp.(error)
+		if !_ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of error", resp, resp)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// UpdateFeedNotFound runs the method Update of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	query := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		query["tags"] = sliceVal
+	}
+	u := &url.URL{
+		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		RawQuery: query.Encode(),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		prms["tags"] = sliceVal
+	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "FeedTest"), rw, req, prms)
+	updateCtx, _err := app.NewUpdateFeedContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil
+	}
+
+	// Perform action
+	_err = ctrl.Update(updateCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 404 {
+		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
+// UpdateFeedOK runs the method Update of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, *app.Feed) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	query := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		query["tags"] = sliceVal
+	}
+	u := &url.URL{
+		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		RawQuery: query.Encode(),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		prms["tags"] = sliceVal
+	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "FeedTest"), rw, req, prms)
+	updateCtx, _err := app.NewUpdateFeedContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil, nil
+	}
+
+	// Perform action
+	_err = ctrl.Update(updateCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+	var mt *app.Feed
+	if resp != nil {
+		var _ok bool
+		mt, _ok = resp.(*app.Feed)
+		if !_ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Feed", resp, resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// UpdateFeedOKLink runs the method Update of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, *app.FeedLink) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	query := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		query["tags"] = sliceVal
+	}
+	u := &url.URL{
+		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		RawQuery: query.Encode(),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		prms["tags"] = sliceVal
+	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "FeedTest"), rw, req, prms)
+	updateCtx, _err := app.NewUpdateFeedContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil, nil
+	}
+
+	// Perform action
+	_err = ctrl.Update(updateCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+	var mt *app.FeedLink
+	if resp != nil {
+		var _ok bool
+		mt, _ok = resp.(*app.FeedLink)
+		if !_ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedLink", resp, resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// UpdateFeedOKTiny runs the method Update of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, *app.FeedTiny) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	query := url.Values{}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		query["tags"] = sliceVal
+	}
+	u := &url.URL{
+		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		RawQuery: query.Encode(),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if tags != nil {
+		sliceVal := []string{*tags}
+		prms["tags"] = sliceVal
+	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "FeedTest"), rw, req, prms)
+	updateCtx, _err := app.NewUpdateFeedContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil, nil
+	}
+
+	// Perform action
+	_err = ctrl.Update(updateCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+	var mt *app.FeedTiny
+	if resp != nil {
+		var _ok bool
+		mt, _ok = resp.(*app.FeedTiny)
+		if !_ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedTiny", resp, resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
+		}
+	}
+
+	// Return results
+	return rw, mt
 }

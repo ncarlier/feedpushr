@@ -9,26 +9,31 @@ import (
 
 func TestNewFeed(t *testing.T) {
 	url := "https://keeper.nunux.org/index.xml"
-	feed, err := builder.NewFeed(url)
+	feed, err := builder.NewFeed(url, nil)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, feed, "feed shouldn't be nil")
 	assert.NotEqual(t, "", feed.ID, "ID shouldn't be empty")
+	assert.Equal(t, 0, len(feed.Tags), "Tags should be empty")
 	assert.Equal(t, url, feed.XMLURL, "URL should be equals")
 	assert.Equal(t, "Nunux Keeper", feed.Title, "title missmatch")
 }
 
 func TestBadNewFeed(t *testing.T) {
 	url := "https://keeper.nunux.org/"
-	_, err := builder.NewFeed(url)
+	_, err := builder.NewFeed(url, nil)
 	assert.NotNil(t, err, "error shouldn't be nil")
 }
 
-func TestNewFeedWithHub(t *testing.T) {
+func TestNewFeedWithHubAndTags(t *testing.T) {
 	url := "https://medium.com/feed/netflix-techblog"
-	feed, err := builder.NewFeed(url)
+	tags := "foo,/bar_barè,/foo"
+	feed, err := builder.NewFeed(url, &tags)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, feed, "feed shouldn't be nil")
 	assert.NotEqual(t, "", feed.ID, "ID shouldn't be empty")
 	assert.Equal(t, url, feed.XMLURL, "URL should be equals")
 	assert.Equal(t, "http://medium.superfeedr.com", *feed.HubURL, "Hub URL should be equals")
+	assert.Equal(t, 2, len(feed.Tags), "Tags should not be empty")
+	assert.Equal(t, "foo", feed.Tags[0], "Tag should be equals")
+	assert.Equal(t, "bar_bar_", feed.Tags[1], "Tag should be equals")
 }

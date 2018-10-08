@@ -39,6 +39,8 @@ type Feed struct {
 	NextCheck *time.Time `form:"nextCheck,omitempty" json:"nextCheck,omitempty" yaml:"nextCheck,omitempty" xml:"nextCheck,omitempty"`
 	// Aggregation status
 	Status *string `form:"status,omitempty" json:"status,omitempty" yaml:"status,omitempty" xml:"status,omitempty"`
+	// List of tags
+	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 	// Text attribute of the Feed
 	Text *string `form:"text,omitempty" json:"text,omitempty" yaml:"text,omitempty" xml:"text,omitempty"`
 	// Title of the Feed
@@ -96,6 +98,8 @@ type FeedTiny struct {
 	Cdate time.Time `form:"cdate" json:"cdate" yaml:"cdate" xml:"cdate"`
 	// ID of feed (MD5 of the xmlUrl)
 	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
+	// List of tags
+	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 	// Title of the Feed
 	Title string `form:"title" json:"title" yaml:"title" xml:"title"`
 	// URL of the XML feed
@@ -161,6 +165,8 @@ type Filter struct {
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// List of tags
+	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate validates the Filter media type instance.

@@ -61,9 +61,28 @@ var _ = Resource("feed", func() {
 				Example("http://www.hashicorp.com/feed.xml")
 				Format("uri")
 			})
+			Param("tags", String, "Comma separated list of tags", func() {
+				Example("foo,bar")
+			})
 			Required("url")
 		})
 		Response(Created, "/feeds/[0-9a-f]+")
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("update", func() {
+		Routing(
+			PUT("/:id"),
+		)
+		Description("Update a feed")
+		Params(func() {
+			Param("id", String, "Feed ID")
+			Param("tags", String, "Comma separated list of tags", func() {
+				Example("foo,bar")
+			})
+		})
+		Response(OK)
+		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
 

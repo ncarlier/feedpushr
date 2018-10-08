@@ -5,7 +5,7 @@ import {
   Container,
   Menu,
   Image
- } from 'semantic-ui-react'
+} from 'semantic-ui-react'
 
 import logo from './logo.svg'
 

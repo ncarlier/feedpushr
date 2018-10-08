@@ -11,7 +11,7 @@ import (
 
 func TestNewFeedHandler(t *testing.T) {
 	url := "https://keeper.nunux.org/index.xml"
-	feed, err := builder.NewFeed(url)
+	feed, err := builder.NewFeed(url, nil)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, feed, "feed shouldn't be nil")
 

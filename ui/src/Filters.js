@@ -4,6 +4,7 @@ import {
   Dimmer,
   Item,
   Message,
+  Label,
   Loader,
   Segment,
   Table,
@@ -76,11 +77,24 @@ class Filters extends Component {
       <Item key={`filter-${filter.name}`}>
         <Item.Content>
           <Item.Header>{filter.name}</Item.Header>
-          <Item.Description>{filter.desc}</Item.Description>
+          <Item.Description>
+            {this.renderFilterTags(filter.tags)}
+            {filter.desc}
+          </Item.Description>
           {this.renderFilterProps(filter.props)}
         </Item.Content>
       </Item>
     )
+  }
+
+  renderFilterTags(tags) {
+    if (tags) {
+      return (
+        <Label.Group color='blue' size='tiny'>
+        { tags.map(tag => (<Label key={`tag-${tag}`}>{tag}</Label>)) }
+        </Label.Group>
+      )
+    }
   }
 
   renderFilterProps(props) {

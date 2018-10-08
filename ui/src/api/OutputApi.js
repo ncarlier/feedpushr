@@ -1,4 +1,3 @@
-
 import { config, handleErrors } from './common'
 
 export class OutputApi {

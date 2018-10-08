@@ -47,11 +47,19 @@ func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
-	feed, err := c.parser.Parse(body)
+	parsedFeed, err := c.parser.Parse(body)
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
-	c.output.Send(builder.NewArticles(feed.Items))
+
+	id := builder.GetFeedID(parsedFeed.FeedLink)
+	feed, err := c.db.GetFeed(id)
+	if err != nil {
+		c.log.Warn().Str("id", id).Str("URL", parsedFeed.FeedLink).Msg("PSHB callback received an unknown feed")
+		return ctx.BadRequest(goa.ErrBadRequest(err))
+	}
+
+	c.output.Send(builder.NewArticles(feed, parsedFeed.Items))
 
 	return ctx.OK([]byte("ok"))
 }

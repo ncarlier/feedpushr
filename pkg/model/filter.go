@@ -10,5 +10,6 @@ type Filter interface {
 type FilterSpec struct {
 	Name  string
 	Desc  string
+	Tags  []string
 	Props map[string]interface{}
 }

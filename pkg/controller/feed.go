@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app"
@@ -33,7 +34,7 @@ func NewFeedController(service *goa.Service, db store.DB, am *aggregator.Manager
 
 // Create creates a new feed
 func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
-	feed, err := builder.NewFeed(ctx.URL)
+	feed, err := builder.NewFeed(ctx.URL, ctx.Tags)
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
@@ -46,6 +47,39 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	c.log.Info().Str("id", feed.ID).Msg("feed created and aggregation started")
 
 	return ctx.Created()
+}
+
+// Update updates a new feed
+func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
+	// Get feed from the database
+	feed, err := c.db.GetFeed(ctx.ID)
+	if err != nil {
+		if err == common.ErrFeedNotFound {
+			return ctx.NotFound()
+		}
+		return goa.ErrInternal(err)
+	}
+	if ctx.Tags == nil {
+		return ctx.OK(feed)
+	}
+	feed.Tags = builder.GetFeedTags(ctx.Tags)
+	feed.Mdate = time.Now()
+	err = c.db.SaveFeed(feed)
+	if err != nil {
+		return goa.ErrInternal(err)
+	}
+	fa := c.aggregator.GetFeedAggregator(feed.ID)
+	if fa != nil {
+		// Reload aggegator data
+		// For now we ar recreating the aggregator
+		c.aggregator.UnRegisterFeedAggregator(feed.ID)
+		c.aggregator.RegisterFeedAggregator(feed)
+		c.log.Info().Str("id", feed.ID).Msg("feed updated and aggregation restarted")
+	} else {
+		c.log.Info().Str("id", feed.ID).Msg("feed updated")
+	}
+
+	return ctx.OK(feed)
 }
 
 // Delete removes a feed

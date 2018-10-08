@@ -3,6 +3,7 @@ package filter
 import (
 	"net/url"
 
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -10,6 +11,7 @@ import (
 type TitleFilter struct {
 	name   string
 	desc   string
+	tags   []string
 	prefix string
 }
 
@@ -24,6 +26,7 @@ func (f *TitleFilter) GetSpec() model.FilterSpec {
 	result := model.FilterSpec{
 		Name: f.name,
 		Desc: f.desc,
+		Tags: f.tags,
 	}
 	result.Props = map[string]interface{}{
 		"prefix": f.prefix,
@@ -32,10 +35,11 @@ func (f *TitleFilter) GetSpec() model.FilterSpec {
 	return result
 }
 
-func newTitleFilter(params url.Values) *TitleFilter {
+func newTitleFilter(params url.Values, tags string) *TitleFilter {
 	return &TitleFilter{
 		name:   "title",
 		desc:   "This filter will prefix the title of the article with a given value.",
+		tags:   builder.GetFeedTags(&tags),
 		prefix: params.Get("prefix"),
 	}
 }

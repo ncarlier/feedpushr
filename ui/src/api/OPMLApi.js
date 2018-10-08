@@ -1,5 +1,3 @@
-
-
 import { config } from './common'
 
 function handleErrors(response) {

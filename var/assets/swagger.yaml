@@ -18,6 +18,9 @@ definitions:
       mdate: "1981-09-22T23:39:59Z"
       nextCheck: "1975-05-22T16:26:55Z"
       status: stopped
+      tags:
+      - foo
+      - bar
       text: RSS Feed
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
@@ -70,6 +73,15 @@ definitions:
         - stopped
         example: stopped
         type: string
+      tags:
+        description: List of tags
+        example:
+        - foo
+        - bar
+        items:
+          example: Libero minus vitae ducimus veritatis laudantium autem.
+          type: string
+        type: array
       text:
         description: Text attribute of the Feed
         example: RSS Feed
@@ -103,6 +115,41 @@ definitions:
       mdate: "1981-09-22T23:39:59Z"
       nextCheck: "1975-05-22T16:26:55Z"
       status: stopped
+      tags:
+      - foo
+      - bar
+      text: RSS Feed
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
+      errorMsg: Est suscipit.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nextCheck: "1975-05-22T16:26:55Z"
+      status: stopped
+      tags:
+      - foo
+      - bar
+      text: RSS Feed
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
+      errorMsg: Est suscipit.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nextCheck: "1975-05-22T16:26:55Z"
+      status: stopped
+      tags:
+      - foo
+      - bar
       text: RSS Feed
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
@@ -117,6 +164,9 @@ definitions:
       desc: This filter will...
       name: fetch
       props: '-'
+      tags:
+      - foo
+      - bar
     properties:
       desc:
         description: Description of the filter
@@ -131,6 +181,15 @@ definitions:
         description: Filter properties
         example: '-'
         type: object
+      tags:
+        description: List of tags
+        example:
+        - foo
+        - bar
+        items:
+          example: Exercitationem consequuntur id earum accusantium.
+          type: string
+        type: array
     required:
     - name
     - desc
@@ -143,12 +202,15 @@ definitions:
     - desc: This filter will...
       name: fetch
       props: '-'
+      tags:
+      - foo
+      - bar
     - desc: This filter will...
       name: fetch
       props: '-'
-    - desc: This filter will...
-      name: fetch
-      props: '-'
+      tags:
+      - foo
+      - bar
     items:
       $ref: '#/definitions/Filter'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; type=collection;
@@ -274,6 +336,11 @@ paths:
       description: Create a new feed
       operationId: feed#create
       parameters:
+      - description: Comma separated list of tags
+        in: query
+        name: tags
+        required: false
+        type: string
       - description: Feed URL
         format: uri
         in: query
@@ -351,6 +418,39 @@ paths:
       schemes:
       - http
       summary: get feed
+      tags:
+      - feed
+    put:
+      description: Update a feed
+      operationId: feed#update
+      parameters:
+      - description: Feed ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comma separated list of tags
+        in: query
+        name: tags
+        required: false
+        type: string
+      produces:
+      - application/vnd.feedpushr.feed.v1+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Feed'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: update feed
       tags:
       - feed
   /feeds/{id}/start:

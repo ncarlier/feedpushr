@@ -24,16 +24,16 @@ func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 		}
 		switch u.Scheme {
 		case "title":
-			chain.filters = append(chain.filters, newTitleFilter(u.Query()))
+			chain.filters = append(chain.filters, newTitleFilter(u.Query(), u.Fragment))
 		case "fetch":
-			chain.filters = append(chain.filters, newFetchFilter())
+			chain.filters = append(chain.filters, newFetchFilter(u.Fragment))
 		default:
 			// Try to load plugin regarding the name
 			plug := pr.LookupFilterPlugin(u.Scheme)
 			if plug == nil {
 				return nil, fmt.Errorf("unsuported filter: %s", u.Scheme)
 			}
-			fp, err := plug.Build(u.Query())
+			fp, err := plug.Build(u.Query(), u.Fragment)
 			if err != nil {
 				return nil, fmt.Errorf("unable to create filter: %v", err)
 			}
@@ -47,6 +47,11 @@ func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 // Apply applies filter chain on an article
 func (c *Chain) Apply(article *model.Article) error {
 	for idx, filter := range c.filters {
+		tags := filter.GetSpec().Tags
+		if !match(tags, article.Tags) {
+			// Ignore filters that do not match the article tags
+			continue
+		}
 		err := filter.DoFilter(article)
 		if err != nil {
 			return fmt.Errorf("error while applying filter #%d: %v", idx, err)
@@ -62,4 +67,22 @@ func (c *Chain) GetSpec() []model.FilterSpec {
 		result[idx] = filter.GetSpec()
 	}
 	return result
+}
+
+func match(a, b []string) bool {
+	// A filter with no tags match all articles
+	if len(a) == 0 {
+		return true
+	}
+	bSet := make(map[string]struct{}, len(b))
+	for _, s := range b {
+		bSet[s] = struct{}{}
+	}
+
+	for _, tag := range a {
+		if _, ok := bSet[tag]; !ok {
+			return false
+		}
+	}
+	return true
 }

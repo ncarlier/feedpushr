@@ -14,4 +14,5 @@ type Article struct {
 	PublishedParsed *time.Time             `json:"publishedParsed,omitempty"`
 	GUID            string                 `json:"guid,omitempty"`
 	Meta            map[string]interface{} `json:"meta,omitempty"`
+	Tags            []string               `json:"tags,omitempty"`
 }

@@ -4,6 +4,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/ncarlier/feedpushr/pkg/builder"
+
 	"github.com/RadhiFadlillah/go-readability"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
@@ -12,6 +14,7 @@ import (
 type FetchFilter struct {
 	name      string
 	desc      string
+	tags      []string
 	nbError   uint64
 	nbSuccess uint64
 }
@@ -36,6 +39,7 @@ func (f *FetchFilter) GetSpec() model.FilterSpec {
 	result := model.FilterSpec{
 		Name: f.name,
 		Desc: f.desc,
+		Tags: f.tags,
 	}
 	result.Props = map[string]interface{}{
 		"nbError":    f.nbError,
@@ -44,9 +48,10 @@ func (f *FetchFilter) GetSpec() model.FilterSpec {
 	return result
 }
 
-func newFetchFilter() *FetchFilter {
+func newFetchFilter(tags string) *FetchFilter {
 	return &FetchFilter{
 		name: "fetch",
 		desc: "This filter will attempt to extract the content of the article from the source URL.",
+		tags: builder.GetFeedTags(&tags),
 	}
 }
