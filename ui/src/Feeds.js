@@ -29,6 +29,8 @@ class Feeds extends Component {
       error: null,
       isLoaded: false,
       items: [],
+      column: null,
+      direction: null,
     }
   }
 
@@ -107,13 +109,43 @@ class Feeds extends Component {
       )
   }
 
+  handleSort = columnToSort => () => {
+    const { column, items, direction } = this.state
+
+    if (column !== columnToSort) {
+      items.sort(function(a, b) {
+        if (columnToSort === 'status') {
+          return a.nbProcessedItems - b.nbProcessedItems
+        } else {
+          return a[columnToSort].localeCompare(b[columnToSort]);
+        }
+      })
+      this.setState({
+        column: columnToSort,
+        items,
+        direction: 'ascending',
+      })
+
+      return
+    }
+    this.setState({
+      items: items.reverse(),
+      direction: direction === 'ascending' ? 'descending' : 'ascending',
+    })
+  }
+
   get tableHeader() {
+    const { column, direction } = this.state
     return (
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell />
-          <Table.HeaderCell>Feed</Table.HeaderCell>
-          <Table.HeaderCell>Status</Table.HeaderCell>
+          <Table.HeaderCell sorted={column === 'title' ? direction : null} onClick={this.handleSort('title')}>
+            Feed
+          </Table.HeaderCell>
+          <Table.HeaderCell sorted={column === 'status' ? direction : null} onClick={this.handleSort('status')}>
+            Status
+          </Table.HeaderCell>
           <Table.HeaderCell>Last check</Table.HeaderCell>
           <Table.HeaderCell>Next check</Table.HeaderCell>
           <Table.HeaderCell>Created</Table.HeaderCell>
@@ -196,7 +228,7 @@ class Feeds extends Component {
         <Dimmer active={!isLoaded} inverted>
           <Loader inverted>Loading</Loader>
         </Dimmer>
-        <Table compact celled definition>
+        <Table compact celled definition sortable>
           {this.tableHeader}
           {this.tableBody}
           {this.tableFooter}
