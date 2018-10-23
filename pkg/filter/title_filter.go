@@ -2,6 +2,7 @@ package filter
 
 import (
 	"net/url"
+	"sync/atomic"
 
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
@@ -9,15 +10,17 @@ import (
 
 // TitleFilter is a foo filter
 type TitleFilter struct {
-	name   string
-	desc   string
-	tags   []string
-	prefix string
+	name      string
+	desc      string
+	tags      []string
+	prefix    string
+	nbSuccess uint64
 }
 
 // DoFilter applies filter on the article
 func (f *TitleFilter) DoFilter(article *model.Article) error {
 	article.Title = f.prefix + " " + article.Title
+	atomic.AddUint64(&f.nbSuccess, 1)
 	return nil
 }
 
@@ -29,7 +32,8 @@ func (f *TitleFilter) GetSpec() model.FilterSpec {
 		Tags: f.tags,
 	}
 	result.Props = map[string]interface{}{
-		"prefix": f.prefix,
+		"prefix":     f.prefix,
+		"nbSsuccess": f.nbSuccess,
 	}
 
 	return result
