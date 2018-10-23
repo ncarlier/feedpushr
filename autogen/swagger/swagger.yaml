@@ -16,7 +16,8 @@ definitions:
       id: 5bfb841c028281c0051828c115fd1f50
       lastCheck: "1993-05-15T16:34:02Z"
       mdate: "1981-09-22T23:39:59Z"
-      nextCheck: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 5.41887129200626e+17
+      nextCheck: "1999-10-11T23:32:13Z"
       status: stopped
       tags:
       - foo
@@ -61,9 +62,14 @@ definitions:
         example: "1981-09-22T23:39:59Z"
         format: date-time
         type: string
+      nbProcessedItems:
+        description: Total number of processed items
+        example: 5.41887129200626e+17
+        format: int64
+        type: integer
       nextCheck:
         description: Next aggregation pass
-        example: "1975-05-22T16:26:55Z"
+        example: "1999-10-11T23:32:13Z"
         format: date-time
         type: string
       status:
@@ -79,7 +85,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Libero minus vitae ducimus veritatis laudantium autem.
+          example: Minus vitae ducimus.
           type: string
         type: array
       text:
@@ -113,7 +119,8 @@ definitions:
       id: 5bfb841c028281c0051828c115fd1f50
       lastCheck: "1993-05-15T16:34:02Z"
       mdate: "1981-09-22T23:39:59Z"
-      nextCheck: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 5.41887129200626e+17
+      nextCheck: "1999-10-11T23:32:13Z"
       status: stopped
       tags:
       - foo
@@ -129,7 +136,8 @@ definitions:
       id: 5bfb841c028281c0051828c115fd1f50
       lastCheck: "1993-05-15T16:34:02Z"
       mdate: "1981-09-22T23:39:59Z"
-      nextCheck: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 5.41887129200626e+17
+      nextCheck: "1999-10-11T23:32:13Z"
       status: stopped
       tags:
       - foo
@@ -145,7 +153,8 @@ definitions:
       id: 5bfb841c028281c0051828c115fd1f50
       lastCheck: "1993-05-15T16:34:02Z"
       mdate: "1981-09-22T23:39:59Z"
-      nextCheck: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 5.41887129200626e+17
+      nextCheck: "1999-10-11T23:32:13Z"
       status: stopped
       tags:
       - foo
@@ -187,7 +196,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Exercitationem consequuntur id earum accusantium.
+          example: Autem deserunt saepe.
           type: string
         type: array
     required:
@@ -199,6 +208,12 @@ definitions:
     description: FilterCollection is the media type for an array of Filter (default
       view)
     example:
+    - desc: This filter will...
+      name: fetch
+      props: '-'
+      tags:
+      - foo
+      - bar
     - desc: This filter will...
       name: fetch
       props: '-'

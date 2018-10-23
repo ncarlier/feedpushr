@@ -214,7 +214,7 @@ class Feeds extends Component {
       )
     } else if (typeof feed.hubUrl !== 'undefined') {
       const $icon = (<Icon.Group size='large'>
-        <Icon name='checkmark' color='green' />
+        <Label circular color='green'>{feed.nbProcessedItems}</Label>
         <Icon corner name='cloud' color='green' />
       </Icon.Group>)
       return (
@@ -223,7 +223,9 @@ class Feeds extends Component {
         </Popup>
       )
     } else {
-      return (<Icon color='green' name='checkmark' size='large' />)
+      return (
+        <Label circular color='green'>{feed.nbProcessedItems}</Label>
+      )
     }
   }
 

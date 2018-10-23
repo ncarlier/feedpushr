@@ -1,6 +1,7 @@
 package aggregator
 
 import (
+	"sync/atomic"
 	"time"
 
 	"github.com/ncarlier/feedpushr/autogen/app"
@@ -24,6 +25,7 @@ type FeedAggregator struct {
 	delay             time.Duration
 	nextCheck         time.Time
 	lastCheck         time.Time
+	nbProcessedItems  uint64
 	callbackURL       string
 }
 
@@ -61,7 +63,8 @@ func (fa *FeedAggregator) running() {
 				status, items := fa.handler.Refresh()
 				if items != nil && len(items) > 0 {
 					// Send feed's articles to the output provider
-					fa.output.Send(items)
+					nb := fa.output.Send(items)
+					atomic.AddUint64(&fa.nbProcessedItems, nb)
 				}
 				if fa.feed.HubURL != nil && *fa.feed.HubURL != "" && fa.callbackURL != "" {
 					// Send subscription request if the feed is bound to a hub
@@ -142,6 +145,8 @@ func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.Feed {
 	result.LastCheck = &lastCheck
 	nextCheck := fa.nextCheck
 	result.NextCheck = &nextCheck
+	nbProcessedItems := int(fa.nbProcessedItems)
+	result.NbProcessedItems = &nbProcessedItems
 	if fa.handler.status.ErrorMsg != "" {
 		msg := fa.handler.status.ErrorMsg
 		result.ErrorMsg = &msg

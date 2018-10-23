@@ -35,6 +35,8 @@ type Feed struct {
 	LastCheck *time.Time `form:"lastCheck,omitempty" json:"lastCheck,omitempty" yaml:"lastCheck,omitempty" xml:"lastCheck,omitempty"`
 	// Date of modification
 	Mdate time.Time `form:"mdate" json:"mdate" yaml:"mdate" xml:"mdate"`
+	// Total number of processed items
+	NbProcessedItems *int `form:"nbProcessedItems,omitempty" json:"nbProcessedItems,omitempty" yaml:"nbProcessedItems,omitempty" xml:"nbProcessedItems,omitempty"`
 	// Next aggregation pass
 	NextCheck *time.Time `form:"nextCheck,omitempty" json:"nextCheck,omitempty" yaml:"nextCheck,omitempty" xml:"nextCheck,omitempty"`
 	// Aggregation status

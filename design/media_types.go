@@ -39,6 +39,7 @@ var Feed = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 		Attribute("nextCheck", DateTime, "Next aggregation pass")
 		Attribute("errorMsg", String, "Last aggregation error")
 		Attribute("errorCount", Integer, "Number of consecutive aggregation errors")
+		Attribute("nbProcessedItems", Integer, "Total number of processed items")
 		Attribute("cdate", DateTime, "Date of creation")
 		Attribute("mdate", DateTime, "Date of modification")
 
@@ -58,6 +59,7 @@ var Feed = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 		Attribute("nextCheck")
 		Attribute("errorMsg")
 		Attribute("errorCount")
+		Attribute("nbProcessedItems")
 		Attribute("cdate")
 		Attribute("mdate")
 	})

@@ -50,7 +50,8 @@ func NewManager(db store.DB, uri string, cacheRetention time.Duration, pr *plugi
 }
 
 // Send feeds to the output provider
-func (m *Manager) Send(articles []*model.Article) error {
+func (m *Manager) Send(articles []*model.Article) uint64 {
+	var nbProcessedArticles uint64
 	maxAge := time.Now().Add(-m.cacheRetention)
 	m.log.Debug().Int("items", len(articles)).Str("before", maxAge.String()).Msg("processing articles")
 	for _, article := range articles {
@@ -108,8 +109,9 @@ func (m *Manager) Send(articles []*model.Article) error {
 		if err != nil {
 			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to store article into the cache")
 		}
+		nbProcessedArticles++
 	}
-	return nil
+	return nbProcessedArticles
 }
 
 // GetSpec return specification of the chain filter
