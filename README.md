@@ -17,6 +17,7 @@ A simple feed aggregator daemon with sugar on top.
 - Manage feed aggregation individually.
 - Apply modifications on articles with a pluggable filter system.
 - Push new articles to a pluggable output system (STDOUT, HTTP endpoint, ...).
+- Use tags to customize the pipeline.
 - Support of [PubSubHubbud][pubsubhubbud] the open, simple, web-scale and
   decentralized pubsub protocol.
 - REST API with complete [OpenAPI][openapi] documentation.
@@ -70,6 +71,7 @@ Before being sent articles can be modified through a filter chain.
 
 A filter is declared as a URL. The scheme of the URL is the filter name.
 Other parts of the URL configure the filter.
+The query parameters are the filter properties and the URL fragment configures the filter tags.
 
 Currently, there are two built-in filter:
 
@@ -82,6 +84,32 @@ Currently, there are two built-in filter:
 You can chain all the filters you need.
 
 Filters can be extended using plugins.
+
+## Tags
+
+Tags are used to customize the pipeline.
+
+You can define tags on feeds using the Web UI or the API:
+
+```bash
+$ curl -XPOST http://localhost:8080/v1/feeds?url=http://www.hashicorp.com/feed.xml&tags=foo,bar
+```
+
+Tags can also be imported/exported in OPML format. When using OMPL, tags are stored into the [category attribute][opml-category]. OPML category is a string of comma-separated slash-delimited category strings.
+For example, this OMPL attribute `<category>/test,foo,/bar/bar</category>` will be converted to the following tag list: `test, foo, bar_bar`.
+
+Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
+
+Tags are also used by filters to manage their activation.
+If you start the daemon with a filter using tags, only articles corresponding to these tags will be processed by this filter.
+
+Example:
+
+```bash
+$ feedpushr --filter "title://?prefix=Sample:#foo,bar"
+```
+
+In this example, only new articles with tags `foo` and `bar` will have their title modified with a prefix.
 
 ## Outputs
 
@@ -134,7 +162,7 @@ $ # Start the daemon and send new articles to a HTTP endpoint:
 $ feedpushr --output https://requestb.in/t4gdzct4
 $ # Start the daemon with a database initialized
 $ # with subscriptions from an OPML file:
-$ feedpusrh --import ./my-subscriptions.xml
+$ feedpushr --import ./my-subscriptions.xml
 $ # Start the daemon with custom configuration:
 $ export APP_OUTPUT="https://requestb.in/t4gdzct4"
 $ export APP_STORE="boltdb:///var/opt/feedpushr.db"
@@ -213,4 +241,4 @@ Type `make help` to see other possibilities.
 [boltdb]: https://github.com/coreos/bbolt
 [logstash]: https://www.elastic.co/fr/products/logstash
 [contrib]: https://github.com/ncarlier/feedpushr-contrib/
-
+[opml-category]: http://dev.opml.org/spec2.html#otherSpecialAttributes
