@@ -1,21 +1,28 @@
 <a name=""></a>
-#  (2018-08-22)
+#  (2018-10-25)
 
 
 
-<a name="1.0.0-rc"></a>
-# [1.0.0-rc](https://github.com/ncarlier/feedpushr/compare/1.0.0-beta.5...1.0.0-rc) (2018-08-22)
+<a name="1.0.0-rc2"></a>
+# [1.0.0-rc2](https://github.com/ncarlier/feedpushr/compare/1.0.0-beta.5...1.0.0-rc2) (2018-10-25)
 
 
 ### Bug Fixes
 
+* **docker:** fix plugins copy ([047693a](https://github.com/ncarlier/feedpushr/commit/047693a))
 * **plugin:** init output and filter plugin registry ([692c934](https://github.com/ncarlier/feedpushr/commit/692c934))
+* **ui:** show error messages and pshb status ([fa366e7](https://github.com/ncarlier/feedpushr/commit/fa366e7))
 
 
 ### Features
 
 * configure CORS ([a6e53f1](https://github.com/ncarlier/feedpushr/commit/a6e53f1))
+* use URL to declare filters and outputs ([a77d74d](https://github.com/ncarlier/feedpushr/commit/a77d74d))
+* **feed:** add processed items counter ([a5d3645](https://github.com/ncarlier/feedpushr/commit/a5d3645))
+* **filter:** add counter to title filter props ([69d2c42](https://github.com/ncarlier/feedpushr/commit/69d2c42))
+* **tags:** add tags support ([a59998b](https://github.com/ncarlier/feedpushr/commit/a59998b))
 * **ui:** add Web user interface ([aa8d50e](https://github.com/ncarlier/feedpushr/commit/aa8d50e))
+* **ui:** make feed table sortable ([cc319fc](https://github.com/ncarlier/feedpushr/commit/cc319fc))
 
 
 
