@@ -18,6 +18,7 @@ type Configuration struct {
 	Delay          time.Duration `default:"1m"`
 	Timeout        time.Duration `default:"5s"`
 	CacheRetention time.Duration `default:"72h" split_words:"true"`
+	SentryDSN      string        `split_words:"true"`
 	Filters        []string
 }
 

@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"io"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -8,7 +9,7 @@ import (
 )
 
 // Configure logger level and output format
-func Configure(level string, pretty bool) {
+func Configure(level string, pretty bool, sentryDSN *string) {
 	zerolog.TimeFieldFormat = ""
 	l := zerolog.InfoLevel
 	switch level {
@@ -20,8 +21,12 @@ func Configure(level string, pretty bool) {
 		l = zerolog.ErrorLevel
 	}
 	zerolog.SetGlobalLevel(l)
-	log.Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
+	var w io.Writer = os.Stdout
 	if pretty {
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+		w = zerolog.ConsoleWriter{Out: os.Stdout}
 	}
+	if sentryDSN != nil {
+		w = zerolog.MultiLevelWriter(w, SentryWriter(*sentryDSN))
+	}
+	log.Logger = zerolog.New(w).With().Timestamp().Logger()
 }
