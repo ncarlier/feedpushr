@@ -32,6 +32,12 @@
   revision = "783273d703149aaeb9897cf58613d5af48861c25"
 
 [[projects]]
+  name = "github.com/certifi/gocertifi"
+  packages = ["."]
+  revision = "deb3ae2ef2610fde3330947281941c562861188b"
+  version = "2018.01.18"
+
+[[projects]]
   name = "github.com/coreos/bbolt"
   packages = ["."]
   revision = "583e8937c61f1af6513608ccc75c97b6abdf4ff9"
@@ -48,6 +54,12 @@
   packages = ["."]
   revision = "7f532489e7739b3d49df5c602bf63549881fe753"
   version = "v5.0.1"
+
+[[projects]]
+  name = "github.com/getsentry/raven-go"
+  packages = ["."]
+  revision = "f04e7487e9a6b9d9837d52743fb5f40576c56411"
+  version = "v0.2.0"
 
 [[projects]]
   name = "github.com/goadesign/goa"
@@ -124,6 +136,12 @@
   name = "github.com/mmcdole/goxpp"
   packages = ["."]
   revision = "77e4a51a73ed99ee3f33c1474dc166866304acbd"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/rakyll/statik"
@@ -209,6 +227,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ccfb221b1b3e562fb56eacecc5e4ebc677b64ed7fdd0a51f27a4f3306f5fbade"
+  inputs-digest = "29e8d49ac92f814b9cf40beb618969f634fa6ef39af4f00944af0f2c9a5c06b9"
   solver-name = "gps-cdcl"
   solver-version = 1

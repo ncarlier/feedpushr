@@ -31,6 +31,7 @@ var (
 	outputURI,
 	importFilename,
 	publicURL,
+	sentryDSN,
 	logLevel *string
 	delay,
 	timeout,
@@ -53,6 +54,7 @@ func init() {
 	cacheRetention = flag.Duration("cache-retention", Config.CacheRetention, "Cache retention duration")
 	logPretty = flag.Bool("log-pretty", Config.LogPretty, "Writes log using plain text format")
 	logLevel = flag.String("log-level", Config.LogLevel, "Logging level")
+	sentryDSN = flag.String("sentry", Config.SentryDSN, "Sentry DSN URL")
 
 	flag.Var(&plugins, "plugin", "Plugin to load")
 	filters = Config.Filters
@@ -68,7 +70,7 @@ func main() {
 	}
 
 	// Log configuration
-	logging.Configure(*logLevel, *logPretty)
+	logging.Configure(*logLevel, *logPretty, sentryDSN)
 
 	// Load plugins
 	pr, err := plugin.NewPluginRegistry(plugins)
