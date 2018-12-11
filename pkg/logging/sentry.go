@@ -35,7 +35,7 @@ func (s *sentryWriter) Write(p []byte) (int, error) {
 			tags[key] = strValue
 		}
 	}
-	raven.CaptureErrorAndWait(err, tags)
+	raven.CaptureError(err, tags)
 	return len(p), nil
 }
 
