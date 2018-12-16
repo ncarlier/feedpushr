@@ -219,9 +219,8 @@ To be able to build the project you will need to:
   $ git submodule init
   $ git submodule update
   ```
-- Install `dep` and `goa`:
+- Install `goa`:
   ```bash
-  $ go get -u github.com/golang/dep/cmd/dep
   $ go get -u github.com/goadesign/goa/...
   ```
 
