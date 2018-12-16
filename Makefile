@@ -90,7 +90,7 @@ $(ARTEFACT): build
 ## Run tests
 test:
 	-golint pkg/...
-	cd $(APPBASE)/$(APPNAME) && go test ./...
+	cd $(APPBASE)/$(APPNAME) && go test `go list ./... | grep -v autogen`
 .PHONY: test
 
 ## Install executable
