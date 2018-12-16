@@ -17,8 +17,8 @@ import (
 
 // subscriptionPayload user type.
 type subscriptionPayload struct {
-	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
-	URI   *string `form:"uri,omitempty" json:"uri,omitempty" yaml:"uri,omitempty" xml:"uri,omitempty"`
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" xml:"alias,omitempty"`
+	URI   *string `form:"uri,omitempty" json:"uri,omitempty" xml:"uri,omitempty"`
 }
 
 // Validate validates the subscriptionPayload type instance.
@@ -50,8 +50,8 @@ func (ut *subscriptionPayload) Publicize() *SubscriptionPayload {
 
 // SubscriptionPayload user type.
 type SubscriptionPayload struct {
-	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
-	URI   *string `form:"uri,omitempty" json:"uri,omitempty" yaml:"uri,omitempty" xml:"uri,omitempty"`
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" xml:"alias,omitempty"`
+	URI   *string `form:"uri,omitempty" json:"uri,omitempty" xml:"uri,omitempty"`
 }
 
 // Validate validates the SubscriptionPayload type instance.

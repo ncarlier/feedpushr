@@ -47,5 +47,4 @@ func main() {
 	if err := service.ListenAndServe(":8080"); err != nil {
 		service.LogError("startup", "err", err)
 	}
-
 }

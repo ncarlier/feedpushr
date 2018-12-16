@@ -21,35 +21,35 @@ import (
 // Identifier: application/vnd.feedpushr.feed.v1+json; view=default
 type Feed struct {
 	// Date of creation
-	Cdate time.Time `form:"cdate" json:"cdate" yaml:"cdate" xml:"cdate"`
+	Cdate time.Time `form:"cdate" json:"cdate" xml:"cdate"`
 	// Number of consecutive aggregation errors
-	ErrorCount *int `form:"errorCount,omitempty" json:"errorCount,omitempty" yaml:"errorCount,omitempty" xml:"errorCount,omitempty"`
+	ErrorCount *int `form:"errorCount,omitempty" json:"errorCount,omitempty" xml:"errorCount,omitempty"`
 	// Last aggregation error
-	ErrorMsg *string `form:"errorMsg,omitempty" json:"errorMsg,omitempty" yaml:"errorMsg,omitempty" xml:"errorMsg,omitempty"`
+	ErrorMsg *string `form:"errorMsg,omitempty" json:"errorMsg,omitempty" xml:"errorMsg,omitempty"`
 	// URL of the feed website
-	HTMLURL *string `form:"htmlUrl,omitempty" json:"htmlUrl,omitempty" yaml:"htmlUrl,omitempty" xml:"htmlUrl,omitempty"`
+	HTMLURL *string `form:"htmlUrl,omitempty" json:"htmlUrl,omitempty" xml:"htmlUrl,omitempty"`
 	// URL of the PubSubHubbud hub
-	HubURL *string `form:"hubUrl,omitempty" json:"hubUrl,omitempty" yaml:"hubUrl,omitempty" xml:"hubUrl,omitempty"`
+	HubURL *string `form:"hubUrl,omitempty" json:"hubUrl,omitempty" xml:"hubUrl,omitempty"`
 	// ID of feed (MD5 of the xmlUrl)
-	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
+	ID string `form:"id" json:"id" xml:"id"`
 	// Last aggregation pass
-	LastCheck *time.Time `form:"lastCheck,omitempty" json:"lastCheck,omitempty" yaml:"lastCheck,omitempty" xml:"lastCheck,omitempty"`
+	LastCheck *time.Time `form:"lastCheck,omitempty" json:"lastCheck,omitempty" xml:"lastCheck,omitempty"`
 	// Date of modification
-	Mdate time.Time `form:"mdate" json:"mdate" yaml:"mdate" xml:"mdate"`
+	Mdate time.Time `form:"mdate" json:"mdate" xml:"mdate"`
 	// Total number of processed items
-	NbProcessedItems *int `form:"nbProcessedItems,omitempty" json:"nbProcessedItems,omitempty" yaml:"nbProcessedItems,omitempty" xml:"nbProcessedItems,omitempty"`
+	NbProcessedItems *int `form:"nbProcessedItems,omitempty" json:"nbProcessedItems,omitempty" xml:"nbProcessedItems,omitempty"`
 	// Next aggregation pass
-	NextCheck *time.Time `form:"nextCheck,omitempty" json:"nextCheck,omitempty" yaml:"nextCheck,omitempty" xml:"nextCheck,omitempty"`
+	NextCheck *time.Time `form:"nextCheck,omitempty" json:"nextCheck,omitempty" xml:"nextCheck,omitempty"`
 	// Aggregation status
-	Status *string `form:"status,omitempty" json:"status,omitempty" yaml:"status,omitempty" xml:"status,omitempty"`
+	Status *string `form:"status,omitempty" json:"status,omitempty" xml:"status,omitempty"`
 	// List of tags
-	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+	Tags []string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
 	// Text attribute of the Feed
-	Text *string `form:"text,omitempty" json:"text,omitempty" yaml:"text,omitempty" xml:"text,omitempty"`
+	Text *string `form:"text,omitempty" json:"text,omitempty" xml:"text,omitempty"`
 	// Title of the Feed
-	Title string `form:"title" json:"title" yaml:"title" xml:"title"`
+	Title string `form:"title" json:"title" xml:"title"`
 	// URL of the XML feed
-	XMLURL string `form:"xmlUrl" json:"xmlUrl" yaml:"xmlUrl" xml:"xmlUrl"`
+	XMLURL string `form:"xmlUrl" json:"xmlUrl" xml:"xmlUrl"`
 }
 
 // Validate validates the Feed media type instance.
@@ -77,9 +77,9 @@ func (mt *Feed) Validate() (err error) {
 // Identifier: application/vnd.feedpushr.feed.v1+json; view=link
 type FeedLink struct {
 	// ID of feed (MD5 of the xmlUrl)
-	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
+	ID string `form:"id" json:"id" xml:"id"`
 	// URL of the XML feed
-	XMLURL string `form:"xmlUrl" json:"xmlUrl" yaml:"xmlUrl" xml:"xmlUrl"`
+	XMLURL string `form:"xmlUrl" json:"xmlUrl" xml:"xmlUrl"`
 }
 
 // Validate validates the FeedLink media type instance.
@@ -98,15 +98,15 @@ func (mt *FeedLink) Validate() (err error) {
 // Identifier: application/vnd.feedpushr.feed.v1+json; view=tiny
 type FeedTiny struct {
 	// Date of creation
-	Cdate time.Time `form:"cdate" json:"cdate" yaml:"cdate" xml:"cdate"`
+	Cdate time.Time `form:"cdate" json:"cdate" xml:"cdate"`
 	// ID of feed (MD5 of the xmlUrl)
-	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
+	ID string `form:"id" json:"id" xml:"id"`
 	// List of tags
-	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+	Tags []string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
 	// Title of the Feed
-	Title string `form:"title" json:"title" yaml:"title" xml:"title"`
+	Title string `form:"title" json:"title" xml:"title"`
 	// URL of the XML feed
-	XMLURL string `form:"xmlUrl" json:"xmlUrl" yaml:"xmlUrl" xml:"xmlUrl"`
+	XMLURL string `form:"xmlUrl" json:"xmlUrl" xml:"xmlUrl"`
 }
 
 // Validate validates the FeedTiny media type instance.
@@ -198,13 +198,13 @@ func (c *Client) DecodeFeedTinyCollection(resp *http.Response) (FeedTinyCollecti
 // Identifier: application/vnd.feedpushr.filter.v1+json; view=default
 type Filter struct {
 	// Description of the filter
-	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	Desc string `form:"desc" json:"desc" xml:"desc"`
 	// Name of the filter
-	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	Name string `form:"name" json:"name" xml:"name"`
 	// Filter properties
-	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" xml:"props,omitempty"`
 	// List of tags
-	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+	Tags []string `form:"tags,omitempty" json:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate validates the Filter media type instance.
@@ -254,11 +254,11 @@ func (c *Client) DecodeFilterCollection(resp *http.Response) (FilterCollection, 
 // Identifier: application/vnd.feedpushr.output.v1+json; view=default
 type Output struct {
 	// Description of the output channel
-	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	Desc string `form:"desc" json:"desc" xml:"desc"`
 	// Name of the output channel
-	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	Name string `form:"name" json:"name" xml:"name"`
 	// Output channel properties
-	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" xml:"props,omitempty"`
 }
 
 // Validate validates the Output media type instance.

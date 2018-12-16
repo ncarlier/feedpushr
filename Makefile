@@ -1,5 +1,7 @@
 .SILENT :
 
+export GO111MODULE=on
+
 # Author
 AUTHOR=github.com/ncarlier
 
@@ -43,21 +45,10 @@ clean:
 	-rm -rf release autogen var/assets/ui pkg/assets/statik.go
 .PHONY: clean
 
-deps:
-	echo ">>> Installing dependencies ..."
-	cd $(APPBASE)/$(APPNAME) && dep ensure
-.PHONY: deps
-
-Gopkg.lock:
-	make deps
-
 ## Run code generation
 autogen:
 	echo ">>> Generating code ..."
-	#go get -u github.com/goadesign/goa/...
-	-mv vendor vendor_bak
 	cd $(APPBASE)/$(APPNAME) && goagen bootstrap -o autogen -d $(AUTHOR)/$(APPNAME)/design
-	mv vendor_bak vendor
 	cp -f autogen/swagger/** var/assets/
 
 ## Build web UI
@@ -85,7 +76,7 @@ pkg/assets/statik.go:
 	statik -p assets -src var/assets -dest pkg -f
 
 ## Build executable
-build: Gopkg.lock autogen pkg/assets/statik.go $(APPBASE)/$(APPNAME)
+build: autogen pkg/assets/statik.go $(APPBASE)/$(APPNAME)
 	-mkdir -p release
 	echo ">>> Building: $(ARTEFACT) ..."
 	cd $(APPBASE)/$(APPNAME) && \
@@ -99,7 +90,7 @@ $(ARTEFACT): build
 ## Run tests
 test:
 	-golint pkg/...
-	cd $(APPBASE)/$(APPNAME) && go test `go list ./... | grep -v vendor`
+	cd $(APPBASE)/$(APPNAME) && go test ./...
 .PHONY: test
 
 ## Install executable
