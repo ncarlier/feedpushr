@@ -2,11 +2,14 @@
 
 export GO111MODULE=on
 
-# Author
-AUTHOR=github.com/ncarlier
+# Base package
+BASE_PACKAGE=github.com/ncarlier
 
 # App name
 APPNAME=feedpushr
+
+# Go app path
+APPBASE=${GOPATH}/src/$(BASE_PACKAGE)
 
 # Go configuration
 GOOS?=linux
@@ -16,12 +19,14 @@ GOARCH?=amd64
 is_windows:=$(filter windows,$(GOOS))
 EXT:=$(if $(is_windows),".exe","")
 
-# Go app path
-APPBASE=${GOPATH}/src/$(AUTHOR)
+# Archive name
+ARCHIVE=$(APPNAME)-$(GOOS)-$(GOARCH).tgz
 
-# Artefact name
-ARTEFACT=release/$(APPNAME)-$(GOOS)-$(GOARCH)$(EXT)
-ARTEFACT_CTL=release/$(APPNAME)-ctl-$(GOOS)-$(GOARCH)$(EXT)
+# Executable name
+EXECUTABLE=$(APPNAME)$(EXT)
+
+# CTL executable name
+CTL_EXECUTABLE=$(APPNAME)-ctl$(EXT)
 
 # Extract version infos
 VERSION:=`git describe --tags`
@@ -34,11 +39,6 @@ root_dir:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 makefiles:=$(root_dir)/makefiles
 include $(makefiles)/help.Makefile
 
-$(APPBASE)/$(APPNAME):
-	echo ">>> Creating GO src link: $(APPBASE)/$(APPNAME) ..."
-	mkdir -p $(APPBASE)
-	ln -s $(root_dir) $(APPBASE)/$(APPNAME)
-
 ## Clean built files
 clean:
 	echo ">>> Removing generated files ..."
@@ -47,9 +47,16 @@ clean:
 
 ## Run code generation
 autogen:
+	-rm $(APPBASE)/$(APPNAME)
+	echo ">>> Creating GO src link: $(APPBASE)/$(APPNAME) ..."
+	mkdir -p $(APPBASE)
+	ln -s $(root_dir) $(APPBASE)/$(APPNAME)
 	echo ">>> Generating code ..."
-	cd $(APPBASE)/$(APPNAME) && goagen bootstrap -o autogen -d $(AUTHOR)/$(APPNAME)/design
+	cd $(APPBASE)/$(APPNAME) && goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/design
+	echo ">>> Moving Swagger files to assets ..."
 	cp -f autogen/swagger/** var/assets/
+	echo ">>> Removing GO src link: $(APPBASE)/$(APPNAME) ..."
+	rm $(APPBASE)/$(APPNAME)
 
 ## Build web UI
 ui:
@@ -76,27 +83,27 @@ pkg/assets/statik.go:
 	statik -p assets -src var/assets -dest pkg -f
 
 ## Build executable
-build: autogen pkg/assets/statik.go $(APPBASE)/$(APPNAME)
+build: autogen pkg/assets/statik.go
 	-mkdir -p release
-	echo ">>> Building: $(ARTEFACT) ..."
-	cd $(APPBASE)/$(APPNAME) && \
-		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $(ARTEFACT)
-	cd $(APPBASE)/$(APPNAME)/autogen/tool/$(APPNAME)-cli && \
-		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $(APPBASE)/$(APPNAME)/$(ARTEFACT_CTL)
+	echo ">>> Building: $(EXECUTABLE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o release/$(EXECUTABLE)
+	echo ">>> Building: $(CTL_EXECUTABLE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	cd ./autogen/tool/$(APPNAME)-cli && \
+		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ../../../release/$(CTL_EXECUTABLE)
 .PHONY: build
 
-$(ARTEFACT): build
+release/$(EXECUTABLE): build
 
 ## Run tests
 test:
 	-golint pkg/...
-	cd $(APPBASE)/$(APPNAME) && go test `go list ./... | grep -v autogen`
+	go test `go list ./... | grep -v autogen`
 .PHONY: test
 
 ## Install executable
-install: $(ARTEFACT)
-	echo ">>> Installing $(ARTEFACT) to ${HOME}/.local/bin/$(APPNAME) ..."
-	cp $(ARTEFACT) ${HOME}/.local/bin/$(APPNAME)
+install: release/$(EXECUTABLE)
+	echo ">>> Installing $(EXECUTABLE) to ${HOME}/.local/bin/$(EXECUTABLE) ..."
+	cp release/$(EXECUTABLE) ${HOME}/.local/bin/$(EXECUTABLE)
 .PHONY: install
 
 ## Create Docker image
@@ -110,16 +117,18 @@ changelog:
 	standard-changelog --first-release
 .PHONY: changelog
 
-## GZIP executable
-gzip:
-	gzip $(ARTEFACT)
-	gzip $(ARTEFACT_CTL)
-.PHONY: gzip
+## Create archive
+archive:
+	echo ">>> Creating release/$(ARCHIVE) archive..."
+	tar czf release/$(ARCHIVE) README.md LICENSE CHANGELOG.md -C release/ $(EXECUTABLE) $(CTL_EXECUTABLE)
+	rm release/$(EXECUTABLE) release/$(CTL_EXECUTABLE)
+.PHONY: archive
 
 ## Create distribution binaries
 distribution:
-	GOARCH=amd64 make build gzip
-	GOARCH=arm64 make build gzip
-	GOARCH=arm make build gzip
-	GOOS=darwin make build gzip
+	GOARCH=amd64 make build archive
+	GOARCH=arm64 make build archive
+	GOARCH=arm make build archive
+	GOOS=darwin make build archive
 .PHONY: distribution
+
