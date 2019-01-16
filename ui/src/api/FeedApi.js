@@ -18,9 +18,9 @@ export class FeedApi {
     }).then(handleErrors)
   }
 
-  add(url, tags) {
+  add(url, tags, title) {
     const _url = new URL(this.root)
-    const params = { url, tags: tags.join(",") }
+    const params = { url, tags: tags.join(","), title }
     Object.keys(params).forEach(key => _url.searchParams.append(key, params[key]))
     return fetch(_url, {
       method: 'POST',
@@ -30,9 +30,10 @@ export class FeedApi {
     }).then(handleErrors)
   }
   
-  update(tag, payload) {
-    const _url = new URL(`${this.root}/${tag.id}`)
-    const params = { tags: payload.tags.join(",") }
+  update(feed, payload) {
+    const _url = new URL(`${this.root}/${feed.id}`)
+    const { tags, title } = payload
+    const params = { tags: tags.join(","), title }
     Object.keys(params).forEach(key => _url.searchParams.append(key, params[key]))
     return fetch(_url, {
       method: 'PUT',

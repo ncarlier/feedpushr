@@ -25,8 +25,8 @@ func CreateFeedPath() string {
 }
 
 // Create a new feed
-func (c *Client) CreateFeed(ctx context.Context, path string, url_ string, tags *string) (*http.Response, error) {
-	req, err := c.NewCreateFeedRequest(ctx, path, url_, tags)
+func (c *Client) CreateFeed(ctx context.Context, path string, url_ string, tags *string, title *string) (*http.Response, error) {
+	req, err := c.NewCreateFeedRequest(ctx, path, url_, tags, title)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *Client) CreateFeed(ctx context.Context, path string, url_ string, tags 
 }
 
 // NewCreateFeedRequest create the request corresponding to the create action endpoint of the feed resource.
-func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ string, tags *string) (*http.Request, error) {
+func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ string, tags *string, title *string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
@@ -44,6 +44,9 @@ func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ str
 	values.Set("url", url_)
 	if tags != nil {
 		values.Set("tags", *tags)
+	}
+	if title != nil {
+		values.Set("title", *title)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("POST", u.String(), nil)
@@ -220,8 +223,8 @@ func UpdateFeedPath(id string) string {
 }
 
 // Update a feed
-func (c *Client) UpdateFeed(ctx context.Context, path string, tags *string) (*http.Response, error) {
-	req, err := c.NewUpdateFeedRequest(ctx, path, tags)
+func (c *Client) UpdateFeed(ctx context.Context, path string, tags *string, title *string) (*http.Response, error) {
+	req, err := c.NewUpdateFeedRequest(ctx, path, tags, title)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +232,7 @@ func (c *Client) UpdateFeed(ctx context.Context, path string, tags *string) (*ht
 }
 
 // NewUpdateFeedRequest create the request corresponding to the update action endpoint of the feed resource.
-func (c *Client) NewUpdateFeedRequest(ctx context.Context, path string, tags *string) (*http.Request, error) {
+func (c *Client) NewUpdateFeedRequest(ctx context.Context, path string, tags *string, title *string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
@@ -238,6 +241,9 @@ func (c *Client) NewUpdateFeedRequest(ctx context.Context, path string, tags *st
 	values := u.Query()
 	if tags != nil {
 		values.Set("tags", *tags)
+	}
+	if title != nil {
+		values.Set("title", *title)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("PUT", u.String(), nil)

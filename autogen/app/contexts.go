@@ -22,8 +22,9 @@ type CreateFeedContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Tags *string
-	URL  string
+	Tags  *string
+	Title *string
+	URL   string
 }
 
 // NewCreateFeedContext parses the incoming request URL and body, performs validations and creates the
@@ -39,6 +40,11 @@ func NewCreateFeedContext(ctx context.Context, r *http.Request, service *goa.Ser
 	if len(paramTags) > 0 {
 		rawTags := paramTags[0]
 		rctx.Tags = &rawTags
+	}
+	paramTitle := req.Params["title"]
+	if len(paramTitle) > 0 {
+		rawTitle := paramTitle[0]
+		rctx.Title = &rawTitle
 	}
 	paramURL := req.Params["url"]
 	if len(paramURL) == 0 {
@@ -358,8 +364,9 @@ type UpdateFeedContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID   string
-	Tags *string
+	ID    string
+	Tags  *string
+	Title *string
 }
 
 // NewUpdateFeedContext parses the incoming request URL and body, performs validations and creates the
@@ -380,6 +387,11 @@ func NewUpdateFeedContext(ctx context.Context, r *http.Request, service *goa.Ser
 	if len(paramTags) > 0 {
 		rawTags := paramTags[0]
 		rctx.Tags = &rawTags
+	}
+	paramTitle := req.Params["title"]
+	if len(paramTitle) > 0 {
+		rawTitle := paramTitle[0]
+		rctx.Title = &rawTitle
 	}
 	return &rctx, err
 }

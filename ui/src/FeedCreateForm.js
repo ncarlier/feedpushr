@@ -19,6 +19,7 @@ class FeedCreateForm extends Component {
       open: false,
       error: null,
       feedXMLURL: '',
+      feedTitle: '',
       feedTags: []
     }
   }
@@ -30,8 +31,8 @@ class FeedCreateForm extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   handleSubmit = () => {
-    const { feedXMLURL, feedTags } = this.state
-    FeedApi.add(feedXMLURL, feedTags)
+    const { feedXMLURL, feedTags, feedTitle } = this.state
+    FeedApi.add(feedXMLURL, feedTags, feedTitle)
       .then(
         () => {
           this.handleClose()
@@ -60,7 +61,7 @@ class FeedCreateForm extends Component {
 
   render() {
     const { tagSuggestions } = this.props
-    const { open, error, feedXMLURL } = this.state
+    const { open, error, feedXMLURL, feedTitle } = this.state
     return (
       <Modal open={open} onClose={this.handleClose} trigger={
         <Button title='Add new feed' floated='right' icon labelPosition='left' primary size='small' onClick={this.handleOpen}>
@@ -78,6 +79,14 @@ class FeedCreateForm extends Component {
               value={feedXMLURL}
               required
               autoFocus
+              onChange={this.handleChange}
+            />
+            <Form.Input
+              type='text'
+              name='feedTitle'
+              label='Title'
+              placeholder='Feed XML title if empty'
+              value={feedTitle}
               onChange={this.handleChange}
             />
             <Form.Field>

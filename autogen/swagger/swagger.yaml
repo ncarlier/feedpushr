@@ -356,6 +356,11 @@ paths:
         name: tags
         required: false
         type: string
+      - description: Feed title (will overide official feed title)
+        in: query
+        name: title
+        required: false
+        type: string
       - description: Feed URL
         format: uri
         in: query
@@ -447,6 +452,11 @@ paths:
       - description: Comma separated list of tags
         in: query
         name: tags
+        required: false
+        type: string
+      - description: Feed title
+        in: query
+        name: title
         required: false
         type: string
       produces:

@@ -19,6 +19,7 @@ class FeedUpdateForm extends Component {
     this.state = {
       open: false,
       error: null,
+      feedTitle: '',
       feedTags: tags
     }
   }
@@ -31,8 +32,8 @@ class FeedUpdateForm extends Component {
 
   handleSubmit = () => {
     const { feed } = this.props
-    const { feedTags } = this.state
-    FeedApi.update(feed, {tags: feedTags})
+    const { feedTags, feedTitle } = this.state
+    FeedApi.update(feed, {tags: feedTags, title: feedTitle})
       .then(
         () => {
           this.handleClose()
@@ -61,7 +62,7 @@ class FeedUpdateForm extends Component {
 
   render() {
     const { feed, tagSuggestions } = this.props
-    const { open, error, feedTags } = this.state
+    const { open, error, feedTags, feedTitle } = this.state
     return (
       <Modal open={open} onClose={this.handleClose} trigger={
         <Button title='Update feed' icon size='tiny' onClick={this.handleOpen}>
@@ -71,6 +72,14 @@ class FeedUpdateForm extends Component {
         <Header icon='rss' content={`Update feed: ${feed.title}`} />
         <Modal.Content>
           <Form error={error !== null} onSubmit={this.handleSubmit}>
+            <Form.Input
+              type='text'
+              name='feedTitle'
+              label='Title'
+              placeholder={feed.title}
+              value={feedTitle}
+              onChange={this.handleChange}
+            />
             <Form.Field>
               <label>Tags</label>
               <FeedTags

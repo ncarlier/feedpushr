@@ -9,6 +9,11 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
+// IsEmptyString test if a string pointer is nil or empty
+func IsEmptyString(s *string) bool {
+	return s == nil || len(strings.TrimSpace(*s)) == 0
+}
+
 // GetNormalizedBodyFromResponse get body reader from HTTP response using UTF-8
 func GetNormalizedBodyFromResponse(res *http.Response) (io.Reader, error) {
 	contentType := res.Header.Get("Content-Type")

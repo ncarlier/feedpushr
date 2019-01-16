@@ -61,6 +61,9 @@ var _ = Resource("feed", func() {
 				Example("http://www.hashicorp.com/feed.xml")
 				Format("uri")
 			})
+			Param("title", String, "Feed title (will overide official feed title)", func() {
+				Example("A cool website")
+			})
 			Param("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
 			})
@@ -77,6 +80,9 @@ var _ = Resource("feed", func() {
 		Description("Update a feed")
 		Params(func() {
 			Param("id", String, "Feed ID")
+			Param("title", String, "Feed title", func() {
+				Example("A cool website")
+			})
 			Param("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
 			})

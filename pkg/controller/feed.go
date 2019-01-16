@@ -38,6 +38,9 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
+	if !common.IsEmptyString(ctx.Title) {
+		feed.Title = *ctx.Title
+	}
 	err = c.db.SaveFeed(feed)
 	if err != nil {
 		return goa.ErrInternal(err)
@@ -59,9 +62,16 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 		}
 		return goa.ErrInternal(err)
 	}
-	if ctx.Tags == nil {
+
+	if ctx.Tags == nil && common.IsEmptyString(ctx.Title) {
 		return ctx.OK(feed)
 	}
+
+	// Update feed title
+	if !common.IsEmptyString(ctx.Title) {
+		feed.Title = *ctx.Title
+	}
+	// Update feed tags
 	feed.Tags = builder.GetFeedTags(ctx.Tags)
 	feed.Mdate = time.Now()
 	err = c.db.SaveFeed(feed)
@@ -71,7 +81,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 	fa := c.aggregator.GetFeedAggregator(feed.ID)
 	if fa != nil {
 		// Reload aggegator data
-		// For now we ar recreating the aggregator
+		// For now we are recreating the aggregator
 		c.aggregator.UnRegisterFeedAggregator(feed.ID)
 		c.aggregator.RegisterFeedAggregator(feed)
 		c.log.Info().Str("id", feed.ID).Msg("feed updated and aggregation restarted")

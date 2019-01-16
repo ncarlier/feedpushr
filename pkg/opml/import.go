@@ -2,8 +2,9 @@ package opml
 
 import (
 	"fmt"
+	"strings"
 
-	"github.com/hashicorp/go-multierror"
+	multierror "github.com/hashicorp/go-multierror"
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog/log"
@@ -29,6 +30,9 @@ func ImportOPMLToDB(opml *OPML, db store.DB) error {
 			logger.Warn().Err(err).Str("url", outline.XMLURL).Msg("unable to create feed: skipped")
 			result = multierror.Append(result, newItemError(idx, err))
 			continue
+		}
+		if len(strings.TrimSpace(outline.Title)) > 0 {
+			feed.Title = outline.Title
 		}
 		// TODO register new feed aggregators
 		err = db.SaveFeed(feed)

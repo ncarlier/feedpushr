@@ -29,7 +29,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, url_ string) (http.ResponseWriter, error) {
+func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -54,6 +54,10 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 		sliceVal := []string{*tags}
 		query["tags"] = sliceVal
 	}
+	if title != nil {
+		sliceVal := []string{*title}
+		query["title"] = sliceVal
+	}
 	{
 		sliceVal := []string{url_}
 		query["url"] = sliceVal
@@ -70,6 +74,10 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	if tags != nil {
 		sliceVal := []string{*tags}
 		prms["tags"] = sliceVal
+	}
+	if title != nil {
+		sliceVal := []string{*title}
+		prms["title"] = sliceVal
 	}
 	{
 		sliceVal := []string{url_}
@@ -115,7 +123,7 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, url_ string) http.ResponseWriter {
+func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -139,6 +147,10 @@ func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 		sliceVal := []string{*tags}
 		query["tags"] = sliceVal
 	}
+	if title != nil {
+		sliceVal := []string{*title}
+		query["title"] = sliceVal
+	}
 	{
 		sliceVal := []string{url_}
 		query["url"] = sliceVal
@@ -155,6 +167,10 @@ func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 	if tags != nil {
 		sliceVal := []string{*tags}
 		prms["tags"] = sliceVal
+	}
+	if title != nil {
+		sliceVal := []string{*title}
+		prms["title"] = sliceVal
 	}
 	{
 		sliceVal := []string{url_}
@@ -1464,7 +1480,7 @@ func StopFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, error) {
+func UpdateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1489,6 +1505,10 @@ func UpdateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 		sliceVal := []string{*tags}
 		query["tags"] = sliceVal
 	}
+	if title != nil {
+		sliceVal := []string{*title}
+		query["title"] = sliceVal
+	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v1/feeds/%v", id),
 		RawQuery: query.Encode(),
@@ -1502,6 +1522,10 @@ func UpdateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	if tags != nil {
 		sliceVal := []string{*tags}
 		prms["tags"] = sliceVal
+	}
+	if title != nil {
+		sliceVal := []string{*title}
+		prms["title"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -1543,7 +1567,7 @@ func UpdateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) http.ResponseWriter {
+func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1567,6 +1591,10 @@ func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 		sliceVal := []string{*tags}
 		query["tags"] = sliceVal
 	}
+	if title != nil {
+		sliceVal := []string{*title}
+		query["title"] = sliceVal
+	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v1/feeds/%v", id),
 		RawQuery: query.Encode(),
@@ -1580,6 +1608,10 @@ func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 	if tags != nil {
 		sliceVal := []string{*tags}
 		prms["tags"] = sliceVal
+	}
+	if title != nil {
+		sliceVal := []string{*title}
+		prms["title"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -1614,7 +1646,7 @@ func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, *app.Feed) {
+func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.Feed) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1639,6 +1671,10 @@ func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 		sliceVal := []string{*tags}
 		query["tags"] = sliceVal
 	}
+	if title != nil {
+		sliceVal := []string{*title}
+		query["title"] = sliceVal
+	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v1/feeds/%v", id),
 		RawQuery: query.Encode(),
@@ -1652,6 +1688,10 @@ func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	if tags != nil {
 		sliceVal := []string{*tags}
 		prms["tags"] = sliceVal
+	}
+	if title != nil {
+		sliceVal := []string{*title}
+		prms["title"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -1698,7 +1738,7 @@ func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, *app.FeedLink) {
+func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.FeedLink) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1723,6 +1763,10 @@ func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Se
 		sliceVal := []string{*tags}
 		query["tags"] = sliceVal
 	}
+	if title != nil {
+		sliceVal := []string{*title}
+		query["title"] = sliceVal
+	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v1/feeds/%v", id),
 		RawQuery: query.Encode(),
@@ -1736,6 +1780,10 @@ func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Se
 	if tags != nil {
 		sliceVal := []string{*tags}
 		prms["tags"] = sliceVal
+	}
+	if title != nil {
+		sliceVal := []string{*title}
+		prms["title"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -1782,7 +1830,7 @@ func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string) (http.ResponseWriter, *app.FeedTiny) {
+func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.FeedTiny) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1807,6 +1855,10 @@ func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Se
 		sliceVal := []string{*tags}
 		query["tags"] = sliceVal
 	}
+	if title != nil {
+		sliceVal := []string{*title}
+		query["title"] = sliceVal
+	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v1/feeds/%v", id),
 		RawQuery: query.Encode(),
@@ -1820,6 +1872,10 @@ func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Se
 	if tags != nil {
 		sliceVal := []string{*tags}
 		prms["tags"] = sliceVal
+	}
+	if title != nil {
+		sliceVal := []string{*title}
+		prms["title"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()

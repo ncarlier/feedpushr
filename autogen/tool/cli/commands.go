@@ -32,6 +32,8 @@ type (
 	CreateFeedCommand struct {
 		// Comma separated list of tags
 		Tags string
+		// Feed title (will overide official feed title)
+		Title string
 		// Feed URL
 		URL         string
 		PrettyPrint bool
@@ -77,7 +79,9 @@ type (
 		// Feed ID
 		ID string
 		// Comma separated list of tags
-		Tags        string
+		Tags string
+		// Feed title
+		Title       string
 		PrettyPrint bool
 	}
 
@@ -497,7 +501,7 @@ func (cmd *CreateFeedCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.CreateFeed(ctx, path, cmd.URL, stringFlagVal("tags", cmd.Tags))
+	resp, err := c.CreateFeed(ctx, path, cmd.URL, stringFlagVal("tags", cmd.Tags), stringFlagVal("title", cmd.Title))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -511,6 +515,8 @@ func (cmd *CreateFeedCommand) Run(c *client.Client, args []string) error {
 func (cmd *CreateFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var tags string
 	cc.Flags().StringVar(&cmd.Tags, "tags", tags, `Comma separated list of tags`)
+	var title string
+	cc.Flags().StringVar(&cmd.Title, "title", title, `Feed title (will overide official feed title)`)
 	var url_ string
 	cc.Flags().StringVar(&cmd.URL, "url", url_, `Feed URL`)
 }
@@ -655,7 +661,7 @@ func (cmd *UpdateFeedCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.UpdateFeed(ctx, path, stringFlagVal("tags", cmd.Tags))
+	resp, err := c.UpdateFeed(ctx, path, stringFlagVal("tags", cmd.Tags), stringFlagVal("title", cmd.Title))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -671,6 +677,8 @@ func (cmd *UpdateFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client)
 	cc.Flags().StringVar(&cmd.ID, "id", id, `Feed ID`)
 	var tags string
 	cc.Flags().StringVar(&cmd.Tags, "tags", tags, `Comma separated list of tags`)
+	var title string
+	cc.Flags().StringVar(&cmd.Title, "title", title, `Feed title`)
 }
 
 // Run makes the HTTP request corresponding to the ListFilterCommand command.
