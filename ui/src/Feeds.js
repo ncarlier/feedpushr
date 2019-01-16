@@ -6,6 +6,7 @@ import {
   Checkbox,
   Dimmer,
   Icon,
+  Input,
   Label,
   Loader,
   Message,
@@ -30,6 +31,7 @@ class Feeds extends Component {
       isLoaded: false,
       items: [],
       column: null,
+      filter: "",
       direction: null,
     }
   }
@@ -37,6 +39,8 @@ class Feeds extends Component {
   componentDidMount() {
     this.handleRefresh()
   }
+  
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   handleToggleAggregation = (id, status) => {
     const action = status ? FeedApi.start(id) : FeedApi.stop(id)
@@ -157,7 +161,11 @@ class Feeds extends Component {
   }
 
   get tableBody() {
-    const { items, allTags } = this.state;
+    let { items } = this.state;
+    const { allTags, filter } = this.state;
+    if (filter.trim() !== "") {
+      items = items.filter(item => item.title.toLowerCase().includes(filter.trim().toLowerCase()))
+    }
     return (
       <Table.Body>
         {items.map(item => (
@@ -228,6 +236,7 @@ class Feeds extends Component {
         <Dimmer active={!isLoaded} inverted>
           <Loader inverted>Loading</Loader>
         </Dimmer>
+        <Input name="filter" icon='search' placeholder='Search...' fluid onChange={this.handleChange}/>
         <Table compact celled definition sortable>
           {this.tableHeader}
           {this.tableBody}

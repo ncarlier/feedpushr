@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/goadesign/goa"
@@ -189,7 +190,7 @@ func main() {
 	// Graceful shutdown handle
 	done := make(chan bool)
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-quit
 		log.Debug().Msg("shutting down server...")
