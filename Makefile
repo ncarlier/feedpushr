@@ -108,7 +108,7 @@ install: release/$(EXECUTABLE)
 
 ## Create Docker image
 image:
-	echo ">>> Building Docker inage ..."
+	echo ">>> Building Docker image ..."
 	docker build --rm -t ncarlier/$(APPNAME) .
 .PHONY: image
 

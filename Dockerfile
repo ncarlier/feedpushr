@@ -42,7 +42,7 @@ RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 # Install binary and default scripts
-COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT-linux-amd64 /usr/local/bin/$ARTIFACT
+COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT /usr/local/bin/$ARTIFACT
 
 # Install plugins
 COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/plugins/release/*.so ./
