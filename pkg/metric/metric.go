@@ -20,6 +20,6 @@ func uptime() interface{} {
 
 // Configure madditional metrics
 func Configure() {
-	expvar.Publish("Goroutines", expvar.Func(goroutines))
-	expvar.Publish("Uptime", expvar.Func(uptime))
+	expvar.Publish("goroutines", expvar.Func(goroutines))
+	expvar.Publish("uptime", expvar.Func(uptime))
 }
