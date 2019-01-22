@@ -155,5 +155,11 @@ func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.Feed {
 		count := fa.handler.status.ErrorCount
 		result.ErrorCount = &count
 	}
+	if fa.callbackURL != "" && fa.feed.HubURL != nil {
+		result.HubURL = pshb.GetSubscriptionDetailsURL(*fa.feed.HubURL, fa.feed.XMLURL, fa.callbackURL)
+	} else {
+		result.HubURL = nil
+	}
+
 	return &result
 }

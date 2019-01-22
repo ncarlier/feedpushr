@@ -9,6 +9,23 @@ import (
 	"strings"
 )
 
+// GetSubscriptionDetailsURL returns URL for subscription details
+func GetSubscriptionDetailsURL(hub, topic, callback string) *string {
+	u, err := url.Parse(hub)
+	if err != nil {
+		return nil
+	}
+	if u.Host == "pubsubhubbub.appspot.com" {
+		u.Path = "/subscription-details"
+	}
+	q := u.Query()
+	q.Set("hub.callback", callback)
+	q.Set("hub.topic", topic)
+	u.RawQuery = q.Encode()
+	result := u.String()
+	return &result
+}
+
 // Subscribe to a topic of a Hub.
 func Subscribe(hub, topic, callback string) error {
 	return post(hub, "subscribe", topic, callback)
