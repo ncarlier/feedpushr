@@ -35,5 +35,5 @@ func TestNewFeedWithHubAndTags(t *testing.T) {
 	assert.Equal(t, "http://medium.superfeedr.com", *feed.HubURL, "Hub URL should be equals")
 	assert.Equal(t, 2, len(feed.Tags), "Tags should not be empty")
 	assert.Equal(t, "foo", feed.Tags[0], "Tag should be equals")
-	assert.Equal(t, "bar_bar_", feed.Tags[1], "Tag should be equals")
+	assert.Equal(t, "bar_barè", feed.Tags[1], "Tag should be equals")
 }

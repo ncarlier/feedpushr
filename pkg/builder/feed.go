@@ -3,15 +3,14 @@ package builder
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"regexp"
 	"strings"
 	"time"
+
+	"github.com/ncarlier/feedpushr/pkg/strcase"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/autogen/app"
 )
-
-var tagRe = regexp.MustCompile("[^a-zA-Z0-9_]+")
 
 // GetFeedID converts URL to feed ID (HASH)
 func GetFeedID(url string) string {
@@ -56,7 +55,7 @@ func GetFeedTags(tags *string) []string {
 	result := strings.Split(*tags, ",")
 	for i, v := range result {
 		v = strings.TrimPrefix(v, "/")
-		result[i] = tagRe.ReplaceAllString(v, "_")
+		result[i] = strcase.ToSnake(v)
 	}
 	return deduplicate(result)
 }
