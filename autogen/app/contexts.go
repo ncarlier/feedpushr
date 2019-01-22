@@ -212,9 +212,6 @@ func NewListFeedContext(ctx context.Context, r *http.Request, service *goa.Servi
 		if rctx.Limit < 1 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError(`limit`, rctx.Limit, 1, true))
 		}
-		if rctx.Limit > 100 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError(`limit`, rctx.Limit, 100, false))
-		}
 	}
 	paramPage := req.Params["page"]
 	if len(paramPage) == 0 {

@@ -316,7 +316,6 @@ paths:
       - default: 10
         description: Fetch limit
         in: query
-        maximum: 100
         minimum: 1
         name: limit
         required: false

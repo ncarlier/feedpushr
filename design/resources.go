@@ -24,7 +24,6 @@ var _ = Resource("feed", func() {
 			Param("limit", Integer, "Fetch limit", func() {
 				Default(10)
 				Minimum(1)
-				Maximum(100)
 				Example(10)
 			})
 		})
