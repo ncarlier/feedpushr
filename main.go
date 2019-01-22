@@ -14,7 +14,7 @@ import (
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/pkg/assets"
-	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/config"
 	"github.com/ncarlier/feedpushr/pkg/controller"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/logging"
@@ -26,55 +26,19 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var (
-	listenAddr,
-	dataStore,
-	outputURI,
-	importFilename,
-	publicURL,
-	sentryDSN,
-	logLevel *string
-	delay,
-	timeout,
-	cacheRetention *time.Duration
-	clearCache,
-	logPretty *bool
-	plugins,
-	filters common.ArrayFlags
-)
-
-func init() {
-	listenAddr = flag.String("addr", Config.ListenAddr, "HTTP server address")
-	dataStore = flag.String("db", Config.Store, "Data store location")
-	outputURI = flag.String("output", Config.Output, "Output destination")
-	importFilename = flag.String("import", "", "Import a OPML file at boostrap")
-	publicURL = flag.String("public-url", Config.PublicURL, "Public URL used for PSHB subscriptions")
-	delay = flag.Duration("delay", Config.Delay, "Delay between aggregations")
-	timeout = flag.Duration("timeout", Config.Timeout, "Aggregation timeout")
-	clearCache = flag.Bool("clear-cache", false, "Clear cache at bootstrap")
-	cacheRetention = flag.Duration("cache-retention", Config.CacheRetention, "Cache retention duration")
-	logPretty = flag.Bool("log-pretty", Config.LogPretty, "Writes log using plain text format")
-	logLevel = flag.String("log-level", Config.LogLevel, "Logging level")
-	sentryDSN = flag.String("sentry", Config.SentryDSN, "Sentry DSN URL")
-
-	flag.Var(&plugins, "plugin", "Plugin to load")
-	filters = Config.Filters
-	flag.Var(&filters, "filter", "Filter to apply")
-}
-
 func main() {
 	flag.Parse()
 
-	if *version {
+	if *config.Version {
 		printVersion()
 		os.Exit(0)
 	}
 
 	// Log configuration
-	logging.Configure(*logLevel, *logPretty, sentryDSN)
+	logging.Configure(*config.LogLevel, *config.LogPretty, config.SentryDSN)
 
 	// Load plugins
-	pr, err := plugin.NewPluginRegistry(plugins)
+	pr, err := plugin.NewPluginRegistry(*config.Plugins)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init plugins")
 	}
@@ -83,13 +47,13 @@ func main() {
 	metric.Configure()
 
 	// Init the data store
-	db, err := store.Configure(*dataStore)
+	db, err := store.Configure(*config.DB)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init data store")
 	}
 
 	// Clear cache if require
-	if *clearCache {
+	if *config.ClearCache {
 		err = db.ClearCache()
 		if err != nil {
 			log.Fatal().Err(err).Msg("unable to clear the cache")
@@ -99,9 +63,9 @@ func main() {
 	// Starts cache-buster
 	cleanCacheTicker := time.NewTicker(24 * time.Hour)
 	go func() {
-		log.Debug().Str("retention", (*cacheRetention).String()).Msg("cache-buster started")
+		log.Debug().Str("retention", (*config.CacheRetention).String()).Msg("cache-buster started")
 		for range cleanCacheTicker.C {
-			maxAge := time.Now().Add(-*cacheRetention)
+			maxAge := time.Now().Add(-*config.CacheRetention)
 			err := db.EvictFromCache(maxAge)
 			if err != nil {
 				log.Error().Err(err).Msg("unable clean the cache")
@@ -111,20 +75,20 @@ func main() {
 	}()
 
 	// Init chain filter
-	cf, err := filter.NewChainFilter(filters, pr)
+	cf, err := filter.NewChainFilter(*config.Filters, pr)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init filter chain")
 	}
 
 	// Init output manager
-	om, err := output.NewManager(db, *outputURI, *cacheRetention, pr, cf)
+	om, err := output.NewManager(db, *config.Output, *config.CacheRetention, pr, cf)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init output manager")
 	}
 
 	// Import OPML file if present
-	if *importFilename != "" {
-		o, err := opml.NewOPMLFromFile(*importFilename)
+	if *config.ImportFilename != "" {
+		o, err := opml.NewOPMLFromFile(*config.ImportFilename)
 		if err != nil {
 			db.Close()
 			log.Fatal().Err(err)
@@ -136,10 +100,10 @@ func main() {
 	}
 	// Init aggregator daemon
 	var callbackURL string
-	if *publicURL != "" {
-		callbackURL = *publicURL + "/v1/pshb"
+	if *config.PublicURL != "" {
+		callbackURL = *config.PublicURL + "/v1/pshb"
 	}
-	am, err := aggregator.NewManager(db, om, *delay, *timeout, callbackURL)
+	am, err := aggregator.NewManager(db, om, *config.Delay, *config.Timeout, callbackURL)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
@@ -179,7 +143,7 @@ func main() {
 	vc := controller.NewVarsController(service)
 	app.MountVarsController(service, vc)
 	// Mount "pshb" controller (only if public URL is configured)
-	if *publicURL != "" {
+	if *config.PublicURL != "" {
 		pc := controller.NewPshbController(service, db, am, om)
 		app.MountPshbController(service, pc)
 	}
@@ -209,8 +173,8 @@ func main() {
 	}()
 
 	// Start service
-	log.Info().Str("listen", *listenAddr).Msg("starting HTTP server...")
-	if err := service.ListenAndServe(*listenAddr); err != nil && err != http.ErrServerClosed {
+	log.Info().Str("listen", *config.ListenAddr).Msg("starting HTTP server...")
+	if err := service.ListenAndServe(*config.ListenAddr); err != nil && err != http.ErrServerClosed {
 		log.Fatal().Err(err).Msg("unable to start server")
 	}
 

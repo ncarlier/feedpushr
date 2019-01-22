@@ -50,7 +50,7 @@ You can configure the daemon by setting environment variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `APP_LISTEN_ADDR` | `:8080` | HTTP server address |
+| `APP_ADDR` | `:8080` | HTTP server address |
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
 | `APP_FILTERS` | none | Filter chain (ex: `foo://,fetch://`) |

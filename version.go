@@ -1,16 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 )
 
 // Version of the app
 var Version = "snapshot"
-
-var (
-	version = flag.Bool("version", false, "Print version")
-)
 
 func printVersion() {
 	fmt.Printf(`feedpushr (%s)
