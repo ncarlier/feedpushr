@@ -18,12 +18,6 @@ WORKDIR /go/src/$REPOSITORY/$ARTIFACT
 # Build the binary
 RUN make
 
-# Build plugins
-ENV REPOSITORY=${REPOSITORY}
-ENV ARTIFACT=${ARTIFACT}
-RUN git clone https://${REPOSITORY}/${ARTIFACT}-contrib.git plugins \
-      && make -C plugins plugins
-
 #########################################
 # Distribution stage
 #########################################
@@ -43,10 +37,6 @@ RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 # Install binary and default scripts
 COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT /usr/local/bin/$ARTIFACT
-
-# Install plugins
-COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/plugins/release/*.so ./
-RUN for file in *.so; do mv $file `echo $file | sed 's/-linux-amd64//'`; done
 
 # Define command
 CMD feedpushr
