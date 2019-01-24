@@ -31,8 +31,6 @@ var (
 	ClearCache = FlagBool("clear-cache", "Clear cache at bootstrap", false)
 	// Version is a flag to display the version
 	Version = FlagBool("version", "Show version", false)
-	// Help is a flag to display the help
-	Help = FlagBool("help", "Show this help screen", false)
 	// Plugins to load
 	Plugins = FlagEnvArray("plugin", "Plugin to load", []string{})
 	// Filters to load

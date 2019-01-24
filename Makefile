@@ -30,7 +30,8 @@ CTL_EXECUTABLE=$(APPNAME)-ctl$(EXT)
 
 # Extract version infos
 VERSION:=`git describe --tags`
-LDFLAGS=-ldflags "-X main.Version=${VERSION}"
+GIT_COMMIT:=`git rev-list -1 HEAD`
+LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.GitCommit=${GIT_COMMIT}"
 
 all: build
 
