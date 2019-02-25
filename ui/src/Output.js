@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
   Dimmer,
@@ -11,97 +11,80 @@ import {
 
 import OutputApi from './api/OutputApi'
 
-class Output extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      error: null,
-      isLoaded: false,
-      output: null
-    }
+function Error({err}) {
+  if (!err) {
+    return null
   }
-
-  componentDidMount() {
-    OutputApi.get()
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            error: null,
-            output: result
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          })
-        }
-      )
-  }
-
-  get output() {
-    const { output } = this.state
-    if (output) {
-      return (
-        <Item.Group>
-          <Item>
-            <Item.Content>
-              <Item.Header>{output.name}</Item.Header>
-              <Item.Description>{output.desc}</Item.Description>
-              {this.renderOutputProps(output.props)}
-            </Item.Content>
-          </Item>
-        </Item.Group>
-      )
-    }
-  }
-
-  get errorMessage() {
-    const { error } = this.state;
-    if (error) {
-      return (
-        <Message negative>
-          <Message.Header>An error occured</Message.Header>
-          <p>{error.message || error.detail || error.Msg || JSON.stringify(error)}</p>
-        </Message>
-      )
-    }
-  }
-
-  renderOutputProps(props) {
-    if (props) {
-      return (
-        <Item.Extra>
-          <Table definition>
-            <Table.Body>
-              {Object.keys(props).map(prop => (
-                <Table.Row key={`prop-${prop}`}>
-                  <Table.Cell>{ prop }</Table.Cell>
-                  <Table.Cell>{ props[prop] }</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
-        </Item.Extra>
-      )
-    }
-  }
-
-  render() {
-    const { isLoaded } = this.state;
-    return (
-      <div>
-        <Segment>
-          <Dimmer active={!isLoaded} inverted>
-            <Loader inverted>Loading</Loader>
-          </Dimmer>
-          {this.errorMessage}
-          {this.output}
-        </Segment>
-      </div>
-    )
-  }
+  return (
+    <Message negative>
+      <Message.Header>An error occured</Message.Header>
+      <p>{err.message || err.detail || err.Msg || JSON.stringify(err)}</p>
+    </Message>
+  )
 }
 
-export default Output
+function OutputProperties({properties}) {
+  if (!properties) {
+    return null
+  }
+  return (
+    <Item.Extra>
+      <Table definition>
+        <Table.Body>
+          {Object.keys(properties).map(prop => (
+            <Table.Row key={`prop-${prop}`}>
+              <Table.Cell>{ prop }</Table.Cell>
+              <Table.Cell>{ properties[prop] }</Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </Item.Extra>
+  )
+}
+
+function OutputItem({data}) {
+  if (!data) {
+    return null
+  }
+  
+  return (
+    <Item.Group>
+      <Item>
+        <Item.Content>
+          <Item.Header>{data.name}</Item.Header>
+          <Item.Description>{data.desc}</Item.Description>
+          <OutputProperties properties={data.props} />
+        </Item.Content>
+      </Item>
+    </Item.Group>
+  )
+}
+
+export default function Output() {
+  const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true)
+    OutputApi.get()
+    .then(
+      data => setData(data),
+      error => setError(error)
+    )
+    .then(() => setIsLoading(false))
+  }, [])
+
+  return (
+    <div>
+      <Segment>
+        <Dimmer active={isLoading} inverted>
+          <Loader inverted>Loading</Loader>
+        </Dimmer>
+        <Error err={error} />
+        <OutputItem data={data}/>
+      </Segment>
+    </div>
+  )
+}

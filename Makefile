@@ -55,7 +55,7 @@ autogen:
 	echo ">>> Generating code ..."
 	cd $(APPBASE)/$(APPNAME) && goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/design
 	echo ">>> Moving Swagger files to assets ..."
-	cp -f autogen/swagger/** var/assets/
+	cp -f $(root_dir)/autogen/swagger/** $(root_dir)/var/assets/
 	echo ">>> Removing GO src link: $(APPBASE)/$(APPNAME) ..."
 	rm $(APPBASE)/$(APPNAME)
 
