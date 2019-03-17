@@ -70,6 +70,7 @@ class Filters extends Component {
         </Message>
       )
     }
+    return null
   }
 
   renderFilter(filter) {
@@ -79,7 +80,10 @@ class Filters extends Component {
           <Item.Header>{filter.name}</Item.Header>
           <Item.Description>
             {this.renderFilterTags(filter.tags)}
-            {filter.desc}
+            <details>
+              <summary>Description</summary>
+              <pre>{filter.desc}</pre>
+            </details>
           </Item.Description>
           {this.renderFilterProps(filter.props)}
         </Item.Content>

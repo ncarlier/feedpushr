@@ -53,7 +53,12 @@ function OutputItem({data}) {
       <Item>
         <Item.Content>
           <Item.Header>{data.name}</Item.Header>
-          <Item.Description>{data.desc}</Item.Description>
+          <Item.Description>
+            <details>
+              <summary>Description</summary>
+              <pre>{data.desc}</pre>
+            </details>
+          </Item.Description>
           <OutputProperties properties={data.props} />
         </Item.Content>
       </Item>

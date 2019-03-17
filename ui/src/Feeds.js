@@ -178,7 +178,7 @@ class Feeds extends Component {
               />
             </Table.Cell>
             <Table.Cell>
-              <a href={item.xmlUrl} target='_blank'>{item.title}</a>
+              <a href={item.xmlUrl} target='_blank' rel="noopener noreferrer">{item.title}</a>
               <FeedTags tags={item.tags} readonly />
             </Table.Cell>
             <Table.Cell textAlign='center' selectable>{this.renderFeedStatus(item)}</Table.Cell>
@@ -227,6 +227,7 @@ class Feeds extends Component {
         </Message>
       )
     }
+    return null
   }
 
   get table() {
@@ -259,7 +260,7 @@ class Feeds extends Component {
         <Icon corner name='cloud' color='green' />
       </Icon.Group>)
       return (
-        <Popup trigger={<a href={feed.hubUrl} target='_blank'>{$icon}</a>}>
+        <Popup trigger={<a href={feed.hubUrl} target='_blank' rel="noopener noreferrer">{$icon}</a>}>
           PubSubHubbub enabled
         </Popup>
       )
