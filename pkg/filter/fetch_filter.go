@@ -1,13 +1,12 @@
 package filter
 
 import (
-	"net/url"
 	"sync/atomic"
 	"time"
 
 	"github.com/ncarlier/feedpushr/pkg/builder"
 
-	readability "github.com/RadhiFadlillah/go-readability"
+	readability "github.com/go-shiori/go-readability"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -22,16 +21,18 @@ type FetchFilter struct {
 
 // DoFilter applies filter on the article
 func (f *FetchFilter) DoFilter(article *model.Article) error {
-	link, _ := url.Parse(article.Link)
-	art, err := readability.FromURL(link, 5*time.Second)
+	art, err := readability.FromURL(article.Link, 5*time.Second)
 	if err != nil {
 		atomic.AddUint64(&f.nbError, 1)
 		return err
 	}
 	article.Meta["RawContent"] = article.Content
 	article.Content = art.Content
-	article.Meta["MinReadTime"] = art.Meta.MinReadTime
-	article.Meta["MaxReadTime"] = art.Meta.MaxReadTime
+	article.Meta["Excerpt"] = art.Excerpt
+	article.Meta["Image"] = art.Image
+	article.Meta["TextContent"] = art.TextContent
+	article.Meta["Length"] = art.Length
+	article.Meta["Sitename"] = art.SiteName
 	atomic.AddUint64(&f.nbSuccess, 1)
 	return nil
 }
