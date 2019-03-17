@@ -22,7 +22,7 @@ type HTTPOutputProvider struct {
 func newHTTPOutputProvider(uri string) *HTTPOutputProvider {
 	return &HTTPOutputProvider{
 		name: "http",
-		desc: "New articles are sent as JSON document to an HTTP endpoint (POST)",
+		desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
 		uri:  uri,
 	}
 }

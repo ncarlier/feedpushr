@@ -9,6 +9,25 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
+const jsonFormatDesc = `
+JSON Format:
+{
+	title: "Article title",
+	description: "Article description",
+	content: "Article HTML content",
+	link: "Article URL",
+	updated: "Article update date (String format)",
+	updatedParsed: "Article update date (Date format)",
+	published: "Article publication date (String format)",
+	publishedParsed: "Article publication date (Date format)",
+	guid: "Article feed GUID",
+	meta: {
+		"key": "Metadata keys and values"
+	},
+	tags: ["list", "of", "tags"]
+}
+`
+
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
 	name      string
@@ -19,7 +38,7 @@ type StdOutputProvider struct {
 func newStdOutputProvider() *StdOutputProvider {
 	return &StdOutputProvider{
 		name: "stdout",
-		desc: "New articles are sent as JSON document to the standard output of the process.",
+		desc: "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
 	}
 }
 

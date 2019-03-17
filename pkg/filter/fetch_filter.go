@@ -50,10 +50,22 @@ func (f *FetchFilter) GetSpec() model.FilterSpec {
 	return result
 }
 
+const fetchDescription = `
+This filter will attempt to extract the content of the article from the source URL.
+If succeeded, following metadata are added to the article:
+
+- RawContent: Initial article content (before fetching)
+- Excerpt: Article excerpt
+- Image: Article main illustration
+- TextContent: Article text content
+- Length: Article length
+- Sitename: Article website name
+`
+
 func newFetchFilter(tags string) *FetchFilter {
 	return &FetchFilter{
 		name: "fetch",
-		desc: "This filter will attempt to extract the content of the article from the source URL.",
+		desc: fetchDescription,
 		tags: builder.GetFeedTags(&tags),
 	}
 }
