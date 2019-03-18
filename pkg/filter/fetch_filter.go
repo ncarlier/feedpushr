@@ -28,6 +28,7 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 	}
 	article.Meta["RawContent"] = article.Content
 	article.Content = art.Content
+	article.Title = art.Title
 	article.Meta["Excerpt"] = art.Excerpt
 	article.Meta["Image"] = art.Image
 	article.Meta["TextContent"] = art.TextContent
