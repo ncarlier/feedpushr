@@ -27,6 +27,8 @@ func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 			chain.filters = append(chain.filters, newTitleFilter(u.Query(), u.Fragment))
 		case "fetch":
 			chain.filters = append(chain.filters, newFetchFilter(u.Fragment))
+		case "minify":
+			chain.filters = append(chain.filters, newMinifyFilter(u.Query(), u.Fragment))
 		default:
 			// Try to load plugin regarding the name
 			plug := pr.LookupFilterPlugin(u.Scheme)

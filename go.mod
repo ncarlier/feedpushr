@@ -34,8 +34,8 @@ require (
 	github.com/smartystreets/assertions v0.0.0-20190116191733-b6c0e53d7304 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c // indirect
 	github.com/spf13/cobra v0.0.3
-	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
+	github.com/tdewolff/minify/v2 v2.3.8
 	github.com/zach-klippenstein/goregen v0.0.0-20160303162051-795b5e3961ea // indirect
 	golang.org/x/net v0.0.0-20190119204137-ed066c81e75e
 	golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 // indirect

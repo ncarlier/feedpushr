@@ -73,13 +73,15 @@ A filter is declared as a URL. The scheme of the URL is the filter name.
 Other parts of the URL configure the filter.
 The query parameters are the filter properties and the URL fragment configures the filter tags.
 
-Currently, there are two built-in filter:
+Currently, there are some built-in filter:
 
 - `title://?prefix=Feedpushr:`:
   This filter will prefix the title of the article with a given value.
 - `fetch://`:
   This filter will attempt to extract the content of the article from the source
   URL.
+- `minify://`:
+  This filter will minify the HTML content of the article.
 
 You can chain all the filters you need.
 

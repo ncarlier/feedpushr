@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // Article model structure.
 type Article struct {
@@ -15,4 +18,9 @@ type Article struct {
 	GUID            string                 `json:"guid,omitempty"`
 	Meta            map[string]interface{} `json:"meta,omitempty"`
 	Tags            []string               `json:"tags,omitempty"`
+}
+
+func (a *Article) String() string {
+	result, _ := json.Marshal(a)
+	return string(result)
 }
