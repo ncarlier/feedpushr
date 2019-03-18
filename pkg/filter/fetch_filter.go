@@ -26,7 +26,7 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 		atomic.AddUint64(&f.nbError, 1)
 		return err
 	}
-	article.Meta["RawContent"] = article.Content
+	article.Meta["OriginalContent"] = article.Content
 	article.Content = art.Content
 	article.Title = art.Title
 	article.Meta["Excerpt"] = art.Excerpt
@@ -56,7 +56,7 @@ const fetchDescription = `
 This filter will attempt to extract the content of the article from the source URL.
 If succeeded, following metadata are added to the article:
 
-- RawContent: Initial article content (before fetching)
+- OriginalContent: Initial article content (before fetching)
 - Excerpt: Article excerpt
 - Image: Article main illustration
 - TextContent: Article text content
