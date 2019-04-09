@@ -2,6 +2,11 @@
 #  (2019-04-09)
 
 
+
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/ncarlier/feedpushr/compare/1.0.0-rc2...1.0.0) (2019-04-09)
+
+
 ### Bug Fixes
 
 * **docker:** remove plugins from image ([d859025](https://github.com/ncarlier/feedpushr/commit/d859025))
