@@ -2,3 +2,4 @@ release/
 data.db
 TODO.md
 var/assets/ui/
+.vscode/
