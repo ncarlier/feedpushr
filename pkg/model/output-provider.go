@@ -1,5 +1,10 @@
 package model
 
+import (
+	"crypto/md5"
+	"encoding/hex"
+)
+
 // OutputProvider is the output provider interface
 type OutputProvider interface {
 	Send(article *Article) error
@@ -10,5 +15,15 @@ type OutputProvider interface {
 type OutputSpec struct {
 	Name  string
 	Desc  string
+	Tags  []string
 	Props map[string]interface{}
+}
+
+// Hash computes spec hash
+func (spec OutputSpec) Hash() string {
+	// TODO add props to the key computation
+	key := spec.Name
+	hasher := md5.New()
+	hasher.Write([]byte(key))
+	return hex.EncodeToString(hasher.Sum(nil))
 }

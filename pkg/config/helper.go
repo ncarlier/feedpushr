@@ -47,9 +47,11 @@ func FlagEnvDuration(key, desc string, fallback time.Duration) *time.Duration {
 
 // FlagEnvArray returns flag or env array value with fallback
 func FlagEnvArray(key, desc string, fallback []string) *ArrayFlags {
-	result := new(ArrayFlags)
 	if val := envValue(key + "s"); val != nil {
 		fallback = strings.Split(*val, ",")
+	}
+	result := &ArrayFlags{
+		fallback: fallback,
 	}
 	flag.Var(result, key, envDesc(key+"s", desc+" (comma separated list when using env variable)"))
 	return result

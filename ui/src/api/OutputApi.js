@@ -2,10 +2,10 @@ import { config, handleErrors } from './common'
 
 export class OutputApi {
   constructor() {
-    this.root = `${config.root}/output`
+    this.root = `${config.root}/outputs`
   }
 
-  get() {
+  list() {
     return fetch(this.root, {
       method: 'GET',
     }).then(handleErrors)

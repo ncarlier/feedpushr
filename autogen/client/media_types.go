@@ -259,6 +259,8 @@ type Output struct {
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Output channel properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// List of tags
+	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate validates the Output media type instance.
@@ -277,6 +279,30 @@ func (c *Client) DecodeOutput(resp *http.Response) (*Output, error) {
 	var decoded Output
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
+}
+
+// OutputCollection is the media type for an array of Output (default view)
+//
+// Identifier: application/vnd.feedpushr.output.v1+json; type=collection; view=default
+type OutputCollection []*Output
+
+// Validate validates the OutputCollection media type instance.
+func (mt OutputCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeOutputCollection decodes the OutputCollection instance encoded in resp body.
+func (c *Client) DecodeOutputCollection(resp *http.Response) (OutputCollection, error) {
+	var decoded OutputCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
 }
 
 // DecodeErrorResponse decodes the ErrorResponse instance encoded in resp body.

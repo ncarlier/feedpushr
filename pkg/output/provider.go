@@ -22,10 +22,10 @@ func newOutputProvider(uri string, pr *plugin.Registry) (model.OutputProvider, e
 	var provider model.OutputProvider
 	switch u.Scheme {
 	case "stdout":
-		provider = newStdOutputProvider()
+		provider = newStdOutputProvider(u.Fragment)
 		logger.Info().Msg("using STDOUT output provider")
 	case "http", "https":
-		provider = newHTTPOutputProvider(uri)
+		provider = newHTTPOutputProvider(uri, u.Fragment)
 		logger.Info().Str("url", uri).Msg("using HTTP output provider")
 	default:
 		// Try to load plugin regarding the scheme

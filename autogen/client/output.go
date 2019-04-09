@@ -17,23 +17,23 @@ import (
 	"net/url"
 )
 
-// GetOutputPath computes a request path to the get action of output.
-func GetOutputPath() string {
+// ListOutputPath computes a request path to the list action of output.
+func ListOutputPath() string {
 
-	return fmt.Sprintf("/v1/output")
+	return fmt.Sprintf("/v1/outputs")
 }
 
-// Retrieve output definition
-func (c *Client) GetOutput(ctx context.Context, path string) (*http.Response, error) {
-	req, err := c.NewGetOutputRequest(ctx, path)
+// Retrieve all outputs definitions
+func (c *Client) ListOutput(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewListOutputRequest(ctx, path)
 	if err != nil {
 		return nil, err
 	}
 	return c.Client.Do(ctx, req)
 }
 
-// NewGetOutputRequest create the request corresponding to the get action endpoint of the output resource.
-func (c *Client) NewGetOutputRequest(ctx context.Context, path string) (*http.Request, error) {
+// NewListOutputRequest create the request corresponding to the list action endpoint of the output resource.
+func (c *Client) NewListOutputRequest(ctx context.Context, path string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"

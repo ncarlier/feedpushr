@@ -15,13 +15,13 @@ func NewOutputController(service *goa.Service) *OutputController {
 	return &OutputController{Controller: service.NewController("OutputController")}
 }
 
-// Get runs the get action.
-func (c *OutputController) Get(ctx *app.GetOutputContext) error {
-	// OutputController_Get: start_implement
+// List runs the list action.
+func (c *OutputController) List(ctx *app.ListOutputContext) error {
+	// OutputController_List: start_implement
 
 	// Put your logic here
 
-	res := &app.Output{}
+	res := app.OutputCollection{}
 	return ctx.OK(res)
-	// OutputController_Get: end_implement
+	// OutputController_List: end_implement
 }

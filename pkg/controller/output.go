@@ -20,14 +20,18 @@ func NewOutputController(service *goa.Service, om *output.Manager) *OutputContro
 	}
 }
 
-// Get runs the get action.
-func (c *OutputController) Get(ctx *app.GetOutputContext) error {
-	spec := c.om.GetSpec()
-	res := &app.Output{
-		Name:  spec.Name,
-		Desc:  spec.Desc,
-		Props: spec.Props,
+// List runs the list action.
+func (c *OutputController) List(ctx *app.ListOutputContext) error {
+	res := app.OutputCollection{}
+	specs := c.om.GetSpec()
+	for _, spec := range specs {
+		o := app.Output{
+			Name:  spec.Name,
+			Desc:  spec.Desc,
+			Props: spec.Props,
+			Tags:  spec.Tags,
+		}
+		res = append(res, &o)
 	}
-
 	return ctx.OK(res)
 }

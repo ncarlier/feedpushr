@@ -51,13 +51,13 @@ export default class AppMenu extends Component {
         </Menu.Item>
 
           <Menu.Item
-            name='output'
-            active={activeItem === 'output'}
+            name='outputs'
+            active={activeItem === 'outputs'}
             as={Link}
-            to='/output'
+            to='/outputs'
             onClick={this.handleItemClick}
           >
-            Output
+            Outputs
         </Menu.Item>
         </Container>
       </Menu>

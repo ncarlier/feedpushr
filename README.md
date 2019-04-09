@@ -54,7 +54,7 @@ You can configure the daemon by setting environment variables:
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
 | `APP_FILTERS` | none | Filter chain (ex: `foo://,fetch://`) |
-| `APP_OUTPUT` | `stdout` | Output destination (`stdout` or HTTP URL) |
+| `APP_OUTPUTS` | `stdout://` | Output destinations (`stdout://,http://example.org`) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
 | `APP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
 | `APP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
@@ -102,8 +102,8 @@ For example, this OMPL attribute `<category>/test,foo,/bar/bar</category>` will 
 
 Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
 
-Tags are also used by filters to manage their activation.
-If you start the daemon with a filter using tags, only articles corresponding to these tags will be processed by this filter.
+Tags are also used by filters and outputs to manage their activation.
+If you start the daemon with a filter or an output using tags, only articles corresponding to these tags will be processed by this filter or output.
 
 Example:
 
@@ -115,7 +115,7 @@ In this example, only new articles with tags `foo` and `bar` will have their tit
 
 ## Outputs
 
-New articles are sent to an output.
+New articles are sent to outputs.
 
 An output is declared as a URL. The scheme of the URL is the output provider name.
 Other parts of the URL configure the output provider.
@@ -166,7 +166,7 @@ $ # Start the daemon with a database initialized
 $ # with subscriptions from an OPML file:
 $ feedpushr --import ./my-subscriptions.xml
 $ # Start the daemon with custom configuration:
-$ export APP_OUTPUT="https://requestb.in/t4gdzct4"
+$ export APP_OUTPUTS="https://requestb.in/t4gdzct4"
 $ export APP_STORE="boltdb:///var/opt/feedpushr.db"
 $ export APP_DELAY=20s
 $ export APP_LOG_LEVEL=warn

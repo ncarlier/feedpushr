@@ -9,6 +9,7 @@ import {
   Table,
 } from 'semantic-ui-react'
 
+import Tags from './Tags'
 import OutputApi from './api/OutputApi'
 
 function Error({err}) {
@@ -54,6 +55,7 @@ function OutputItem({data}) {
         <Item.Content>
           <Item.Header>{data.name}</Item.Header>
           <Item.Description>
+            { data.tags && <Tags tags={data.tags} /> }
             <details>
               <summary>Description</summary>
               <pre>{data.desc}</pre>
@@ -73,7 +75,7 @@ export default function Output() {
 
   useEffect(() => {
     setIsLoading(true)
-    OutputApi.get()
+    OutputApi.list()
     .then(
       data => setData(data),
       error => setError(error)
@@ -88,7 +90,11 @@ export default function Output() {
           <Loader inverted>Loading</Loader>
         </Dimmer>
         <Error err={error} />
-        <OutputItem data={data}/>
+        { data && data.length &&
+          <Item.Group divided>
+            {data.map(output => <OutputItem key={`output-${output.name}`} data={output}/>)}
+          </Item.Group>
+        }
       </Segment>
     </div>
   )

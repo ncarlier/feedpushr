@@ -10,6 +10,7 @@ import {
   Table,
 } from 'semantic-ui-react'
 
+import Tags from './Tags'
 import FilterApi from './api/FilterApi'
 
 class Filters extends Component {
@@ -79,7 +80,7 @@ class Filters extends Component {
         <Item.Content>
           <Item.Header>{filter.name}</Item.Header>
           <Item.Description>
-            {this.renderFilterTags(filter.tags)}
+            { filter.tags && <Tags tags={filter.tags} /> }
             <details>
               <summary>Description</summary>
               <pre>{filter.desc}</pre>
@@ -89,16 +90,6 @@ class Filters extends Component {
         </Item.Content>
       </Item>
     )
-  }
-
-  renderFilterTags(tags) {
-    if (tags) {
-      return (
-        <Label.Group color='blue' size='tiny'>
-        { tags.map(tag => (<Label key={`tag-${tag}`}>{tag}</Label>)) }
-        </Label.Group>
-      )
-    }
   }
 
   renderFilterProps(props) {

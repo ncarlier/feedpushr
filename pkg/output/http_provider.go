@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -14,15 +15,17 @@ import (
 type HTTPOutputProvider struct {
 	name      string
 	desc      string
+	tags      []string
 	nbError   uint64
 	nbSuccess uint64
 	uri       string
 }
 
-func newHTTPOutputProvider(uri string) *HTTPOutputProvider {
+func newHTTPOutputProvider(uri string, tags string) *HTTPOutputProvider {
 	return &HTTPOutputProvider{
 		name: "http",
 		desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
+		tags: builder.GetFeedTags(&tags),
 		uri:  uri,
 	}
 }
@@ -48,6 +51,7 @@ func (op *HTTPOutputProvider) GetSpec() model.OutputSpec {
 	result := model.OutputSpec{
 		Name: op.name,
 		Desc: op.desc,
+		Tags: op.tags,
 	}
 	result.Props = map[string]interface{}{
 		"uri":       op.uri,

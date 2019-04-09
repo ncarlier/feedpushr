@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -32,13 +33,15 @@ JSON Format:
 type StdOutputProvider struct {
 	name      string
 	desc      string
+	tags      []string
 	nbSuccess uint64
 }
 
-func newStdOutputProvider() *StdOutputProvider {
+func newStdOutputProvider(tags string) *StdOutputProvider {
 	return &StdOutputProvider{
 		name: "stdout",
 		desc: "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
+		tags: builder.GetFeedTags(&tags),
 	}
 }
 
@@ -56,6 +59,7 @@ func (op *StdOutputProvider) GetSpec() model.OutputSpec {
 	result := model.OutputSpec{
 		Name: op.name,
 		Desc: op.desc,
+		Tags: op.tags,
 	}
 	result.Props = map[string]interface{}{
 		"nbSuccess": op.nbSuccess,

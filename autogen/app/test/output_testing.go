@@ -24,11 +24,11 @@ import (
 	"net/url"
 )
 
-// GetOutputOK runs the method Get of the given controller with the given parameters.
+// ListOutputOK runs the method List of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController) (http.ResponseWriter, *app.Output) {
+func ListOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController) (http.ResponseWriter, app.OutputCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -49,7 +49,7 @@ func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/output"),
+		Path: fmt.Sprintf("/v1/outputs"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -60,7 +60,7 @@ func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 		ctx = context.Background()
 	}
 	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
-	getCtx, _err := app.NewGetOutputContext(goaCtx, req, service)
+	listCtx, _err := app.NewListOutputContext(goaCtx, req, service)
 	if _err != nil {
 		e, ok := _err.(goa.ServiceError)
 		if !ok {
@@ -71,7 +71,7 @@ func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	}
 
 	// Perform action
-	_err = ctrl.Get(getCtx)
+	_err = ctrl.List(listCtx)
 
 	// Validate response
 	if _err != nil {
@@ -80,12 +80,12 @@ func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Output
+	var mt app.OutputCollection
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Output)
+		mt, _ok = resp.(app.OutputCollection)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Output", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputCollection", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {

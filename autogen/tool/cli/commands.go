@@ -105,8 +105,8 @@ type (
 		PrettyPrint bool
 	}
 
-	// GetOutputCommand is the command line data structure for the get action of output
-	GetOutputCommand struct {
+	// ListOutputCommand is the command line data structure for the list action of output
+	ListOutputCommand struct {
 		PrettyPrint bool
 	}
 
@@ -201,50 +201,50 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	tmp5.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp5.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp6 := new(GetOutputCommand)
+	tmp6 := new(GetSwaggerCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v1/output"]`,
+		Use:   `swagger ["/v1/swagger.json"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
 	tmp6.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp6.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp7 := new(GetSwaggerCommand)
+	tmp7 := new(GetVarsCommand)
 	sub = &cobra.Command{
-		Use:   `swagger ["/v1/swagger.json"]`,
+		Use:   `vars ["/v1/vars"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
 	tmp7.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp7.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp8 := new(GetVarsCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "list",
+		Short: `list action`,
+	}
+	tmp8 := new(ListFeedCommand)
 	sub = &cobra.Command{
-		Use:   `vars ["/v1/vars"]`,
+		Use:   `feed ["/v1/feeds"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
 	}
 	tmp8.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp8.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "list",
-		Short: `list action`,
-	}
-	tmp9 := new(ListFeedCommand)
+	tmp9 := new(ListFilterCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds"]`,
+		Use:   `filter ["/v1/filters"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp9.Run(c, args) },
 	}
 	tmp9.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp9.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp10 := new(ListFilterCommand)
+	tmp10 := new(ListOutputCommand)
 	sub = &cobra.Command{
-		Use:   `filter ["/v1/filters"]`,
+		Use:   `output ["/v1/outputs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp10.Run(c, args) },
 	}
@@ -777,17 +777,17 @@ func (cmd *UploadOpmlCommand) Run(c *client.Client, args []string) error {
 func (cmd *UploadOpmlCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
 
-// Run makes the HTTP request corresponding to the GetOutputCommand command.
-func (cmd *GetOutputCommand) Run(c *client.Client, args []string) error {
+// Run makes the HTTP request corresponding to the ListOutputCommand command.
+func (cmd *ListOutputCommand) Run(c *client.Client, args []string) error {
 	var path string
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/v1/output"
+		path = "/v1/outputs"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.GetOutput(ctx, path)
+	resp, err := c.ListOutput(ctx, path)
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -798,7 +798,7 @@ func (cmd *GetOutputCommand) Run(c *client.Client, args []string) error {
 }
 
 // RegisterFlags registers the command flags with the command line.
-func (cmd *GetOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+func (cmd *ListOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
 
 // Run makes the HTTP request corresponding to the PubPshbCommand command.

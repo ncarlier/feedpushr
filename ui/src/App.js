@@ -14,7 +14,7 @@ import logo from './logo.svg'
 import AppMenu from './AppMenu'
 import Feeds from './Feeds'
 import Filters from './Filters'
-import Output from './Output'
+import Outputs from './Outputs'
 
 class App extends Component {
   render() {
@@ -25,7 +25,7 @@ class App extends Component {
           <Route exact path="/" render={() => <Redirect to="/feeds"/>} />
           <Route path="/feeds" component={Feeds} />
           <Route path="/filters" component={Filters} />
-          <Route path="/output" component={Output} />
+          <Route path="/outputs" component={Outputs} />
         </Container>
         <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '5em 0em' }}>
           <Container textAlign='center'>

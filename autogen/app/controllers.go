@@ -377,14 +377,14 @@ func handleOpmlOrigin(h goa.Handler) goa.Handler {
 // OutputController is the controller interface for the Output actions.
 type OutputController interface {
 	goa.Muxer
-	Get(*GetOutputContext) error
+	List(*ListOutputContext) error
 }
 
 // MountOutputController "mounts" a Output resource controller on the given service.
 func MountOutputController(service *goa.Service, ctrl OutputController) {
 	initService(service)
 	var h goa.Handler
-	service.Mux.Handle("OPTIONS", "/v1/output", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v1/outputs", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -392,15 +392,15 @@ func MountOutputController(service *goa.Service, ctrl OutputController) {
 			return err
 		}
 		// Build the context
-		rctx, err := NewGetOutputContext(ctx, req, service)
+		rctx, err := NewListOutputContext(ctx, req, service)
 		if err != nil {
 			return err
 		}
-		return ctrl.Get(rctx)
+		return ctrl.List(rctx)
 	}
 	h = handleOutputOrigin(h)
-	service.Mux.Handle("GET", "/v1/output", ctrl.MuxHandler("get", h, nil))
-	service.LogInfo("mount", "ctrl", "Output", "action", "Get", "route", "GET /v1/output")
+	service.Mux.Handle("GET", "/v1/outputs", ctrl.MuxHandler("list", h, nil))
+	service.LogInfo("mount", "ctrl", "Output", "action", "List", "route", "GET /v1/outputs")
 }
 
 // handleOutputOrigin applies the CORS response headers corresponding to the origin.

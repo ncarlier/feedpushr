@@ -85,7 +85,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Minus vitae ducimus.
+          example: Vitae ducimus veritatis laudantium.
           type: string
         type: array
       text:
@@ -196,7 +196,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Autem deserunt saepe.
+          example: Saepe exercitationem consequuntur id earum.
           type: string
         type: array
     required:
@@ -214,18 +214,6 @@ definitions:
       tags:
       - foo
       - bar
-    - desc: This filter will...
-      name: fetch
-      props: '-'
-      tags:
-      - foo
-      - bar
-    - desc: This filter will...
-      name: fetch
-      props: '-'
-      tags:
-      - foo
-      - bar
     items:
       $ref: '#/definitions/Filter'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; type=collection;
@@ -237,6 +225,9 @@ definitions:
       desc: New articles are sent as JSON document to...
       name: fetch
       props: '-'
+      tags:
+      - foo
+      - bar
     properties:
       desc:
         description: Description of the output channel
@@ -251,11 +242,47 @@ definitions:
         description: Output channel properties
         example: '-'
         type: object
+      tags:
+        description: List of tags
+        example:
+        - foo
+        - bar
+        items:
+          example: Non quia officia minus et ut pariatur.
+          type: string
+        type: array
     required:
     - name
     - desc
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; view=default'
     type: object
+  OutputCollection:
+    description: OutputCollection is the media type for an array of Output (default
+      view)
+    example:
+    - desc: New articles are sent as JSON document to...
+      name: fetch
+      props: '-'
+      tags:
+      - foo
+      - bar
+    - desc: New articles are sent as JSON document to...
+      name: fetch
+      props: '-'
+      tags:
+      - foo
+      - bar
+    - desc: New articles are sent as JSON document to...
+      name: fetch
+      props: '-'
+      tags:
+      - foo
+      - bar
+    items:
+      $ref: '#/definitions/Output'
+    title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; type=collection;
+      view=default'
+    type: array
   error:
     description: Error response media type (default view)
     example:
@@ -598,20 +625,20 @@ paths:
       summary: upload opml
       tags:
       - opml
-  /output:
+  /outputs:
     get:
-      description: Retrieve output definition
-      operationId: output#get
+      description: Retrieve all outputs definitions
+      operationId: output#list
       produces:
-      - application/vnd.feedpushr.output.v1+json
+      - application/vnd.feedpushr.output.v1+json; type=collection
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Output'
+            $ref: '#/definitions/OutputCollection'
       schemes:
       - http
-      summary: get output
+      summary: list output
       tags:
       - output
   /pshb:

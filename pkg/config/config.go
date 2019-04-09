@@ -11,8 +11,6 @@ var (
 	PublicURL = FlagEnvString("public-url", "Public URL used for PSHB subscriptions", "")
 	// DB location
 	DB = FlagEnvString("db", "Database location", "boltdb://data.db")
-	// Output destination
-	Output = FlagEnvString("output", "Output destination", "stdout://")
 	// LogLevel (debug/info/warn/error)
 	LogLevel = FlagEnvString("log-level", "Logging level", "info")
 	// LogPretty writes log using text format
@@ -31,6 +29,8 @@ var (
 	ClearCache = FlagBool("clear-cache", "Clear cache at bootstrap", false)
 	// Version is a flag to display the version
 	Version = FlagBool("version", "Show version", false)
+	// Outputs destinations
+	Outputs = FlagEnvArray("output", "Output destination", []string{"stdout://"})
 	// Plugins to load
 	Plugins = FlagEnvArray("plugin", "Plugin to load", []string{})
 	// Filters to load

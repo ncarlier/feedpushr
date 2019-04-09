@@ -560,29 +560,32 @@ func (ctx *UploadOpmlContext) BadRequest(r error) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
 
-// GetOutputContext provides the output get action context.
-type GetOutputContext struct {
+// ListOutputContext provides the output list action context.
+type ListOutputContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
 }
 
-// NewGetOutputContext parses the incoming request URL and body, performs validations and creates the
-// context used by the output controller get action.
-func NewGetOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*GetOutputContext, error) {
+// NewListOutputContext parses the incoming request URL and body, performs validations and creates the
+// context used by the output controller list action.
+func NewListOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListOutputContext, error) {
 	var err error
 	resp := goa.ContextResponse(ctx)
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	req.Request = r
-	rctx := GetOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
+	rctx := ListOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
 	return &rctx, err
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *GetOutputContext) OK(r *Output) error {
+func (ctx *ListOutputContext) OK(r OutputCollection) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.output.v1+json; type=collection")
+	}
+	if r == nil {
+		r = OutputCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }

@@ -50,7 +50,7 @@ func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 func (c *Chain) Apply(article *model.Article) error {
 	for idx, filter := range c.filters {
 		tags := filter.GetSpec().Tags
-		if !match(tags, article.Tags) {
+		if !article.Match(tags) {
 			// Ignore filters that do not match the article tags
 			continue
 		}
@@ -69,22 +69,4 @@ func (c *Chain) GetSpec() []model.FilterSpec {
 		result[idx] = filter.GetSpec()
 	}
 	return result
-}
-
-func match(a, b []string) bool {
-	// A filter with no tags match all articles
-	if len(a) == 0 {
-		return true
-	}
-	bSet := make(map[string]struct{}, len(b))
-	for _, s := range b {
-		bSet[s] = struct{}{}
-	}
-
-	for _, tag := range a {
-		if _, ok := bSet[tag]; !ok {
-			return false
-		}
-	}
-	return true
 }

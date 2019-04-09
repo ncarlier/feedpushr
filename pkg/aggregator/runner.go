@@ -20,7 +20,7 @@ type FeedAggregator struct {
 	log               zerolog.Logger
 	feed              *app.Feed
 	handler           *FeedHandler
-	output            *output.Manager
+	outputsManager    *output.Manager
 	status            Status
 	delay             time.Duration
 	nextCheck         time.Time
@@ -39,7 +39,7 @@ func NewFeedAggregator(feed *app.Feed, om *output.Manager, delay time.Duration, 
 		stopChannel:       make(chan bool),
 		feed:              feed,
 		handler:           handler,
-		output:            om,
+		outputsManager:    om,
 		status:            StoppedStatus,
 		delay:             delay,
 		log:               log.With().Str("aggregator", feed.ID).Logger(),
@@ -63,7 +63,7 @@ func (fa *FeedAggregator) running() {
 				status, items := fa.handler.Refresh()
 				if items != nil && len(items) > 0 {
 					// Send feed's articles to the output provider
-					nb := fa.output.Send(items)
+					nb := fa.outputsManager.Send(items)
 					atomic.AddUint64(&fa.nbProcessedItems, nb)
 				}
 				if fa.feed.HubURL != nil && *fa.feed.HubURL != "" && fa.callbackURL != "" {

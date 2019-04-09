@@ -119,6 +119,9 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 			Example("New articles are sent as JSON document to...")
 		})
 		Attribute("props", HashOf(String, Any), "Output channel properties", NoExample)
+		Attribute("tags", ArrayOf(String), "List of tags", func() {
+			Example([]string{"foo", "bar"})
+		})
 		Required("name", "desc")
 	})
 
@@ -126,5 +129,6 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("name")
 		Attribute("desc")
 		Attribute("props")
+		Attribute("tags")
 	})
 })

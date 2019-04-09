@@ -144,14 +144,18 @@ var _ = Resource("filter", func() {
 
 var _ = Resource("output", func() {
 	DefaultMedia(Output)
-	BasePath("/output")
+	BasePath("/outputs")
 
-	Action("get", func() {
+	Action("list", func() {
 		Routing(
 			GET(""),
 		)
-		Description("Retrieve output definition")
-		Response(OK)
+		Description("Retrieve all outputs definitions")
+		Response(OK, func() {
+			Media(CollectionOf(Output, func() {
+				View("default")
+			}))
+		})
 	})
 })
 

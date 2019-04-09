@@ -1,10 +1,9 @@
 package output
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"time"
 
+	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
@@ -13,20 +12,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// GetArticleKey computes the key of a Article.
-func getArticleKey(article *model.Article) string {
-	key := article.GUID
-	if key == "" {
-		key = article.Link
-	}
-	hasher := md5.New()
-	hasher.Write([]byte(key))
-	return hex.EncodeToString(hasher.Sum(nil))
-}
-
 // Manager of output channel.
 type Manager struct {
-	provider       model.OutputProvider
+	providers      []model.OutputProvider
 	db             store.DB
 	chainFilter    *filter.Chain
 	cacheRetention time.Duration
@@ -34,13 +22,17 @@ type Manager struct {
 }
 
 // NewManager creates a new manager
-func NewManager(db store.DB, uri string, cacheRetention time.Duration, pr *plugin.Registry, cf *filter.Chain) (*Manager, error) {
-	provider, err := newOutputProvider(uri, pr)
-	if err != nil {
-		return nil, err
+func NewManager(db store.DB, uris []string, cacheRetention time.Duration, pr *plugin.Registry, cf *filter.Chain) (*Manager, error) {
+	providers := []model.OutputProvider{}
+	for _, uri := range uris {
+		provider, err := newOutputProvider(uri, pr)
+		if err != nil {
+			return nil, err
+		}
+		providers = append(providers, provider)
 	}
 	manager := &Manager{
-		provider:       provider,
+		providers:      providers,
 		db:             db,
 		chainFilter:    cf,
 		cacheRetention: cacheRetention,
@@ -55,66 +47,104 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 	maxAge := time.Now().Add(-m.cacheRetention)
 	m.log.Debug().Int("items", len(articles)).Str("before", maxAge.String()).Msg("processing articles")
 	for _, article := range articles {
-		// Ignore old articles
-		var date *time.Time
-		if article.PublishedParsed != nil {
-			date = article.PublishedParsed
-		}
-		if article.UpdatedParsed != nil {
-			date = article.UpdatedParsed
-		}
-		if date == nil {
-			m.log.Debug().Msg("unable to push article: missing article date")
+		logger := m.log.With().Str("GUID", article.GUID).Logger()
+		if err := article.IsValid(maxAge); err != nil {
+			logger.Debug().Err(err).Msg("unable to push article")
 			continue
 		}
-		if date.Before(maxAge) {
-			// Article too old: ignore
-			// m.log.Debug().Str("GUID", article.GUID).Str("date", (*date).String()).Msg("unable to push article: article too old")
-			continue
-		}
-		// Ignore already sent articles
-		key := getArticleKey(article)
-		item, err := m.db.GetFromCache(key)
-		if err != nil {
-			m.log.Debug().Err(err).Msg("unable to retrieve article from cache: sending")
-		} else if item != nil {
-			if date.After(item.Date) {
-				m.log.Debug().Msg("article updated since last push: re-sending")
-			} else {
-				// Article already sent: ignore
+
+		// Send article to all outputs...
+		filteredOnce := false
+		sentOnce := false
+		for _, provider := range m.providers {
+			tags := provider.GetSpec().Tags
+			if !article.Match(tags) {
+				// Ignore output that do not match the article tags
 				continue
 			}
-		}
+			logger = logger.With().Str("output", provider.GetSpec().Name).Logger()
+			// Check that the article is not already sent
+			cached, err := m.hasAlreadySent(article, provider)
+			if err != nil {
+				logger.Debug().Err(err).Msg("unable to get article from cache: ignore")
+			}
+			if cached {
+				logger.Debug().Msg("article already sent")
+				sentOnce = true
+				continue
+			}
 
-		// Apply filter chain on article
-		err = m.chainFilter.Apply(article)
-		if err != nil {
-			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to apply chain filter on article")
-			continue
-		}
+			if !filteredOnce {
+				// Apply filter chain on article
+				err = m.chainFilter.Apply(article)
+				if err != nil {
+					logger.Error().Err(err).Msg("unable to apply chain filter on article")
+					break
+				}
+				filteredOnce = true
+			}
 
-		// Send article...
-		err = m.provider.Send(article)
-		if err != nil {
-			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to push article")
-			continue
+			// Send article
+			err = m.send(article, provider)
+			if err != nil {
+				logger.Error().Err(err).Msg("unable to push article")
+				continue
+			}
+			sentOnce = true
+			logger.Info().Msg("article pushed")
 		}
-		m.log.Info().Str("GUID", article.GUID).Msg("article pushed")
-		// Set article as sent by updating the cache
-		item = &model.CacheItem{
-			Value: article.GUID,
-			Date:  *date,
+		if sentOnce {
+			nbProcessedArticles++
 		}
-		err = m.db.StoreToCache(key, item)
-		if err != nil {
-			m.log.Error().Err(err).Str("GUID", article.GUID).Msg("unable to store article into the cache")
-		}
-		nbProcessedArticles++
 	}
 	return nbProcessedArticles
 }
 
-// GetSpec return specification of the chain filter
-func (m *Manager) GetSpec() model.OutputSpec {
-	return m.provider.GetSpec()
+func (m *Manager) hasAlreadySent(article *model.Article, output model.OutputProvider) (bool, error) {
+	key := common.Hash(article.Hash(), output.GetSpec().Hash())
+	item, err := m.db.GetFromCache(key)
+	if err != nil {
+		return false, err
+	} else if item != nil {
+		date := article.RefDate()
+		if date != nil && !date.After(item.Date) {
+			// Article already sent
+			return true, nil
+		}
+		// else article updated since last push: re-sending
+	}
+	return false, nil
+}
+
+func (m *Manager) send(article *model.Article, output model.OutputProvider) error {
+	// Send the article
+	err := output.Send(article)
+	if err != nil {
+		return err
+	}
+
+	// Set article as sent by updating the cache
+	key := common.Hash(article.Hash(), output.GetSpec().Hash())
+	item := &model.CacheItem{
+		Value: article.GUID,
+		Date:  *article.RefDate(),
+	}
+	err = m.db.StoreToCache(key, item)
+	if err != nil {
+		m.log.Error().Err(err).Str(
+			"GUID", article.GUID,
+		).Str(
+			"provider", output.GetSpec().Name,
+		).Msg("unable to store article into the cache: ignore")
+	}
+	return nil
+}
+
+// GetSpec return specification of the manager
+func (m *Manager) GetSpec() []model.OutputSpec {
+	result := make([]model.OutputSpec, len(m.providers))
+	for idx, provider := range m.providers {
+		result[idx] = provider.GetSpec()
+	}
+	return result
 }

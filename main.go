@@ -38,7 +38,7 @@ func main() {
 	logging.Configure(*config.LogLevel, *config.LogPretty, config.SentryDSN)
 
 	// Load plugins
-	pr, err := plugin.NewPluginRegistry(*config.Plugins)
+	pr, err := plugin.NewPluginRegistry(config.Plugins.Values())
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init plugins")
 	}
@@ -75,13 +75,13 @@ func main() {
 	}()
 
 	// Init chain filter
-	cf, err := filter.NewChainFilter(*config.Filters, pr)
+	cf, err := filter.NewChainFilter(config.Filters.Values(), pr)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init filter chain")
 	}
 
 	// Init output manager
-	om, err := output.NewManager(db, *config.Output, *config.CacheRetention, pr, cf)
+	om, err := output.NewManager(db, config.Outputs.Values(), *config.CacheRetention, pr, cf)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init output manager")
 	}
