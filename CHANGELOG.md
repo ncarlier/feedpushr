@@ -1,5 +1,27 @@
 <a name=""></a>
-#  (2018-10-25)
+#  (2019-04-09)
+
+
+### Bug Fixes
+
+* **docker:** remove plugins from image ([d859025](https://github.com/ncarlier/feedpushr/commit/d859025))
+* **filter:** minify filter should also filtering description ([087c4be](https://github.com/ncarlier/feedpushr/commit/087c4be))
+
+
+### Features
+
+* **api:** add feed title managment ([f837590](https://github.com/ncarlier/feedpushr/commit/f837590))
+* **api:** remove feed list limit ([a76d4c2](https://github.com/ncarlier/feedpushr/commit/a76d4c2))
+* **filter:** add minify filter ([d37d104](https://github.com/ncarlier/feedpushr/commit/d37d104))
+* **filter:** use last readability lib for fetch filter ([0530fbc](https://github.com/ncarlier/feedpushr/commit/0530fbc))
+* **logging:** add Sentry for error recording ([f674543](https://github.com/ncarlier/feedpushr/commit/f674543))
+* **logging:** use async Sentry call ([55715e0](https://github.com/ncarlier/feedpushr/commit/55715e0))
+* improve filter/output descriptions ([444cea7](https://github.com/ncarlier/feedpushr/commit/444cea7))
+* multiple outputs support ([2052116](https://github.com/ncarlier/feedpushr/commit/2052116))
+* **pshb:** compute subscribtion details URL ([83c1aae](https://github.com/ncarlier/feedpushr/commit/83c1aae))
+* **ui:** add feed filter bar ([03314bc](https://github.com/ncarlier/feedpushr/commit/03314bc))
+* **ui:** display filter and output descriptions as details ([9046f0a](https://github.com/ncarlier/feedpushr/commit/9046f0a))
+* **ui:** make Output a functional component ([f43d4c5](https://github.com/ncarlier/feedpushr/commit/f43d4c5))
 
 
 
