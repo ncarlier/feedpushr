@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
 )
@@ -22,20 +23,21 @@ func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 		if err != nil {
 			return nil, fmt.Errorf("invalid filter URL: %s", f)
 		}
+		tags := builder.GetFeedTags(&u.Fragment)
 		switch u.Scheme {
 		case "title":
-			chain.filters = append(chain.filters, newTitleFilter(u.Query(), u.Fragment))
+			chain.filters = append(chain.filters, newTitleFilter(u.Query(), tags))
 		case "fetch":
-			chain.filters = append(chain.filters, newFetchFilter(u.Fragment))
+			chain.filters = append(chain.filters, newFetchFilter(tags))
 		case "minify":
-			chain.filters = append(chain.filters, newMinifyFilter(u.Query(), u.Fragment))
+			chain.filters = append(chain.filters, newMinifyFilter(u.Query(), tags))
 		default:
 			// Try to load plugin regarding the name
 			plug := pr.LookupFilterPlugin(u.Scheme)
 			if plug == nil {
 				return nil, fmt.Errorf("unsuported filter: %s", u.Scheme)
 			}
-			fp, err := plug.Build(u.Query(), u.Fragment)
+			fp, err := plug.Build(u.Query(), tags)
 			if err != nil {
 				return nil, fmt.Errorf("unable to create filter: %v", err)
 			}

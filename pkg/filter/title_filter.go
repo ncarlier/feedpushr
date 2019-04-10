@@ -4,7 +4,6 @@ import (
 	"net/url"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -39,11 +38,11 @@ func (f *TitleFilter) GetSpec() model.FilterSpec {
 	return result
 }
 
-func newTitleFilter(params url.Values, tags string) *TitleFilter {
+func newTitleFilter(params url.Values, tags []string) *TitleFilter {
 	return &TitleFilter{
 		name:   "title",
 		desc:   "This filter will prefix the title of the article with a given value.",
-		tags:   builder.GetFeedTags(&tags),
+		tags:   tags,
 		prefix: params.Get("prefix"),
 	}
 }

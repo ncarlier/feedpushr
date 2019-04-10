@@ -4,8 +4,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ncarlier/feedpushr/pkg/builder"
-
 	readability "github.com/go-shiori/go-readability"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
@@ -64,10 +62,10 @@ If succeeded, following metadata are added to the article:
 - Sitename: Article website name
 `
 
-func newFetchFilter(tags string) *FetchFilter {
+func newFetchFilter(tags []string) *FetchFilter {
 	return &FetchFilter{
 		name: "fetch",
 		desc: fetchDescription,
-		tags: builder.GetFeedTags(&tags),
+		tags: tags,
 	}
 }

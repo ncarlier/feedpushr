@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/rs/zerolog/log"
@@ -19,13 +20,14 @@ func newOutputProvider(uri string, pr *plugin.Registry) (model.OutputProvider, e
 	if err != nil {
 		return nil, fmt.Errorf("invalid output URL: %s", uri)
 	}
+	tags := builder.GetFeedTags(&u.Fragment)
 	var provider model.OutputProvider
 	switch u.Scheme {
 	case "stdout":
-		provider = newStdOutputProvider(u.Fragment)
+		provider = newStdOutputProvider(tags)
 		logger.Info().Msg("using STDOUT output provider")
 	case "http", "https":
-		provider = newHTTPOutputProvider(uri, u.Fragment)
+		provider = newHTTPOutputProvider(uri, tags)
 		logger.Info().Str("url", uri).Msg("using HTTP output provider")
 	default:
 		// Try to load plugin regarding the scheme
@@ -33,7 +35,7 @@ func newOutputProvider(uri string, pr *plugin.Registry) (model.OutputProvider, e
 		if plug == nil {
 			return nil, fmt.Errorf("unsuported output provider: %s", u.Scheme)
 		}
-		provider, err = plug.Build(u.Query())
+		provider, err = plug.Build(u.Query(), tags)
 		if err != nil {
 			return nil, fmt.Errorf("unable to create output provider: %v", err)
 		}

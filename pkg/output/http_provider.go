@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -21,11 +20,11 @@ type HTTPOutputProvider struct {
 	uri       string
 }
 
-func newHTTPOutputProvider(uri string, tags string) *HTTPOutputProvider {
+func newHTTPOutputProvider(uri string, tags []string) *HTTPOutputProvider {
 	return &HTTPOutputProvider{
 		name: "http",
 		desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
-		tags: builder.GetFeedTags(&tags),
+		tags: tags,
 		uri:  uri,
 	}
 }

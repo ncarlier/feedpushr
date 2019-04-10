@@ -21,11 +21,11 @@ type PluginInfo struct {
 // OutputPlugin is the interface of an output plugin
 type OutputPlugin interface {
 	// Build an output plugin
-	Build(params url.Values) (OutputProvider, error)
+	Build(params url.Values, tags []string) (OutputProvider, error)
 }
 
 // FilterPlugin is the interface of an filter plugin
 type FilterPlugin interface {
 	// Build a filter
-	Build(params url.Values, tags string) (Filter, error)
+	Build(params url.Values, tags []string) (Filter, error)
 }
