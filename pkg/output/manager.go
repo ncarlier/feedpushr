@@ -70,7 +70,6 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 			}
 			if cached {
 				logger.Debug().Msg("article already sent")
-				sentOnce = true
 				continue
 			}
 
