@@ -93,7 +93,7 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 			return *fh.status, items
 		}
 	default:
-		fh.log.Error().Err(err).Msgf(errBadStatus, resp.StatusCode)
+		fh.log.Info().Err(err).Msgf(errBadStatus, resp.StatusCode)
 		fh.status.Err(fmt.Errorf(errBadStatus, resp.StatusCode))
 		return *fh.status, nil
 	}
