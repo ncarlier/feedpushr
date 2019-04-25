@@ -1,10 +1,22 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v1.0.1...v) (2019-04-10)
+# [](https://github.com/ncarlier/feedpushr/compare/v1.0.1...v) (2019-04-25)
+
+
+### Bug Fixes
+
+* fix articles counter ([28850d1](https://github.com/ncarlier/feedpushr/commit/28850d1))
+* **aggregator:** reduce error logs level ([9ddce0d](https://github.com/ncarlier/feedpushr/commit/9ddce0d))
+
+
+### Features
+
+* add maskSecret function for plugins ([e6440f6](https://github.com/ncarlier/feedpushr/commit/e6440f6))
+* export configuration variables ([65217fc](https://github.com/ncarlier/feedpushr/commit/65217fc))
 
 
 
 <a name="1.0.1"></a>
-## [1.0.1](https://github.com/ncarlier/feedpushr/compare/1.0.0...v1.0.1) (2019-04-10)
+## [1.0.1](https://github.com/ncarlier/feedpushr/compare/v1.0.0...v1.0.1) (2019-04-10)
 
 
 ### Bug Fixes
@@ -14,7 +26,7 @@
 
 
 <a name="1.0.0"></a>
-# [1.0.0](https://github.com/ncarlier/feedpushr/compare/4a64395...1.0.0) (2019-04-09)
+# [1.0.0](https://github.com/ncarlier/feedpushr/compare/4a64395...v1.0.0) (2019-04-09)
 
 
 ### Bug Fixes
