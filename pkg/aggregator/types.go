@@ -68,15 +68,17 @@ func (fs *FeedStatus) Err(err error) {
 	}
 }
 
-// ComputeNextCheckDate computes next dat to check regarding  some rules
+// ComputeNextCheckDate computes next date to check regarding some rules
 // The duration is multiply the number of error.
 // The limit is h24
 func (fs *FeedStatus) ComputeNextCheckDate(base time.Duration) time.Time {
+	deadline := time.Now().Add(h24)
 	if fs.ErrorCount > 0 {
 		base = base * time.Duration(fs.ErrorCount)
 	}
-	if base > h24 {
-		base = h24
+	result := fs.CheckedAt.Add(base)
+	if result.After(deadline) {
+		result = deadline
 	}
-	return fs.CheckedAt.Add(base)
+	return result
 }
