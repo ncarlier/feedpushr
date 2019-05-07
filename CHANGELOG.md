@@ -1,5 +1,20 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v1.0.1...v) (2019-04-25)
+# [](https://github.com/ncarlier/feedpushr/compare/v1.0.2...v) (2019-05-07)
+
+
+### Bug Fixes
+
+* **aggregator:** limit max delay between checks to h24 ([e0a64d1](https://github.com/ncarlier/feedpushr/commit/e0a64d1))
+
+
+### Features
+
+* **opml:** add category support ([060effe](https://github.com/ncarlier/feedpushr/commit/060effe)), closes [#2](https://github.com/ncarlier/feedpushr/issues/2) [#4](https://github.com/ncarlier/feedpushr/issues/4)
+
+
+
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/ncarlier/feedpushr/compare/v1.0.1...v1.0.2) (2019-04-25)
 
 
 ### Bug Fixes
