@@ -51,3 +51,16 @@ func True(t *testing.T, expression bool, message string) {
 		t.Fatalf("%s : %v", message, expression)
 	}
 }
+
+// ContainsStr assert that an array contains an expected value
+func ContainsStr(t *testing.T, expected string, array []string, message string) {
+	if message == "" {
+		message = "Array don't contains expected value"
+	}
+	for _, str := range array {
+		if str == expected {
+			return
+		}
+	}
+	t.Fatalf("%s - array: %v, expected value: %s", message, array, expected)
+}

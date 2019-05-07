@@ -8,6 +8,7 @@ import (
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	bolt "github.com/ncarlier/feedpushr/pkg/store/bolt"
+	memory "github.com/ncarlier/feedpushr/pkg/store/memory"
 	"github.com/rs/zerolog/log"
 )
 
@@ -36,6 +37,9 @@ func Configure(datasource string) (DB, error) {
 	var db DB
 
 	switch datastore {
+	case "memory":
+		db = memory.NewInMemoryStore()
+		log.Info().Str("component", "store").Str("uri", u.String()).Msg("using in memory datastore")
 	case "boltdb":
 		db, err = bolt.NewBoltStore(u)
 		if err != nil {

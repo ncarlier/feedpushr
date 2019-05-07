@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<opml version="1.0">
+    <head>
+        <title>Test case with categories</title>
+    </head>
+    <body>
+        <outline text="Computer Science" title="Computer Science">
+            <outline text="" type="rss" xmlUrl="http://martinfowler.com/feed.atom" title="Martin Fowler"></outline>
+            <outline text="" type="rss" xmlUrl="http://www.howtoforge.com/feed.rss" title="Howtoforge Linux Howtos und Tutorials"></outline>
+            <outline text="" type="rss" xmlUrl="http://putaindecode.fr/feed.xml" title="putaindecode.io"></outline>
+        </outline>
+        <outline text="games" title="Games">
+            <outline type="rss" text="NoFrag" title="NoFrag" xmlUrl="http://www.nofrag.com/nofrag.rss" htmlUrl="https://nofrag.com"/>
+        </outline>
+    </body>
+</opml>

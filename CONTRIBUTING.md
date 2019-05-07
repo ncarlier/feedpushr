@@ -72,7 +72,7 @@ Tag the version according to the [semantic versioning rules](https://semver.org/
 and deploy the release:
 
 ```bash
-$ git tag -a 1.0.0-beta.2
+$ git tag -a v1.0.0-beta2
 $ # Use the changelog header as tag comment.
 $ git push --tags
 ```
