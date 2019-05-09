@@ -69,13 +69,18 @@ func (a *Article) Match(tags []string) bool {
 	if len(tags) == 0 {
 		return true
 	}
-	tagSet := make(map[string]struct{}, len(a.Tags))
+	articleTagSet := make(map[string]struct{}, len(a.Tags))
 	for _, tag := range a.Tags {
-		tagSet[tag] = struct{}{}
+		articleTagSet[tag] = struct{}{}
 	}
 
 	for _, tag := range tags {
-		if _, ok := tagSet[tag]; !ok {
+		not := false
+		if tag[0] == '!' {
+			not = true
+			tag = tag[1:]
+		}
+		if _, contains := articleTagSet[tag]; (!not && !contains) || (not && contains) {
 			return false
 		}
 	}
