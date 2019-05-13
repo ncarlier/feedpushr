@@ -41,7 +41,9 @@ func NewManager(db store.DB, om *output.Manager, delay time.Duration, timeout ti
 			return fmt.Errorf("feed is null")
 		}
 		// TODO do a progressive load increase
-		manager.RegisterFeedAggregator(f)
+		if f.Status != nil && *f.Status == RunningStatus.String() {
+			manager.RegisterFeedAggregator(f)
+		}
 		return nil
 	})
 	if err != nil {

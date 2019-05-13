@@ -41,6 +41,8 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	if !common.IsEmptyString(ctx.Title) {
 		feed.Title = *ctx.Title
 	}
+	status := aggregator.RunningStatus.String()
+	feed.Status = &status
 	err = c.db.SaveFeed(feed)
 	if err != nil {
 		return goa.ErrInternal(err)
@@ -152,11 +154,19 @@ func (c *FeedController) Start(ctx *app.StartFeedContext) error {
 		}
 		return goa.ErrInternal(err)
 	}
+	// Start feed aggregation
 	fa := c.aggregator.GetFeedAggregator(feed.ID)
 	if fa == nil {
 		fa = c.aggregator.RegisterFeedAggregator(feed)
 	} else {
 		fa.Start()
+	}
+	// Update feed DB status
+	status := aggregator.RunningStatus.String()
+	feed.Status = &status
+	err = c.db.SaveFeed(feed)
+	if err != nil {
+		return goa.ErrInternal(err)
 	}
 	c.log.Info().Str("id", feed.ID).Msg("feed aggregation started")
 	return ctx.Accepted()
@@ -171,11 +181,19 @@ func (c *FeedController) Stop(ctx *app.StopFeedContext) error {
 		}
 		return goa.ErrInternal(err)
 	}
+	// Stop feed aggregation
 	fa := c.aggregator.GetFeedAggregator(feed.ID)
 	if fa == nil {
 		return goa.ErrInternal(fmt.Errorf("feed aggregator not registered"))
 	}
 	fa.Stop()
+	// Update feed DB status
+	status := aggregator.StoppedStatus.String()
+	feed.Status = &status
+	err = c.db.SaveFeed(feed)
+	if err != nil {
+		return goa.ErrInternal(err)
+	}
 	c.log.Info().Str("id", feed.ID).Msg("feed aggregation stopped")
 	return ctx.Accepted()
 }
