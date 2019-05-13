@@ -88,6 +88,7 @@ class FeedUpdateForm extends Component {
                 suggestions={tagSuggestions}
                 onChange={this.handleChange}
               />
+              <span>Press [enter] or [,] to add a tag</span>
             </Form.Field>
             {this.errorMessage}
           </Form>
