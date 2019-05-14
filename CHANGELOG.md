@@ -1,5 +1,19 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v1.0.3...v) (2019-05-07)
+# [](https://github.com/ncarlier/feedpushr/compare/v1.0.3...v) (2019-05-14)
+
+
+### Bug Fixes
+
+* **opml:** fix import with inline categories ([1aebfef](https://github.com/ncarlier/feedpushr/commit/1aebfef))
+
+
+### Features
+
+* **aggregator:** store aggregation status ([b1d00db](https://github.com/ncarlier/feedpushr/commit/b1d00db)), closes [#5](https://github.com/ncarlier/feedpushr/issues/5)
+* **filter:** use readflow readability function for fetch filter ([7af532d](https://github.com/ncarlier/feedpushr/commit/7af532d))
+* **tags:** add negative tag ([1692e5d](https://github.com/ncarlier/feedpushr/commit/1692e5d))
+* **ui:** add form micro help ([00b6487](https://github.com/ncarlier/feedpushr/commit/00b6487)), closes [#3](https://github.com/ncarlier/feedpushr/issues/3)
+* **ui:** loading screen on OPNML imports ([315d32a](https://github.com/ncarlier/feedpushr/commit/315d32a))
 
 
 
