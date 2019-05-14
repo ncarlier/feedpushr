@@ -1,11 +1,11 @@
 package filter
 
 import (
+	"context"
 	"sync/atomic"
-	"time"
 
-	readability "github.com/go-shiori/go-readability"
 	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/readflow/pkg/readability"
 )
 
 // FetchFilter is a filter that try to fetch the original article content
@@ -19,19 +19,24 @@ type FetchFilter struct {
 
 // DoFilter applies filter on the article
 func (f *FetchFilter) DoFilter(article *model.Article) error {
-	art, err := readability.FromURL(article.Link, 5*time.Second)
-	if err != nil {
+	art, err := readability.FetchArticle(context.Background(), article.Link)
+	if err != nil && art == nil {
 		atomic.AddUint64(&f.nbError, 1)
 		return err
 	}
-	article.Meta["OriginalContent"] = article.Content
-	article.Content = art.Content
 	article.Title = art.Title
-	article.Meta["Excerpt"] = art.Excerpt
-	article.Meta["Image"] = art.Image
-	article.Meta["TextContent"] = art.TextContent
-	article.Meta["Length"] = art.Length
-	article.Meta["Sitename"] = art.SiteName
+	if art.HTML != nil {
+		article.Meta["originalContent"] = article.Content
+		article.Content = *art.HTML
+	}
+	if art.Text != nil {
+		article.Meta["text"] = *art.Text
+	}
+	if art.Image != nil {
+		article.Meta["image"] = *art.Image
+	}
+	// article.Meta["length"] = art.Length
+	// article.Meta["sitename"] = art.SiteName
 	atomic.AddUint64(&f.nbSuccess, 1)
 	return nil
 }
@@ -54,12 +59,9 @@ const fetchDescription = `
 This filter will attempt to extract the content of the article from the source URL.
 If succeeded, following metadata are added to the article:
 
-- OriginalContent: Initial article content (before fetching)
-- Excerpt: Article excerpt
-- Image: Article main illustration
-- TextContent: Article text content
-- Length: Article length
-- Sitename: Article website name
+- originalContent: Initial article content (before fetching)
+- text: Article excerpt
+- image: Article main illustration
 `
 
 func newFetchFilter(tags []string) *FetchFilter {
