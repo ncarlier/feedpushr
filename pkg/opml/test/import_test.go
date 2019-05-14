@@ -45,11 +45,8 @@ func TestImportSimpleOPML(t *testing.T) {
 	assert.True(t, db.ExistsFeed("http://www.hashicorp.com/feed.xml"), "feed should be created")
 }
 
-func TestImportOPMLWithCategories(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
-	defer teardownTestCase(t)
-
-	o, err := opml.NewOPMLFromFile("./tc_with_categories.xml")
+func testImportOPML(t *testing.T, filename string) {
+	o, err := opml.NewOPMLFromFile(filename)
 	assert.Nil(t, err, "error should be nil")
 	err = opml.ImportOPMLToDB(o, db)
 	assert.Nil(t, err, "error should be nil")
@@ -62,4 +59,16 @@ func TestImportOPMLWithCategories(t *testing.T) {
 		assert.NotNil(t, feed, fmt.Sprintf("feed #%d should  notbe nil", idx))
 		assert.ContainsStr(t, tc.tag, feed.Tags, fmt.Sprintf("invalid tags for feed #%d", idx))
 	}
+}
+
+func TestImportOPMLWithOutlineCategories(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+	testImportOPML(t, "./tc_with_outline_categories.xml")
+}
+
+func TestImportOPMLWithInlineCategories(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+	testImportOPML(t, "./tc_with_inline_categories.xml")
 }

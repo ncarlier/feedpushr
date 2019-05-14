@@ -32,22 +32,16 @@ func importOutlines(db store.DB, logger zerolog.Logger, outlines []Outline, cate
 	var result *multierror.Error
 	for idx, outline := range outlines {
 		if len(outline.Outlines) > 0 {
-			cat := outline.Title
-			if category != "" {
-				cat += "," + category
-			}
-			importOutlines(db, logger, outline.Outlines, cat)
+			importOutlines(db, logger, outline.Outlines, builder.JoinTags(category, outline.Title))
 			continue
 		}
 		if db.ExistsFeed(outline.XMLURL) {
 			logger.Debug().Str("url", outline.XMLURL).Msg("feed already exists: skipped")
 			continue
 		}
-		if category == "" {
-			category = outline.Category
-		}
+		cat := builder.JoinTags(category, outline.Category)
 		logger.Debug().Str("url", outline.XMLURL).Msg("importing feed")
-		feed, err := builder.NewFeed(outline.XMLURL, &category)
+		feed, err := builder.NewFeed(outline.XMLURL, &cat)
 		if err != nil {
 			logger.Warn().Err(err).Str("url", outline.XMLURL).Msg("unable to create feed: skipped")
 			result = multierror.Append(result, newItemError(idx, err))

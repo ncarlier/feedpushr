@@ -46,6 +46,22 @@ func NewFeed(url string, tags *string) (*app.Feed, error) {
 	return feed, nil
 }
 
+// JoinTags join tags in a comma separated string
+func JoinTags(tags ...string) string {
+	result := ""
+	for _, tag := range tags {
+		if result != "" {
+			if tag != "" {
+				result += "," + tag
+			}
+		} else {
+			result = tag
+		}
+	}
+	return result
+
+}
+
 // GetFeedTags extracts tags from a comma separated list of tags
 func GetFeedTags(tags *string) []string {
 	if tags == nil || strings.Trim(*tags, " ") == "" {

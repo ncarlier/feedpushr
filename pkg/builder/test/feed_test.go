@@ -37,3 +37,8 @@ func TestNewFeedWithHubAndTags(t *testing.T) {
 	assert.Equal(t, "foo", feed.Tags[0], "Tag should be equals")
 	assert.Equal(t, "bar_barè", feed.Tags[1], "Tag should be equals")
 }
+
+func TestJoinTags(t *testing.T) {
+	assert.Equal(t, "foo,bar", builder.JoinTags("foo", "bar"), "")
+	assert.Equal(t, "bar,foo", builder.JoinTags("", "bar", "foo", ""), "")
+}
