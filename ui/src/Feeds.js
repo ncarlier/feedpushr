@@ -59,13 +59,14 @@ class Feeds extends Component {
   }
 
   handleImportOPML = (file) => {
+    this.setState({isLoaded: false})
     OPMLApi.import(file)
       .then(
         (result) => {
-          this.setState({ error: null });
+          this.setState({ error: null, isLoaded: true });
           this.handleRefresh()
         },
-        (error) => this.setState({ error })
+        (error) => this.setState({ error, isLoaded: true })
       )
   }
 

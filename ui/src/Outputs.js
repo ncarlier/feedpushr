@@ -68,7 +68,7 @@ function OutputItem({data}) {
   )
 }
 
-export default function Output() {
+export default () => {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false);

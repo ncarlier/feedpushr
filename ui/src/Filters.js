@@ -4,7 +4,6 @@ import {
   Dimmer,
   Item,
   Message,
-  Label,
   Loader,
   Segment,
   Table,
