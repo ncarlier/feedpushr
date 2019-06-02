@@ -159,7 +159,7 @@ func (c *FeedController) Start(ctx *app.StartFeedContext) error {
 	if fa == nil {
 		fa = c.aggregator.RegisterFeedAggregator(feed)
 	} else {
-		fa.Start()
+		fa.StartWithDelay(0)
 	}
 	// Update feed DB status
 	status := aggregator.RunningStatus.String()

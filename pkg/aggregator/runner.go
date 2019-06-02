@@ -133,7 +133,7 @@ func (fa *FeedAggregator) Start() {
 // StartWithDelay starts feed aggregator with a delay.
 func (fa *FeedAggregator) StartWithDelay(delay time.Duration) {
 	fa.nextCheck = time.Now().Add(delay)
-	fa.managementChannel <- StartAction
+	fa.Start()
 }
 
 // GetFeedWithAggregationStatus get a copy of the aggregator feed hydrated with aggregation status.

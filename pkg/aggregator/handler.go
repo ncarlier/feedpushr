@@ -83,15 +83,14 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	timeout.Stop()
 
 	switch resp.StatusCode {
-	case 200, 304:
+	case 200:
 		// Update cache headers
 		fh.status.EtagHeader = resp.Header.Get("Etag")
 		fh.status.LastModifiedHeader = resp.Header.Get("Last-Modified")
 		fh.status.ExpiresHeader = resp.Header.Get("Expires")
-		if resp.StatusCode == 304 {
-			// Not modified: returns empty result.
-			return *fh.status, items
-		}
+	case 304:
+		// Not modified: returns empty result.
+		return *fh.status, items
 	default:
 		fh.log.Info().Err(err).Msgf(errBadStatus, resp.StatusCode)
 		fh.status.Err(fmt.Errorf(errBadStatus, resp.StatusCode))
