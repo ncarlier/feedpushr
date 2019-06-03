@@ -4,6 +4,8 @@ import (
 	"expvar"
 	"runtime"
 	"time"
+
+	"github.com/ncarlier/feedpushr/pkg/config"
 )
 
 var startTime = time.Now().UTC()
@@ -18,8 +20,11 @@ func uptime() interface{} {
 	return int64(uptime)
 }
 
-// Configure madditional metrics
+// Configure additional metrics
 func Configure() {
+	// Export system metrics
 	expvar.Publish("goroutines", expvar.Func(goroutines))
 	expvar.Publish("uptime", expvar.Func(uptime))
+	// Export configuration variables
+	config.ExportConfigVars()
 }

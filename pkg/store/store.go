@@ -24,7 +24,7 @@ type DB interface {
 	StoreToCache(key string, item *model.CacheItem) error
 	ClearCache() error
 	EvictFromCache(before time.Time) error
-	Close() error
+	Shutdown() error
 }
 
 // Configure the data store regarding the datasource URI

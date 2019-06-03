@@ -50,10 +50,8 @@ func setFlagEnvArray(p *ArrayFlags, key, desc string, fallback []string) {
 	if val := envValue(key + "s"); val != nil {
 		fallback = strings.Split(*val, ",")
 	}
-	result := &ArrayFlags{
-		fallback: fallback,
-	}
-	flag.Var(result, key, envDesc(key+"s", desc+" (comma separated list when using env variable)"))
+	p.fallback = fallback
+	flag.Var(p, key, envDesc(key+"s", desc+" (comma separated list when using env variable)"))
 }
 
 // setFlagString set string value from flag with fallback

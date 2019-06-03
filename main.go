@@ -3,36 +3,33 @@ package main
 import (
 	"context"
 	"flag"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/goadesign/goa"
-	"github.com/goadesign/goa/middleware"
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/pkg/assets"
 	"github.com/ncarlier/feedpushr/pkg/config"
-	"github.com/ncarlier/feedpushr/pkg/controller"
-	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/job"
 	"github.com/ncarlier/feedpushr/pkg/logging"
 	"github.com/ncarlier/feedpushr/pkg/metric"
-	"github.com/ncarlier/feedpushr/pkg/opml"
-	"github.com/ncarlier/feedpushr/pkg/output"
-	"github.com/ncarlier/feedpushr/pkg/plugin"
+	"github.com/ncarlier/feedpushr/pkg/service"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
+	// Shutdwon channels
+	done := make(chan bool)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+
+	// Parse command line (and environment variables)
 	flag.Parse()
 
-	config.ExportConfigVars()
+	// Get global configuration
 	conf := config.Get()
 
+	// Show version if asked
 	if conf.ShowVersion {
 		printVersion()
 		os.Exit(0)
@@ -40,12 +37,6 @@ func main() {
 
 	// Log configuration
 	logging.Configure(conf.LogLevel, conf.LogPretty, conf.SentryDSN)
-
-	// Load plugins
-	pr, err := plugin.NewPluginRegistry(conf.Plugins.Values())
-	if err != nil {
-		log.Fatal().Err(err).Msg("unable to init plugins")
-	}
 
 	// Metric configuration
 	metric.Configure()
@@ -56,122 +47,59 @@ func main() {
 		log.Fatal().Err(err).Msg("unable to init data store")
 	}
 
-	// Clear cache if require
+	// Init global service
+	srv, err := service.Configure(db, conf)
+	if err != nil {
+		db.Shutdown()
+		log.Fatal().Err(err).Msg("unable to init main service")
+	}
+
+	// Clear cache if asked
 	if conf.ClearCache {
-		err = db.ClearCache()
-		if err != nil {
+		log.Debug().Msg("clearing the cache...")
+		if err := srv.ClearCache(); err != nil {
+			db.Shutdown()
 			log.Fatal().Err(err).Msg("unable to clear the cache")
 		}
+		log.Info().Msg("cache cleared")
+	}
+
+	// Import OPML file if asked
+	if conf.ImportFilename != "" {
+		log.Debug().Str("filename", conf.ImportFilename).Msg("importing OPML file...")
+		if err := srv.ImportOPMLFile(conf.ImportFilename); err != nil {
+			db.Shutdown()
+			log.Fatal().Err(err).Str("filename", conf.ImportFilename).Msg("unable to import OPML file")
+		}
+		log.Info().Str("filename", conf.ImportFilename).Msg("OPML file imported")
 	}
 
 	// Starts background jobs (cache-buster)
 	scheduler := job.StartNewScheduler(db, conf)
 
-	// Init chain filter
-	cf, err := filter.NewChainFilter(conf.Filters.Values(), pr)
-	if err != nil {
-		log.Fatal().Err(err).Msg("unable to init filter chain")
-	}
-
-	// Init output manager
-	om, err := output.NewManager(db, conf.Outputs.Values(), conf.CacheRetention, pr, cf)
-	if err != nil {
-		log.Fatal().Err(err).Msg("unable to init output manager")
-	}
-
-	// Import OPML file if present
-	if conf.ImportFilename != "" {
-		o, err := opml.NewOPMLFromFile(conf.ImportFilename)
-		if err != nil {
-			db.Close()
-			log.Fatal().Err(err)
-		}
-		err = opml.ImportOPMLToDB(o, db)
-		if err != nil {
-			log.Error().Err(err)
-		}
-	}
-	// Init aggregator daemon
-	var callbackURL string
-	if conf.PublicURL != "" {
-		callbackURL = conf.PublicURL + "/v1/pshb"
-	}
-	am, err := aggregator.NewManager(db, om, conf.Delay, conf.Timeout, callbackURL)
-	if err != nil {
-		log.Fatal().Err(err)
-	}
-
-	// Create service
-	service := goa.New("feedpushr")
-
-	// Set custom logger
-	logger := log.With().Str("component", "server").Logger()
-	service.WithLogger(logging.NewLogAdapter(logger))
-
-	// Mount middleware
-	service.Use(middleware.RequestID())
-	service.Use(middleware.LogRequest(false))
-	service.Use(middleware.ErrorHandler(service, true))
-	service.Use(middleware.Recover())
-
-	// Mount "feed" controller
-	fc := controller.NewFeedController(service, db, am)
-	app.MountFeedController(service, fc)
-	// Mount "filter" controller
-	fic := controller.NewFilterController(service, cf)
-	app.MountFilterController(service, fic)
-	// Mount "output" controller
-	oc := controller.NewOutputController(service, om)
-	app.MountOutputController(service, oc)
-	// Mount "health" controller
-	hc := controller.NewHealthController(service)
-	app.MountHealthController(service, hc)
-	// Mount "swagger" controller
-	sc := controller.NewSwaggerController(service)
-	app.MountSwaggerController(service, sc)
-	// Mount "opml" controller
-	opc := controller.NewOpmlController(service, db)
-	app.MountOpmlController(service, opc)
-	// Mount "vars" controller
-	vc := controller.NewVarsController(service)
-	app.MountVarsController(service, vc)
-	// Mount "pshb" controller (only if public URL is configured)
-	if conf.PublicURL != "" {
-		pc := controller.NewPshbController(service, db, am, om)
-		app.MountPshbController(service, pc)
-	}
-	// Mount custom handlers (aka: not generated)...
-	service.Mux.Handle("GET", "/ui/*asset", assets.Handler())
-	service.Mux.Handle("GET", "/ui/", assets.Handler())
-
 	// Graceful shutdown handle
-	done := make(chan bool)
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-quit
 		log.Debug().Msg("shutting down server...")
+		// Shutdown the scheduler...
 		scheduler.Shutdown()
-		service.CancelAll()
-		service.Server.SetKeepAlivesEnabled(false)
-		am.Shutdown()
-
+		// Shutdown the server...
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
-
-		if err := service.Server.Shutdown(ctx); err != nil {
+		if err := srv.Shutdown(ctx); err != nil {
 			log.Fatal().Err(err).Msg("could not gracefully shutdown the server")
 		}
+		// Shutdown the database...
+		db.Shutdown()
 		close(done)
 	}()
 
 	// Start service
 	log.Info().Str("listen", conf.ListenAddr).Msg("starting HTTP server...")
-	if err := service.ListenAndServe(conf.ListenAddr); err != nil && err != http.ErrServerClosed {
+	if err := srv.ListenAndServe(conf.ListenAddr); err != nil {
 		log.Fatal().Err(err).Msg("unable to start server")
 	}
 
 	<-done
-	db.Close()
 	log.Debug().Msg("server stopped")
 }

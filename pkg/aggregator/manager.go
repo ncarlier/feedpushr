@@ -24,9 +24,9 @@ type Manager struct {
 	callbackURL       string
 }
 
-// NewManager creates a new manager
-func NewManager(db store.DB, om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) (*Manager, error) {
-	manager := &Manager{
+// NewManager creates a new aggregator manager
+func NewManager(db store.DB, om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
+	return &Manager{
 		feedAggregators: make(map[string]*FeedAggregator),
 		db:              db,
 		output:          om,
@@ -35,25 +35,26 @@ func NewManager(db store.DB, om *output.Manager, delay time.Duration, timeout ti
 		timeout:         timeout,
 		callbackURL:     callbackURL,
 	}
-	manager.log.Debug().Msg("loading feed aggregators...")
-	err := manager.db.ForEachFeed(func(f *app.Feed) error {
+}
+
+// Start the aggrgator manager (aka. register and start all feed aggregator)
+func (m *Manager) Start() error {
+	m.log.Debug().Msg("loading feed aggregators...")
+	err := m.db.ForEachFeed(func(f *app.Feed) error {
 		if f == nil {
 			return fmt.Errorf("feed is null")
 		}
 		// TODO do a progressive load increase
 		if f.Status != nil && *f.Status == RunningStatus.String() {
-			manager.RegisterFeedAggregator(f)
+			m.RegisterFeedAggregator(f)
 		}
 		return nil
 	})
 	if err != nil {
-		manager.log.Error().Err(err).Msg("unable to load feed aggregators")
-		manager.Shutdown()
-		manager = nil
-		return nil, err
+		return err
 	}
-	manager.log.Info().Int("feeds", len(manager.feedAggregators)).Msg("aggregation started")
-	return manager, nil
+	m.log.Info().Int("feeds", len(m.feedAggregators)).Msg("aggregation started")
+	return nil
 }
 
 // GetFeedAggregator returns a feed aggregator

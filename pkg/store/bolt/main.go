@@ -39,8 +39,8 @@ func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
 	}, nil
 }
 
-// Close the DB.
-func (store *BoltStore) Close() error {
+// Shutdown the DB.
+func (store *BoltStore) Shutdown() error {
 	return store.db.Close()
 }
 
