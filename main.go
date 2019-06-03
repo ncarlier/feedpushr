@@ -17,6 +17,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/config"
 	"github.com/ncarlier/feedpushr/pkg/controller"
 	"github.com/ncarlier/feedpushr/pkg/filter"
+	"github.com/ncarlier/feedpushr/pkg/job"
 	"github.com/ncarlier/feedpushr/pkg/logging"
 	"github.com/ncarlier/feedpushr/pkg/metric"
 	"github.com/ncarlier/feedpushr/pkg/opml"
@@ -60,19 +61,8 @@ func main() {
 		}
 	}
 
-	// Starts cache-buster
-	cleanCacheTicker := time.NewTicker(24 * time.Hour)
-	go func() {
-		log.Debug().Str("retention", (*config.CacheRetention).String()).Msg("cache-buster started")
-		for range cleanCacheTicker.C {
-			maxAge := time.Now().Add(-*config.CacheRetention)
-			err := db.EvictFromCache(maxAge)
-			if err != nil {
-				log.Error().Err(err).Msg("unable clean the cache")
-				return
-			}
-		}
-	}()
+	// Starts background jobs (cache-buster)
+	scheduler := job.StartNewScheduler(db)
 
 	// Init chain filter
 	cf, err := filter.NewChainFilter(config.Filters.Values(), pr)
@@ -158,7 +148,7 @@ func main() {
 	go func() {
 		<-quit
 		log.Debug().Msg("shutting down server...")
-		cleanCacheTicker.Stop()
+		scheduler.Shutdown()
 		service.CancelAll()
 		service.Server.SetKeepAlivesEnabled(false)
 		am.Shutdown()
