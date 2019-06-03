@@ -30,16 +30,19 @@ import (
 func main() {
 	flag.Parse()
 
-	if *config.Version {
+	config.ExportConfigVars()
+	conf := config.Get()
+
+	if conf.ShowVersion {
 		printVersion()
 		os.Exit(0)
 	}
 
 	// Log configuration
-	logging.Configure(*config.LogLevel, *config.LogPretty, config.SentryDSN)
+	logging.Configure(conf.LogLevel, conf.LogPretty, conf.SentryDSN)
 
 	// Load plugins
-	pr, err := plugin.NewPluginRegistry(config.Plugins.Values())
+	pr, err := plugin.NewPluginRegistry(conf.Plugins.Values())
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init plugins")
 	}
@@ -48,13 +51,13 @@ func main() {
 	metric.Configure()
 
 	// Init the data store
-	db, err := store.Configure(*config.DB)
+	db, err := store.Configure(conf.DB)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init data store")
 	}
 
 	// Clear cache if require
-	if *config.ClearCache {
+	if conf.ClearCache {
 		err = db.ClearCache()
 		if err != nil {
 			log.Fatal().Err(err).Msg("unable to clear the cache")
@@ -62,23 +65,23 @@ func main() {
 	}
 
 	// Starts background jobs (cache-buster)
-	scheduler := job.StartNewScheduler(db)
+	scheduler := job.StartNewScheduler(db, conf)
 
 	// Init chain filter
-	cf, err := filter.NewChainFilter(config.Filters.Values(), pr)
+	cf, err := filter.NewChainFilter(conf.Filters.Values(), pr)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init filter chain")
 	}
 
 	// Init output manager
-	om, err := output.NewManager(db, config.Outputs.Values(), *config.CacheRetention, pr, cf)
+	om, err := output.NewManager(db, conf.Outputs.Values(), conf.CacheRetention, pr, cf)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init output manager")
 	}
 
 	// Import OPML file if present
-	if *config.ImportFilename != "" {
-		o, err := opml.NewOPMLFromFile(*config.ImportFilename)
+	if conf.ImportFilename != "" {
+		o, err := opml.NewOPMLFromFile(conf.ImportFilename)
 		if err != nil {
 			db.Close()
 			log.Fatal().Err(err)
@@ -90,10 +93,10 @@ func main() {
 	}
 	// Init aggregator daemon
 	var callbackURL string
-	if *config.PublicURL != "" {
-		callbackURL = *config.PublicURL + "/v1/pshb"
+	if conf.PublicURL != "" {
+		callbackURL = conf.PublicURL + "/v1/pshb"
 	}
-	am, err := aggregator.NewManager(db, om, *config.Delay, *config.Timeout, callbackURL)
+	am, err := aggregator.NewManager(db, om, conf.Delay, conf.Timeout, callbackURL)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
@@ -133,7 +136,7 @@ func main() {
 	vc := controller.NewVarsController(service)
 	app.MountVarsController(service, vc)
 	// Mount "pshb" controller (only if public URL is configured)
-	if *config.PublicURL != "" {
+	if conf.PublicURL != "" {
 		pc := controller.NewPshbController(service, db, am, om)
 		app.MountPshbController(service, pc)
 	}
@@ -163,8 +166,8 @@ func main() {
 	}()
 
 	// Start service
-	log.Info().Str("listen", *config.ListenAddr).Msg("starting HTTP server...")
-	if err := service.ListenAndServe(*config.ListenAddr); err != nil && err != http.ErrServerClosed {
+	log.Info().Str("listen", conf.ListenAddr).Msg("starting HTTP server...")
+	if err := service.ListenAndServe(conf.ListenAddr); err != nil && err != http.ErrServerClosed {
 		log.Fatal().Err(err).Msg("unable to start server")
 	}
 

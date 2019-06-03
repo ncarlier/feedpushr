@@ -13,40 +13,40 @@ import (
 
 const envPrefix = "APP_"
 
-// FlagEnvString returns flag or env string value with fallback
-func FlagEnvString(key, desc, fallback string) *string {
+// setFlagEnvString set string value from flag or env with fallback
+func setFlagEnvString(p *string, key, desc, fallback string) {
 	if val := envValue(key); val != nil {
 		fallback = *val
 	}
-	return flag.String(key, fallback, envDesc(key, desc))
+	flag.StringVar(p, key, fallback, envDesc(key, desc))
 }
 
-// FlagEnvBool returns flag or env bool value with fallback
-func FlagEnvBool(key, desc string, fallback bool) *bool {
+// setFlagEnvBool set bool value from flag or env with fallback
+func setFlagEnvBool(p *bool, key, desc string, fallback bool) {
 	if val := envValue(key); val != nil {
 		fallback, _ = strconv.ParseBool(*val)
 	}
-	return flag.Bool(key, fallback, envDesc(key, desc))
+	flag.BoolVar(p, key, fallback, envDesc(key, desc))
 }
 
-// FlagEnvInt returns flag or env int value with fallback
-func FlagEnvInt(key, desc string, fallback int) *int {
+// setFlagEnvInt set int value from flag or env with fallback
+func setFlagEnvInt(p *int, key, desc string, fallback int) {
 	if val := envValue(key); val != nil {
 		fallback, _ = strconv.Atoi(*val)
 	}
-	return flag.Int(key, fallback, envDesc(key, desc))
+	flag.IntVar(p, key, fallback, envDesc(key, desc))
 }
 
-// FlagEnvDuration returns flag or env duration value with fallback
-func FlagEnvDuration(key, desc string, fallback time.Duration) *time.Duration {
+// setFlagEnvDuration set duration value form flag or env with fallback
+func setFlagEnvDuration(p *time.Duration, key, desc string, fallback time.Duration) {
 	if val := envValue(key); val != nil {
 		fallback, _ = time.ParseDuration(*val)
 	}
-	return flag.Duration(key, fallback, envDesc(key, desc))
+	flag.DurationVar(p, key, fallback, envDesc(key, desc))
 }
 
-// FlagEnvArray returns flag or env array value with fallback
-func FlagEnvArray(key, desc string, fallback []string) *ArrayFlags {
+// setFlagEnvArray set array value from flag or env with fallback
+func setFlagEnvArray(p *ArrayFlags, key, desc string, fallback []string) {
 	if val := envValue(key + "s"); val != nil {
 		fallback = strings.Split(*val, ",")
 	}
@@ -54,17 +54,16 @@ func FlagEnvArray(key, desc string, fallback []string) *ArrayFlags {
 		fallback: fallback,
 	}
 	flag.Var(result, key, envDesc(key+"s", desc+" (comma separated list when using env variable)"))
-	return result
 }
 
-// FlagString returns flag string value with fallback
-func FlagString(key, desc, fallback string) *string {
-	return flag.String(key, fallback, desc)
+// setFlagString set string value from flag with fallback
+func setFlagString(p *string, key, desc, fallback string) {
+	flag.StringVar(p, key, fallback, desc)
 }
 
-// FlagBool returns env bool value with fallback
-func FlagBool(key, desc string, fallback bool) *bool {
-	return flag.Bool(key, fallback, desc)
+// setFlagBool set bool value from flag with fallback
+func setFlagBool(p *bool, key, desc string, fallback bool) {
+	flag.BoolVar(p, key, fallback, desc)
 }
 
 func envDesc(key, desc string) string {

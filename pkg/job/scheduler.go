@@ -1,6 +1,9 @@
 package job
 
-import "github.com/ncarlier/feedpushr/pkg/store"
+import (
+	"github.com/ncarlier/feedpushr/pkg/config"
+	"github.com/ncarlier/feedpushr/pkg/store"
+)
 
 // Scheduler is a job scheduler
 type Scheduler struct {
@@ -8,9 +11,9 @@ type Scheduler struct {
 }
 
 // StartNewScheduler create and start new job scheduler
-func StartNewScheduler(_db store.DB) *Scheduler {
+func StartNewScheduler(_db store.DB, conf config.Config) *Scheduler {
 	return &Scheduler{
-		cleanCacheJob: NewCleanCacheJob(_db),
+		cleanCacheJob: NewCleanCacheJob(_db, conf.CacheRetention),
 	}
 }
 
