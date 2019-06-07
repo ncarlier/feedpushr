@@ -3,6 +3,8 @@
 #########################################
 FROM golang:1.12 AS builder
 
+RUN apt-get install -y libgtk-3-dev libappindicator3-dev
+
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
 

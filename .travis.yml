@@ -14,7 +14,7 @@ deploy:
   - release/feedpushr-linux-amd64.tgz
   - release/feedpushr-linux-arm64.tgz
   - release/feedpushr-linux-arm.tgz
-  - release/feedpushr-darwin-amd64.tgz
+  - release/feedpushr-windows-amd64.tgz
   skip_cleanup: true
   on:
     repo: ncarlier/feedpushr
