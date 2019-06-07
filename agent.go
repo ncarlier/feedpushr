@@ -1,4 +1,3 @@
-// +build linux windows
 // +build amd64
 
 package main
