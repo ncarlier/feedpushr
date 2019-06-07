@@ -4,7 +4,7 @@
 [![Image size](https://images.microbadger.com/badges/image/ncarlier/feedpushr.svg)](https://microbadger.com/images/ncarlier/feedpushr)
 [![Docker pulls](https://img.shields.io/docker/pulls/ncarlier/feedpushr.svg)](https://hub.docker.com/r/ncarlier/feedpushr/)
 
-A simple feed aggregator daemon with sugar on top.
+A simple feed aggregator service with sugar on top.
 
 ![Logo](feedpushr.svg)
 
@@ -21,7 +21,7 @@ A simple feed aggregator daemon with sugar on top.
 - Support of [PubSubHubbud][pubsubhubbud] the open, simple, web-scale and
   decentralized pubsub protocol.
 - REST API with complete [OpenAPI][openapi] documentation.
-- Full feature Web UI and CLI to interact with the daemon's API.
+- Full feature Web UI and CLI to interact with the API.
 - Metrics production for monitoring.
 
 ## Installation
@@ -46,10 +46,11 @@ $ docker run -d --name=feedpushr ncarlier/feedpushr
 
 ## Configuration
 
-You can configure the daemon by setting environment variables:
+You can configure the service by setting environment variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `APP_DAEMON` | `false` | Start service without systray menu if true |
 | `APP_ADDR` | `:8080` | HTTP server address |
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
@@ -103,7 +104,7 @@ For example, this OMPL attribute `<category>/test,foo,/bar/bar</category>` will 
 Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
 
 Tags are also used by filters and outputs to manage their activation.
-If you start the daemon with a filter or an output using tags, only articles corresponding to these tags will be processed by this filter or output.
+If you start the service with a filter or an output using tags, only articles corresponding to these tags will be processed by this filter or output.
 
 Example:
 
@@ -155,23 +156,27 @@ You can access Web UI on http://localhost:8080/ui
 
 ## Use cases
 
-### Start the daemon
+### Start the service
 
 ```bash
-$ # Start the daemon with default configuration:
+$ # Start service with default configuration:
 $ feedpushr
-$ # Start the daemon and send new articles to a HTTP endpoint:
+$ # Start service without the systray:
+$ feedpushr --daemon
+$ # Start service and send new articles to a HTTP endpoint:
 $ feedpushr --output https://requestb.in/t4gdzct4
-$ # Start the daemon with a database initialized
+$ # Start service with a database initialized
 $ # with subscriptions from an OPML file:
 $ feedpushr --import ./my-subscriptions.xml
-$ # Start the daemon with custom configuration:
+$ # Start service with custom configuration:
+$ export APP_DAEMON=true
 $ export APP_OUTPUTS="https://requestb.in/t4gdzct4"
 $ export APP_STORE="boltdb:///var/opt/feedpushr.db"
 $ export APP_DELAY=20s
 $ export APP_LOG_LEVEL=warn
 $ feedpushr
 ```
+
 ### Add feeds
 
 ```bash
@@ -224,6 +229,10 @@ To be able to build the project you will need to:
 - Install `goa`:
   ```bash
   $ go get -u github.com/goadesign/goa/...
+  ```
+- (Only on Linux) Install application indicators library
+  ```bash
+  $ sudo apt-get install libgtk-3-dev libappindicator3-dev
   ```
 
 Then you can build the project using make:

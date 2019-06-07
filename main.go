@@ -21,7 +21,6 @@ func main() {
 	// Shutdwon channels
 	done := make(chan bool)
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	// Parse command line (and environment variables)
 	flag.Parse()
@@ -36,7 +35,9 @@ func main() {
 	}
 
 	// Log configuration
-	logging.Configure(conf.LogLevel, conf.LogPretty, conf.SentryDSN)
+	if err := logging.Configure(conf.LogOutput, conf.LogLevel, conf.LogPretty, conf.SentryDSN, conf.Daemon); err != nil {
+		log.Fatal().Err(err).Msg("unable to configure logger")
+	}
 
 	// Metric configuration
 	metric.Configure()
@@ -77,7 +78,7 @@ func main() {
 	// Starts background jobs (cache-buster)
 	scheduler := job.StartNewScheduler(db, conf)
 
-	// Graceful shutdown handle
+	// Graceful shutdown handler
 	go func() {
 		<-quit
 		log.Debug().Msg("shutting down server...")
@@ -94,10 +95,24 @@ func main() {
 		close(done)
 	}()
 
-	// Start service
-	log.Info().Str("listen", conf.ListenAddr).Msg("starting HTTP server...")
-	if err := srv.ListenAndServe(conf.ListenAddr); err != nil {
-		log.Fatal().Err(err).Msg("unable to start server")
+	start := func() {
+		log.Info().Str("listen", conf.ListenAddr).Msg("starting HTTP server...")
+		if err := srv.ListenAndServe(conf.ListenAddr); err != nil {
+			log.Fatal().Err(err).Msg("unable to start server")
+		}
+	}
+
+	stop := func() {
+		quit <- syscall.SIGABRT
+	}
+
+	if conf.Daemon {
+		// Start service
+		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+		start()
+	} else {
+		agent := NewAgent(start, stop, conf)
+		agent.Start()
 	}
 
 	<-done
