@@ -1,5 +1,10 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v1.1.0...v) (2019-06-12)
+# [](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v) (2019-06-12)
+
+
+
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/ncarlier/feedpushr/compare/v1.1.0...v1.2.0) (2019-06-12)
 
 
 ### Bug Fixes
