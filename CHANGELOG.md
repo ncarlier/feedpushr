@@ -1,5 +1,18 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v1.1.0...v) (2019-05-14)
+# [](https://github.com/ncarlier/feedpushr/compare/v1.1.0...v) (2019-06-12)
+
+
+### Bug Fixes
+
+* **aggregator:** reset delay when manual start ([0d66cc9](https://github.com/ncarlier/feedpushr/commit/0d66cc9)), closes [#6](https://github.com/ncarlier/feedpushr/issues/6)
+* disable agent for ARM architecture ([4faea98](https://github.com/ncarlier/feedpushr/commit/4faea98))
+
+
+### Features
+
+* move agent from base code to contrib ([d4c55c3](https://github.com/ncarlier/feedpushr/commit/d4c55c3))
+* plugins autoload ([4af51b7](https://github.com/ncarlier/feedpushr/commit/4af51b7))
+* use systray for desktop environment ([3826b84](https://github.com/ncarlier/feedpushr/commit/3826b84))
 
 
 
@@ -65,7 +78,7 @@
 
 
 <a name="1.0.0"></a>
-# [1.0.0](https://github.com/ncarlier/feedpushr/compare/4a64395...v1.0.0) (2019-04-09)
+# [1.0.0](https://github.com/ncarlier/feedpushr/compare/1.0.0...v1.0.0) (2019-04-09)
 
 
 ### Bug Fixes
