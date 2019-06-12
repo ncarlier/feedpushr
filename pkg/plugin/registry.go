@@ -5,6 +5,7 @@ import (
 	_plugin "plugin"
 
 	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/rs/zerolog/log"
 )
 
 // Registry contains registered output and filter plugins
@@ -29,6 +30,7 @@ func NewPluginRegistry(plugins []string) (*Registry, error) {
 			return nil, fmt.Errorf("unsuported plugin type: %s - %v", filename, err)
 		}
 		info := getPluginInfo.(func() model.PluginInfo)()
+		log.Debug().Str("name", info.Name).Str("filename", filename).Msg("loading plugin...")
 
 		switch info.Type {
 		case model.OUTPUT_PLUGIN:

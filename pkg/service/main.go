@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"net/http"
+	"path/filepath"
 
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
@@ -66,8 +67,17 @@ func (s *Service) Shutdown(ctx context.Context) error {
 
 // Configure the global service
 func Configure(db store.DB, conf config.Config) (*Service, error) {
+	// Auto add plugins if not configured
+	plugins := conf.Plugins.Values()
+	if len(plugins) == 0 {
+		var err error
+		plugins, err = filepath.Glob("feedpushr-*.so")
+		if err != nil {
+			log.Error().Err(err).Msg("unable to autoload plugins")
+		}
+	}
 	// Load plugins
-	pr, err := plugin.NewPluginRegistry(conf.Plugins.Values())
+	pr, err := plugin.NewPluginRegistry(plugins)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init plugins")
 		return nil, err
