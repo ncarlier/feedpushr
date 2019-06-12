@@ -4,17 +4,12 @@ import (
 	"io"
 	"os"
 
-	"github.com/mattn/go-isatty"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 // Configure logger level and output format
-func Configure(output, level string, pretty bool, sentryDSN string, daemon bool) error {
-	if !isatty.IsTerminal(os.Stdout.Fd()) && !daemon && output == "" {
-		output = "output.log"
-		pretty = false
-	}
+func Configure(output, level string, pretty bool, sentryDSN string) error {
 	out := os.Stdout
 	if output != "" {
 		var err error

@@ -21,6 +21,7 @@ func main() {
 	// Shutdwon channels
 	done := make(chan bool)
 	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	// Parse command line (and environment variables)
 	flag.Parse()
@@ -35,7 +36,7 @@ func main() {
 	}
 
 	// Log configuration
-	if err := logging.Configure(conf.LogOutput, conf.LogLevel, conf.LogPretty, conf.SentryDSN, conf.Daemon); err != nil {
+	if err := logging.Configure(conf.LogOutput, conf.LogLevel, conf.LogPretty, conf.SentryDSN); err != nil {
 		log.Fatal().Err(err).Msg("unable to configure logger")
 	}
 
@@ -95,24 +96,10 @@ func main() {
 		close(done)
 	}()
 
-	start := func() {
-		log.Info().Str("listen", conf.ListenAddr).Msg("starting HTTP server...")
-		if err := srv.ListenAndServe(conf.ListenAddr); err != nil {
-			log.Fatal().Err(err).Msg("unable to start server")
-		}
-	}
-
-	stop := func() {
-		quit <- syscall.SIGABRT
-	}
-
-	if conf.Daemon {
-		// Start service
-		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
-		start()
-	} else {
-		agent := NewAgent(start, stop, conf)
-		agent.Start()
+	// Start service
+	log.Info().Str("listen", conf.ListenAddr).Msg("starting HTTP server...")
+	if err := srv.ListenAndServe(conf.ListenAddr); err != nil {
+		log.Fatal().Err(err).Msg("unable to start server")
 	}
 
 	<-done

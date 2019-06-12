@@ -1,8 +1,6 @@
 language: go
 go:
 - "1.12"
-before_install:
-- sudo apt-get install -y libgtk-3-dev libappindicator3-dev
 script:
 - make test
 - make distribution
@@ -15,6 +13,7 @@ deploy:
   - release/feedpushr-linux-arm64.tgz
   - release/feedpushr-linux-arm.tgz
   - release/feedpushr-windows-amd64.tgz
+  - release/feedpushr-darwin-amd64.tgz
   skip_cleanup: true
   on:
     repo: ncarlier/feedpushr

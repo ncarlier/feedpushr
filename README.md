@@ -50,7 +50,6 @@ You can configure the service by setting environment variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `APP_DAEMON` | `false` | Start service without systray menu if true |
 | `APP_ADDR` | `:8080` | HTTP server address |
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
@@ -161,15 +160,12 @@ You can access Web UI on http://localhost:8080/ui
 ```bash
 $ # Start service with default configuration:
 $ feedpushr
-$ # Start service without the systray:
-$ feedpushr --daemon
 $ # Start service and send new articles to a HTTP endpoint:
 $ feedpushr --output https://requestb.in/t4gdzct4
 $ # Start service with a database initialized
 $ # with subscriptions from an OPML file:
 $ feedpushr --import ./my-subscriptions.xml
 $ # Start service with custom configuration:
-$ export APP_DAEMON=true
 $ export APP_OUTPUTS="https://requestb.in/t4gdzct4"
 $ export APP_STORE="boltdb:///var/opt/feedpushr.db"
 $ export APP_DELAY=20s
@@ -229,10 +225,6 @@ To be able to build the project you will need to:
 - Install `goa`:
   ```bash
   $ go get -u github.com/goadesign/goa/...
-  ```
-- (Only on Linux) Install application indicators library
-  ```bash
-  $ sudo apt-get install libgtk-3-dev libappindicator3-dev
   ```
 
 Then you can build the project using make:

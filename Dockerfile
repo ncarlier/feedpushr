@@ -3,8 +3,6 @@
 #########################################
 FROM golang:1.12 AS builder
 
-RUN apt-get install -y libgtk-3-dev libappindicator3-dev
-
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
 
@@ -30,9 +28,6 @@ ARG REPOSITORY=github.com/ncarlier
 
 # Artifact name
 ARG ARTIFACT=feedpushr
-
-# Set default env
-ENV APP_DAEMON=true
 
 # Fix lib dep
 RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
