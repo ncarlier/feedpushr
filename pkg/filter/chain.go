@@ -4,48 +4,88 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
+	"github.com/ncarlier/feedpushr/pkg/store"
 )
 
 // Chain contains filter chain
 type Chain struct {
+	db      store.DB
 	filters []model.Filter
 }
 
-// NewChainFilter creates a new filter chain
-func NewChainFilter(filters []string) (*Chain, error) {
-	chain := &Chain{}
-
-	for _, f := range filters {
-		u, err := url.Parse(f)
-		if err != nil {
-			return nil, fmt.Errorf("invalid filter URL: %s", f)
+// LoadChainFilter init chain filter from database
+func LoadChainFilter(db store.DB) (*Chain, error) {
+	chain := &Chain{
+		db: db,
+	}
+	err := db.ForEachFilter(func(f *app.Filter) error {
+		if f == nil {
+			return fmt.Errorf("filter is null")
 		}
-		tags := builder.GetFeedTags(&u.Fragment)
-		switch u.Scheme {
-		case "title":
-			chain.filters = append(chain.filters, newTitleFilter(u.Query(), tags))
-		case "fetch":
-			chain.filters = append(chain.filters, newFetchFilter(tags))
-		case "minify":
-			chain.filters = append(chain.filters, newMinifyFilter(u.Query(), tags))
-		default:
-			// Try to load plugin regarding the name
-			plug := plugin.GetRegsitry().LookupFilterPlugin(u.Scheme)
-			if plug == nil {
-				return nil, fmt.Errorf("unsuported filter: %s", u.Scheme)
-			}
-			fp, err := plug.Build(u.Query(), tags)
-			if err != nil {
-				return nil, fmt.Errorf("unable to create filter: %v", err)
-			}
-			chain.filters = append(chain.filters, fp)
+		chain.add(f)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return chain, nil
+}
+
+// AddURI add a filter by its URI
+func (chain *Chain) AddURI(URI string) error {
+	u, err := url.Parse(URI)
+	if err != nil {
+		return fmt.Errorf("invalid filter URI: %s", URI)
+	}
+	tags := builder.GetFeedTags(&u.Fragment)
+	props := make(map[string]interface{})
+	for key, value := range u.Query() {
+		props[key] = value[0]
+	}
+	filter := &app.Filter{
+		Name:  u.Scheme,
+		Props: props,
+		Tags:  tags,
+	}
+	return chain.Add(filter)
+}
+
+// Add a filter into DB then to the current chain filter
+func (chain *Chain) Add(filter *app.Filter) error {
+	_, err := chain.db.SaveFilter(filter)
+	if err != nil {
+		return err
+	}
+	return chain.add(filter)
+}
+
+func (chain *Chain) add(filter *app.Filter) error {
+	var _filter model.Filter
+	switch filter.Name {
+	case "title":
+		_filter = newTitleFilter(filter)
+	case "fetch":
+		_filter = newFetchFilter(filter)
+	case "minify":
+		_filter = newMinifyFilter(filter)
+	default:
+		// Try to load plugin regarding the name
+		plug := plugin.GetRegsitry().LookupFilterPlugin(filter.Name)
+		if plug == nil {
+			return fmt.Errorf("unsuported filter: %s", filter.Name)
+		}
+		var err error
+		_filter, err = plug.Build(filter.Props, filter.Tags)
+		if err != nil {
+			return fmt.Errorf("unable to create filter: %v", err)
 		}
 	}
-
-	return chain, nil
+	chain.filters = append(chain.filters, _filter)
+	return nil
 }
 
 // Apply applies filter chain on an article

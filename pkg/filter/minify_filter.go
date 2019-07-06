@@ -1,9 +1,9 @@
 package filter
 
 import (
-	"net/url"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 
 	"github.com/tdewolff/minify/v2"
@@ -60,7 +60,7 @@ func (f *MinifyFilter) GetSpec() model.FilterSpec {
 	return result
 }
 
-func newMinifyFilter(params url.Values, tags []string) *MinifyFilter {
+func newMinifyFilter(filter *app.Filter) *MinifyFilter {
 	minifier := minify.New()
 	minifier.AddFunc("text/css", css.Minify)
 	minifier.AddFunc("text/html", html.Minify)
@@ -68,7 +68,7 @@ func newMinifyFilter(params url.Values, tags []string) *MinifyFilter {
 	return &MinifyFilter{
 		name:     "minify",
 		desc:     "This filter will minify articles HTML content.",
-		tags:     tags,
+		tags:     filter.Tags,
 		minifier: minifier,
 	}
 }

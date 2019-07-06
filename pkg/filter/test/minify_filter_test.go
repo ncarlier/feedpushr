@@ -1,4 +1,4 @@
-package filter_test
+package test
 
 import (
 	"testing"
@@ -9,16 +9,16 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/filter"
 )
 
-func setupMinifyTestCase(t *testing.T) *filter.Chain {
-	filters := []string{"minify://"}
-	chain, err := filter.NewChainFilter(filters)
+func TestMinifyFilter(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+	chain, err := filter.LoadChainFilter(db)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, chain, "chain should not be nil")
-	return chain
-}
 
-func TestMinifyFilter(t *testing.T) {
-	filterChain := setupMinifyTestCase(t)
+	err = chain.AddURI("minify://")
+	assert.Nil(t, err, "error should be nil")
+
 	article := &model.Article{
 		Content: `<ul>
 			<li>
@@ -28,7 +28,7 @@ func TestMinifyFilter(t *testing.T) {
 		</ul>`,
 	}
 	expected := "<ul><li><p>Hello World</p><img></ul>"
-	err := filterChain.Apply(article)
+	err = chain.Apply(article)
 	assert.Nil(t, err, "error should be nil")
 	assert.Equal(t, expected, article.Content, "invalid article content")
 }

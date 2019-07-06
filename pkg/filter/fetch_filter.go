@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/readflow/pkg/readability"
 )
@@ -64,10 +65,10 @@ If succeeded, following metadata are added to the article:
 - image: Article main illustration
 `
 
-func newFetchFilter(tags []string) *FetchFilter {
+func newFetchFilter(filter *app.Filter) *FetchFilter {
 	return &FetchFilter{
 		name: "fetch",
 		desc: fetchDescription,
-		tags: tags,
+		tags: filter.Tags,
 	}
 }

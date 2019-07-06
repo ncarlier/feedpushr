@@ -37,14 +37,14 @@ func (store *InMemoryStore) DeleteFilter(ID int) (*app.Filter, error) {
 }
 
 // SaveFilter stores a filter.
-func (store *InMemoryStore) SaveFilter(filter *app.Filter) error {
+func (store *InMemoryStore) SaveFilter(filter *app.Filter) (*app.Filter, error) {
 	store.filtersLock.RLock()
 	defer store.filtersLock.RUnlock()
 	if filter.ID == 0 {
 		filter.ID = store.nextSequence()
 	}
 	store.filters[filter.ID] = *filter
-	return nil
+	return filter, nil
 }
 
 // ListFilters returns a paginated list of filters.
@@ -68,4 +68,16 @@ func (store *InMemoryStore) ListFilters(page, limit int) (*app.FilterCollection,
 		}
 	}
 	return &filters, nil
+}
+
+// ForEachFilter iterates over all filters
+func (store *InMemoryStore) ForEachFilter(cb func(*app.Filter) error) error {
+	store.filtersLock.RLock()
+	defer store.filtersLock.RUnlock()
+	for _, filter := range store.filters {
+		if err := cb(&filter); err != nil {
+			return err
+		}
+	}
+	return nil
 }

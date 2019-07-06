@@ -15,7 +15,6 @@ type Config struct {
 	CacheRetention time.Duration
 	Outputs        ArrayFlags
 	Plugins        ArrayFlags
-	Filters        ArrayFlags
 	ImportFilename string
 	ClearCache     bool
 	ShowVersion    bool
@@ -43,7 +42,6 @@ func init() {
 	setFlagBool(&config.ShowVersion, "version", "Show version", false)
 	setFlagEnvArray(&config.Outputs, "output", "Output destination", []string{"stdout://"})
 	setFlagEnvArray(&config.Plugins, "plugin", "Plugin to load", []string{})
-	setFlagEnvArray(&config.Filters, "filter", "Plugin to load", []string{})
 
 	// set shorthand parameters
 	const shorthand = " (shorthand)"

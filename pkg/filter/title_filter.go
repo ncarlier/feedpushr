@@ -1,9 +1,10 @@
 package filter
 
 import (
-	"net/url"
+	"fmt"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -38,11 +39,15 @@ func (f *TitleFilter) GetSpec() model.FilterSpec {
 	return result
 }
 
-func newTitleFilter(params url.Values, tags []string) *TitleFilter {
+func newTitleFilter(filter *app.Filter) *TitleFilter {
+	prefix, ok := filter.Props["prefix"]
+	if !ok {
+		prefix = "foo:"
+	}
 	return &TitleFilter{
 		name:   "title",
 		desc:   "This filter will prefix the title of the article with a given value.",
-		tags:   tags,
-		prefix: params.Get("prefix"),
+		tags:   filter.Tags,
+		prefix: fmt.Sprintf("%v", prefix),
 	}
 }

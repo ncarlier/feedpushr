@@ -1,4 +1,4 @@
-package filter_test
+package test
 
 import (
 	"testing"
@@ -9,22 +9,22 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/filter"
 )
 
-func setupFetchTestCase(t *testing.T) *filter.Chain {
-	filters := []string{"fetch://"}
-	chain, err := filter.NewChainFilter(filters)
+func TestFetchFilter(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+	chain, err := filter.LoadChainFilter(db)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, chain, "chain should not be nil")
-	return chain
-}
 
-func TestFetchFilter(t *testing.T) {
-	filterChain := setupFetchTestCase(t)
+	err = chain.AddURI("fetch://")
+	assert.Nil(t, err, "error should be nil")
+
 	link := "https://github.com/ncarlier/feedpushr"
 	article := &model.Article{
 		Link: link,
 		Meta: make(map[string]interface{}),
 	}
-	err := filterChain.Apply(article)
+	err = chain.Apply(article)
 	assert.Nil(t, err, "error should be nil")
 	assert.Equal(t, "ncarlier/feedpushr", article.Title, "invalid article title")
 	assert.Equal(t, link, article.Link, "invalid article link")

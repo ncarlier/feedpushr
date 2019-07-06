@@ -5,6 +5,9 @@ import (
 	"encoding/hex"
 )
 
+// OutputProps contains properties of an output
+type OutputProps map[string]interface{}
+
 // OutputProvider is the output provider interface
 type OutputProvider interface {
 	Send(article *Article) error

@@ -15,7 +15,7 @@ func TestFilterCRUD(t *testing.T) {
 	filter := &app.Filter{
 		ID: 0,
 	}
-	err := db.SaveFilter(filter)
+	_, err := db.SaveFilter(filter)
 	assert.Nil(t, err, "should be nil")
 
 	filters, err := db.ListFilters(1, 10)

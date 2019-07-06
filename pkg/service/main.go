@@ -83,7 +83,7 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 		return nil, err
 	}
 	// Init chain filter
-	cf, err := filter.NewChainFilter(conf.Filters.Values())
+	cf, err := filter.LoadChainFilter(db)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init filter chain")
 		return nil, err

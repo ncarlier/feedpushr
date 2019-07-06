@@ -1,4 +1,4 @@
-package filter_test
+package test
 
 import (
 	"testing"
@@ -10,14 +10,19 @@ import (
 )
 
 func TestNewFilterChain(t *testing.T) {
-	filters := []string{
-		"title://?prefix=Hello#foo,/bar,bar",
-		"title://?prefix=Ignore#foo,/bar,missing",
-		"title://?prefix=[test]",
-	}
-	chain, err := filter.NewChainFilter(filters)
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+	chain, err := filter.LoadChainFilter(db)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, chain, "chain should not be nil")
+
+	err = chain.AddURI("title://?prefix=Hello#foo,/bar,bar")
+	assert.Nil(t, err, "error should be nil")
+	err = chain.AddURI("title://?prefix=Ignore#foo,/bar,missing")
+	assert.Nil(t, err, "error should be nil")
+	err = chain.AddURI("title://?prefix=[test]")
+	assert.Nil(t, err, "error should be nil")
+
 	specs := chain.GetSpec()
 	assert.Equal(t, 3, len(specs), "invalid filter chain specifications")
 	assert.Equal(t, "title", specs[0].Name, "invalid filter name")

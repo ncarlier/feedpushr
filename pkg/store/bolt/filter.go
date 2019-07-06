@@ -47,16 +47,17 @@ func (store *BoltStore) DeleteFilter(ID int) (*app.Filter, error) {
 }
 
 // SaveFilter stores a filter.
-func (store *BoltStore) SaveFilter(filter *app.Filter) error {
+func (store *BoltStore) SaveFilter(filter *app.Filter) (*app.Filter, error) {
 	if filter.ID == 0 {
 		var err error
 		id, err := store.nextSequence(FILTER_BUCKET)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		filter.ID = int(id)
 	}
-	return store.save(FILTER_BUCKET, itob(filter.ID), &filter)
+	err := store.save(FILTER_BUCKET, itob(filter.ID), &filter)
+	return filter, err
 }
 
 // ListFilters returns a paginated list of filters.
@@ -75,4 +76,23 @@ func (store *BoltStore) ListFilters(page, limit int) (*app.FilterCollection, err
 		filters = append(filters, filter)
 	}
 	return &filters, nil
+}
+
+// ForEachFilter iterates over all filters
+func (store *BoltStore) ForEachFilter(cb func(*app.Filter) error) error {
+	err := store.db.View(func(tx *bolt.Tx) error {
+		c := tx.Bucket(FILTER_BUCKET).Cursor()
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			var filter *app.Filter
+			if err := json.Unmarshal(v, &filter); err != nil {
+				// Unable to parse bucket payload
+				filter = nil
+			}
+			if err := cb(filter); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return err
 }
