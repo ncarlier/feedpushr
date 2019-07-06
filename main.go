@@ -52,7 +52,7 @@ func main() {
 	// Init global service
 	srv, err := service.Configure(db, conf)
 	if err != nil {
-		db.Shutdown()
+		db.Close()
 		log.Fatal().Err(err).Msg("unable to init main service")
 	}
 
@@ -60,7 +60,7 @@ func main() {
 	if conf.ClearCache {
 		log.Debug().Msg("clearing the cache...")
 		if err := srv.ClearCache(); err != nil {
-			db.Shutdown()
+			db.Close()
 			log.Fatal().Err(err).Msg("unable to clear the cache")
 		}
 		log.Info().Msg("cache cleared")
@@ -70,7 +70,7 @@ func main() {
 	if conf.ImportFilename != "" {
 		log.Debug().Str("filename", conf.ImportFilename).Msg("importing OPML file...")
 		if err := srv.ImportOPMLFile(conf.ImportFilename); err != nil {
-			db.Shutdown()
+			db.Close()
 			log.Fatal().Err(err).Str("filename", conf.ImportFilename).Msg("unable to import OPML file")
 		}
 		log.Info().Str("filename", conf.ImportFilename).Msg("OPML file imported")
@@ -92,7 +92,7 @@ func main() {
 			log.Fatal().Err(err).Msg("could not gracefully shutdown the server")
 		}
 		// Shutdown the database...
-		db.Shutdown()
+		db.Close()
 		close(done)
 	}()
 

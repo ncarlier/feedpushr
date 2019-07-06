@@ -3,10 +3,7 @@ package store
 import (
 	"fmt"
 	"net/url"
-	"time"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/model"
 	bolt "github.com/ncarlier/feedpushr/pkg/store/bolt"
 	memory "github.com/ncarlier/feedpushr/pkg/store/memory"
 	"github.com/rs/zerolog/log"
@@ -14,17 +11,9 @@ import (
 
 // DB is the data store
 type DB interface {
-	ListFeeds(page, limit int) (*app.FeedCollection, error)
-	ExistsFeed(url string) bool
-	GetFeed(id string) (*app.Feed, error)
-	DeleteFeed(id string) (*app.Feed, error)
-	SaveFeed(feed *app.Feed) error
-	ForEachFeed(cb func(*app.Feed) error) error
-	GetFromCache(key string) (*model.CacheItem, error)
-	StoreToCache(key string, item *model.CacheItem) error
-	ClearCache() error
-	EvictFromCache(before time.Time) error
-	Shutdown() error
+	FeedRepository
+	CacheRepository
+	Close() error
 }
 
 // Configure the data store regarding the datasource URI

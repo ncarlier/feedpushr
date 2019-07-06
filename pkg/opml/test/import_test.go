@@ -29,7 +29,7 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 	}
 	return func(t *testing.T) {
 		t.Log("teardown test case")
-		defer db.Shutdown()
+		defer db.Close()
 	}
 }
 

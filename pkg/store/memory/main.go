@@ -25,7 +25,7 @@ func NewInMemoryStore() *InMemoryStore {
 	}
 }
 
-// Shutdown the DB.
-func (store *InMemoryStore) Shutdown() error {
+// Close the DB
+func (store *InMemoryStore) Close() error {
 	return nil
 }
