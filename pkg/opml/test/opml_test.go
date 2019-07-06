@@ -1,4 +1,4 @@
-package opml_test
+package test
 
 import (
 	"testing"

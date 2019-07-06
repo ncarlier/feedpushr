@@ -9,19 +9,23 @@ import (
 
 // InMemoryStore is a data store backed by InMemoryDB
 type InMemoryStore struct {
-	cache     map[string]model.CacheItem
-	cacheLock sync.RWMutex
-	feeds     map[string]app.Feed
-	feedsLock sync.RWMutex
+	cache       map[string]model.CacheItem
+	cacheLock   sync.RWMutex
+	feeds       map[string]app.Feed
+	feedsLock   sync.RWMutex
+	filters     map[int]app.Filter
+	filtersLock sync.RWMutex
 }
 
 // NewInMemoryStore creates a data store backed by InMemoryDB
 func NewInMemoryStore() *InMemoryStore {
 	return &InMemoryStore{
-		cache:     make(map[string]model.CacheItem),
-		cacheLock: sync.RWMutex{},
-		feeds:     make(map[string]app.Feed),
-		feedsLock: sync.RWMutex{},
+		cache:       make(map[string]model.CacheItem),
+		cacheLock:   sync.RWMutex{},
+		feeds:       make(map[string]app.Feed),
+		feedsLock:   sync.RWMutex{},
+		filters:     make(map[int]app.Filter),
+		filtersLock: sync.RWMutex{},
 	}
 }
 

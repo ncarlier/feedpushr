@@ -19,7 +19,7 @@ func (store *BoltStore) ExistsFeed(url string) bool {
 	hasher.Write([]byte(url))
 	id := hex.EncodeToString(hasher.Sum(nil))
 
-	exists, err := store.exists(FEED_BUCKET, id)
+	exists, err := store.exists(FEED_BUCKET, []byte(id))
 	if err != nil {
 		return false
 	}
@@ -29,7 +29,7 @@ func (store *BoltStore) ExistsFeed(url string) bool {
 // GetFeed returns a stored Feed.
 func (store *BoltStore) GetFeed(id string) (*app.Feed, error) {
 	var result app.Feed
-	err := store.get(FEED_BUCKET, id, &result)
+	err := store.get(FEED_BUCKET, []byte(id), &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
 			return nil, common.ErrFeedNotFound
@@ -46,7 +46,7 @@ func (store *BoltStore) DeleteFeed(id string) (*app.Feed, error) {
 		return nil, err
 	}
 
-	err = store.delete(FEED_BUCKET, feed.ID)
+	err = store.delete(FEED_BUCKET, []byte(feed.ID))
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (store *BoltStore) DeleteFeed(id string) (*app.Feed, error) {
 
 // SaveFeed stores a feed.
 func (store *BoltStore) SaveFeed(feed *app.Feed) error {
-	return store.save(FEED_BUCKET, feed.ID, &feed)
+	return store.save(FEED_BUCKET, []byte(feed.ID), &feed)
 }
 
 // ListFeeds returns a paginated list of feeds.

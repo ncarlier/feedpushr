@@ -44,6 +44,9 @@ func (store *InMemoryStore) SaveFeed(feed *app.Feed) error {
 // ListFeeds returns a paginated list of feeds.
 func (store *InMemoryStore) ListFeeds(page, limit int) (*app.FeedCollection, error) {
 	feeds := app.FeedCollection{}
+	if page <= 0 {
+		page = 1
+	}
 	startOffset := (page - 1) * limit
 	offset := 0
 	for _, feed := range store.feeds {

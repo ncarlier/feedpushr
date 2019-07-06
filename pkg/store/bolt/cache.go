@@ -14,7 +14,7 @@ var CACHE_BUCKET = []byte("CACHE")
 // GetFromCache returns a cached item.
 func (store *BoltStore) GetFromCache(key string) (*model.CacheItem, error) {
 	var result model.CacheItem
-	err := store.get(CACHE_BUCKET, key, &result)
+	err := store.get(CACHE_BUCKET, []byte(key), &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
 			return nil, nil
@@ -26,7 +26,7 @@ func (store *BoltStore) GetFromCache(key string) (*model.CacheItem, error) {
 
 // StoreToCache stores a item into the cache.
 func (store *BoltStore) StoreToCache(key string, item *model.CacheItem) error {
-	return store.save(CACHE_BUCKET, key, &item)
+	return store.save(CACHE_BUCKET, []byte(key), &item)
 }
 
 // ClearCache removes all items from the cache.

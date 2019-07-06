@@ -199,6 +199,8 @@ func (c *Client) DecodeFeedTinyCollection(resp *http.Response) (FeedTinyCollecti
 type Filter struct {
 	// Description of the filter
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// ID of the filter
+	ID int `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the filter
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Filter properties
@@ -209,6 +211,7 @@ type Filter struct {
 
 // Validate validates the Filter media type instance.
 func (mt *Filter) Validate() (err error) {
+
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}

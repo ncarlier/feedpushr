@@ -44,7 +44,7 @@ func (store *BoltStore) Close() error {
 	return store.db.Close()
 }
 
-func (store *BoltStore) save(bucketName []byte, key string, dataStruct interface{}) error {
+func (store *BoltStore) save(bucketName, key []byte, dataStruct interface{}) error {
 	err := store.db.Update(func(tx *bolt.Tx) error {
 		// Create the bucket
 		bucket, e := tx.CreateBucketIfNotExists(bucketName)
@@ -59,12 +59,12 @@ func (store *BoltStore) save(bucketName []byte, key string, dataStruct interface
 		}
 
 		// Store the record
-		return bucket.Put([]byte(key), encodedRecord)
+		return bucket.Put(key, encodedRecord)
 	})
 	return err
 }
 
-func (store *BoltStore) exists(bucketName []byte, key string) (bool, error) {
+func (store *BoltStore) exists(bucketName, key []byte) (bool, error) {
 	result := false
 	err := store.db.View(func(tx *bolt.Tx) error {
 		// Get the bucket
@@ -74,7 +74,7 @@ func (store *BoltStore) exists(bucketName []byte, key string) (bool, error) {
 		}
 
 		// Retrieve the record
-		v := b.Get([]byte(key))
+		v := b.Get(key)
 		result = v != nil
 		return nil
 	})
@@ -82,7 +82,7 @@ func (store *BoltStore) exists(bucketName []byte, key string) (bool, error) {
 	return result, err
 }
 
-func (store *BoltStore) get(bucketName []byte, key string, dataStruct interface{}) error {
+func (store *BoltStore) get(bucketName, key []byte, dataStruct interface{}) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
 		// Get the bucket
 		b := tx.Bucket(bucketName)
@@ -91,7 +91,7 @@ func (store *BoltStore) get(bucketName []byte, key string, dataStruct interface{
 		}
 
 		// Retrieve the record
-		v := b.Get([]byte(key))
+		v := b.Get(key)
 		if len(v) < 1 {
 			return bolt.ErrInvalid
 		}
@@ -108,7 +108,7 @@ func (store *BoltStore) get(bucketName []byte, key string, dataStruct interface{
 	return err
 }
 
-func (store *BoltStore) delete(bucketName []byte, key string) error {
+func (store *BoltStore) delete(bucketName, key []byte) error {
 	err := store.db.Update(func(tx *bolt.Tx) error {
 		// Get the bucket
 		b := tx.Bucket(bucketName)
@@ -116,7 +116,7 @@ func (store *BoltStore) delete(bucketName []byte, key string) error {
 			return bolt.ErrBucketNotFound
 		}
 
-		return b.Delete([]byte(key))
+		return b.Delete(key)
 	})
 	return err
 }
@@ -145,4 +145,18 @@ func (store *BoltStore) allAsRaw(bucket []byte, page, size int) ([][]byte, error
 		return nil
 	})
 	return entries, err
+}
+
+func (store *BoltStore) nextSequence(bucketName []byte) (uint64, error) {
+	var result uint64
+	err := store.db.Update(func(tx *bolt.Tx) error {
+		bucket, e := tx.CreateBucketIfNotExists(bucketName)
+		if e != nil {
+			return e
+		}
+		result, e = bucket.NextSequence()
+		return e
+	})
+	return result, err
+
 }

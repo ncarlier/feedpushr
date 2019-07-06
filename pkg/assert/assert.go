@@ -1,11 +1,17 @@
 package assert
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 // Nil assert that an object is nil
 func Nil(t *testing.T, actual interface{}, message string) {
 	if message == "" {
 		message = "Nil assertion failed"
+	}
+	if reflect.ValueOf(actual).Kind() == reflect.Ptr && reflect.ValueOf(actual).IsNil() {
+		return
 	}
 	if actual != nil {
 		t.Fatalf("%s - actual: %s", message, actual)
@@ -16,6 +22,9 @@ func Nil(t *testing.T, actual interface{}, message string) {
 func NotNil(t *testing.T, actual interface{}, message string) {
 	if message == "" {
 		message = "Not nil assertion failed"
+	}
+	if reflect.ValueOf(actual).Kind() == reflect.Ptr && !reflect.ValueOf(actual).IsNil() {
+		return
 	}
 	if actual == nil {
 		t.Fatalf("%s - actual: nil", message)

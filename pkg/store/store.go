@@ -12,6 +12,7 @@ import (
 // DB is the data store
 type DB interface {
 	FeedRepository
+	FilterRepository
 	CacheRepository
 	Close() error
 }
