@@ -4,16 +4,14 @@ import (
 	"testing"
 
 	"github.com/ncarlier/feedpushr/pkg/model"
-	"github.com/ncarlier/feedpushr/pkg/plugin"
 
 	"github.com/ncarlier/feedpushr/pkg/assert"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 )
 
 func setupFetchTestCase(t *testing.T) *filter.Chain {
-	pr := &plugin.Registry{}
 	filters := []string{"fetch://"}
-	chain, err := filter.NewChainFilter(filters, pr)
+	chain, err := filter.NewChainFilter(filters)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, chain, "chain should not be nil")
 	return chain

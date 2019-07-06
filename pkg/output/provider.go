@@ -11,7 +11,7 @@ import (
 )
 
 // newOutputProvider creates new output provider.
-func newOutputProvider(uri string, pr *plugin.Registry) (model.OutputProvider, error) {
+func newOutputProvider(uri string) (model.OutputProvider, error) {
 	logger := log.With().Str("component", "output").Logger()
 	if uri == "" {
 		uri = "stdout://"
@@ -31,7 +31,7 @@ func newOutputProvider(uri string, pr *plugin.Registry) (model.OutputProvider, e
 		logger.Info().Str("url", uri).Msg("using HTTP output provider")
 	default:
 		// Try to load plugin regarding the scheme
-		plug := pr.LookupOutputPlugin(u.Scheme)
+		plug := plugin.GetRegsitry().LookupOutputPlugin(u.Scheme)
 		if plug == nil {
 			return nil, fmt.Errorf("unsuported output provider: %s", u.Scheme)
 		}

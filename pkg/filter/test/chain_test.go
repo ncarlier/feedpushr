@@ -7,17 +7,15 @@ import (
 
 	"github.com/ncarlier/feedpushr/pkg/assert"
 	"github.com/ncarlier/feedpushr/pkg/filter"
-	"github.com/ncarlier/feedpushr/pkg/plugin"
 )
 
 func TestNewFilterChain(t *testing.T) {
-	pr := &plugin.Registry{}
 	filters := []string{
 		"title://?prefix=Hello#foo,/bar,bar",
 		"title://?prefix=Ignore#foo,/bar,missing",
 		"title://?prefix=[test]",
 	}
-	chain, err := filter.NewChainFilter(filters, pr)
+	chain, err := filter.NewChainFilter(filters)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, chain, "chain should not be nil")
 	specs := chain.GetSpec()

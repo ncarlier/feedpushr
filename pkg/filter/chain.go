@@ -15,7 +15,7 @@ type Chain struct {
 }
 
 // NewChainFilter creates a new filter chain
-func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
+func NewChainFilter(filters []string) (*Chain, error) {
 	chain := &Chain{}
 
 	for _, f := range filters {
@@ -33,7 +33,7 @@ func NewChainFilter(filters []string, pr *plugin.Registry) (*Chain, error) {
 			chain.filters = append(chain.filters, newMinifyFilter(u.Query(), tags))
 		default:
 			// Try to load plugin regarding the name
-			plug := pr.LookupFilterPlugin(u.Scheme)
+			plug := plugin.GetRegsitry().LookupFilterPlugin(u.Scheme)
 			if plug == nil {
 				return nil, fmt.Errorf("unsuported filter: %s", u.Scheme)
 			}

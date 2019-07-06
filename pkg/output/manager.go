@@ -6,7 +6,6 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
-	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -22,10 +21,10 @@ type Manager struct {
 }
 
 // NewManager creates a new manager
-func NewManager(db store.DB, uris []string, cacheRetention time.Duration, pr *plugin.Registry, cf *filter.Chain) (*Manager, error) {
+func NewManager(db store.DB, uris []string, cacheRetention time.Duration, cf *filter.Chain) (*Manager, error) {
 	providers := []model.OutputProvider{}
 	for _, uri := range uris {
-		provider, err := newOutputProvider(uri, pr)
+		provider, err := newOutputProvider(uri)
 		if err != nil {
 			return nil, err
 		}

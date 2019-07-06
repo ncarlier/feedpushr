@@ -77,20 +77,20 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 		}
 	}
 	// Load plugins
-	pr, err := plugin.NewPluginRegistry(plugins)
+	err := plugin.Configure(plugins)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init plugins")
 		return nil, err
 	}
 	// Init chain filter
-	cf, err := filter.NewChainFilter(conf.Filters.Values(), pr)
+	cf, err := filter.NewChainFilter(conf.Filters.Values())
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init filter chain")
 		return nil, err
 	}
 
 	// Init output manager
-	om, err := output.NewManager(db, conf.Outputs.Values(), conf.CacheRetention, pr, cf)
+	om, err := output.NewManager(db, conf.Outputs.Values(), conf.CacheRetention, cf)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init output manager")
 		return nil, err
