@@ -258,6 +258,8 @@ func (c *Client) DecodeFilterCollection(resp *http.Response) (FilterCollection, 
 type Output struct {
 	// Description of the output channel
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// ID of the output
+	ID int `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the output channel
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Output channel properties
@@ -268,6 +270,7 @@ type Output struct {
 
 // Validate validates the Output media type instance.
 func (mt *Output) Validate() (err error) {
+
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}

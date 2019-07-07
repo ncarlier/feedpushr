@@ -91,11 +91,12 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	}
 
 	// Init output manager
-	om, err := output.NewManager(db, conf.Outputs.Values(), conf.CacheRetention, cf)
+	om, err := output.NewManager(db, conf.CacheRetention)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init output manager")
 		return nil, err
 	}
+	om.ChainFilter = cf
 
 	// Init aggregator daemon
 	var callbackURL string

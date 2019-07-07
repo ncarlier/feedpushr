@@ -1,7 +1,5 @@
 package model
 
-import "net/url"
-
 // PluginType is the plugin type qualifier
 type PluginType int
 
@@ -21,7 +19,7 @@ type PluginInfo struct {
 // OutputPlugin is the interface of an output plugin
 type OutputPlugin interface {
 	// Build an output plugin
-	Build(props url.Values, tags []string) (OutputProvider, error)
+	Build(props OutputProps, tags []string) (OutputProvider, error)
 }
 
 // FilterPlugin is the interface of an filter plugin

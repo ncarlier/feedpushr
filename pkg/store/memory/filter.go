@@ -5,7 +5,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/common"
 )
 
-func (store *InMemoryStore) nextSequence() int {
+func (store *InMemoryStore) nextFilterSequence() int {
 	max := 0
 	for _, filter := range store.filters {
 		if filter.ID > max {
@@ -41,7 +41,7 @@ func (store *InMemoryStore) SaveFilter(filter *app.Filter) (*app.Filter, error) 
 	store.filtersLock.RLock()
 	defer store.filtersLock.RUnlock()
 	if filter.ID == 0 {
-		filter.ID = store.nextSequence()
+		filter.ID = store.nextFilterSequence()
 	}
 	store.filters[filter.ID] = *filter
 	return filter, nil

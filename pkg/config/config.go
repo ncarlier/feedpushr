@@ -13,7 +13,6 @@ type Config struct {
 	Delay          time.Duration
 	Timeout        time.Duration
 	CacheRetention time.Duration
-	Outputs        ArrayFlags
 	Plugins        ArrayFlags
 	ImportFilename string
 	ClearCache     bool
@@ -40,7 +39,6 @@ func init() {
 	setFlagString(&config.ImportFilename, "import", "Import a OPML file at boot time", "")
 	setFlagBool(&config.ClearCache, "clear-cache", "Clear cache at bootstrap", false)
 	setFlagBool(&config.ShowVersion, "version", "Show version", false)
-	setFlagEnvArray(&config.Outputs, "output", "Output destination", []string{"stdout://"})
 	setFlagEnvArray(&config.Plugins, "plugin", "Plugin to load", []string{})
 
 	// set shorthand parameters

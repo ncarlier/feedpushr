@@ -15,6 +15,8 @@ type InMemoryStore struct {
 	feedsLock   sync.RWMutex
 	filters     map[int]app.Filter
 	filtersLock sync.RWMutex
+	outputs     map[int]app.Output
+	outputsLock sync.RWMutex
 }
 
 // NewInMemoryStore creates a data store backed by InMemoryDB
@@ -26,6 +28,8 @@ func NewInMemoryStore() *InMemoryStore {
 		feedsLock:   sync.RWMutex{},
 		filters:     make(map[int]app.Filter),
 		filtersLock: sync.RWMutex{},
+		outputs:     make(map[int]app.Output),
+		outputsLock: sync.RWMutex{},
 	}
 }
 

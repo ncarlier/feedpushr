@@ -1,8 +1,11 @@
 package output
 
 import (
+	"fmt"
+	"sync"
 	"time"
 
+	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
@@ -13,31 +16,29 @@ import (
 
 // Manager of output channel.
 type Manager struct {
+	lock           sync.RWMutex
 	providers      []model.OutputProvider
 	db             store.DB
-	chainFilter    *filter.Chain
+	ChainFilter    *filter.Chain
 	cacheRetention time.Duration
 	log            zerolog.Logger
 }
 
 // NewManager creates a new manager
-func NewManager(db store.DB, uris []string, cacheRetention time.Duration, cf *filter.Chain) (*Manager, error) {
-	providers := []model.OutputProvider{}
-	for _, uri := range uris {
-		provider, err := newOutputProvider(uri)
-		if err != nil {
-			return nil, err
-		}
-		providers = append(providers, provider)
-	}
+func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
 	manager := &Manager{
-		providers:      providers,
+		providers:      []model.OutputProvider{},
 		db:             db,
-		chainFilter:    cf,
 		cacheRetention: cacheRetention,
 		log:            log.With().Str("component", "output").Logger(),
 	}
-	return manager, nil
+	err := db.ForEachOutput(func(o *app.Output) error {
+		if o == nil {
+			return fmt.Errorf("output is null")
+		}
+		return manager.Add(o)
+	})
+	return manager, err
 }
 
 // Send feeds to the output provider
@@ -72,9 +73,9 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 				continue
 			}
 
-			if !filteredOnce {
+			if m.ChainFilter != nil && !filteredOnce {
 				// Apply filter chain on article
-				err = m.chainFilter.Apply(article)
+				err = m.ChainFilter.Apply(article)
 				if err != nil {
 					logger.Error().Err(err).Msg("unable to apply chain filter on article")
 					break

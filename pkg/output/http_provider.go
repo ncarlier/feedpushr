@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -20,12 +21,16 @@ type HTTPOutputProvider struct {
 	uri       string
 }
 
-func newHTTPOutputProvider(uri string, tags []string) *HTTPOutputProvider {
+func newHTTPOutputProvider(output *app.Output) *HTTPOutputProvider {
+	u, ok := output.Props["url"]
+	if !ok {
+		return nil
+	}
 	return &HTTPOutputProvider{
 		name: "http",
 		desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
-		tags: tags,
-		uri:  uri,
+		tags: output.Tags,
+		uri:  fmt.Sprintf("%v", u),
 	}
 }
 

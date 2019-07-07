@@ -16,6 +16,7 @@ type OutputProvider interface {
 
 // OutputSpec contains output specifications
 type OutputSpec struct {
+	ID    int
 	Name  string
 	Desc  string
 	Tags  []string

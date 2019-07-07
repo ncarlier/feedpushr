@@ -231,6 +231,7 @@ definitions:
     description: The output channel (default view)
     example:
       desc: New articles are sent as JSON document to...
+      id: 1
       name: fetch
       props: '-'
       tags:
@@ -241,6 +242,11 @@ definitions:
         description: Description of the output channel
         example: New articles are sent as JSON document to...
         type: string
+      id:
+        description: ID of the output
+        example: 1
+        format: int64
+        type: integer
       name:
         description: Name of the output channel
         example: fetch
@@ -260,6 +266,7 @@ definitions:
           type: string
         type: array
     required:
+    - id
     - name
     - desc
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; view=default'
@@ -269,18 +276,21 @@ definitions:
       view)
     example:
     - desc: New articles are sent as JSON document to...
+      id: 1
       name: fetch
       props: '-'
       tags:
       - foo
       - bar
     - desc: New articles are sent as JSON document to...
+      id: 1
       name: fetch
       props: '-'
       tags:
       - foo
       - bar
     - desc: New articles are sent as JSON document to...
+      id: 1
       name: fetch
       props: '-'
       tags:

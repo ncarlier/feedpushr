@@ -13,6 +13,7 @@ import (
 type DB interface {
 	FeedRepository
 	FilterRepository
+	OutputRepository
 	CacheRepository
 	Close() error
 }

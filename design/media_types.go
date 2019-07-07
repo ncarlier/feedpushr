@@ -116,6 +116,9 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 	TypeName("Output")
 	ContentType("application/json")
 	Attributes(func() {
+		Attribute("id", Integer, "ID of the output", func() {
+			Example(1)
+		})
 		Attribute("name", String, "Name of the output channel", func() {
 			Example("fetch")
 		})
@@ -126,10 +129,11 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("tags", ArrayOf(String), "List of tags", func() {
 			Example([]string{"foo", "bar"})
 		})
-		Required("name", "desc")
+		Required("id", "name", "desc")
 	})
 
 	View("default", func() {
+		Attribute("id")
 		Attribute("name")
 		Attribute("desc")
 		Attribute("props")

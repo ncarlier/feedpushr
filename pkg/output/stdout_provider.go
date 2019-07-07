@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -36,11 +37,11 @@ type StdOutputProvider struct {
 	nbSuccess uint64
 }
 
-func newStdOutputProvider(tags []string) *StdOutputProvider {
+func newStdOutputProvider(output *app.Output) *StdOutputProvider {
 	return &StdOutputProvider{
 		name: "stdout",
 		desc: "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
-		tags: tags,
+		tags: output.Tags,
 	}
 }
 

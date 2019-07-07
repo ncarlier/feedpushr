@@ -2,44 +2,78 @@ package output
 
 import (
 	"fmt"
-	"net/url"
 
-	"github.com/ncarlier/feedpushr/pkg/builder"
+	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
-	"github.com/rs/zerolog/log"
 )
 
 // newOutputProvider creates new output provider.
-func newOutputProvider(uri string) (model.OutputProvider, error) {
-	logger := log.With().Str("component", "output").Logger()
-	if uri == "" {
-		uri = "stdout://"
-	}
-	u, err := url.Parse(uri)
-	if err != nil {
-		return nil, fmt.Errorf("invalid output URL: %s", uri)
-	}
-	tags := builder.GetFeedTags(&u.Fragment)
+func newOutputProvider(output *app.Output) (model.OutputProvider, error) {
 	var provider model.OutputProvider
-	switch u.Scheme {
+	switch output.Name {
 	case "stdout":
-		provider = newStdOutputProvider(tags)
-		logger.Info().Msg("using STDOUT output provider")
-	case "http", "https":
-		provider = newHTTPOutputProvider(uri, tags)
-		logger.Info().Str("url", uri).Msg("using HTTP output provider")
+		provider = newStdOutputProvider(output)
+	case "http":
+		provider = newHTTPOutputProvider(output)
 	default:
 		// Try to load plugin regarding the scheme
-		plug := plugin.GetRegsitry().LookupOutputPlugin(u.Scheme)
+		plug := plugin.GetRegsitry().LookupOutputPlugin(output.Name)
 		if plug == nil {
-			return nil, fmt.Errorf("unsuported output provider: %s", u.Scheme)
+			return nil, fmt.Errorf("unsuported output provider: %s", output.Name)
 		}
-		provider, err = plug.Build(u.Query(), tags)
+		var err error
+		provider, err = plug.Build(output.Props, output.Tags)
 		if err != nil {
 			return nil, fmt.Errorf("unable to create output provider: %v", err)
 		}
-		logger.Info().Str("url", uri).Str("provider", u.Scheme).Msg("using external output provider")
 	}
 	return provider, nil
+}
+
+// Add an output
+func (m *Manager) Add(output *app.Output) error {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+	m.log.Debug().Str("name", output.Name).Msg("adding output...")
+	provider, err := newOutputProvider(output)
+	if err != nil {
+		return err
+	}
+	m.providers = append(m.providers, provider)
+	m.log.Debug().Str("name", output.Name).Msg("output added")
+	return nil
+}
+
+// Update an output
+func (m *Manager) Update(output *app.Output) error {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	for idx, provider := range m.providers {
+		if output.ID == provider.GetSpec().ID {
+			p, err := newOutputProvider(output)
+			if err != nil {
+				return err
+			}
+			m.providers[idx] = p
+			return nil
+		}
+	}
+	return common.ErrOutputNotFound
+}
+
+// Remove an output
+func (m *Manager) Remove(output *app.Output) error {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	for idx, provider := range m.providers {
+		if output.ID == provider.GetSpec().ID {
+			m.providers = append(m.providers[:idx], m.providers[idx+1:]...)
+			return nil
+		}
+	}
+	return common.ErrOutputNotFound
 }
