@@ -12,7 +12,6 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/assets"
 	"github.com/ncarlier/feedpushr/pkg/config"
 	"github.com/ncarlier/feedpushr/pkg/controller"
-	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/logging"
 	"github.com/ncarlier/feedpushr/pkg/opml"
 	"github.com/ncarlier/feedpushr/pkg/output"
@@ -48,9 +47,11 @@ func (s *Service) ImportOPMLFile(filename string) error {
 
 // ListenAndServe starts server
 func (s *Service) ListenAndServe(ListenAddr string) error {
-	if err := s.aggregator.Start(); err != nil {
+	log.Debug().Msg("loading feed aggregators...")
+	if err := loadFeedAggregators(s.db, s.aggregator); err != nil {
 		return err
 	}
+	log.Debug().Msg("starting HTTP server...")
 	if err := s.srv.ListenAndServe(ListenAddr); err != nil && err != http.ErrServerClosed {
 		return err
 	}
@@ -83,7 +84,7 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 		return nil, err
 	}
 	// Init chain filter
-	cf, err := filter.LoadChainFilter(db)
+	cf, err := loadChainFilter(db)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init filter chain")
 		return nil, err
@@ -101,7 +102,7 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	if conf.PublicURL != "" {
 		callbackURL = conf.PublicURL + "/v1/pshb"
 	}
-	am := aggregator.NewManager(db, om, conf.Delay, conf.Timeout, callbackURL)
+	am := aggregator.NewManager(om, conf.Delay, conf.Timeout, callbackURL)
 
 	// Create service
 	srv := goa.New("feedpushr")

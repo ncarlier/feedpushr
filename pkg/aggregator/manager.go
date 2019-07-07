@@ -1,13 +1,11 @@
 package aggregator
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/output"
-	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -16,7 +14,6 @@ import (
 type Manager struct {
 	feedAggregators   map[string]*FeedAggregator
 	shutdownWaitGroup sync.WaitGroup
-	db                store.DB
 	output            *output.Manager
 	log               zerolog.Logger
 	delay             time.Duration
@@ -25,36 +22,15 @@ type Manager struct {
 }
 
 // NewManager creates a new aggregator manager
-func NewManager(db store.DB, om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
+func NewManager(om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
 	return &Manager{
 		feedAggregators: make(map[string]*FeedAggregator),
-		db:              db,
 		output:          om,
 		log:             log.With().Str("component", "aggregator").Logger(),
 		delay:           delay,
 		timeout:         timeout,
 		callbackURL:     callbackURL,
 	}
-}
-
-// Start the aggrgator manager (aka. register and start all feed aggregator)
-func (m *Manager) Start() error {
-	m.log.Debug().Msg("loading feed aggregators...")
-	err := m.db.ForEachFeed(func(f *app.Feed) error {
-		if f == nil {
-			return fmt.Errorf("feed is null")
-		}
-		// TODO do a progressive load increase
-		if f.Status != nil && *f.Status == RunningStatus.String() {
-			m.RegisterFeedAggregator(f)
-		}
-		return nil
-	})
-	if err != nil {
-		return err
-	}
-	m.log.Info().Int("feeds", len(m.feedAggregators)).Msg("aggregation started")
-	return nil
 }
 
 // GetFeedAggregator returns a feed aggregator
