@@ -57,12 +57,12 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 		filteredOnce := false
 		sentOnce := false
 		for _, provider := range m.providers {
-			tags := provider.GetSpec().Tags
+			tags := provider.GetDef().Tags
 			if !article.Match(tags) {
 				// Ignore output that do not match the article tags
 				continue
 			}
-			logger = logger.With().Str("output", provider.GetSpec().Name).Logger()
+			logger = logger.With().Str("output", provider.GetDef().Name).Logger()
 			// Check that the article is not already sent
 			cached, err := m.hasAlreadySent(article, provider)
 			if err != nil {
@@ -100,7 +100,7 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 }
 
 func (m *Manager) hasAlreadySent(article *model.Article, output model.OutputProvider) (bool, error) {
-	key := common.Hash(article.Hash(), output.GetSpec().Hash())
+	key := common.Hash(article.Hash(), output.GetDef().Hash())
 	item, err := m.db.GetFromCache(key)
 	if err != nil {
 		return false, err
@@ -123,7 +123,7 @@ func (m *Manager) send(article *model.Article, output model.OutputProvider) erro
 	}
 
 	// Set article as sent by updating the cache
-	key := common.Hash(article.Hash(), output.GetSpec().Hash())
+	key := common.Hash(article.Hash(), output.GetDef().Hash())
 	item := &model.CacheItem{
 		Value: article.GUID,
 		Date:  *article.RefDate(),
@@ -133,17 +133,17 @@ func (m *Manager) send(article *model.Article, output model.OutputProvider) erro
 		m.log.Error().Err(err).Str(
 			"GUID", article.GUID,
 		).Str(
-			"provider", output.GetSpec().Name,
+			"provider", output.GetDef().Name,
 		).Msg("unable to store article into the cache: ignore")
 	}
 	return nil
 }
 
-// GetSpec return specification of the manager
-func (m *Manager) GetSpec() []model.OutputSpec {
-	result := make([]model.OutputSpec, len(m.providers))
+// GetOutputDefs return all output definitions of the manager
+func (m *Manager) GetOutputDefs() []model.OutputDef {
+	result := make([]model.OutputDef, len(m.providers))
 	for idx, provider := range m.providers {
-		result[idx] = provider.GetSpec()
+		result[idx] = provider.GetDef()
 	}
 	return result
 }

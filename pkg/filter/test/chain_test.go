@@ -28,12 +28,12 @@ func TestNewFilterChain(t *testing.T) {
 		"title://?prefix=[test]",
 	)
 
-	specs := chain.GetSpec()
-	assert.Equal(t, 3, len(specs), "invalid filter chain specifications")
-	assert.Equal(t, "title", specs[0].Name, "invalid filter name")
-	assert.Equal(t, "Hello", specs[0].Props["prefix"], "invalid filter parameter")
-	assert.Equal(t, 2, len(specs[0].Tags), "invalid filter tags")
-	assert.Equal(t, "foo", specs[0].Tags[0], "invalid filter tag")
+	defs := chain.GetFilterDefs()
+	assert.Equal(t, 3, len(defs), "invalid filter chain definitions")
+	assert.Equal(t, "title", defs[0].Name, "invalid filter name")
+	assert.Equal(t, "Hello", defs[0].Props["prefix"], "invalid filter parameter")
+	assert.Equal(t, 2, len(defs[0].Tags), "invalid filter tags")
+	assert.Equal(t, "foo", defs[0].Tags[0], "invalid filter tag")
 
 	article := &model.Article{
 		Title: "World",
@@ -58,9 +58,9 @@ func TestFilterChainCRUD(t *testing.T) {
 		"title://?prefix=Hello#foo,/bar,bar",
 	)
 
-	specs := chain.GetSpec()
-	assert.Equal(t, 1, len(specs), "invalid filter chain specifications")
-	_filter := specs[0]
+	defs := chain.GetFilterDefs()
+	assert.Equal(t, 1, len(defs), "invalid filter chain definitions")
+	_filter := defs[0]
 	assert.Equal(t, "title", _filter.Name, "invalid filter type")
 	assert.Equal(t, "Hello", _filter.Props["prefix"], "invalid filter property")
 
@@ -74,7 +74,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	update.Props["prefix"] = "Updated"
 	err := chain.Update(update)
 	assert.Nil(t, err, "error should be nil")
-	_filter = chain.GetSpec()[0]
+	_filter = chain.GetFilterDefs()[0]
 	id := _filter.ID
 	assert.Equal(t, "title", _filter.Name, "invalid filter type")
 	assert.Equal(t, "Updated", _filter.Props["prefix"], "invalid filter property")
@@ -86,16 +86,16 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Nil(t, err, "error should be nil")
 	err = chain.Add(add)
 	assert.Nil(t, err, "error should be nil")
-	specs = chain.GetSpec()
-	assert.Equal(t, 2, len(specs), "invalid filter chain specifications")
-	_filter = specs[1]
+	defs = chain.GetFilterDefs()
+	assert.Equal(t, 2, len(defs), "invalid filter chain definitions")
+	_filter = defs[1]
 	assert.Equal(t, "minify", _filter.Name, "invalid filter type")
 
 	// DELETE
 	err = chain.Remove(&app.Filter{ID: id})
 	assert.Nil(t, err, "error should be nil")
-	specs = chain.GetSpec()
-	assert.Equal(t, 1, len(specs), "invalid filter chain specifications")
-	_filter = specs[0]
+	defs = chain.GetFilterDefs()
+	assert.Equal(t, 1, len(defs), "invalid filter chain specifications")
+	_filter = defs[0]
 	assert.Equal(t, "minify", _filter.Name, "invalid filter type")
 }

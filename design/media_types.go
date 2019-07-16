@@ -140,3 +140,74 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("tags")
 	})
 })
+
+// PropSpec is the property specification media type.
+var PropSpec = MediaType("application/vnd.feedpushr.prop-spec.v1+json", func() {
+	Description("The specification of a property")
+	TypeName("PropSpec")
+	ContentType("application/json")
+	Attributes(func() {
+		Attribute("name", String, "Name of the property", func() {
+			Example("url")
+		})
+		Attribute("desc", String, "Description of the output channel", func() {
+			Example("New articles are sent as JSON document to...")
+		})
+		Attribute("type", String, "Property type ('string', 'number')", func() {
+			Example("string")
+		})
+		Required("name", "desc", "type")
+	})
+
+	View("default", func() {
+		Attribute("name")
+		Attribute("desc")
+		Attribute("type")
+	})
+})
+
+// OutputSpec is the output specification media type.
+var OutputSpec = MediaType("application/vnd.feedpushr.output-spec.v1+json", func() {
+	Description("The output channel specification")
+	TypeName("OutputSpec")
+	ContentType("application/json")
+	Attributes(func() {
+		Attribute("name", String, "Name of the output channel", func() {
+			Example("fetch")
+		})
+		Attribute("desc", String, "Description of the output channel", func() {
+			Example("New articles are sent as JSON document to...")
+		})
+		Attribute("props", CollectionOf("application/vnd.feedpushr.prop-spec.v1+json"))
+		Required("name", "desc", "props")
+	})
+
+	View("default", func() {
+		Attribute("name")
+		Attribute("desc")
+		Attribute("props")
+	})
+})
+
+// FilterSpec is the filter specification media type.
+var FilterSpec = MediaType("application/vnd.feedpushr.filter-spec.v1+json", func() {
+	Description("The filter specification")
+	TypeName("FilterSpec")
+	ContentType("application/json")
+	Attributes(func() {
+		Attribute("name", String, "Name of the filter", func() {
+			Example("title")
+		})
+		Attribute("desc", String, "Description of the filter", func() {
+			Example("Add a prefix to the tittle...")
+		})
+		Attribute("props", CollectionOf("application/vnd.feedpushr.prop-spec.v1+json"))
+		Required("name", "desc", "props")
+	})
+
+	View("default", func() {
+		Attribute("name")
+		Attribute("desc")
+		Attribute("props")
+	})
+})

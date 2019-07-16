@@ -35,36 +35,36 @@ func Configure(plugins []string) error {
 		if err != nil {
 			return fmt.Errorf("unsuported plugin file: %s - %v", filename, err)
 		}
-		getPluginInfo, err := plug.Lookup("GetPluginInfo")
+		getPluginSpec, err := plug.Lookup("GetPluginSpec")
 		if err != nil {
 			return fmt.Errorf("unsuported plugin type: %s - %v", filename, err)
 		}
-		info := getPluginInfo.(func() model.PluginInfo)()
-		log.Debug().Str("name", info.Name).Str("filename", filename).Msg("loading plugin...")
+		spec := getPluginSpec.(func() model.PluginSpec)()
+		log.Debug().Str("name", spec.Name).Str("filename", filename).Msg("loading plugin...")
 
-		switch info.Type {
+		switch spec.Type {
 		case model.OUTPUT_PLUGIN:
 			getOutputPlugin, err := plug.Lookup("GetOutputPlugin")
 			if err != nil {
-				return fmt.Errorf("unsuported output plugin: %s - %v", info.Name, err)
+				return fmt.Errorf("unsuported output plugin: %s - %v", spec.Name, err)
 			}
 			outputPlugin, err := getOutputPlugin.(func() (model.OutputPlugin, error))()
 			if err != nil {
-				return fmt.Errorf("unable to load ouput plugin: %s - %v", info.Name, err)
+				return fmt.Errorf("unable to load ouput plugin: %s - %v", spec.Name, err)
 			}
-			reg.outputPlugins[info.Name] = outputPlugin
+			reg.outputPlugins[spec.Name] = outputPlugin
 		case model.FILTER_PLUGIN:
 			getFilter, err := plug.Lookup("GetFilterPlugin")
 			if err != nil {
-				return fmt.Errorf("unsuported filter plugin: %s - %v", info.Name, err)
+				return fmt.Errorf("unsuported filter plugin: %s - %v", spec.Name, err)
 			}
 			filterPlugin, err := getFilter.(func() (model.FilterPlugin, error))()
 			if err != nil {
-				return fmt.Errorf("unable to load filter plugin: %s - %v", info.Name, err)
+				return fmt.Errorf("unable to load filter plugin: %s - %v", spec.Name, err)
 			}
-			reg.filterPlugins[info.Name] = filterPlugin
+			reg.filterPlugins[spec.Name] = filterPlugin
 		default:
-			return fmt.Errorf("plugin type unknown: %d", info.Type)
+			return fmt.Errorf("plugin type unknown: %d", spec.Type)
 		}
 	}
 
@@ -88,4 +88,24 @@ func (r *Registry) LookupFilterPlugin(name string) model.FilterPlugin {
 		return nil
 	}
 	return plug
+}
+
+// ForEachOutputPlugin iterates over all output plugins
+func (r *Registry) ForEachOutputPlugin(cb func(plug model.OutputPlugin) error) error {
+	for _, v := range r.outputPlugins {
+		if err := cb(v); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ForEachFilterPlugin iterates over all filter plugins
+func (r *Registry) ForEachFilterPlugin(cb func(plug model.FilterPlugin) error) error {
+	for _, v := range r.filterPlugins {
+		if err := cb(v); err != nil {
+			return err
+		}
+	}
+	return nil
 }

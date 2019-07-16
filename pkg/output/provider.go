@@ -52,7 +52,7 @@ func (m *Manager) Update(output *app.Output) error {
 	defer m.lock.RUnlock()
 
 	for idx, provider := range m.providers {
-		if output.ID == provider.GetSpec().ID {
+		if output.ID == provider.GetDef().ID {
 			p, err := newOutputProvider(output)
 			if err != nil {
 				return err
@@ -70,7 +70,7 @@ func (m *Manager) Remove(output *app.Output) error {
 	defer m.lock.RUnlock()
 
 	for idx, provider := range m.providers {
-		if output.ID == provider.GetSpec().ID {
+		if output.ID == provider.GetDef().ID {
 			m.providers = append(m.providers[:idx], m.providers[idx+1:]...)
 			return nil
 		}

@@ -85,8 +85,43 @@ type (
 		PrettyPrint bool
 	}
 
+	// CreateFilterCommand is the command line data structure for the create action of filter
+	CreateFilterCommand struct {
+		Payload     string
+		ContentType string
+		PrettyPrint bool
+	}
+
+	// DeleteFilterCommand is the command line data structure for the delete action of filter
+	DeleteFilterCommand struct {
+		// Filter ID
+		ID          int
+		PrettyPrint bool
+	}
+
+	// GetFilterCommand is the command line data structure for the get action of filter
+	GetFilterCommand struct {
+		// Filter ID
+		ID          int
+		PrettyPrint bool
+	}
+
 	// ListFilterCommand is the command line data structure for the list action of filter
 	ListFilterCommand struct {
+		PrettyPrint bool
+	}
+
+	// SpecsFilterCommand is the command line data structure for the specs action of filter
+	SpecsFilterCommand struct {
+		PrettyPrint bool
+	}
+
+	// UpdateFilterCommand is the command line data structure for the update action of filter
+	UpdateFilterCommand struct {
+		Payload     string
+		ContentType string
+		// Filter ID
+		ID          int
 		PrettyPrint bool
 	}
 
@@ -105,8 +140,43 @@ type (
 		PrettyPrint bool
 	}
 
+	// CreateOutputCommand is the command line data structure for the create action of output
+	CreateOutputCommand struct {
+		Payload     string
+		ContentType string
+		PrettyPrint bool
+	}
+
+	// DeleteOutputCommand is the command line data structure for the delete action of output
+	DeleteOutputCommand struct {
+		// Output ID
+		ID          int
+		PrettyPrint bool
+	}
+
+	// GetOutputCommand is the command line data structure for the get action of output
+	GetOutputCommand struct {
+		// Output ID
+		ID          int
+		PrettyPrint bool
+	}
+
 	// ListOutputCommand is the command line data structure for the list action of output
 	ListOutputCommand struct {
+		PrettyPrint bool
+	}
+
+	// SpecsOutputCommand is the command line data structure for the specs action of output
+	SpecsOutputCommand struct {
+		PrettyPrint bool
+	}
+
+	// UpdateOutputCommand is the command line data structure for the update action of output
+	UpdateOutputCommand struct {
+		Payload     string
+		ContentType string
+		// Output ID
+		ID          int
 		PrettyPrint bool
 	}
 
@@ -144,7 +214,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	var command, sub *cobra.Command
 	command = &cobra.Command{
 		Use:   "create",
-		Short: `Create a new feed`,
+		Short: `create action`,
 	}
 	tmp1 := new(CreateFeedCommand)
 	sub = &cobra.Command{
@@ -155,138 +225,136 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	tmp1.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp1.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "delete",
-		Short: `Delete a feed`,
-	}
-	tmp2 := new(DeleteFeedCommand)
+	tmp2 := new(CreateFilterCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID"]`,
+		Use:   `filter ["/v1/filters"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "name": "fetch",
+   "props": "-",
+   "tags": "foo,bar"
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
 	tmp2.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp2.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "get",
-		Short: `get action`,
-	}
-	tmp3 := new(GetFeedCommand)
+	tmp3 := new(CreateOutputCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID"]`,
+		Use:   `output ["/v1/outputs"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "name": "http",
+   "props": "-",
+   "tags": "foo,bar"
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
 	tmp3.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp3.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp4 := new(GetHealthCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "delete",
+		Short: `delete action`,
+	}
+	tmp4 := new(DeleteFeedCommand)
 	sub = &cobra.Command{
-		Use:   `health ["/v1/healthz"]`,
+		Use:   `feed ["/v1/feeds/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
 	tmp4.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp4.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp5 := new(GetOpmlCommand)
+	tmp5 := new(DeleteFilterCommand)
 	sub = &cobra.Command{
-		Use:   `opml ["/v1/opml"]`,
+		Use:   `filter ["/v1/filters/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
 	}
 	tmp5.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp5.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp6 := new(GetSwaggerCommand)
+	tmp6 := new(DeleteOutputCommand)
 	sub = &cobra.Command{
-		Use:   `swagger ["/v1/swagger.json"]`,
+		Use:   `output ["/v1/outputs/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
 	tmp6.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp6.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp7 := new(GetVarsCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "get",
+		Short: `get action`,
+	}
+	tmp7 := new(GetFeedCommand)
 	sub = &cobra.Command{
-		Use:   `vars ["/v1/vars"]`,
+		Use:   `feed ["/v1/feeds/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
 	tmp7.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp7.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "list",
-		Short: `list action`,
-	}
-	tmp8 := new(ListFeedCommand)
+	tmp8 := new(GetFilterCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds"]`,
+		Use:   `filter ["/v1/filters/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
 	}
 	tmp8.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp8.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp9 := new(ListFilterCommand)
+	tmp9 := new(GetHealthCommand)
 	sub = &cobra.Command{
-		Use:   `filter ["/v1/filters"]`,
+		Use:   `health ["/v1/healthz"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp9.Run(c, args) },
 	}
 	tmp9.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp9.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp10 := new(ListOutputCommand)
+	tmp10 := new(GetOpmlCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v1/outputs"]`,
+		Use:   `opml ["/v1/opml"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp10.Run(c, args) },
 	}
 	tmp10.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp10.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "pub",
-		Short: `Publication endpoint for PSHB hubs`,
-	}
-	tmp11 := new(PubPshbCommand)
+	tmp11 := new(GetOutputCommand)
 	sub = &cobra.Command{
-		Use:   `pshb ["/v1/pshb"]`,
+		Use:   `output ["/v1/outputs/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
 	tmp11.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp11.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "start",
-		Short: `Start feed aggregation`,
-	}
-	tmp12 := new(StartFeedCommand)
+	tmp12 := new(GetSwaggerCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID/start"]`,
+		Use:   `swagger ["/v1/swagger.json"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
 	}
 	tmp12.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp12.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "stop",
-		Short: `Stop feed aggregation`,
-	}
-	tmp13 := new(StopFeedCommand)
+	tmp13 := new(GetVarsCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID/stop"]`,
+		Use:   `vars ["/v1/vars"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp13.Run(c, args) },
 	}
@@ -295,45 +363,176 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "sub",
-		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
+		Use:   "list",
+		Short: `list action`,
 	}
-	tmp14 := new(SubPshbCommand)
+	tmp14 := new(ListFeedCommand)
 	sub = &cobra.Command{
-		Use:   `pshb ["/v1/pshb"]`,
+		Use:   `feed ["/v1/feeds"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp14.Run(c, args) },
 	}
 	tmp14.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp14.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "update",
-		Short: `Update a feed`,
-	}
-	tmp15 := new(UpdateFeedCommand)
+	tmp15 := new(ListFilterCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID"]`,
+		Use:   `filter ["/v1/filters"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
 	}
 	tmp15.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp15.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "upload",
-		Short: `Upload an OPML file to create feeds`,
-	}
-	tmp16 := new(UploadOpmlCommand)
+	tmp16 := new(ListOutputCommand)
 	sub = &cobra.Command{
-		Use:   `opml ["/v1/opml"]`,
+		Use:   `output ["/v1/outputs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp16.Run(c, args) },
 	}
 	tmp16.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp16.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "pub",
+		Short: `Publication endpoint for PSHB hubs`,
+	}
+	tmp17 := new(PubPshbCommand)
+	sub = &cobra.Command{
+		Use:   `pshb ["/v1/pshb"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp17.Run(c, args) },
+	}
+	tmp17.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp17.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "specs",
+		Short: `specs action`,
+	}
+	tmp18 := new(SpecsFilterCommand)
+	sub = &cobra.Command{
+		Use:   `filter ["/v1/filters/_specs"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp18.Run(c, args) },
+	}
+	tmp18.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp18.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	tmp19 := new(SpecsOutputCommand)
+	sub = &cobra.Command{
+		Use:   `output ["/v1/outputs/_specs"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp19.Run(c, args) },
+	}
+	tmp19.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp19.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "start",
+		Short: `Start feed aggregation`,
+	}
+	tmp20 := new(StartFeedCommand)
+	sub = &cobra.Command{
+		Use:   `feed ["/v1/feeds/ID/start"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp20.Run(c, args) },
+	}
+	tmp20.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp20.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "stop",
+		Short: `Stop feed aggregation`,
+	}
+	tmp21 := new(StopFeedCommand)
+	sub = &cobra.Command{
+		Use:   `feed ["/v1/feeds/ID/stop"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp21.Run(c, args) },
+	}
+	tmp21.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp21.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "sub",
+		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
+	}
+	tmp22 := new(SubPshbCommand)
+	sub = &cobra.Command{
+		Use:   `pshb ["/v1/pshb"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp22.Run(c, args) },
+	}
+	tmp22.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp22.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "update",
+		Short: `update action`,
+	}
+	tmp23 := new(UpdateFeedCommand)
+	sub = &cobra.Command{
+		Use:   `feed ["/v1/feeds/ID"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp23.Run(c, args) },
+	}
+	tmp23.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp23.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	tmp24 := new(UpdateFilterCommand)
+	sub = &cobra.Command{
+		Use:   `filter ["/v1/filters/ID"]`,
+		Short: ``,
+		Long: `
+
+Payload example:
+
+{
+   "props": "-",
+   "tags": "foo,bar"
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp24.Run(c, args) },
+	}
+	tmp24.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp24.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	tmp25 := new(UpdateOutputCommand)
+	sub = &cobra.Command{
+		Use:   `output ["/v1/outputs/ID"]`,
+		Short: ``,
+		Long: `
+
+Payload example:
+
+{
+   "props": "-",
+   "tags": "foo,bar"
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp25.Run(c, args) },
+	}
+	tmp25.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp25.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "upload",
+		Short: `Upload an OPML file to create feeds`,
+	}
+	tmp26 := new(UploadOpmlCommand)
+	sub = &cobra.Command{
+		Use:   `opml ["/v1/opml"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp26.Run(c, args) },
+	}
+	tmp26.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp26.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 }
@@ -681,6 +880,91 @@ func (cmd *UpdateFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client)
 	cc.Flags().StringVar(&cmd.Title, "title", title, `Feed title`)
 }
 
+// Run makes the HTTP request corresponding to the CreateFilterCommand command.
+func (cmd *CreateFilterCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/v1/filters"
+	}
+	var payload client.CreateFilterPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.CreateFilter(ctx, path, &payload, cmd.ContentType)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *CreateFilterCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
+}
+
+// Run makes the HTTP request corresponding to the DeleteFilterCommand command.
+func (cmd *DeleteFilterCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v1/filters/%v", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.DeleteFilter(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *DeleteFilterCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Filter ID`)
+}
+
+// Run makes the HTTP request corresponding to the GetFilterCommand command.
+func (cmd *GetFilterCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v1/filters/%v", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.GetFilter(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *GetFilterCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Filter ID`)
+}
+
 // Run makes the HTTP request corresponding to the ListFilterCommand command.
 func (cmd *ListFilterCommand) Run(c *client.Client, args []string) error {
 	var path string
@@ -703,6 +987,65 @@ func (cmd *ListFilterCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ListFilterCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the SpecsFilterCommand command.
+func (cmd *SpecsFilterCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/v1/filters/_specs"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.SpecsFilter(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *SpecsFilterCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the UpdateFilterCommand command.
+func (cmd *UpdateFilterCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v1/filters/%v", cmd.ID)
+	}
+	var payload client.UpdateFilterPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.UpdateFilter(ctx, path, &payload, cmd.ContentType)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *UpdateFilterCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Filter ID`)
 }
 
 // Run makes the HTTP request corresponding to the GetHealthCommand command.
@@ -777,6 +1120,91 @@ func (cmd *UploadOpmlCommand) Run(c *client.Client, args []string) error {
 func (cmd *UploadOpmlCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
 
+// Run makes the HTTP request corresponding to the CreateOutputCommand command.
+func (cmd *CreateOutputCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/v1/outputs"
+	}
+	var payload client.CreateOutputPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.CreateOutput(ctx, path, &payload, cmd.ContentType)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *CreateOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
+}
+
+// Run makes the HTTP request corresponding to the DeleteOutputCommand command.
+func (cmd *DeleteOutputCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v1/outputs/%v", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.DeleteOutput(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *DeleteOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Output ID`)
+}
+
+// Run makes the HTTP request corresponding to the GetOutputCommand command.
+func (cmd *GetOutputCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v1/outputs/%v", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.GetOutput(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *GetOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Output ID`)
+}
+
 // Run makes the HTTP request corresponding to the ListOutputCommand command.
 func (cmd *ListOutputCommand) Run(c *client.Client, args []string) error {
 	var path string
@@ -799,6 +1227,65 @@ func (cmd *ListOutputCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ListOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the SpecsOutputCommand command.
+func (cmd *SpecsOutputCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/v1/outputs/_specs"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.SpecsOutput(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *SpecsOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the UpdateOutputCommand command.
+func (cmd *UpdateOutputCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v1/outputs/%v", cmd.ID)
+	}
+	var payload client.UpdateOutputPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.UpdateOutput(ctx, path, &payload, cmd.ContentType)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *UpdateOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Output ID`)
 }
 
 // Run makes the HTTP request corresponding to the PubPshbCommand command.

@@ -11,20 +11,19 @@ type OutputProps map[string]interface{}
 // OutputProvider is the output provider interface
 type OutputProvider interface {
 	Send(article *Article) error
-	GetSpec() OutputSpec
+	GetDef() OutputDef
 }
 
-// OutputSpec contains output specifications
-type OutputSpec struct {
-	ID    int
-	Name  string
-	Desc  string
+// OutputDef contains output definition
+type OutputDef struct {
+	ID int
+	Spec
 	Tags  []string
 	Props map[string]interface{}
 }
 
 // Hash computes spec hash
-func (spec OutputSpec) Hash() string {
+func (spec OutputDef) Hash() string {
 	// TODO add props to the key computation
 	key := spec.Name
 	hasher := md5.New()

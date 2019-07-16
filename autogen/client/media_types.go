@@ -193,6 +193,65 @@ func (c *Client) DecodeFeedTinyCollection(resp *http.Response) (FeedTinyCollecti
 	return decoded, err
 }
 
+// The filter specification (default view)
+//
+// Identifier: application/vnd.feedpushr.filter-spec.v1+json; view=default
+type FilterSpec struct {
+	// Description of the filter
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Name of the filter
+	Name  string             `form:"name" json:"name" yaml:"name" xml:"name"`
+	Props PropSpecCollection `form:"props" json:"props" yaml:"props" xml:"props"`
+}
+
+// Validate validates the FilterSpec media type instance.
+func (mt *FilterSpec) Validate() (err error) {
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Props == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "props"))
+	}
+	if err2 := mt.Props.Validate(); err2 != nil {
+		err = goa.MergeErrors(err, err2)
+	}
+	return
+}
+
+// DecodeFilterSpec decodes the FilterSpec instance encoded in resp body.
+func (c *Client) DecodeFilterSpec(resp *http.Response) (*FilterSpec, error) {
+	var decoded FilterSpec
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// FilterSpecCollection is the media type for an array of FilterSpec (default view)
+//
+// Identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection; view=default
+type FilterSpecCollection []*FilterSpec
+
+// Validate validates the FilterSpecCollection media type instance.
+func (mt FilterSpecCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeFilterSpecCollection decodes the FilterSpecCollection instance encoded in resp body.
+func (c *Client) DecodeFilterSpecCollection(resp *http.Response) (FilterSpecCollection, error) {
+	var decoded FilterSpecCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
 // A filter (default view)
 //
 // Identifier: application/vnd.feedpushr.filter.v1+json; view=default
@@ -252,6 +311,65 @@ func (c *Client) DecodeFilterCollection(resp *http.Response) (FilterCollection, 
 	return decoded, err
 }
 
+// The output channel specification (default view)
+//
+// Identifier: application/vnd.feedpushr.output-spec.v1+json; view=default
+type OutputSpec struct {
+	// Description of the output channel
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Name of the output channel
+	Name  string             `form:"name" json:"name" yaml:"name" xml:"name"`
+	Props PropSpecCollection `form:"props" json:"props" yaml:"props" xml:"props"`
+}
+
+// Validate validates the OutputSpec media type instance.
+func (mt *OutputSpec) Validate() (err error) {
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Props == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "props"))
+	}
+	if err2 := mt.Props.Validate(); err2 != nil {
+		err = goa.MergeErrors(err, err2)
+	}
+	return
+}
+
+// DecodeOutputSpec decodes the OutputSpec instance encoded in resp body.
+func (c *Client) DecodeOutputSpec(resp *http.Response) (*OutputSpec, error) {
+	var decoded OutputSpec
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// OutputSpecCollection is the media type for an array of OutputSpec (default view)
+//
+// Identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection; view=default
+type OutputSpecCollection []*OutputSpec
+
+// Validate validates the OutputSpecCollection media type instance.
+func (mt OutputSpecCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeOutputSpecCollection decodes the OutputSpecCollection instance encoded in resp body.
+func (c *Client) DecodeOutputSpecCollection(resp *http.Response) (OutputSpecCollection, error) {
+	var decoded OutputSpecCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
 // The output channel (default view)
 //
 // Identifier: application/vnd.feedpushr.output.v1+json; view=default
@@ -307,6 +425,63 @@ func (mt OutputCollection) Validate() (err error) {
 // DecodeOutputCollection decodes the OutputCollection instance encoded in resp body.
 func (c *Client) DecodeOutputCollection(resp *http.Response) (OutputCollection, error) {
 	var decoded OutputCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
+// The specification of a property (default view)
+//
+// Identifier: application/vnd.feedpushr.prop-spec.v1+json; view=default
+type PropSpec struct {
+	// Description of the output channel
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Name of the property
+	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Property type ('string', 'number')
+	Type string `form:"type" json:"type" yaml:"type" xml:"type"`
+}
+
+// Validate validates the PropSpec media type instance.
+func (mt *PropSpec) Validate() (err error) {
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Type == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "type"))
+	}
+	return
+}
+
+// DecodePropSpec decodes the PropSpec instance encoded in resp body.
+func (c *Client) DecodePropSpec(resp *http.Response) (*PropSpec, error) {
+	var decoded PropSpec
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// PropSpecCollection is the media type for an array of PropSpec (default view)
+//
+// Identifier: application/vnd.feedpushr.prop-spec.v1+json; type=collection; view=default
+type PropSpecCollection []*PropSpec
+
+// Validate validates the PropSpecCollection media type instance.
+func (mt PropSpecCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodePropSpecCollection decodes the PropSpecCollection instance encoded in resp body.
+func (c *Client) DecodePropSpecCollection(resp *http.Response) (PropSpecCollection, error) {
+	var decoded PropSpecCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }

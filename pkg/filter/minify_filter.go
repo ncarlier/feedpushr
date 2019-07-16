@@ -12,10 +12,15 @@ import (
 	"github.com/tdewolff/minify/v2/svg"
 )
 
+var minifySpec = model.Spec{
+	Name: "minify",
+	Desc: "This filter will minify articles HTML content.",
+}
+
 // MinifyFilter is a filter that minify HTML content
 type MinifyFilter struct {
-	name      string
-	desc      string
+	id        int
+	spec      model.Spec
 	tags      []string
 	nbSuccess uint64
 	nbError   uint64
@@ -45,13 +50,16 @@ func (f *MinifyFilter) DoFilter(article *model.Article) error {
 	return nil
 }
 
-// GetSpec return filter specifications
-func (f *MinifyFilter) GetSpec() model.FilterSpec {
-	result := model.FilterSpec{
-		Name: f.name,
-		Desc: f.desc,
+// GetDef return filter definition
+func (f *MinifyFilter) GetDef() model.FilterDef {
+	result := model.FilterDef{
+		ID:   f.id,
 		Tags: f.tags,
 	}
+	result.Name = f.spec.Name
+	result.Desc = f.spec.Desc
+	result.PropsSpec = f.spec.PropsSpec
+
 	result.Props = map[string]interface{}{
 		"nbSuccess": f.nbSuccess,
 		"nbError":   f.nbError,
@@ -66,8 +74,8 @@ func newMinifyFilter(filter *app.Filter) *MinifyFilter {
 	minifier.AddFunc("text/html", html.Minify)
 	minifier.AddFunc("image/svg+xml", svg.Minify)
 	return &MinifyFilter{
-		name:     "minify",
-		desc:     "This filter will minify articles HTML content.",
+		id:       filter.ID,
+		spec:     minifySpec,
 		tags:     filter.Tags,
 		minifier: minifier,
 	}

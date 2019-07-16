@@ -431,6 +431,191 @@ func (ctx *UpdateFeedContext) NotFound() error {
 	return nil
 }
 
+// CreateFilterContext provides the filter create action context.
+type CreateFilterContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Payload *CreateFilterPayload
+}
+
+// NewCreateFilterContext parses the incoming request URL and body, performs validations and creates the
+// context used by the filter controller create action.
+func NewCreateFilterContext(ctx context.Context, r *http.Request, service *goa.Service) (*CreateFilterContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := CreateFilterContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// createFilterPayload is the filter create action payload.
+type createFilterPayload struct {
+	// Name of the filter
+	Name *string `form:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty" xml:"name,omitempty"`
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *createFilterPayload) Validate() (err error) {
+	if payload.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+	return
+}
+
+// Publicize creates CreateFilterPayload from createFilterPayload
+func (payload *createFilterPayload) Publicize() *CreateFilterPayload {
+	var pub CreateFilterPayload
+	if payload.Name != nil {
+		pub.Name = *payload.Name
+	}
+	if payload.Props != nil {
+		pub.Props = payload.Props
+	}
+	if payload.Tags != nil {
+		pub.Tags = payload.Tags
+	}
+	return &pub
+}
+
+// CreateFilterPayload is the filter create action payload.
+type CreateFilterPayload struct {
+	// Name of the filter
+	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *CreateFilterPayload) Validate() (err error) {
+	if payload.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+	return
+}
+
+// Created sends a HTTP response with status code 201.
+func (ctx *CreateFilterContext) Created() error {
+	ctx.ResponseData.WriteHeader(201)
+	return nil
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *CreateFilterContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// DeleteFilterContext provides the filter delete action context.
+type DeleteFilterContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewDeleteFilterContext parses the incoming request URL and body, performs validations and creates the
+// context used by the filter controller delete action.
+func NewDeleteFilterContext(ctx context.Context, r *http.Request, service *goa.Service) (*DeleteFilterContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := DeleteFilterContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// NoContent sends a HTTP response with status code 204.
+func (ctx *DeleteFilterContext) NoContent() error {
+	ctx.ResponseData.WriteHeader(204)
+	return nil
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *DeleteFilterContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *DeleteFilterContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// GetFilterContext provides the filter get action context.
+type GetFilterContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewGetFilterContext parses the incoming request URL and body, performs validations and creates the
+// context used by the filter controller get action.
+func NewGetFilterContext(ctx context.Context, r *http.Request, service *goa.Service) (*GetFilterContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := GetFilterContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *GetFilterContext) OK(r *Filter) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *GetFilterContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *GetFilterContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
 // ListFilterContext provides the filter list action context.
 type ListFilterContext struct {
 	context.Context
@@ -459,6 +644,116 @@ func (ctx *ListFilterContext) OK(r FilterCollection) error {
 		r = FilterCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// SpecsFilterContext provides the filter specs action context.
+type SpecsFilterContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewSpecsFilterContext parses the incoming request URL and body, performs validations and creates the
+// context used by the filter controller specs action.
+func NewSpecsFilterContext(ctx context.Context, r *http.Request, service *goa.Service) (*SpecsFilterContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := SpecsFilterContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *SpecsFilterContext) OK(r FilterSpecCollection) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.filter-spec.v1+json; type=collection")
+	}
+	if r == nil {
+		r = FilterSpecCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// UpdateFilterContext provides the filter update action context.
+type UpdateFilterContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID      int
+	Payload *UpdateFilterPayload
+}
+
+// NewUpdateFilterContext parses the incoming request URL and body, performs validations and creates the
+// context used by the filter controller update action.
+func NewUpdateFilterContext(ctx context.Context, r *http.Request, service *goa.Service) (*UpdateFilterContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := UpdateFilterContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// updateFilterPayload is the filter update action payload.
+type updateFilterPayload struct {
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// Publicize creates UpdateFilterPayload from updateFilterPayload
+func (payload *updateFilterPayload) Publicize() *UpdateFilterPayload {
+	var pub UpdateFilterPayload
+	if payload.Props != nil {
+		pub.Props = payload.Props
+	}
+	if payload.Tags != nil {
+		pub.Tags = payload.Tags
+	}
+	return &pub
+}
+
+// UpdateFilterPayload is the filter update action payload.
+type UpdateFilterPayload struct {
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *UpdateFilterContext) OK(r *Filter) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *UpdateFilterContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *UpdateFilterContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // GetHealthContext provides the health get action context.
@@ -560,6 +855,191 @@ func (ctx *UploadOpmlContext) BadRequest(r error) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
 
+// CreateOutputContext provides the output create action context.
+type CreateOutputContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Payload *CreateOutputPayload
+}
+
+// NewCreateOutputContext parses the incoming request URL and body, performs validations and creates the
+// context used by the output controller create action.
+func NewCreateOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*CreateOutputContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := CreateOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// createOutputPayload is the output create action payload.
+type createOutputPayload struct {
+	// Name of the output
+	Name *string `form:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty" xml:"name,omitempty"`
+	// Output properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *createOutputPayload) Validate() (err error) {
+	if payload.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+	return
+}
+
+// Publicize creates CreateOutputPayload from createOutputPayload
+func (payload *createOutputPayload) Publicize() *CreateOutputPayload {
+	var pub CreateOutputPayload
+	if payload.Name != nil {
+		pub.Name = *payload.Name
+	}
+	if payload.Props != nil {
+		pub.Props = payload.Props
+	}
+	if payload.Tags != nil {
+		pub.Tags = payload.Tags
+	}
+	return &pub
+}
+
+// CreateOutputPayload is the output create action payload.
+type CreateOutputPayload struct {
+	// Name of the output
+	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Output properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *CreateOutputPayload) Validate() (err error) {
+	if payload.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+	return
+}
+
+// Created sends a HTTP response with status code 201.
+func (ctx *CreateOutputContext) Created() error {
+	ctx.ResponseData.WriteHeader(201)
+	return nil
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *CreateOutputContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// DeleteOutputContext provides the output delete action context.
+type DeleteOutputContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewDeleteOutputContext parses the incoming request URL and body, performs validations and creates the
+// context used by the output controller delete action.
+func NewDeleteOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*DeleteOutputContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := DeleteOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// NoContent sends a HTTP response with status code 204.
+func (ctx *DeleteOutputContext) NoContent() error {
+	ctx.ResponseData.WriteHeader(204)
+	return nil
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *DeleteOutputContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *DeleteOutputContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// GetOutputContext provides the output get action context.
+type GetOutputContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewGetOutputContext parses the incoming request URL and body, performs validations and creates the
+// context used by the output controller get action.
+func NewGetOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*GetOutputContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := GetOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *GetOutputContext) OK(r *Output) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *GetOutputContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *GetOutputContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
 // ListOutputContext provides the output list action context.
 type ListOutputContext struct {
 	context.Context
@@ -588,6 +1068,116 @@ func (ctx *ListOutputContext) OK(r OutputCollection) error {
 		r = OutputCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// SpecsOutputContext provides the output specs action context.
+type SpecsOutputContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewSpecsOutputContext parses the incoming request URL and body, performs validations and creates the
+// context used by the output controller specs action.
+func NewSpecsOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*SpecsOutputContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := SpecsOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *SpecsOutputContext) OK(r OutputSpecCollection) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.output-spec.v1+json; type=collection")
+	}
+	if r == nil {
+		r = OutputSpecCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// UpdateOutputContext provides the output update action context.
+type UpdateOutputContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID      int
+	Payload *UpdateOutputPayload
+}
+
+// NewUpdateOutputContext parses the incoming request URL and body, performs validations and creates the
+// context used by the output controller update action.
+func NewUpdateOutputContext(ctx context.Context, r *http.Request, service *goa.Service) (*UpdateOutputContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := UpdateOutputContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// updateOutputPayload is the output update action payload.
+type updateOutputPayload struct {
+	// Output properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// Publicize creates UpdateOutputPayload from updateOutputPayload
+func (payload *updateOutputPayload) Publicize() *UpdateOutputPayload {
+	var pub UpdateOutputPayload
+	if payload.Props != nil {
+		pub.Props = payload.Props
+	}
+	if payload.Tags != nil {
+		pub.Tags = payload.Tags
+	}
+	return &pub
+}
+
+// UpdateOutputPayload is the output update action payload.
+type UpdateOutputPayload struct {
+	// Output properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *UpdateOutputContext) OK(r *Output) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *UpdateOutputContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *UpdateOutputContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
 }
 
 // PubPshbContext provides the pshb pub action context.
@@ -658,9 +1248,9 @@ func NewSubPshbContext(ctx context.Context, r *http.Request, service *goa.Servic
 	if len(paramHubLeaseSeconds) > 0 {
 		rawHubLeaseSeconds := paramHubLeaseSeconds[0]
 		if hubLeaseSeconds, err2 := strconv.Atoi(rawHubLeaseSeconds); err2 == nil {
-			tmp4 := hubLeaseSeconds
-			tmp3 := &tmp4
-			rctx.HubLeaseSeconds = tmp3
+			tmp10 := hubLeaseSeconds
+			tmp9 := &tmp10
+			rctx.HubLeaseSeconds = tmp9
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("hub.lease_seconds", rawHubLeaseSeconds, "integer"))
 		}

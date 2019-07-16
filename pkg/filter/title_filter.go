@@ -8,10 +8,22 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
+var titleSpec = model.Spec{
+	Name: "title",
+	Desc: "This filter will prefix the title of the article with a given value.",
+	PropsSpec: []model.PropSpec{
+		{
+			Name: "prefix",
+			Desc: "Prefix to add to the article title",
+			Type: "string",
+		},
+	},
+}
+
 // TitleFilter is a foo filter
 type TitleFilter struct {
-	name      string
-	desc      string
+	id        int
+	spec      model.Spec
 	tags      []string
 	prefix    string
 	nbSuccess uint64
@@ -24,13 +36,16 @@ func (f *TitleFilter) DoFilter(article *model.Article) error {
 	return nil
 }
 
-// GetSpec return filter specifications
-func (f *TitleFilter) GetSpec() model.FilterSpec {
-	result := model.FilterSpec{
-		Name: f.name,
-		Desc: f.desc,
+// GetDef return filter definition
+func (f *TitleFilter) GetDef() model.FilterDef {
+	result := model.FilterDef{
+		ID:   f.id,
 		Tags: f.tags,
 	}
+	result.Name = f.spec.Name
+	result.Desc = f.spec.Desc
+	result.PropsSpec = f.spec.PropsSpec
+
 	result.Props = map[string]interface{}{
 		"prefix":     f.prefix,
 		"nbSsuccess": f.nbSuccess,
@@ -45,8 +60,8 @@ func newTitleFilter(filter *app.Filter) *TitleFilter {
 		prefix = "foo:"
 	}
 	return &TitleFilter{
-		name:   "title",
-		desc:   "This filter will prefix the title of the article with a given value.",
+		id:     filter.ID,
+		spec:   titleSpec,
 		tags:   filter.Tags,
 		prefix: fmt.Sprintf("%v", prefix),
 	}

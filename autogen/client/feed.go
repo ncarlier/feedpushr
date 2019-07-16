@@ -93,7 +93,7 @@ func GetFeedPath(id string) string {
 	return fmt.Sprintf("/v1/feeds/%s", param0)
 }
 
-// Retrieve feed with given id
+// Retrieve feed with given ID
 func (c *Client) GetFeed(ctx context.Context, path string) (*http.Response, error) {
 	req, err := c.NewGetFeedRequest(ctx, path)
 	if err != nil {
@@ -140,12 +140,12 @@ func (c *Client) NewListFeedRequest(ctx context.Context, path string, limit *int
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	if limit != nil {
-		tmp17 := strconv.Itoa(*limit)
-		values.Set("limit", tmp17)
+		tmp27 := strconv.Itoa(*limit)
+		values.Set("limit", tmp27)
 	}
 	if page != nil {
-		tmp18 := strconv.Itoa(*page)
-		values.Set("page", tmp18)
+		tmp28 := strconv.Itoa(*page)
+		values.Set("page", tmp28)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequest("GET", u.String(), nil)

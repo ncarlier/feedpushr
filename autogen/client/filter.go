@@ -11,11 +11,126 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 )
+
+// CreateFilterPayload is the filter create action payload.
+type CreateFilterPayload struct {
+	// Name of the filter
+	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// CreateFilterPath computes a request path to the create action of filter.
+func CreateFilterPath() string {
+
+	return fmt.Sprintf("/v1/filters")
+}
+
+// Create a new filter
+func (c *Client) CreateFilter(ctx context.Context, path string, payload *CreateFilterPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewCreateFilterRequest(ctx, path, payload, contentType)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewCreateFilterRequest create the request corresponding to the create action endpoint of the filter resource.
+func (c *Client) NewCreateFilterRequest(ctx context.Context, path string, payload *CreateFilterPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("POST", u.String(), &body)
+	if err != nil {
+		return nil, err
+	}
+	header := req.Header
+	if contentType == "*/*" {
+		header.Set("Content-Type", "application/json")
+	} else {
+		header.Set("Content-Type", contentType)
+	}
+	return req, nil
+}
+
+// DeleteFilterPath computes a request path to the delete action of filter.
+func DeleteFilterPath(id int) string {
+	param0 := strconv.Itoa(id)
+
+	return fmt.Sprintf("/v1/filters/%s", param0)
+}
+
+// Delete a filter
+func (c *Client) DeleteFilter(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewDeleteFilterRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewDeleteFilterRequest create the request corresponding to the delete action endpoint of the filter resource.
+func (c *Client) NewDeleteFilterRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// GetFilterPath computes a request path to the get action of filter.
+func GetFilterPath(id int) string {
+	param0 := strconv.Itoa(id)
+
+	return fmt.Sprintf("/v1/filters/%s", param0)
+}
+
+// Retrieve filter with given ID
+func (c *Client) GetFilter(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewGetFilterRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewGetFilterRequest create the request corresponding to the get action endpoint of the filter resource.
+func (c *Client) NewGetFilterRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
 
 // ListFilterPath computes a request path to the list action of filter.
 func ListFilterPath() string {
@@ -42,6 +157,87 @@ func (c *Client) NewListFilterRequest(ctx context.Context, path string) (*http.R
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+	return req, nil
+}
+
+// SpecsFilterPath computes a request path to the specs action of filter.
+func SpecsFilterPath() string {
+
+	return fmt.Sprintf("/v1/filters/_specs")
+}
+
+// Retrieve all filter types available
+func (c *Client) SpecsFilter(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewSpecsFilterRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewSpecsFilterRequest create the request corresponding to the specs action endpoint of the filter resource.
+func (c *Client) NewSpecsFilterRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// UpdateFilterPayload is the filter update action payload.
+type UpdateFilterPayload struct {
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	// Comma separated list of tags
+	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
+}
+
+// UpdateFilterPath computes a request path to the update action of filter.
+func UpdateFilterPath(id int) string {
+	param0 := strconv.Itoa(id)
+
+	return fmt.Sprintf("/v1/filters/%s", param0)
+}
+
+// Update a filter
+func (c *Client) UpdateFilter(ctx context.Context, path string, payload *UpdateFilterPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewUpdateFilterRequest(ctx, path, payload, contentType)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewUpdateFilterRequest create the request corresponding to the update action endpoint of the filter resource.
+func (c *Client) NewUpdateFilterRequest(ctx context.Context, path string, payload *UpdateFilterPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("PUT", u.String(), &body)
+	if err != nil {
+		return nil, err
+	}
+	header := req.Header
+	if contentType == "*/*" {
+		header.Set("Content-Type", "application/json")
+	} else {
+		header.Set("Content-Type", contentType)
 	}
 	return req, nil
 }

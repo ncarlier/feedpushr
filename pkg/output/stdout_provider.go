@@ -29,18 +29,21 @@ JSON Format:
 }
 `
 
+var stdoutSpec = model.Spec{
+	Name: "stdout",
+	Desc: "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
+}
+
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
-	name      string
-	desc      string
+	spec      model.Spec
 	tags      []string
 	nbSuccess uint64
 }
 
 func newStdOutputProvider(output *app.Output) *StdOutputProvider {
 	return &StdOutputProvider{
-		name: "stdout",
-		desc: "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
+		spec: stdoutSpec,
 		tags: output.Tags,
 	}
 }
@@ -54,11 +57,10 @@ func (op *StdOutputProvider) Send(article *model.Article) error {
 	return nil
 }
 
-// GetSpec return output provider specifications
-func (op *StdOutputProvider) GetSpec() model.OutputSpec {
-	result := model.OutputSpec{
-		Name: op.name,
-		Desc: op.desc,
+// GetDef return output provider definition
+func (op *StdOutputProvider) GetDef() model.OutputDef {
+	result := model.OutputDef{
+		Spec: op.spec,
 		Tags: op.tags,
 	}
 	result.Props = map[string]interface{}{

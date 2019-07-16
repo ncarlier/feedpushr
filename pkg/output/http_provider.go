@@ -11,10 +11,14 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
+var httpSpec = model.Spec{
+	Name: "http",
+	Desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
+}
+
 // HTTPOutputProvider HTTP output provider
 type HTTPOutputProvider struct {
-	name      string
-	desc      string
+	spec      model.Spec
 	tags      []string
 	nbError   uint64
 	nbSuccess uint64
@@ -27,8 +31,7 @@ func newHTTPOutputProvider(output *app.Output) *HTTPOutputProvider {
 		return nil
 	}
 	return &HTTPOutputProvider{
-		name: "http",
-		desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
+		spec: httpSpec,
 		tags: output.Tags,
 		uri:  fmt.Sprintf("%v", u),
 	}
@@ -50,11 +53,10 @@ func (op *HTTPOutputProvider) Send(article *model.Article) error {
 	return nil
 }
 
-// GetSpec return output provider specifications
-func (op *HTTPOutputProvider) GetSpec() model.OutputSpec {
-	result := model.OutputSpec{
-		Name: op.name,
-		Desc: op.desc,
+// GetDef return output provider definition
+func (op *HTTPOutputProvider) GetDef() model.OutputDef {
+	result := model.OutputDef{
+		Spec: op.spec,
 		Tags: op.tags,
 	}
 	result.Props = map[string]interface{}{

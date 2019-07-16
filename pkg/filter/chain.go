@@ -45,15 +45,37 @@ func newFilter(filter *app.Filter) (model.Filter, error) {
 	return _filter, nil
 }
 
+// GetAvailableFilters get all available filters
+func GetAvailableFilters() []model.Spec {
+	result := []model.Spec{
+		titleSpec,
+		fetchSpec,
+		minifySpec,
+	}
+	plugin.GetRegsitry().ForEachFilterPlugin(func(plug model.FilterPlugin) error {
+		result = append(result, plug.Spec())
+		return nil
+	})
+	return result
+}
+
 // Add a filter to the chain
 func (chain *Chain) Add(filter *app.Filter) error {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
+	nextID := 0
+	for _, _filter := range chain.filters {
+		if nextID < _filter.GetDef().ID {
+			nextID = _filter.GetDef().ID
+		}
+	}
+	filter.ID = nextID + 1
 	_filter, err := newFilter(filter)
 	if err != nil {
 		return err
 	}
+
 	chain.filters = append(chain.filters, _filter)
 	return nil
 }
@@ -64,7 +86,7 @@ func (chain *Chain) Update(filter *app.Filter) error {
 	defer chain.lock.RUnlock()
 
 	for idx, _filter := range chain.filters {
-		if filter.ID == _filter.GetSpec().ID {
+		if filter.ID == _filter.GetDef().ID {
 			f, err := newFilter(filter)
 			if err != nil {
 				return err
@@ -82,7 +104,7 @@ func (chain *Chain) Remove(filter *app.Filter) error {
 	defer chain.lock.RUnlock()
 
 	for idx, _filter := range chain.filters {
-		if filter.ID == _filter.GetSpec().ID {
+		if filter.ID == _filter.GetDef().ID {
 			chain.filters = append(chain.filters[:idx], chain.filters[idx+1:]...)
 			return nil
 		}
@@ -93,7 +115,7 @@ func (chain *Chain) Remove(filter *app.Filter) error {
 // Apply applies filter chain on an article
 func (chain *Chain) Apply(article *model.Article) error {
 	for idx, filter := range chain.filters {
-		tags := filter.GetSpec().Tags
+		tags := filter.GetDef().Tags
 		if !article.Match(tags) {
 			// Ignore filters that do not match the article tags
 			continue
@@ -106,11 +128,21 @@ func (chain *Chain) Apply(article *model.Article) error {
 	return nil
 }
 
-// GetSpec return specification of the chain filter
-func (chain *Chain) GetSpec() []model.FilterSpec {
-	result := make([]model.FilterSpec, len(chain.filters))
+// Get a filter from the chain
+func (chain *Chain) Get(id int) (model.Filter, error) {
+	for _, _filter := range chain.filters {
+		if id == _filter.GetDef().ID {
+			return _filter, nil
+		}
+	}
+	return nil, common.ErrFilterNotFound
+}
+
+// GetFilterDefs return definitions of the chain filter
+func (chain *Chain) GetFilterDefs() []model.FilterDef {
+	result := make([]model.FilterDef, len(chain.filters))
 	for idx, filter := range chain.filters {
-		result[idx] = filter.GetSpec()
+		result[idx] = filter.GetDef()
 	}
 	return result
 }

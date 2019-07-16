@@ -9,10 +9,22 @@ import (
 	"github.com/ncarlier/readflow/pkg/readability"
 )
 
+var fetchSpec = model.Spec{
+	Name: "fetch",
+	Desc: `
+This filter will attempt to extract the content of the article from the source URL.
+If succeeded, following metadata are added to the article:
+
+- originalContent: Initial article content (before fetching)
+- text: Article excerpt
+- image: Article main illustration
+`,
+}
+
 // FetchFilter is a filter that try to fetch the original article content
 type FetchFilter struct {
-	name      string
-	desc      string
+	id        int
+	spec      model.Spec
 	tags      []string
 	nbError   uint64
 	nbSuccess uint64
@@ -42,13 +54,16 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 	return nil
 }
 
-// GetSpec return filter specifications
-func (f *FetchFilter) GetSpec() model.FilterSpec {
-	result := model.FilterSpec{
-		Name: f.name,
-		Desc: f.desc,
+// GetDef return filter definition
+func (f *FetchFilter) GetDef() model.FilterDef {
+	result := model.FilterDef{
+		ID:   f.id,
 		Tags: f.tags,
 	}
+	result.Name = f.spec.Name
+	result.Desc = f.spec.Desc
+	result.PropsSpec = f.spec.PropsSpec
+
 	result.Props = map[string]interface{}{
 		"nbError":    f.nbError,
 		"nbSsuccess": f.nbSuccess,
@@ -56,19 +71,10 @@ func (f *FetchFilter) GetSpec() model.FilterSpec {
 	return result
 }
 
-const fetchDescription = `
-This filter will attempt to extract the content of the article from the source URL.
-If succeeded, following metadata are added to the article:
-
-- originalContent: Initial article content (before fetching)
-- text: Article excerpt
-- image: Article main illustration
-`
-
 func newFetchFilter(filter *app.Filter) *FetchFilter {
 	return &FetchFilter{
-		name: "fetch",
-		desc: fetchDescription,
+		id:   filter.ID,
+		spec: fetchSpec,
 		tags: filter.Tags,
 	}
 }

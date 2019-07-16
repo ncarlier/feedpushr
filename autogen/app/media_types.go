@@ -157,6 +157,51 @@ func (mt FeedTinyCollection) Validate() (err error) {
 	return
 }
 
+// The filter specification (default view)
+//
+// Identifier: application/vnd.feedpushr.filter-spec.v1+json; view=default
+type FilterSpec struct {
+	// Description of the filter
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Name of the filter
+	Name  string             `form:"name" json:"name" yaml:"name" xml:"name"`
+	Props PropSpecCollection `form:"props" json:"props" yaml:"props" xml:"props"`
+}
+
+// Validate validates the FilterSpec media type instance.
+func (mt *FilterSpec) Validate() (err error) {
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Props == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "props"))
+	}
+	if err2 := mt.Props.Validate(); err2 != nil {
+		err = goa.MergeErrors(err, err2)
+	}
+	return
+}
+
+// FilterSpecCollection is the media type for an array of FilterSpec (default view)
+//
+// Identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection; view=default
+type FilterSpecCollection []*FilterSpec
+
+// Validate validates the FilterSpecCollection media type instance.
+func (mt FilterSpecCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // A filter (default view)
 //
 // Identifier: application/vnd.feedpushr.filter.v1+json; view=default
@@ -202,6 +247,51 @@ func (mt FilterCollection) Validate() (err error) {
 	return
 }
 
+// The output channel specification (default view)
+//
+// Identifier: application/vnd.feedpushr.output-spec.v1+json; view=default
+type OutputSpec struct {
+	// Description of the output channel
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Name of the output channel
+	Name  string             `form:"name" json:"name" yaml:"name" xml:"name"`
+	Props PropSpecCollection `form:"props" json:"props" yaml:"props" xml:"props"`
+}
+
+// Validate validates the OutputSpec media type instance.
+func (mt *OutputSpec) Validate() (err error) {
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Props == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "props"))
+	}
+	if err2 := mt.Props.Validate(); err2 != nil {
+		err = goa.MergeErrors(err, err2)
+	}
+	return
+}
+
+// OutputSpecCollection is the media type for an array of OutputSpec (default view)
+//
+// Identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection; view=default
+type OutputSpecCollection []*OutputSpec
+
+// Validate validates the OutputSpecCollection media type instance.
+func (mt OutputSpecCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // The output channel (default view)
 //
 // Identifier: application/vnd.feedpushr.output.v1+json; view=default
@@ -237,6 +327,49 @@ type OutputCollection []*Output
 
 // Validate validates the OutputCollection media type instance.
 func (mt OutputCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// The specification of a property (default view)
+//
+// Identifier: application/vnd.feedpushr.prop-spec.v1+json; view=default
+type PropSpec struct {
+	// Description of the output channel
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Name of the property
+	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Property type ('string', 'number')
+	Type string `form:"type" json:"type" yaml:"type" xml:"type"`
+}
+
+// Validate validates the PropSpec media type instance.
+func (mt *PropSpec) Validate() (err error) {
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Type == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "type"))
+	}
+	return
+}
+
+// PropSpecCollection is the media type for an array of PropSpec (default view)
+//
+// Identifier: application/vnd.feedpushr.prop-spec.v1+json; type=collection; view=default
+type PropSpecCollection []*PropSpec
+
+// Validate validates the PropSpecCollection media type instance.
+func (mt PropSpecCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {

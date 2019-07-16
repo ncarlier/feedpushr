@@ -195,7 +195,12 @@ func handleFeedOrigin(h goa.Handler) goa.Handler {
 // FilterController is the controller interface for the Filter actions.
 type FilterController interface {
 	goa.Muxer
+	Create(*CreateFilterContext) error
+	Delete(*DeleteFilterContext) error
+	Get(*GetFilterContext) error
 	List(*ListFilterContext) error
+	Specs(*SpecsFilterContext) error
+	Update(*UpdateFilterContext) error
 }
 
 // MountFilterController "mounts" a Filter resource controller on the given service.
@@ -203,6 +208,62 @@ func MountFilterController(service *goa.Service, ctrl FilterController) {
 	initService(service)
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/v1/filters", ctrl.MuxHandler("preflight", handleFilterOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v1/filters/:id", ctrl.MuxHandler("preflight", handleFilterOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v1/filters/_specs", ctrl.MuxHandler("preflight", handleFilterOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewCreateFilterContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*CreateFilterPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Create(rctx)
+	}
+	h = handleFilterOrigin(h)
+	service.Mux.Handle("POST", "/v1/filters", ctrl.MuxHandler("create", h, unmarshalCreateFilterPayload))
+	service.LogInfo("mount", "ctrl", "Filter", "action", "Create", "route", "POST /v1/filters")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewDeleteFilterContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Delete(rctx)
+	}
+	h = handleFilterOrigin(h)
+	service.Mux.Handle("DELETE", "/v1/filters/:id", ctrl.MuxHandler("delete", h, nil))
+	service.LogInfo("mount", "ctrl", "Filter", "action", "Delete", "route", "DELETE /v1/filters/:id")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewGetFilterContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Get(rctx)
+	}
+	h = handleFilterOrigin(h)
+	service.Mux.Handle("GET", "/v1/filters/:id", ctrl.MuxHandler("get", h, nil))
+	service.LogInfo("mount", "ctrl", "Filter", "action", "Get", "route", "GET /v1/filters/:id")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -219,6 +280,44 @@ func MountFilterController(service *goa.Service, ctrl FilterController) {
 	h = handleFilterOrigin(h)
 	service.Mux.Handle("GET", "/v1/filters", ctrl.MuxHandler("list", h, nil))
 	service.LogInfo("mount", "ctrl", "Filter", "action", "List", "route", "GET /v1/filters")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewSpecsFilterContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Specs(rctx)
+	}
+	h = handleFilterOrigin(h)
+	service.Mux.Handle("GET", "/v1/filters/_specs", ctrl.MuxHandler("specs", h, nil))
+	service.LogInfo("mount", "ctrl", "Filter", "action", "Specs", "route", "GET /v1/filters/_specs")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewUpdateFilterContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*UpdateFilterPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Update(rctx)
+	}
+	h = handleFilterOrigin(h)
+	service.Mux.Handle("PUT", "/v1/filters/:id", ctrl.MuxHandler("update", h, unmarshalUpdateFilterPayload))
+	service.LogInfo("mount", "ctrl", "Filter", "action", "Update", "route", "PUT /v1/filters/:id")
 }
 
 // handleFilterOrigin applies the CORS response headers corresponding to the origin.
@@ -245,6 +344,31 @@ func handleFilterOrigin(h goa.Handler) goa.Handler {
 
 		return h(ctx, rw, req)
 	}
+}
+
+// unmarshalCreateFilterPayload unmarshals the request body into the context request data Payload field.
+func unmarshalCreateFilterPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &createFilterPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
+}
+
+// unmarshalUpdateFilterPayload unmarshals the request body into the context request data Payload field.
+func unmarshalUpdateFilterPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &updateFilterPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
 }
 
 // HealthController is the controller interface for the Health actions.
@@ -377,7 +501,12 @@ func handleOpmlOrigin(h goa.Handler) goa.Handler {
 // OutputController is the controller interface for the Output actions.
 type OutputController interface {
 	goa.Muxer
+	Create(*CreateOutputContext) error
+	Delete(*DeleteOutputContext) error
+	Get(*GetOutputContext) error
 	List(*ListOutputContext) error
+	Specs(*SpecsOutputContext) error
+	Update(*UpdateOutputContext) error
 }
 
 // MountOutputController "mounts" a Output resource controller on the given service.
@@ -385,6 +514,62 @@ func MountOutputController(service *goa.Service, ctrl OutputController) {
 	initService(service)
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/v1/outputs", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v1/outputs/:id", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v1/outputs/_specs", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewCreateOutputContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*CreateOutputPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Create(rctx)
+	}
+	h = handleOutputOrigin(h)
+	service.Mux.Handle("POST", "/v1/outputs", ctrl.MuxHandler("create", h, unmarshalCreateOutputPayload))
+	service.LogInfo("mount", "ctrl", "Output", "action", "Create", "route", "POST /v1/outputs")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewDeleteOutputContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Delete(rctx)
+	}
+	h = handleOutputOrigin(h)
+	service.Mux.Handle("DELETE", "/v1/outputs/:id", ctrl.MuxHandler("delete", h, nil))
+	service.LogInfo("mount", "ctrl", "Output", "action", "Delete", "route", "DELETE /v1/outputs/:id")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewGetOutputContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Get(rctx)
+	}
+	h = handleOutputOrigin(h)
+	service.Mux.Handle("GET", "/v1/outputs/:id", ctrl.MuxHandler("get", h, nil))
+	service.LogInfo("mount", "ctrl", "Output", "action", "Get", "route", "GET /v1/outputs/:id")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -401,6 +586,44 @@ func MountOutputController(service *goa.Service, ctrl OutputController) {
 	h = handleOutputOrigin(h)
 	service.Mux.Handle("GET", "/v1/outputs", ctrl.MuxHandler("list", h, nil))
 	service.LogInfo("mount", "ctrl", "Output", "action", "List", "route", "GET /v1/outputs")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewSpecsOutputContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Specs(rctx)
+	}
+	h = handleOutputOrigin(h)
+	service.Mux.Handle("GET", "/v1/outputs/_specs", ctrl.MuxHandler("specs", h, nil))
+	service.LogInfo("mount", "ctrl", "Output", "action", "Specs", "route", "GET /v1/outputs/_specs")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewUpdateOutputContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*UpdateOutputPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Update(rctx)
+	}
+	h = handleOutputOrigin(h)
+	service.Mux.Handle("PUT", "/v1/outputs/:id", ctrl.MuxHandler("update", h, unmarshalUpdateOutputPayload))
+	service.LogInfo("mount", "ctrl", "Output", "action", "Update", "route", "PUT /v1/outputs/:id")
 }
 
 // handleOutputOrigin applies the CORS response headers corresponding to the origin.
@@ -427,6 +650,31 @@ func handleOutputOrigin(h goa.Handler) goa.Handler {
 
 		return h(ctx, rw, req)
 	}
+}
+
+// unmarshalCreateOutputPayload unmarshals the request body into the context request data Payload field.
+func unmarshalCreateOutputPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &createOutputPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
+}
+
+// unmarshalUpdateOutputPayload unmarshals the request body into the context request data Payload field.
+func unmarshalUpdateOutputPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &updateOutputPayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
 }
 
 // PshbController is the controller interface for the Pshb actions.

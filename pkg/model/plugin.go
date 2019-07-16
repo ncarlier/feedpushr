@@ -10,10 +10,10 @@ const (
 	FILTER_PLUGIN
 )
 
-// PluginInfo contains plugins informations
-type PluginInfo struct {
-	Name string
+// PluginSpec contains plugins specifications
+type PluginSpec struct {
 	Type PluginType
+	Spec
 }
 
 // OutputPlugin is the interface of an output plugin
@@ -26,4 +26,6 @@ type OutputPlugin interface {
 type FilterPlugin interface {
 	// Build a filter
 	Build(props FilterProps, tags []string) (Filter, error)
+	// Spec returns plugin specs
+	Spec() Spec
 }

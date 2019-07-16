@@ -41,11 +41,13 @@ var _ = Resource("feed", func() {
 		Routing(
 			GET("/:id"),
 		)
-		Description("Retrieve feed with given id")
+		Description("Retrieve feed with given ID")
 		Params(func() {
 			Param("id", String, "Feed ID")
 		})
-		Response(OK)
+		Response(OK, func() {
+			Media(Feed)
+		})
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -86,7 +88,9 @@ var _ = Resource("feed", func() {
 				Example("foo,bar")
 			})
 		})
-		Response(OK)
+		Response(OK, func() {
+			Media(Feed)
+		})
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -140,6 +144,84 @@ var _ = Resource("filter", func() {
 			}))
 		})
 	})
+
+	Action("specs", func() {
+		Routing(
+			GET("/_specs"),
+		)
+		Description("Retrieve all filter types available")
+		Response(OK, func() {
+			Media(CollectionOf(FilterSpec, func() {
+				View("default")
+			}))
+		})
+	})
+
+	Action("get", func() {
+		Routing(
+			GET("/:id"),
+		)
+		Description("Retrieve filter with given ID")
+		Params(func() {
+			Param("id", Integer, "Filter ID")
+		})
+		Response(OK, func() {
+			Media(Filter)
+		})
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("create", func() {
+		Routing(
+			POST(""),
+		)
+		Description("Create a new filter")
+		Payload(func() {
+			Member("name", String, "Name of the filter", func() {
+				Example("fetch")
+			})
+			Member("props", HashOf(String, Any), "Filter properties", NoExample)
+			Member("tags", String, "Comma separated list of tags", func() {
+				Example("foo,bar")
+			})
+			Required("name")
+		})
+		Response(Created, "/filter/[0-9]+")
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("update", func() {
+		Routing(
+			PUT("/:id"),
+		)
+		Description("Update a filter")
+		Params(func() {
+			Param("id", Integer, "Filter ID")
+		})
+		Payload(func() {
+			Member("props", HashOf(String, Any), "Filter properties", NoExample)
+			Member("tags", String, "Comma separated list of tags", func() {
+				Example("foo,bar")
+			})
+		})
+		Response(OK)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("delete", func() {
+		Routing(
+			DELETE("/:id"),
+		)
+		Description("Delete a filter")
+		Params(func() {
+			Param("id", Integer, "Filter ID")
+		})
+		Response(NoContent)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
 })
 
 var _ = Resource("output", func() {
@@ -156,6 +238,84 @@ var _ = Resource("output", func() {
 				View("default")
 			}))
 		})
+	})
+
+	Action("specs", func() {
+		Routing(
+			GET("/_specs"),
+		)
+		Description("Retrieve all output types available")
+		Response(OK, func() {
+			Media(CollectionOf(OutputSpec, func() {
+				View("default")
+			}))
+		})
+	})
+
+	Action("get", func() {
+		Routing(
+			GET("/:id"),
+		)
+		Description("Retrieve output with given ID")
+		Params(func() {
+			Param("id", Integer, "Output ID")
+		})
+		Response(OK, func() {
+			Media(Output)
+		})
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("create", func() {
+		Routing(
+			POST(""),
+		)
+		Description("Create a new output")
+		Payload(func() {
+			Member("name", String, "Name of the output", func() {
+				Example("http")
+			})
+			Member("props", HashOf(String, Any), "Output properties", NoExample)
+			Member("tags", String, "Comma separated list of tags", func() {
+				Example("foo,bar")
+			})
+			Required("name")
+		})
+		Response(Created, "/output/[0-9]+")
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("update", func() {
+		Routing(
+			PUT("/:id"),
+		)
+		Description("Update an output")
+		Params(func() {
+			Param("id", Integer, "Output ID")
+		})
+		Payload(func() {
+			Member("props", HashOf(String, Any), "Output properties", NoExample)
+			Member("tags", String, "Comma separated list of tags", func() {
+				Example("foo,bar")
+			})
+		})
+		Response(OK)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("delete", func() {
+		Routing(
+			DELETE("/:id"),
+		)
+		Description("Delete an output")
+		Params(func() {
+			Param("id", Integer, "Output ID")
+		})
+		Response(NoContent)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
 	})
 })
 
