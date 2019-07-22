@@ -70,7 +70,7 @@ var _ = Resource("feed", func() {
 			})
 			Required("url")
 		})
-		Response(Created, "/feeds/[0-9a-f]+")
+		Response(Created, Feed)
 		Response(BadRequest, ErrorMedia)
 	})
 
@@ -88,9 +88,7 @@ var _ = Resource("feed", func() {
 				Example("foo,bar")
 			})
 		})
-		Response(OK, func() {
-			Media(Feed)
-		})
+		Response(OK, Feed)
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -165,9 +163,7 @@ var _ = Resource("filter", func() {
 		Params(func() {
 			Param("id", Integer, "Filter ID")
 		})
-		Response(OK, func() {
-			Media(Filter)
-		})
+		Response(OK, Filter)
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -187,7 +183,7 @@ var _ = Resource("filter", func() {
 			})
 			Required("name")
 		})
-		Response(Created, "/filter/[0-9]+")
+		Response(Created, Filter)
 		Response(BadRequest, ErrorMedia)
 	})
 
@@ -204,8 +200,9 @@ var _ = Resource("filter", func() {
 			Member("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
 			})
+			Member("enabled", Boolean, "Filter status", NoExample)
 		})
-		Response(OK)
+		Response(OK, Filter)
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -260,9 +257,7 @@ var _ = Resource("output", func() {
 		Params(func() {
 			Param("id", Integer, "Output ID")
 		})
-		Response(OK, func() {
-			Media(Output)
-		})
+		Response(OK, Output)
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})
@@ -282,7 +277,7 @@ var _ = Resource("output", func() {
 			})
 			Required("name")
 		})
-		Response(Created, "/output/[0-9]+")
+		Response(Created, Output)
 		Response(BadRequest, ErrorMedia)
 	})
 
@@ -299,8 +294,9 @@ var _ = Resource("output", func() {
 			Member("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
 			})
+			Member("enabled", Boolean, "Output status", NoExample)
 		})
-		Response(OK)
+		Response(OK, Output)
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)
 	})

@@ -60,9 +60,27 @@ func NewCreateFeedContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // Created sends a HTTP response with status code 201.
-func (ctx *CreateFeedContext) Created() error {
-	ctx.ResponseData.WriteHeader(201)
-	return nil
+func (ctx *CreateFeedContext) Created(r *Feed) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 201, r)
+}
+
+// CreatedLink sends a HTTP response with status code 201.
+func (ctx *CreateFeedContext) CreatedLink(r *FeedLink) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 201, r)
+}
+
+// CreatedTiny sends a HTTP response with status code 201.
+func (ctx *CreateFeedContext) CreatedTiny(r *FeedTiny) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 201, r)
 }
 
 // BadRequest sends a HTTP response with status code 400.
@@ -503,9 +521,11 @@ func (payload *CreateFilterPayload) Validate() (err error) {
 }
 
 // Created sends a HTTP response with status code 201.
-func (ctx *CreateFilterContext) Created() error {
-	ctx.ResponseData.WriteHeader(201)
-	return nil
+func (ctx *CreateFilterContext) Created(r *Filter) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 201, r)
 }
 
 // BadRequest sends a HTTP response with status code 400.
@@ -708,15 +728,28 @@ func NewUpdateFilterContext(ctx context.Context, r *http.Request, service *goa.S
 
 // updateFilterPayload is the filter update action payload.
 type updateFilterPayload struct {
+	// Filter status
+	Enabled *bool `form:"enabled,omitempty" json:"enabled,omitempty" yaml:"enabled,omitempty" xml:"enabled,omitempty"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 	// Comma separated list of tags
 	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
+// Finalize sets the default values defined in the design.
+func (payload *updateFilterPayload) Finalize() {
+	var defaultEnabled = false
+	if payload.Enabled == nil {
+		payload.Enabled = &defaultEnabled
+	}
+}
+
 // Publicize creates UpdateFilterPayload from updateFilterPayload
 func (payload *updateFilterPayload) Publicize() *UpdateFilterPayload {
 	var pub UpdateFilterPayload
+	if payload.Enabled != nil {
+		pub.Enabled = *payload.Enabled
+	}
 	if payload.Props != nil {
 		pub.Props = payload.Props
 	}
@@ -728,6 +761,8 @@ func (payload *updateFilterPayload) Publicize() *UpdateFilterPayload {
 
 // UpdateFilterPayload is the filter update action payload.
 type UpdateFilterPayload struct {
+	// Filter status
+	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 	// Comma separated list of tags
@@ -927,9 +962,11 @@ func (payload *CreateOutputPayload) Validate() (err error) {
 }
 
 // Created sends a HTTP response with status code 201.
-func (ctx *CreateOutputContext) Created() error {
-	ctx.ResponseData.WriteHeader(201)
-	return nil
+func (ctx *CreateOutputContext) Created(r *Output) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 201, r)
 }
 
 // BadRequest sends a HTTP response with status code 400.
@@ -1132,15 +1169,28 @@ func NewUpdateOutputContext(ctx context.Context, r *http.Request, service *goa.S
 
 // updateOutputPayload is the output update action payload.
 type updateOutputPayload struct {
+	// Output status
+	Enabled *bool `form:"enabled,omitempty" json:"enabled,omitempty" yaml:"enabled,omitempty" xml:"enabled,omitempty"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 	// Comma separated list of tags
 	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
+// Finalize sets the default values defined in the design.
+func (payload *updateOutputPayload) Finalize() {
+	var defaultEnabled = false
+	if payload.Enabled == nil {
+		payload.Enabled = &defaultEnabled
+	}
+}
+
 // Publicize creates UpdateOutputPayload from updateOutputPayload
 func (payload *updateOutputPayload) Publicize() *UpdateOutputPayload {
 	var pub UpdateOutputPayload
+	if payload.Enabled != nil {
+		pub.Enabled = *payload.Enabled
+	}
 	if payload.Props != nil {
 		pub.Props = payload.Props
 	}
@@ -1152,6 +1202,8 @@ func (payload *updateOutputPayload) Publicize() *UpdateOutputPayload {
 
 // UpdateOutputPayload is the output update action payload.
 type UpdateOutputPayload struct {
+	// Output status
+	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 	// Comma separated list of tags

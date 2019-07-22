@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/output"
 )
 
@@ -22,44 +23,58 @@ func NewOutputController(service *goa.Service, om *output.Manager) *OutputContro
 
 // Create runs the create action.
 func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
-	// OutputController_Create: start_implement
-
-	// Put your logic here
-
-	return nil
-	// OutputController_Create: end_implement
+	out := &app.Output{
+		Name:    ctx.Payload.Name,
+		Props:   ctx.Payload.Props,
+		Tags:    builder.GetFeedTags(ctx.Payload.Tags),
+		Enabled: false,
+	}
+	provider, err := c.om.Add(out)
+	if err != nil {
+		return err
+	}
+	res := builder.NewOutputFromDef(provider.GetDef())
+	return ctx.Created(res)
 }
 
 // Delete runs the delete action.
 func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
-	// OutputController_Delete: start_implement
-
-	// Put your logic here
-
-	return nil
-	// OutputController_Delete: end_implement
+	out := &app.Output{
+		ID: ctx.ID,
+	}
+	err := c.om.Remove(out)
+	if err != nil {
+		return ctx.NotFound()
+	}
+	return ctx.NoContent()
 }
 
 // Get runs the get action.
 func (c *OutputController) Get(ctx *app.GetOutputContext) error {
-	// OutputController_Get: start_implement
+	out, err := c.om.Get(ctx.ID)
+	if err != nil {
+		return ctx.NotFound()
+	}
 
-	// Put your logic here
-
-	res := &app.Output{}
+	res := builder.NewOutputFromDef(out.GetDef())
 	return ctx.OK(res)
-	// OutputController_Get: end_implement
 }
 
 // Update runs the update action.
 func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
-	// OutputController_Update: start_implement
+	update := &app.Output{
+		ID:      ctx.ID,
+		Props:   ctx.Payload.Props,
+		Tags:    builder.GetFeedTags(ctx.Payload.Tags),
+		Enabled: ctx.Payload.Enabled,
+	}
+	out, err := c.om.Update(update)
+	if err != nil {
+		return err
+	}
 
-	// Put your logic here
-
-	res := &app.Output{}
+	res := builder.NewOutputFromDef(out.GetDef())
 	return ctx.OK(res)
-	// OutputController_Update: end_implement
 }
 
 // List runs the list action.
@@ -67,24 +82,31 @@ func (c *OutputController) List(ctx *app.ListOutputContext) error {
 	res := app.OutputCollection{}
 	outputs := c.om.GetOutputDefs()
 	for _, def := range outputs {
-		o := app.Output{
-			Name:  def.Name,
-			Desc:  def.Desc,
-			Props: def.Props,
-			Tags:  def.Tags,
-		}
-		res = append(res, &o)
+		res = append(res, builder.NewOutputFromDef(def))
 	}
 	return ctx.OK(res)
 }
 
 // Specs runs the specs action.
 func (c *OutputController) Specs(ctx *app.SpecsOutputContext) error {
-	// OutputController_Specs: start_implement
-
-	// Put your logic here
+	specs := output.GetAvailableOutputs()
 
 	res := app.OutputSpecCollection{}
+	for _, spec := range specs {
+		s := &app.OutputSpec{
+			Name: spec.Name,
+			Desc: spec.Desc,
+		}
+		for _, prop := range spec.PropsSpec {
+			s.Props = append(s.Props, &app.PropSpec{
+				Name: prop.Name,
+				Desc: prop.Desc,
+				Type: prop.Type,
+			})
+		}
+
+		res = append(res, s)
+	}
+
 	return ctx.OK(res)
-	// OutputController_Specs: end_implement
 }

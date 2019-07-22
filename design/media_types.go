@@ -98,6 +98,9 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 		Attribute("tags", ArrayOf(String), "List of tags", func() {
 			Example([]string{"foo", "bar"})
 		})
+		Attribute("enabled", Boolean, "Status", func() {
+			Default(false)
+		})
 		Required("id", "name", "desc")
 	})
 
@@ -107,6 +110,7 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 		Attribute("desc")
 		Attribute("props")
 		Attribute("tags")
+		Attribute("enabled")
 	})
 })
 
@@ -129,6 +133,9 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("tags", ArrayOf(String), "List of tags", func() {
 			Example([]string{"foo", "bar"})
 		})
+		Attribute("enabled", Boolean, "Status", func() {
+			Default(false)
+		})
 		Required("id", "name", "desc")
 	})
 
@@ -138,6 +145,7 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("desc")
 		Attribute("props")
 		Attribute("tags")
+		Attribute("enabled")
 	})
 })
 

@@ -131,7 +131,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Exercitationem consequuntur id earum accusantium.
+          example: Id earum accusantium.
           type: string
         type: array
       text:
@@ -200,6 +200,7 @@ definitions:
     description: A filter (default view)
     example:
       desc: This filter will...
+      enabled: true
       id: 1
       name: fetch
       props: '-'
@@ -211,6 +212,11 @@ definitions:
         description: Description of the filter
         example: This filter will...
         type: string
+      enabled:
+        default: false
+        description: Status
+        example: true
+        type: boolean
       id:
         description: ID of the filter
         example: 1
@@ -245,6 +251,7 @@ definitions:
       view)
     example:
     - desc: This filter will...
+      enabled: true
       id: 1
       name: fetch
       props: '-'
@@ -301,6 +308,7 @@ definitions:
     description: The output channel (default view)
     example:
       desc: New articles are sent as JSON document to...
+      enabled: false
       id: 1
       name: fetch
       props: '-'
@@ -312,6 +320,11 @@ definitions:
         description: Description of the output channel
         example: New articles are sent as JSON document to...
         type: string
+      enabled:
+        default: false
+        description: Status
+        example: false
+        type: boolean
       id:
         description: ID of the output
         example: 1
@@ -346,6 +359,7 @@ definitions:
       view)
     example:
     - desc: New articles are sent as JSON document to...
+      enabled: false
       id: 1
       name: fetch
       props: '-'
@@ -467,9 +481,15 @@ definitions:
     type: array
   UpdateFilterPayload:
     example:
+      enabled: '-'
       props: '-'
       tags: foo,bar
     properties:
+      enabled:
+        default: false
+        description: Filter status
+        example: '-'
+        type: boolean
       props:
         additionalProperties: true
         description: Filter properties
@@ -483,9 +503,15 @@ definitions:
     type: object
   UpdateOutputPayload:
     example:
+      enabled: '-'
       props: '-'
       tags: foo,bar
     properties:
+      enabled:
+        default: false
+        description: Output status
+        example: '-'
+        type: boolean
       props:
         additionalProperties: true
         description: Output properties
@@ -608,15 +634,13 @@ paths:
         required: true
         type: string
       produces:
+      - application/vnd.feedpushr.feed.v1+json
       - application/vnd.goa.error
       responses:
         "201":
-          description: Resource created
-          headers:
-            Location:
-              description: href to created resource
-              pattern: /feeds/[0-9a-f]+
-              type: string
+          description: Created
+          schema:
+            $ref: '#/definitions/Feed'
         "400":
           description: Bad Request
           schema:
@@ -794,15 +818,13 @@ paths:
         schema:
           $ref: '#/definitions/CreateFilterPayload'
       produces:
+      - application/vnd.feedpushr.filter.v1+json
       - application/vnd.goa.error
       responses:
         "201":
-          description: Resource created
-          headers:
-            Location:
-              description: href to created resource
-              pattern: /filter/[0-9]+
-              type: string
+          description: Created
+          schema:
+            $ref: '#/definitions/Filter'
         "400":
           description: Bad Request
           schema:
@@ -996,15 +1018,13 @@ paths:
         schema:
           $ref: '#/definitions/CreateOutputPayload'
       produces:
+      - application/vnd.feedpushr.output.v1+json
       - application/vnd.goa.error
       responses:
         "201":
-          description: Resource created
-          headers:
-            Location:
-              description: href to created resource
-              pattern: /output/[0-9]+
-              type: string
+          description: Created
+          schema:
+            $ref: '#/definitions/Output'
         "400":
           description: Bad Request
           schema:
@@ -1218,8 +1238,6 @@ responses:
     description: Not Found
   OK:
     description: OK
-    schema:
-      $ref: '#/definitions/Filter'
 schemes:
 - http
 swagger: "2.0"

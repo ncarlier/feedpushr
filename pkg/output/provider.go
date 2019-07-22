@@ -9,6 +9,19 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/plugin"
 )
 
+// GetAvailableOutputs get all available outputs
+func GetAvailableOutputs() []model.Spec {
+	result := []model.Spec{
+		stdoutSpec,
+		httpSpec,
+	}
+	plugin.GetRegsitry().ForEachOutputPlugin(func(plug model.OutputPlugin) error {
+		result = append(result, plug.Spec())
+		return nil
+	})
+	return result
+}
+
 // newOutputProvider creates new output provider.
 func newOutputProvider(output *app.Output) (model.OutputProvider, error) {
 	var provider model.OutputProvider
@@ -33,35 +46,46 @@ func newOutputProvider(output *app.Output) (model.OutputProvider, error) {
 }
 
 // Add an output
-func (m *Manager) Add(output *app.Output) error {
+func (m *Manager) Add(output *app.Output) (model.OutputProvider, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 	m.log.Debug().Str("name", output.Name).Msg("adding output...")
+	nextID := 0
+	for _, _output := range m.providers {
+		if nextID < _output.GetDef().ID {
+			nextID = _output.GetDef().ID
+		}
+	}
+	output.ID = nextID + 1
 	provider, err := newOutputProvider(output)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	m.providers = append(m.providers, provider)
 	m.log.Debug().Str("name", output.Name).Msg("output added")
-	return nil
+	return provider, nil
 }
 
 // Update an output
-func (m *Manager) Update(output *app.Output) error {
+func (m *Manager) Update(output *app.Output) (model.OutputProvider, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
 	for idx, provider := range m.providers {
 		if output.ID == provider.GetDef().ID {
+			// TODO merge objects
+			output.Name = provider.GetDef().Name
+			m.log.Debug().Int("id", output.ID).Msg("updating output...")
 			p, err := newOutputProvider(output)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			m.providers[idx] = p
-			return nil
+			m.log.Debug().Int("id", output.ID).Msg("output updated")
+			return p, nil
 		}
 	}
-	return common.ErrOutputNotFound
+	return nil, common.ErrOutputNotFound
 }
 
 // Remove an output
@@ -71,9 +95,21 @@ func (m *Manager) Remove(output *app.Output) error {
 
 	for idx, provider := range m.providers {
 		if output.ID == provider.GetDef().ID {
+			m.log.Debug().Int("id", output.ID).Msg("removing output...")
 			m.providers = append(m.providers[:idx], m.providers[idx+1:]...)
+			m.log.Debug().Int("id", output.ID).Msg("output removed")
 			return nil
 		}
 	}
 	return common.ErrOutputNotFound
+}
+
+// Get an output
+func (m *Manager) Get(id int) (model.OutputProvider, error) {
+	for _, provider := range m.providers {
+		if id == provider.GetDef().ID {
+			return provider, nil
+		}
+	}
+	return nil, common.ErrOutputNotFound
 }

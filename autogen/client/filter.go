@@ -192,6 +192,8 @@ func (c *Client) NewSpecsFilterRequest(ctx context.Context, path string) (*http.
 
 // UpdateFilterPayload is the filter update action payload.
 type UpdateFilterPayload struct {
+	// Filter status
+	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 	// Comma separated list of tags

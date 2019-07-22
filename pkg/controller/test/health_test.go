@@ -1,19 +1,14 @@
-package ctrl_test
+package test
 
 import (
 	"context"
 	"testing"
 
-	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app/test"
 	"github.com/ncarlier/feedpushr/pkg/controller"
 )
 
 func TestGetHealth(t *testing.T) {
-	var (
-		service = goa.New("ctrl-test")
-		ctrl    = controller.NewHealthController(service)
-	)
-
-	test.GetHealthOK(t, context.Background(), service, ctrl)
+	ctrl := controller.NewHealthController(srv)
+	test.GetHealthOK(t, context.Background(), srv, ctrl)
 }

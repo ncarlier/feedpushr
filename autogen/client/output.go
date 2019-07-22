@@ -192,6 +192,8 @@ func (c *Client) NewSpecsOutputRequest(ctx context.Context, path string) (*http.
 
 // UpdateOutputPayload is the output update action payload.
 type UpdateOutputPayload struct {
+	// Output status
+	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 	// Comma separated list of tags

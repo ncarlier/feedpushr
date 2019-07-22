@@ -18,8 +18,9 @@ type OutputProvider interface {
 type OutputDef struct {
 	ID int
 	Spec
-	Tags  []string
-	Props map[string]interface{}
+	Tags    []string
+	Props   map[string]interface{}
+	Enabled bool
 }
 
 // Hash computes spec hash

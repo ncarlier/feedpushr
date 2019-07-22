@@ -8,6 +8,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
+	"github.com/rs/zerolog/log"
 )
 
 // Chain contains filter chain
@@ -60,10 +61,11 @@ func GetAvailableFilters() []model.Spec {
 }
 
 // Add a filter to the chain
-func (chain *Chain) Add(filter *app.Filter) error {
+func (chain *Chain) Add(filter *app.Filter) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
+	log.Debug().Str("name", filter.Name).Msg("creating filter...")
 	nextID := 0
 	for _, _filter := range chain.filters {
 		if nextID < _filter.GetDef().ID {
@@ -73,29 +75,34 @@ func (chain *Chain) Add(filter *app.Filter) error {
 	filter.ID = nextID + 1
 	_filter, err := newFilter(filter)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	chain.filters = append(chain.filters, _filter)
-	return nil
+	log.Debug().Int("id", filter.ID).Str("name", filter.Name).Msg("filter created")
+	return _filter, nil
 }
 
 // Update a filter of the chain
-func (chain *Chain) Update(filter *app.Filter) error {
+func (chain *Chain) Update(filter *app.Filter) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
 	for idx, _filter := range chain.filters {
 		if filter.ID == _filter.GetDef().ID {
+			log.Debug().Int("id", filter.ID).Msg("updating filter...")
+			// TODO merge objects
+			filter.Name = _filter.GetDef().Name
 			f, err := newFilter(filter)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			chain.filters[idx] = f
-			return nil
+			log.Debug().Int("id", filter.ID).Msg("filter updated")
+			return f, nil
 		}
 	}
-	return common.ErrFilterNotFound
+	return nil, common.ErrFilterNotFound
 }
 
 // Remove a filter from the chain
@@ -105,7 +112,9 @@ func (chain *Chain) Remove(filter *app.Filter) error {
 
 	for idx, _filter := range chain.filters {
 		if filter.ID == _filter.GetDef().ID {
+			log.Debug().Int("id", filter.ID).Msg("removing filter...")
 			chain.filters = append(chain.filters[:idx], chain.filters[idx+1:]...)
+			log.Debug().Int("id", filter.ID).Msg("filter removed")
 			return nil
 		}
 	}
@@ -116,8 +125,8 @@ func (chain *Chain) Remove(filter *app.Filter) error {
 func (chain *Chain) Apply(article *model.Article) error {
 	for idx, filter := range chain.filters {
 		tags := filter.GetDef().Tags
-		if !article.Match(tags) {
-			// Ignore filters that do not match the article tags
+		if !filter.GetDef().Enabled || !article.Match(tags) {
+			// Ignore disabled filters or that do not match the article tags
 			continue
 		}
 		err := filter.DoFilter(article)

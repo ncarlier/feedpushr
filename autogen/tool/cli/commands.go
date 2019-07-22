@@ -495,6 +495,7 @@ Payload example:
 Payload example:
 
 {
+   "enabled": "-",
    "props": "-",
    "tags": "foo,bar"
 }`,
@@ -512,6 +513,7 @@ Payload example:
 Payload example:
 
 {
+   "enabled": "-",
    "props": "-",
    "tags": "foo,bar"
 }`,

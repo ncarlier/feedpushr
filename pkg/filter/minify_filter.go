@@ -24,6 +24,7 @@ type MinifyFilter struct {
 	tags      []string
 	nbSuccess uint64
 	nbError   uint64
+	enabled   bool
 	minifier  *minify.M
 }
 
@@ -53,12 +54,11 @@ func (f *MinifyFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *MinifyFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:   f.id,
-		Tags: f.tags,
+		ID:      f.id,
+		Tags:    f.tags,
+		Spec:    f.spec,
+		Enabled: f.enabled,
 	}
-	result.Name = f.spec.Name
-	result.Desc = f.spec.Desc
-	result.PropsSpec = f.spec.PropsSpec
 
 	result.Props = map[string]interface{}{
 		"nbSuccess": f.nbSuccess,
@@ -78,5 +78,6 @@ func newMinifyFilter(filter *app.Filter) *MinifyFilter {
 		spec:     minifySpec,
 		tags:     filter.Tags,
 		minifier: minifier,
+		enabled:  filter.Enabled,
 	}
 }

@@ -104,15 +104,16 @@ func CreateOutputBadRequest(t goatest.TInterface, ctx context.Context, service *
 }
 
 // CreateOutputCreated runs the method Create of the given controller with the given parameters and payload.
-// It returns the response writer so it's possible to inspect the response headers.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, payload *app.CreateOutputPayload) http.ResponseWriter {
+func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, payload *app.CreateOutputPayload) (http.ResponseWriter, *app.Output) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
+		resp   interface{}
 
-		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
 	)
 	if service == nil {
 		service = goatest.Service(&logBuf, respSetter)
@@ -132,7 +133,7 @@ func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa
 			panic(err) // bug
 		}
 		t.Errorf("unexpected payload validation error: %+v", e)
-		return nil
+		return nil, nil
 	}
 
 	// Setup request context
@@ -156,7 +157,7 @@ func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa
 			panic("invalid test data " + __err.Error()) // bug
 		}
 		t.Errorf("unexpected parameter validation error: %+v", _e)
-		return nil
+		return nil, nil
 	}
 	createCtx.Payload = payload
 
@@ -170,9 +171,21 @@ func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa
 	if rw.Code != 201 {
 		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
 	}
+	var mt *app.Output
+	if resp != nil {
+		var __ok bool
+		mt, __ok = resp.(*app.Output)
+		if !__ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Output", resp, resp)
+		}
+		__err = mt.Validate()
+		if __err != nil {
+			t.Errorf("invalid response media type: %s", __err)
+		}
+	}
 
 	// Return results
-	return rw
+	return rw, mt
 }
 
 // DeleteOutputBadRequest runs the method Delete of the given controller with the given parameters.

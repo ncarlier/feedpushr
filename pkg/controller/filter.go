@@ -24,14 +24,17 @@ func NewFilterController(service *goa.Service, cf *filter.Chain) *FilterControll
 // Create runs the create action.
 func (c *FilterController) Create(ctx *app.CreateFilterContext) error {
 	filter := &app.Filter{
-		Name:  ctx.Payload.Name,
-		Props: ctx.Payload.Props,
-		Tags:  builder.GetFeedTags(ctx.Payload.Tags),
+		Name:    ctx.Payload.Name,
+		Props:   ctx.Payload.Props,
+		Tags:    builder.GetFeedTags(ctx.Payload.Tags),
+		Enabled: false,
 	}
-	if err := c.cf.Add(filter); err != nil {
+	f, err := c.cf.Add(filter)
+	if err != nil {
 		return err
 	}
-	return ctx.Created()
+	res := builder.NewFilterFromDef(f.GetDef())
+	return ctx.Created(res)
 }
 
 // Delete runs the delete action.
@@ -53,28 +56,25 @@ func (c *FilterController) Get(ctx *app.GetFilterContext) error {
 		return ctx.NotFound()
 	}
 
-	res := &app.Filter{
-		ID:    filter.GetDef().ID,
-		Name:  filter.GetDef().Name,
-		Desc:  filter.GetDef().Desc,
-		Props: filter.GetDef().Props,
-		Tags:  filter.GetDef().Tags,
-	}
+	res := builder.NewFilterFromDef(filter.GetDef())
 	return ctx.OK(res)
 }
 
 // Update runs the update action.
 func (c *FilterController) Update(ctx *app.UpdateFilterContext) error {
 	update := &app.Filter{
-		ID:    ctx.ID,
-		Props: ctx.Payload.Props,
-		Tags:  builder.GetFeedTags(ctx.Payload.Tags),
+		ID:      ctx.ID,
+		Props:   ctx.Payload.Props,
+		Tags:    builder.GetFeedTags(ctx.Payload.Tags),
+		Enabled: ctx.Payload.Enabled,
 	}
-	if err := c.cf.Update(update); err != nil {
+	f, err := c.cf.Update(update)
+	if err != nil {
 		return err
 	}
 
-	return ctx.OK(update)
+	res := builder.NewFilterFromDef(f.GetDef())
+	return ctx.OK(res)
 }
 
 // List runs the list action.
@@ -82,13 +82,7 @@ func (c *FilterController) List(ctx *app.ListFilterContext) error {
 	res := app.FilterCollection{}
 	filters := c.cf.GetFilterDefs()
 	for _, def := range filters {
-		f := app.Filter{
-			Name:  def.Name,
-			Desc:  def.Desc,
-			Props: def.Props,
-			Tags:  def.Tags,
-		}
-		res = append(res, &f)
+		res = append(res, builder.NewFilterFromDef(def))
 	}
 	return ctx.OK(res)
 }

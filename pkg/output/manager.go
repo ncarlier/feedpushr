@@ -36,7 +36,8 @@ func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
 		if o == nil {
 			return fmt.Errorf("output is null")
 		}
-		return manager.Add(o)
+		_, err := manager.Add(o)
+		return err
 	})
 	return manager, err
 }

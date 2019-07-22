@@ -51,7 +51,7 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	fa.Start()
 	c.log.Info().Str("id", feed.ID).Msg("feed created and aggregation started")
 
-	return ctx.Created()
+	return ctx.Created(feed)
 }
 
 // Update updates a new feed

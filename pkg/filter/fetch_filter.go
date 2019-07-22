@@ -28,6 +28,7 @@ type FetchFilter struct {
 	tags      []string
 	nbError   uint64
 	nbSuccess uint64
+	enabled   bool
 }
 
 // DoFilter applies filter on the article
@@ -57,24 +58,24 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *FetchFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:   f.id,
-		Tags: f.tags,
+		ID:      f.id,
+		Tags:    f.tags,
+		Spec:    f.spec,
+		Enabled: f.enabled,
 	}
-	result.Name = f.spec.Name
-	result.Desc = f.spec.Desc
-	result.PropsSpec = f.spec.PropsSpec
 
 	result.Props = map[string]interface{}{
-		"nbError":    f.nbError,
-		"nbSsuccess": f.nbSuccess,
+		"nbError":   f.nbError,
+		"nbSuccess": f.nbSuccess,
 	}
 	return result
 }
 
 func newFetchFilter(filter *app.Filter) *FetchFilter {
 	return &FetchFilter{
-		id:   filter.ID,
-		spec: fetchSpec,
-		tags: filter.Tags,
+		id:      filter.ID,
+		spec:    fetchSpec,
+		tags:    filter.Tags,
+		enabled: filter.Enabled,
 	}
 }

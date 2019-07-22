@@ -258,6 +258,8 @@ func (c *Client) DecodeFilterSpecCollection(resp *http.Response) (FilterSpecColl
 type Filter struct {
 	// Description of the filter
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Status
+	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// ID of the filter
 	ID int `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the filter
@@ -376,6 +378,8 @@ func (c *Client) DecodeOutputSpecCollection(resp *http.Response) (OutputSpecColl
 type Output struct {
 	// Description of the output channel
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Status
+	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// ID of the output
 	ID int `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the output channel

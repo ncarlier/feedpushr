@@ -18,11 +18,13 @@ var httpSpec = model.Spec{
 
 // HTTPOutputProvider HTTP output provider
 type HTTPOutputProvider struct {
+	id        int
 	spec      model.Spec
 	tags      []string
 	nbError   uint64
 	nbSuccess uint64
 	uri       string
+	enabled   bool
 }
 
 func newHTTPOutputProvider(output *app.Output) *HTTPOutputProvider {
@@ -31,9 +33,11 @@ func newHTTPOutputProvider(output *app.Output) *HTTPOutputProvider {
 		return nil
 	}
 	return &HTTPOutputProvider{
-		spec: httpSpec,
-		tags: output.Tags,
-		uri:  fmt.Sprintf("%v", u),
+		id:      output.ID,
+		spec:    httpSpec,
+		tags:    output.Tags,
+		uri:     fmt.Sprintf("%v", u),
+		enabled: output.Enabled,
 	}
 }
 
@@ -56,8 +60,10 @@ func (op *HTTPOutputProvider) Send(article *model.Article) error {
 // GetDef return output provider definition
 func (op *HTTPOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		Spec: op.spec,
-		Tags: op.tags,
+		ID:      op.id,
+		Spec:    op.spec,
+		Tags:    op.tags,
+		Enabled: op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"uri":       op.uri,

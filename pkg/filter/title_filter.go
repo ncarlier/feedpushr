@@ -27,6 +27,7 @@ type TitleFilter struct {
 	tags      []string
 	prefix    string
 	nbSuccess uint64
+	enabled   bool
 }
 
 // DoFilter applies filter on the article
@@ -39,16 +40,15 @@ func (f *TitleFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *TitleFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:   f.id,
-		Tags: f.tags,
+		ID:      f.id,
+		Tags:    f.tags,
+		Spec:    f.spec,
+		Enabled: f.enabled,
 	}
-	result.Name = f.spec.Name
-	result.Desc = f.spec.Desc
-	result.PropsSpec = f.spec.PropsSpec
 
 	result.Props = map[string]interface{}{
-		"prefix":     f.prefix,
-		"nbSsuccess": f.nbSuccess,
+		"prefix":    f.prefix,
+		"nbSuccess": f.nbSuccess,
 	}
 
 	return result
@@ -60,9 +60,10 @@ func newTitleFilter(filter *app.Filter) *TitleFilter {
 		prefix = "foo:"
 	}
 	return &TitleFilter{
-		id:     filter.ID,
-		spec:   titleSpec,
-		tags:   filter.Tags,
-		prefix: fmt.Sprintf("%v", prefix),
+		id:      filter.ID,
+		spec:    titleSpec,
+		tags:    filter.Tags,
+		prefix:  fmt.Sprintf("%v", prefix),
+		enabled: filter.Enabled,
 	}
 }

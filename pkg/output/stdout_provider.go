@@ -36,15 +36,19 @@ var stdoutSpec = model.Spec{
 
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
+	id        int
 	spec      model.Spec
 	tags      []string
 	nbSuccess uint64
+	enabled   bool
 }
 
 func newStdOutputProvider(output *app.Output) *StdOutputProvider {
 	return &StdOutputProvider{
-		spec: stdoutSpec,
-		tags: output.Tags,
+		id:      output.ID,
+		spec:    stdoutSpec,
+		tags:    output.Tags,
+		enabled: output.Enabled,
 	}
 }
 
@@ -60,8 +64,10 @@ func (op *StdOutputProvider) Send(article *model.Article) error {
 // GetDef return output provider definition
 func (op *StdOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		Spec: op.spec,
-		Tags: op.tags,
+		ID:      op.id,
+		Spec:    op.spec,
+		Tags:    op.tags,
+		Enabled: op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"nbSuccess": op.nbSuccess,

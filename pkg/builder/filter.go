@@ -5,6 +5,7 @@ import (
 	"net/url"
 
 	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 // NewFilterFromURI create new filter from URI definition
@@ -19,8 +20,21 @@ func NewFilterFromURI(URI string) (*app.Filter, error) {
 		props[key] = value[0]
 	}
 	return &app.Filter{
-		Name:  u.Scheme,
-		Props: props,
-		Tags:  tags,
+		Name:    u.Scheme,
+		Props:   props,
+		Tags:    tags,
+		Enabled: true,
 	}, nil
+}
+
+// NewFilterFromDef creates new Filter from a definition
+func NewFilterFromDef(def model.FilterDef) *app.Filter {
+	return &app.Filter{
+		ID:      def.ID,
+		Name:    def.Name,
+		Desc:    def.Desc,
+		Props:   def.Props,
+		Tags:    def.Tags,
+		Enabled: def.Enabled,
+	}
 }

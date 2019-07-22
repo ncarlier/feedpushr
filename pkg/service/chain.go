@@ -14,7 +14,8 @@ func loadChainFilter(db store.DB) (*filter.Chain, error) {
 		if f == nil {
 			return fmt.Errorf("filter is null")
 		}
-		return chain.Add(f)
+		_, err := chain.Add(f)
+		return err
 	})
 	if err != nil {
 		return nil, err

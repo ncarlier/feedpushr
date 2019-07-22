@@ -72,7 +72,7 @@ func TestFilterChainCRUD(t *testing.T) {
 		Tags:  []string{"test"},
 	}
 	update.Props["prefix"] = "Updated"
-	err := chain.Update(update)
+	_, err := chain.Update(update)
 	assert.Nil(t, err, "error should be nil")
 	_filter = chain.GetFilterDefs()[0]
 	id := _filter.ID
@@ -84,7 +84,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	// ADD
 	add, err := builder.NewFilterFromURI("minify://")
 	assert.Nil(t, err, "error should be nil")
-	err = chain.Add(add)
+	_, err = chain.Add(add)
 	assert.Nil(t, err, "error should be nil")
 	defs = chain.GetFilterDefs()
 	assert.Equal(t, 2, len(defs), "invalid filter chain definitions")

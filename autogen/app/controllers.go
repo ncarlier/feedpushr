@@ -367,6 +367,7 @@ func unmarshalUpdateFilterPayload(ctx context.Context, service *goa.Service, req
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
+	payload.Finalize()
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
 	return nil
 }
@@ -673,6 +674,7 @@ func unmarshalUpdateOutputPayload(ctx context.Context, service *goa.Service, req
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
+	payload.Finalize()
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
 	return nil
 }

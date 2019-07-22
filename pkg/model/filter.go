@@ -13,6 +13,7 @@ type Filter interface {
 type FilterDef struct {
 	ID int
 	Spec
-	Tags  []string
-	Props FilterProps
+	Tags    []string
+	Props   FilterProps
+	Enabled bool
 }
