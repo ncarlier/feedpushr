@@ -94,8 +94,9 @@ func (c *FilterController) Specs(ctx *app.SpecsFilterContext) error {
 	res := app.FilterSpecCollection{}
 	for _, spec := range specs {
 		s := &app.FilterSpec{
-			Name: spec.Name,
-			Desc: spec.Desc,
+			Name:  spec.Name,
+			Desc:  spec.Desc,
+			Props: app.PropSpecCollection{},
 		}
 		for _, prop := range spec.PropsSpec {
 			s.Props = append(s.Props, &app.PropSpec{

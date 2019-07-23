@@ -13,8 +13,9 @@ import (
 )
 
 var minifySpec = model.Spec{
-	Name: "minify",
-	Desc: "This filter will minify articles HTML content.",
+	Name:      "minify",
+	Desc:      "This filter will minify articles HTML content.",
+	PropsSpec: []model.PropSpec{},
 }
 
 // MinifyFilter is a filter that minify HTML content

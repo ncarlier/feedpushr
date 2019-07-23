@@ -30,8 +30,9 @@ JSON Format:
 `
 
 var stdoutSpec = model.Spec{
-	Name: "stdout",
-	Desc: "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
+	Name:      "stdout",
+	Desc:      "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
+	PropsSpec: []model.PropSpec{},
 }
 
 // StdOutputProvider STDOUT output provider

@@ -65,3 +65,23 @@ func TestFilterCRUD(t *testing.T) {
 	// GET 404
 	test.GetFilterNotFound(t, ctx, srv, ctrl, id)
 }
+
+func TestFilterDefs(t *testing.T) {
+	teardown := setup(t)
+	defer teardown(t)
+
+	ctrl := controller.NewFilterController(srv, filter.NewChainFilter())
+	ctx := context.Background()
+
+	_, specs := test.SpecsFilterOK(t, ctx, srv, ctrl)
+	assert.True(t, len(specs) > 0, "")
+	for _, spec := range specs {
+		if spec.Name == "title" {
+			assert.Equal(t, "This filter will prefix the title of the article with a given value.", spec.Desc, "")
+			assert.True(t, len(spec.Props) == 1, "")
+			assert.Equal(t, "prefix", spec.Props[0].Name, "")
+			assert.Equal(t, "Prefix to add to the article title", spec.Props[0].Desc, "")
+			assert.Equal(t, "string", spec.Props[0].Type, "")
+		}
+	}
+}

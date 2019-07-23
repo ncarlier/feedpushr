@@ -94,8 +94,9 @@ func (c *OutputController) Specs(ctx *app.SpecsOutputContext) error {
 	res := app.OutputSpecCollection{}
 	for _, spec := range specs {
 		s := &app.OutputSpec{
-			Name: spec.Name,
-			Desc: spec.Desc,
+			Name:  spec.Name,
+			Desc:  spec.Desc,
+			Props: app.PropSpecCollection{},
 		}
 		for _, prop := range spec.PropsSpec {
 			s.Props = append(s.Props, &app.PropSpec{

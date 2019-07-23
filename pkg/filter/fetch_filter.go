@@ -19,6 +19,7 @@ If succeeded, following metadata are added to the article:
 - text: Article excerpt
 - image: Article main illustration
 `,
+	PropsSpec: []model.PropSpec{},
 }
 
 // FetchFilter is a filter that try to fetch the original article content

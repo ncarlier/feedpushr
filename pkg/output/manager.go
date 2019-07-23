@@ -59,8 +59,8 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 		sentOnce := false
 		for _, provider := range m.providers {
 			tags := provider.GetDef().Tags
-			if !article.Match(tags) {
-				// Ignore output that do not match the article tags
+			if !provider.GetDef().Enabled || !article.Match(tags) {
+				// Ignore output that are disabled or don't match article tags
 				continue
 			}
 			logger = logger.With().Str("output", provider.GetDef().Name).Logger()

@@ -14,6 +14,13 @@ import (
 var httpSpec = model.Spec{
 	Name: "http",
 	Desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
+	PropsSpec: []model.PropSpec{
+		{
+			Name: "url",
+			Desc: "Target URL",
+			Type: "string",
+		},
+	},
 }
 
 // HTTPOutputProvider HTTP output provider
@@ -23,7 +30,7 @@ type HTTPOutputProvider struct {
 	tags      []string
 	nbError   uint64
 	nbSuccess uint64
-	uri       string
+	targetURL string
 	enabled   bool
 }
 
@@ -33,11 +40,11 @@ func newHTTPOutputProvider(output *app.Output) *HTTPOutputProvider {
 		return nil
 	}
 	return &HTTPOutputProvider{
-		id:      output.ID,
-		spec:    httpSpec,
-		tags:    output.Tags,
-		uri:     fmt.Sprintf("%v", u),
-		enabled: output.Enabled,
+		id:        output.ID,
+		spec:      httpSpec,
+		tags:      output.Tags,
+		targetURL: fmt.Sprintf("%v", u),
+		enabled:   output.Enabled,
 	}
 }
 
@@ -45,7 +52,7 @@ func newHTTPOutputProvider(output *app.Output) *HTTPOutputProvider {
 func (op *HTTPOutputProvider) Send(article *model.Article) error {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(article)
-	resp, err := http.Post(op.uri, "application/json; charset=utf-8", b)
+	resp, err := http.Post(op.targetURL, "application/json; charset=utf-8", b)
 	if err != nil {
 		atomic.AddUint64(&op.nbError, 1)
 		return err
@@ -66,7 +73,7 @@ func (op *HTTPOutputProvider) GetDef() model.OutputDef {
 		Enabled: op.enabled,
 	}
 	result.Props = map[string]interface{}{
-		"uri":       op.uri,
+		"url":       op.targetURL,
 		"nbError":   op.nbError,
 		"nbSuccess": op.nbSuccess,
 	}
