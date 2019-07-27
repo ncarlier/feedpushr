@@ -13,6 +13,16 @@ type BoltStore struct {
 	db *bolt.DB
 }
 
+func createBucketsIfNotExists(tx *bolt.Tx, buckets ...[]byte) error {
+	for _, bucket := range buckets {
+		_, err := tx.CreateBucketIfNotExists(bucket)
+		if err != nil {
+			return fmt.Errorf("could not create '%s' bucket: %v", FEED_BUCKET, err)
+		}
+	}
+	return nil
+}
+
 // NewBoltStore creates a data store backed by BoltDB
 func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
 	db, err := bolt.Open(datasource.Host+datasource.Path, 0600, nil)
@@ -20,15 +30,13 @@ func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
 		return nil, fmt.Errorf("could not open db, %v", err)
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(FEED_BUCKET)
-		if err != nil {
-			return fmt.Errorf("could not create '%s' bucket: %v", FEED_BUCKET, err)
-		}
-		_, err = tx.CreateBucketIfNotExists(CACHE_BUCKET)
-		if err != nil {
-			return fmt.Errorf("could not create '%s' bucket: %v", CACHE_BUCKET, err)
-		}
-		return nil
+		return createBucketsIfNotExists(
+			tx,
+			FEED_BUCKET,
+			FILTER_BUCKET,
+			OUTPUT_BUCKET,
+			CACHE_BUCKET,
+		)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("could not set up buckets, %v", err)
