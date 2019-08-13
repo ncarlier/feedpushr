@@ -1,33 +1,20 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom'
 
 import {
-  CssBaseline,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Badge,
-  Drawer,
-  Divider,
-  Container,
+    AppBar, Badge, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography
 } from '@material-ui/core'
-
 import { makeStyles, Theme } from '@material-ui/core/styles'
-
 import {
-  Menu as MenuIcon,
-  Notifications as NotificationsIcon,
-  ChevronLeft as ChevronLeftIcon,
+    ChevronLeft as ChevronLeftIcon, Menu as MenuIcon, Notifications as NotificationsIcon
 } from '@material-ui/icons'
 
-import classNames from './helpers/classNames'
-
-import Menu from './Menu'
-import Feeds from './feeds/Feeds'
-import Filters from './filters/Filters'
-import Outputs from './outputs/Outputs'
 import { MessageProvider } from './context/MessageContext'
+import Feeds from './feeds/Feeds'
+import FilterRoutes from './filters/Routes'
+import classNames from './helpers/classNames'
+import Menu from './Menu'
+import Outputs from './outputs/Outputs'
 
 export default () => {
   const classes = useStyles()
@@ -81,7 +68,7 @@ export default () => {
           <Container maxWidth="lg" className={classes.container}>
             <Redirect exact from="/" to="/feeds" />
             <Route path="/feeds" component={Feeds} />
-            <Route path="/filters" component={Filters} />
+            <Route path="/filters" component={FilterRoutes} />
             <Route path="/outputs" component={Outputs} />
           </Container>
         </main>

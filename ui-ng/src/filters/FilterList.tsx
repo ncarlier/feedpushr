@@ -1,0 +1,90 @@
+import MaterialTable, { Column } from 'material-table'
+import React, { useContext, useState } from 'react'
+import { RouteComponentProps, withRouter } from 'react-router'
+
+import Message from '../common/Message'
+import Tags from '../common/Tags'
+import { MessageContext } from '../context/MessageContext'
+import fetchAPI from '../helpers/fetchAPI'
+import FilterControl from './FilterControl'
+import FilterStatus from './FilterStatus'
+import { Filter } from './Types'
+
+interface Props {
+  filters: Filter[]
+}
+
+const columns: Column[] = [
+  { 
+    title: 'Enabled',
+    render: (filter: Filter) => ( !!filter && <FilterControl filter={filter} /> ),
+    sorting: false,
+    searchable: false,
+  },
+  { 
+    title: 'Success',
+    render: (filter: Filter) => ( !!filter && <FilterStatus filter={filter} /> ),
+    searchable: false,
+  },
+  { 
+    title: 'Error',
+    render: (filter: Filter) => ( !!filter && <FilterStatus filter={filter} error /> ),
+    searchable: false,
+  },
+  { 
+    title: 'Name',
+    field: 'name',
+  },
+  { 
+    title: 'Tags',
+    field: 'tags',
+    render: (Filter: Filter) => <Tags value={Filter.tags} />
+  }
+]
+
+export default withRouter(({filters, history}: Props & RouteComponentProps) => {
+  const [data, setData] = useState<Filter[]>(filters)
+  const [error, setError] = useState<Error | null>(null)
+  const { showMessage } = useContext(MessageContext)
+
+  const onRowDelete = async (oldFilter: Filter) => {
+    const { id, name } = oldFilter
+    try {
+      const res = await fetchAPI(`/filters/${id}`, null, {method: 'DELETE'})
+      if (res.ok) {
+        setError(null)
+        showMessage(<Message variant="success"  message={`Filter ${name} removed`} />)
+        return setData(data.filter(f => f.id !== id))
+      }
+      const _err = await res.json()
+      throw new Error(_err.detail || res.statusText)
+    } catch (err) {
+      setError(err)
+      throw err
+    }
+  }
+
+  return <>
+    { !!error && <Message message={error.message} variant="error" />}
+    <MaterialTable
+      title="Filters"
+      columns={ columns }
+      data= { data }
+      editable = {{
+        onRowDelete
+      }}
+      options={{
+        actionsColumnIndex: -1,
+        paging: false
+      }}
+      actions={[
+        {
+          icon: 'add_box',
+          tooltip: 'Add Filter',
+          isFreeAction: true,
+          onClick: () => history.push('/filters/add')
+        }
+      ]}
+    />
+  </>
+})

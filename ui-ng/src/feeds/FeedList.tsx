@@ -1,19 +1,19 @@
-import React, { useState, useContext } from 'react'
-
 import MaterialTable, { Column, MTableToolbar } from 'material-table'
+import React, { useContext, useState } from 'react'
+
 import { Link } from '@material-ui/core'
 
-import { Feed } from './Types'
-import Tags from '../common/Tags'
-import FeedStatus from './FeedStatus'
-import fetchAPI from '../helpers/fetchAPI'
 import Message from '../common/Message'
-import FeedControl from './FeedControl'
-import { MessageContext } from '../context/MessageContext'
-import FeedHub from './FeedHub'
+import Tags from '../common/Tags'
 import TimeAgo from '../common/TimeAgo'
-import OPMLImportButton from './OPMLImportButton'
+import { MessageContext } from '../context/MessageContext'
+import fetchAPI from '../helpers/fetchAPI'
+import FeedControl from './FeedControl'
+import FeedHub from './FeedHub'
+import FeedStatus from './FeedStatus'
 import OPMLExportButton from './OPMLExportButton'
+import OPMLImportButton from './OPMLImportButton'
+import { Feed } from './Types'
 
 const headers = {
   "Content-Type": "application/x-www-form-urlencoded",
@@ -25,7 +25,7 @@ interface Props {
 
 const columns: Column[] = [
   { 
-    title: 'Activated',
+    title: 'Aggregation',
     render: (feed: Feed) => ( !!feed && <FeedControl feed={feed} /> ),
     editable: 'never',
     sorting: false,
