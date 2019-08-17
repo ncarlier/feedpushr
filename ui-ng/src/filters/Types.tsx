@@ -1,7 +1,7 @@
 
-interface FilterProps {
-    nbSuccess: number
-    nbError: number
+export interface FilterProps {
+    nbSuccess?: number
+    nbError?: number
     [key: string]: any
 }
 
@@ -24,4 +24,11 @@ export interface FilterSpec {
   name: string
   desc: string
   props: PropsSpec[]
+}
+
+export interface FilterForm {
+  id?: number
+  name: string
+  tags: string[]
+  props: FilterProps
 }

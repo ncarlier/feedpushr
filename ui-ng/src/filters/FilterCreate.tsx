@@ -1,61 +1,61 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
+import { RouteComponentProps, withRouter } from 'react-router'
 
-import { Step, StepLabel, Stepper, Typography } from '@material-ui/core'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Typography } from '@material-ui/core'
 
+import Message from '../common/Message'
+import { MessageContext } from '../context/MessageContext'
+import fetchAPI from '../helpers/fetchAPI'
+import { usePageTitle } from '../hooks'
+import FilterConfig from './FilterConfig'
 import FilterSpecsSelector from './FilterSpecsSelector'
+import { FilterForm, FilterSpec } from './Types'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '90%',
-    },
-    button: {
-      marginRight: theme.spacing(1),
-    },
-    instructions: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-  }),
-)
+export default withRouter(({ history }: RouteComponentProps) => {
+  usePageTitle('add filter')
+  const [spec, setSpec] = useState<FilterSpec | null>(null)
+  const [error, setError] = useState<Error | null>(null)
+  const { showMessage } = useContext(MessageContext)
 
-const steps = ['Select', 'Configure']
-
-export default () => {
-  const classes = useStyles()
-  const [activeStep, setActiveStep] = React.useState(0)
-
-  function handleNext() {
-    setActiveStep(prevActiveStep => prevActiveStep + 1)
+  function handleSelectSpec(spec: FilterSpec) {
+    setSpec(spec)
   }
 
   function handleBack() {
-    setActiveStep(prevActiveStep => prevActiveStep - 1)
+    setSpec(null)
+  }
+  
+  async function handleSave(form: FilterForm) {
+    try {
+      const res = await fetchAPI('/filters', null, {
+        method: 'POST',
+        body: JSON.stringify({...form, tags: form.tags.join(',')}),
+      })
+      if (!res.ok) {
+        throw new Error(res.statusText)
+      }
+      const data = await res.json()
+      showMessage(<Message variant="success"  message={`Filter ${data.name} (#${data.id}) added`} />)
+      history.push('/filters')
+    } catch (err) {
+      setError(err)
+    }
   }
 
-  function handleReset() {
-    setActiveStep(0)
+  if (spec === null) {
+    return (
+      <>
+        <Typography variant="h5" gutterBottom>Add filter: Choose</Typography>
+        <FilterSpecsSelector onSelect={handleSelectSpec} />
+      </>
+    )
   }
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h4" gutterBottom>
-        Add a filter
-      </Typography>
-      <Stepper activeStep={activeStep} >
-        {steps.map((label, index) => {
-          const stepProps: { completed?: boolean } = {}
-          const labelProps: { optional?: React.ReactNode } = {}
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          )
-        })}
-      </Stepper>
-      { activeStep == 0 && <FilterSpecsSelector /> }
-      { activeStep == 1 && <p>Configuration...</p> }
-    </div>
+    <>
+      <Typography variant="h5" gutterBottom>Add filter: Configure</Typography>
+      { !!error && <Message message={error.message} variant="error" />}
+      <FilterConfig onSave={handleSave} onCancel={handleBack} spec={spec} />
+    </>
   )
-}
+})

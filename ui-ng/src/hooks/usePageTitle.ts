@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-export default (title = 'Readflow', subtitle?: string) => {
+export default (subtitle?: string, title: string = 'Feedpushr') => {
   useEffect(() => {
-    document.title = subtitle ? subtitle : title
+    document.title = subtitle ? `${title} - ${subtitle}` : title
   }, [title, subtitle])
 }

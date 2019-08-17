@@ -7,6 +7,7 @@ import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mater
 import { makeStyles } from '@material-ui/core/styles'
 
 import { FilterSpecsContext } from './FilterSpecsContext'
+import { FilterSpec } from './Types'
 
 const useStyles = makeStyles({
   card: {
@@ -22,7 +23,11 @@ const useStyles = makeStyles({
   },
 })
 
-export default () => {
+interface Props {
+  onSelect: (spec: FilterSpec) => void
+}
+
+export default ({onSelect}: Props) => {
   const classes = useStyles()
   const { specs } = useContext(FilterSpecsContext)
 
@@ -39,7 +44,7 @@ export default () => {
               <div dangerouslySetInnerHTML={{__html: marked(spec.desc)}} />
             </CardContent>
             <CardActions>
-              <Button size="small">Select</Button>
+              <Button size="small" onClick={() => onSelect(spec)}>Select</Button>
             </CardActions>
           </Card>
         </Grid>

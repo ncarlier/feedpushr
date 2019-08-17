@@ -1,9 +1,7 @@
 import React from 'react'
 
 import { Chip, Tooltip } from '@material-ui/core'
-import {
-  Cloud as CloudIcon
-} from '@material-ui/icons'
+import { Cloud as CloudIcon } from '@material-ui/icons'
 
 import { Feed } from './Types'
 
@@ -14,7 +12,7 @@ interface Props {
 export default ({ feed }: Props) => {
   if (!!feed.hubUrl) {
     return (
-      <Tooltip title="PubSubHubbud available">
+      <Tooltip title="PubSubHubbud ready">
         <Chip
           variant="outlined"
           size="small"

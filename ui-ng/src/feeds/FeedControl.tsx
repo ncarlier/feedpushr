@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { Switch, Tooltip } from '@material-ui/core'
 
-import { Feed } from './Types'
-import fetchAPI from '../helpers/fetchAPI'
-import { MessageContext } from '../context/MessageContext'
 import Message from '../common/Message'
+import { MessageContext } from '../context/MessageContext'
+import fetchAPI from '../helpers/fetchAPI'
+import { Feed } from './Types'
 
 interface Props {
   feed: Feed
@@ -25,7 +25,7 @@ export default ({feed}: Props) => {
   }
 
   return (
-    <Tooltip title="Start/Stop aggregator">
+    <Tooltip title="Start/Stop">
       <Switch
         color="primary"
         checked={status}

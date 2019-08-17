@@ -22,6 +22,10 @@ const columns: Column[] = [
     searchable: false,
   },
   { 
+    title: 'Name',
+    field: 'name',
+  },
+  { 
     title: 'Success',
     render: (filter: Filter) => ( !!filter && <FilterStatus filter={filter} /> ),
     searchable: false,
@@ -30,10 +34,6 @@ const columns: Column[] = [
     title: 'Error',
     render: (filter: Filter) => ( !!filter && <FilterStatus filter={filter} error /> ),
     searchable: false,
-  },
-  { 
-    title: 'Name',
-    field: 'name',
   },
   { 
     title: 'Tags',
@@ -79,8 +79,13 @@ export default withRouter(({filters, history}: Props & RouteComponentProps) => {
       }}
       actions={[
         {
+          icon: 'build',
+          tooltip: 'Configure',
+          onClick: (event, rowData) => history.push(`/filters/${rowData.id}`)
+        },
+        {
           icon: 'add_box',
-          tooltip: 'Add Filter',
+          tooltip: 'Add',
           isFreeAction: true,
           onClick: () => history.push('/filters/add')
         }

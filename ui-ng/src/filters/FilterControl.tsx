@@ -15,20 +15,27 @@ export default ({filter}: Props) => {
   const [status, setStatus] = useState(filter.enabled)
   const { showMessage } = useContext(MessageContext)
 
-  const switchFilterStatus = (event: React.ChangeEvent, check: boolean) => {
-    const update = {enabled: check, ...filter}
-    fetchAPI(`/filters/${filter.id}`, null, {
-      method: 'PUT',
-      body: JSON.stringify(update),
-    })
-    .then(res => {
-      setStatus(check)
-      showMessage(<Message variant="success"  message={`Filter ${filter.name} ${check ? 'enabled' : 'disabled'}`} />)
-    }).catch(console.error)
+  async function switchFilterStatus(event: React.ChangeEvent, check: boolean) {
+    const update = {...filter, enabled: check, tags: filter.tags ? filter.tags.join(',') : '' }
+    try {
+      const res = await fetchAPI(`/filters/${filter.id}`, null, {
+        method: 'PUT',
+        body: JSON.stringify(update),
+      })
+      if (res.ok) {
+        setStatus(check)
+        showMessage(<Message variant="success" message={`Filter ${filter.name} ${check ? 'enabled' : 'disabled'}`} />)
+      } else {
+        throw new Error(res.statusText)
+      }
+    }
+    catch (err) {
+      showMessage(<Message variant="error"  message={`Unable to update filter: ${err.message}`} />)
+    }
   }
 
   return (
-    <Tooltip title="Enabled/Disabled filter">
+    <Tooltip title="Enabled/Disabled">
       <Switch
         color="primary"
         checked={status}
