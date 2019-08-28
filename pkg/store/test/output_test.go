@@ -3,19 +3,19 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/assert"
 	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 func TestOutputCRUD(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	output := &app.Output{
+	output := &model.OutputDef{
 		ID: 0,
 	}
-	_, err := db.SaveOutput(output)
+	_, err := db.SaveOutput(*output)
 	assert.Nil(t, err, "should be nil")
 
 	outputs, err := db.ListOutputs(1, 10)

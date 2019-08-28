@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 const jsonFormatDesc = `
 JSON Format:
+~~~~
 {
 	title: "Article title",
 	description: "Article description",
@@ -27,6 +27,7 @@ JSON Format:
 	},
 	tags: ["list", "of", "tags"]
 }
+~~~~
 `
 
 var stdoutSpec = model.Spec{
@@ -44,7 +45,7 @@ type StdOutputProvider struct {
 	enabled   bool
 }
 
-func newStdOutputProvider(output *app.Output) *StdOutputProvider {
+func newStdOutputProvider(output *model.OutputDef) *StdOutputProvider {
 	return &StdOutputProvider{
 		id:      output.ID,
 		spec:    stdoutSpec,

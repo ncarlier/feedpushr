@@ -1,8 +1,8 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 func (store *InMemoryStore) nextFilterSequence() int {
@@ -16,7 +16,7 @@ func (store *InMemoryStore) nextFilterSequence() int {
 }
 
 // GetFilter returns a stored Filter.
-func (store *InMemoryStore) GetFilter(ID int) (*app.Filter, error) {
+func (store *InMemoryStore) GetFilter(ID int) (*model.FilterDef, error) {
 	filter, exists := store.filters[ID]
 	if !exists {
 		return nil, common.ErrFilterNotFound
@@ -25,7 +25,7 @@ func (store *InMemoryStore) GetFilter(ID int) (*app.Filter, error) {
 }
 
 // DeleteFilter removes a filter.
-func (store *InMemoryStore) DeleteFilter(ID int) (*app.Filter, error) {
+func (store *InMemoryStore) DeleteFilter(ID int) (*model.FilterDef, error) {
 	store.filtersLock.RLock()
 	defer store.filtersLock.RUnlock()
 	filter, err := store.GetFilter(ID)
@@ -37,19 +37,19 @@ func (store *InMemoryStore) DeleteFilter(ID int) (*app.Filter, error) {
 }
 
 // SaveFilter stores a filter.
-func (store *InMemoryStore) SaveFilter(filter *app.Filter) (*app.Filter, error) {
+func (store *InMemoryStore) SaveFilter(filter model.FilterDef) (*model.FilterDef, error) {
 	store.filtersLock.RLock()
 	defer store.filtersLock.RUnlock()
 	if filter.ID == 0 {
 		filter.ID = store.nextFilterSequence()
 	}
-	store.filters[filter.ID] = *filter
-	return filter, nil
+	store.filters[filter.ID] = filter
+	return &filter, nil
 }
 
 // ListFilters returns a paginated list of filters.
-func (store *InMemoryStore) ListFilters(page, limit int) (*app.FilterCollection, error) {
-	filters := app.FilterCollection{}
+func (store *InMemoryStore) ListFilters(page, limit int) (*model.FilterDefCollection, error) {
+	filters := model.FilterDefCollection{}
 	startOffset := (page - 1) * limit
 	offset := 0
 	for _, filter := range store.filters {
@@ -71,7 +71,7 @@ func (store *InMemoryStore) ListFilters(page, limit int) (*app.FilterCollection,
 }
 
 // ForEachFilter iterates over all filters
-func (store *InMemoryStore) ForEachFilter(cb func(*app.Filter) error) error {
+func (store *InMemoryStore) ForEachFilter(cb func(*model.FilterDef) error) error {
 	store.filtersLock.RLock()
 	defer store.filtersLock.RUnlock()
 	for _, filter := range store.filters {

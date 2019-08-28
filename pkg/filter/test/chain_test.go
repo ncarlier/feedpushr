@@ -3,7 +3,6 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/assert"
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/filter"
@@ -13,8 +12,7 @@ import (
 func buildChainFilter(t *testing.T, URIs ...string) *filter.Chain {
 	chain := filter.NewChainFilter()
 	for _, URI := range URIs {
-		filter, err := builder.NewFilterFromURI(URI)
-		assert.Nil(t, err, "error should be nil")
+		filter := builder.NewFilterBuilder().FromURI(URI).Build()
 		chain.Add(filter)
 	}
 	return chain
@@ -65,12 +63,8 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "Hello", _filter.Props["prefix"], "invalid filter property")
 
 	// UPDATE
-	update := &app.Filter{
-		ID:    _filter.ID,
-		Name:  _filter.Name,
-		Props: make(model.FilterProps),
-		Tags:  []string{"test"},
-	}
+	tags := "test"
+	update := builder.NewFilterBuilder().ID(_filter.ID).Spec(_filter.Name).Tags(&tags).Build()
 	update.Props["prefix"] = "Updated"
 	_, err := chain.Update(update)
 	assert.Nil(t, err, "error should be nil")
@@ -82,8 +76,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "test", _filter.Tags[0], "invalid filter tag")
 
 	// ADD
-	add, err := builder.NewFilterFromURI("minify://")
-	assert.Nil(t, err, "error should be nil")
+	add := builder.NewFilterBuilder().FromURI("minify://").Build()
 	_, err = chain.Add(add)
 	assert.Nil(t, err, "error should be nil")
 	defs = chain.GetFilterDefs()
@@ -92,7 +85,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "minify", _filter.Name, "invalid filter type")
 
 	// DELETE
-	err = chain.Remove(&app.Filter{ID: id})
+	err = chain.Remove(&model.FilterDef{ID: id})
 	assert.Nil(t, err, "error should be nil")
 	defs = chain.GetFilterDefs()
 	assert.Equal(t, 1, len(defs), "invalid filter chain specifications")

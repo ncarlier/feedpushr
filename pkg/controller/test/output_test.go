@@ -14,7 +14,7 @@ func TestOutputCRUD(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewOutputController(srv, om)
+	ctrl := controller.NewOutputController(srv, db, om)
 	ctx := context.Background()
 
 	// CREATE
@@ -65,7 +65,7 @@ func TestOutputDefs(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewOutputController(srv, om)
+	ctrl := controller.NewOutputController(srv, db, om)
 	ctx := context.Background()
 
 	_, specs := test.SpecsOutputOK(t, ctx, srv, ctrl)

@@ -121,9 +121,9 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	// Mount "feed" controller
 	app.MountFeedController(srv, controller.NewFeedController(srv, db, am))
 	// Mount "filter" controller
-	app.MountFilterController(srv, controller.NewFilterController(srv, cf))
+	app.MountFilterController(srv, controller.NewFilterController(srv, db, cf))
 	// Mount "output" controller
-	app.MountOutputController(srv, controller.NewOutputController(srv, om))
+	app.MountOutputController(srv, controller.NewOutputController(srv, db, om))
 	// Mount "health" controller
 	app.MountHealthController(srv, controller.NewHealthController(srv))
 	// Mount "swagger" controller

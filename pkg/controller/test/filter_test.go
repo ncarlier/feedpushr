@@ -15,7 +15,7 @@ func TestFilterCRUD(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewFilterController(srv, filter.NewChainFilter())
+	ctrl := controller.NewFilterController(srv, db, filter.NewChainFilter())
 	ctx := context.Background()
 
 	// CREATE
@@ -70,7 +70,7 @@ func TestFilterDefs(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewFilterController(srv, filter.NewChainFilter())
+	ctrl := controller.NewFilterController(srv, db, filter.NewChainFilter())
 	ctx := context.Background()
 
 	_, specs := test.SpecsFilterOK(t, ctx, srv, ctrl)

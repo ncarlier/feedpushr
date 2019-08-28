@@ -30,11 +30,8 @@ func setup(t *testing.T) func(t *testing.T) {
 		t.Fatalf("Unable to setup Output Manager: %v", err)
 	}
 	om.ChainFilter = filter.NewChainFilter()
-	if filter, err := builder.NewFilterFromURI("title://?prefix=[test]"); err != nil {
-		t.Fatalf("Unable to setup Chain filter: %v", err)
-	} else {
-		om.ChainFilter.Add(filter)
-	}
+	filter := builder.NewFilterBuilder().FromURI("title://?prefix=[test]").Build()
+	om.ChainFilter.Add(filter)
 
 	return func(t *testing.T) {
 		t.Log("teardown test case")

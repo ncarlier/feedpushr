@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -54,7 +53,7 @@ func (f *TitleFilter) GetDef() model.FilterDef {
 	return result
 }
 
-func newTitleFilter(filter *app.Filter) *TitleFilter {
+func newTitleFilter(filter *model.FilterDef) *TitleFilter {
 	prefix, ok := filter.Props["prefix"]
 	if !ok {
 		prefix = "foo:"

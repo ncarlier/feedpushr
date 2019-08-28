@@ -5,7 +5,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
@@ -32,7 +31,7 @@ func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
 		cacheRetention: cacheRetention,
 		log:            log.With().Str("component", "output").Logger(),
 	}
-	err := db.ForEachOutput(func(o *app.Output) error {
+	err := db.ForEachOutput(func(o *model.OutputDef) error {
 		if o == nil {
 			return fmt.Errorf("output is null")
 		}

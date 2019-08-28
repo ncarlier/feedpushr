@@ -1,14 +1,14 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 // FilterRepository interface to manage feeds
 type FilterRepository interface {
-	ListFilters(page, limit int) (*app.FilterCollection, error)
-	GetFilter(ID int) (*app.Filter, error)
-	DeleteFilter(ID int) (*app.Filter, error)
-	SaveFilter(filter *app.Filter) (*app.Filter, error)
-	ForEachFilter(cb func(*app.Filter) error) error
+	ListFilters(page, limit int) (*model.FilterDefCollection, error)
+	GetFilter(ID int) (*model.FilterDef, error)
+	DeleteFilter(ID int) (*model.FilterDef, error)
+	SaveFilter(filter model.FilterDef) (*model.FilterDef, error)
+	ForEachFilter(cb func(*model.FilterDef) error) error
 }

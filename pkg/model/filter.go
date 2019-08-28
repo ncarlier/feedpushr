@@ -9,11 +9,14 @@ type Filter interface {
 	GetDef() FilterDef
 }
 
+// FilterDefCollection is an array of filter definition
+type FilterDefCollection []*FilterDef
+
 // FilterDef contains filter definition
 type FilterDef struct {
-	ID int
+	ID int `json:"id"`
 	Spec
-	Tags    []string
-	Props   FilterProps
-	Enabled bool
+	Tags    []string    `json:"tags,omitempty"`
+	Props   FilterProps `json:"props:omitempty"`
+	Enabled bool        `json:"enabled"`
 }

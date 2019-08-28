@@ -3,7 +3,6 @@ package output
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
@@ -23,30 +22,30 @@ func GetAvailableOutputs() []model.Spec {
 }
 
 // newOutputProvider creates new output provider.
-func newOutputProvider(output *app.Output) (model.OutputProvider, error) {
+func newOutputProvider(output *model.OutputDef) (model.OutputProvider, error) {
 	var provider model.OutputProvider
+	var err error
 	switch output.Name {
 	case "stdout":
 		provider = newStdOutputProvider(output)
 	case "http":
-		provider = newHTTPOutputProvider(output)
+		provider, err = newHTTPOutputProvider(output)
 	default:
 		// Try to load plugin regarding the scheme
 		plug := plugin.GetRegsitry().LookupOutputPlugin(output.Name)
 		if plug == nil {
 			return nil, fmt.Errorf("unsuported output provider: %s", output.Name)
 		}
-		var err error
 		provider, err = plug.Build(output.Props, output.Tags)
 		if err != nil {
 			return nil, fmt.Errorf("unable to create output provider: %v", err)
 		}
 	}
-	return provider, nil
+	return provider, err
 }
 
 // Add an output
-func (m *Manager) Add(output *app.Output) (model.OutputProvider, error) {
+func (m *Manager) Add(output *model.OutputDef) (model.OutputProvider, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 	m.log.Debug().Str("name", output.Name).Msg("adding output...")
@@ -62,12 +61,12 @@ func (m *Manager) Add(output *app.Output) (model.OutputProvider, error) {
 		return nil, err
 	}
 	m.providers = append(m.providers, provider)
-	m.log.Debug().Str("name", output.Name).Msg("output added")
+	m.log.Info().Str("name", output.Name).Msg("output added")
 	return provider, nil
 }
 
 // Update an output
-func (m *Manager) Update(output *app.Output) (model.OutputProvider, error) {
+func (m *Manager) Update(output *model.OutputDef) (model.OutputProvider, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -81,7 +80,7 @@ func (m *Manager) Update(output *app.Output) (model.OutputProvider, error) {
 				return nil, err
 			}
 			m.providers[idx] = p
-			m.log.Debug().Int("id", output.ID).Msg("output updated")
+			m.log.Info().Int("id", output.ID).Msg("output updated")
 			return p, nil
 		}
 	}
@@ -89,7 +88,7 @@ func (m *Manager) Update(output *app.Output) (model.OutputProvider, error) {
 }
 
 // Remove an output
-func (m *Manager) Remove(output *app.Output) error {
+func (m *Manager) Remove(output *model.OutputDef) error {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -97,7 +96,7 @@ func (m *Manager) Remove(output *app.Output) error {
 		if output.ID == provider.GetDef().ID {
 			m.log.Debug().Int("id", output.ID).Msg("removing output...")
 			m.providers = append(m.providers[:idx], m.providers[idx+1:]...)
-			m.log.Debug().Int("id", output.ID).Msg("output removed")
+			m.log.Info().Int("id", output.ID).Msg("output removed")
 			return nil
 		}
 	}

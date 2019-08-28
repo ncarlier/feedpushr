@@ -3,32 +3,37 @@ package controller
 import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/output"
+	"github.com/ncarlier/feedpushr/pkg/store"
 )
 
 // OutputController implements the output resource.
 type OutputController struct {
 	*goa.Controller
 	om *output.Manager
+	db store.DB
 }
 
 // NewOutputController creates a output controller.
-func NewOutputController(service *goa.Service, om *output.Manager) *OutputController {
+func NewOutputController(service *goa.Service, db store.DB, om *output.Manager) *OutputController {
 	return &OutputController{
 		Controller: service.NewController("OutputController"),
 		om:         om,
+		db:         db,
 	}
 }
 
 // Create runs the create action.
 func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
-	out := &app.Output{
-		Name:    ctx.Payload.Name,
-		Props:   ctx.Payload.Props,
-		Tags:    builder.GetFeedTags(ctx.Payload.Tags),
-		Enabled: false,
-	}
+	out := builder.NewOutputBuilder().Spec(
+		ctx.Payload.Name,
+	).Props(
+		ctx.Payload.Props,
+	).Tags(
+		ctx.Payload.Tags,
+	).Enable(false).Build()
 	provider, err := c.om.Add(out)
 	if err != nil {
 		return err
@@ -39,7 +44,7 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 
 // Delete runs the delete action.
 func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
-	out := &app.Output{
+	out := &model.OutputDef{
 		ID: ctx.ID,
 	}
 	err := c.om.Remove(out)
@@ -62,12 +67,15 @@ func (c *OutputController) Get(ctx *app.GetOutputContext) error {
 
 // Update runs the update action.
 func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
-	update := &app.Output{
-		ID:      ctx.ID,
-		Props:   ctx.Payload.Props,
-		Tags:    builder.GetFeedTags(ctx.Payload.Tags),
-		Enabled: ctx.Payload.Enabled,
-	}
+	update := builder.NewOutputBuilder().ID(
+		ctx.ID,
+	).Props(
+		ctx.Payload.Props,
+	).Tags(
+		ctx.Payload.Tags,
+	).Enable(
+		ctx.Payload.Enabled,
+	).Build()
 	out, err := c.om.Update(update)
 	if err != nil {
 		return err

@@ -3,7 +3,6 @@ package filter
 import (
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 
 	"github.com/tdewolff/minify/v2"
@@ -69,7 +68,7 @@ func (f *MinifyFilter) GetDef() model.FilterDef {
 	return result
 }
 
-func newMinifyFilter(filter *app.Filter) *MinifyFilter {
+func newMinifyFilter(filter *model.FilterDef) *MinifyFilter {
 	minifier := minify.New()
 	minifier.AddFunc("text/css", css.Minify)
 	minifier.AddFunc("text/html", html.Minify)

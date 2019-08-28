@@ -1,8 +1,8 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 func (store *InMemoryStore) nextOutputSequence() int {
@@ -16,7 +16,7 @@ func (store *InMemoryStore) nextOutputSequence() int {
 }
 
 // GetOutput returns a stored Output.
-func (store *InMemoryStore) GetOutput(ID int) (*app.Output, error) {
+func (store *InMemoryStore) GetOutput(ID int) (*model.OutputDef, error) {
 	output, exists := store.outputs[ID]
 	if !exists {
 		return nil, common.ErrOutputNotFound
@@ -25,7 +25,7 @@ func (store *InMemoryStore) GetOutput(ID int) (*app.Output, error) {
 }
 
 // DeleteOutput removes a output.
-func (store *InMemoryStore) DeleteOutput(ID int) (*app.Output, error) {
+func (store *InMemoryStore) DeleteOutput(ID int) (*model.OutputDef, error) {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
 	output, err := store.GetOutput(ID)
@@ -37,19 +37,19 @@ func (store *InMemoryStore) DeleteOutput(ID int) (*app.Output, error) {
 }
 
 // SaveOutput stores a output.
-func (store *InMemoryStore) SaveOutput(output *app.Output) (*app.Output, error) {
+func (store *InMemoryStore) SaveOutput(output model.OutputDef) (*model.OutputDef, error) {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
 	if output.ID == 0 {
 		output.ID = store.nextOutputSequence()
 	}
-	store.outputs[output.ID] = *output
-	return output, nil
+	store.outputs[output.ID] = output
+	return &output, nil
 }
 
 // ListOutputs returns a paginated list of outputs.
-func (store *InMemoryStore) ListOutputs(page, limit int) (*app.OutputCollection, error) {
-	outputs := app.OutputCollection{}
+func (store *InMemoryStore) ListOutputs(page, limit int) (*model.OutputDefCollection, error) {
+	outputs := model.OutputDefCollection{}
 	startOffset := (page - 1) * limit
 	offset := 0
 	for _, output := range store.outputs {
@@ -71,7 +71,7 @@ func (store *InMemoryStore) ListOutputs(page, limit int) (*app.OutputCollection,
 }
 
 // ForEachOutput iterates over all outputs
-func (store *InMemoryStore) ForEachOutput(cb func(*app.Output) error) error {
+func (store *InMemoryStore) ForEachOutput(cb func(*model.OutputDef) error) error {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
 	for _, output := range store.outputs {

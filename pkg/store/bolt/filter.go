@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 
 	bolt "github.com/coreos/bbolt"
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 // FILTER_BUCKET bucket name
@@ -20,8 +20,8 @@ func itob(v int) []byte {
 }
 
 // GetFilter returns a stored Filter.
-func (store *BoltStore) GetFilter(ID int) (*app.Filter, error) {
-	var result app.Filter
+func (store *BoltStore) GetFilter(ID int) (*model.FilterDef, error) {
+	var result model.FilterDef
 	err := store.get(FILTER_BUCKET, itob(ID), &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
@@ -33,7 +33,7 @@ func (store *BoltStore) GetFilter(ID int) (*app.Filter, error) {
 }
 
 // DeleteFilter removes a filter.
-func (store *BoltStore) DeleteFilter(ID int) (*app.Filter, error) {
+func (store *BoltStore) DeleteFilter(ID int) (*model.FilterDef, error) {
 	filter, err := store.GetFilter(ID)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (store *BoltStore) DeleteFilter(ID int) (*app.Filter, error) {
 }
 
 // SaveFilter stores a filter.
-func (store *BoltStore) SaveFilter(filter *app.Filter) (*app.Filter, error) {
+func (store *BoltStore) SaveFilter(filter model.FilterDef) (*model.FilterDef, error) {
 	if filter.ID == 0 {
 		var err error
 		id, err := store.nextSequence(FILTER_BUCKET)
@@ -57,19 +57,19 @@ func (store *BoltStore) SaveFilter(filter *app.Filter) (*app.Filter, error) {
 		filter.ID = int(id)
 	}
 	err := store.save(FILTER_BUCKET, itob(filter.ID), &filter)
-	return filter, err
+	return &filter, err
 }
 
 // ListFilters returns a paginated list of filters.
-func (store *BoltStore) ListFilters(page, limit int) (*app.FilterCollection, error) {
+func (store *BoltStore) ListFilters(page, limit int) (*model.FilterDefCollection, error) {
 	bufs, err := store.allAsRaw(FILTER_BUCKET, page, limit)
 	if err != nil {
 		return nil, err
 	}
 
-	filters := app.FilterCollection{}
+	filters := model.FilterDefCollection{}
 	for _, buf := range bufs {
-		var filter *app.Filter
+		var filter *model.FilterDef
 		if err := json.Unmarshal(buf, &filter); err != nil {
 			return nil, err
 		}
@@ -79,11 +79,11 @@ func (store *BoltStore) ListFilters(page, limit int) (*app.FilterCollection, err
 }
 
 // ForEachFilter iterates over all filters
-func (store *BoltStore) ForEachFilter(cb func(*app.Filter) error) error {
+func (store *BoltStore) ForEachFilter(cb func(*model.FilterDef) error) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket(FILTER_BUCKET).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			var filter *app.Filter
+			var filter *model.FilterDef
 			if err := json.Unmarshal(v, &filter); err != nil {
 				// Unable to parse bucket payload
 				filter = nil

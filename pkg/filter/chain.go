@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
@@ -22,7 +21,7 @@ func NewChainFilter() *Chain {
 	return &Chain{}
 }
 
-func newFilter(filter *app.Filter) (model.Filter, error) {
+func newFilter(filter *model.FilterDef) (model.Filter, error) {
 	var _filter model.Filter
 	switch filter.Name {
 	case "title":
@@ -61,11 +60,11 @@ func GetAvailableFilters() []model.Spec {
 }
 
 // Add a filter to the chain
-func (chain *Chain) Add(filter *app.Filter) (model.Filter, error) {
+func (chain *Chain) Add(filter *model.FilterDef) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
-	log.Debug().Str("name", filter.Name).Msg("creating filter...")
+	log.Debug().Str("name", filter.Name).Msg("adding filter...")
 	nextID := 0
 	for _, _filter := range chain.filters {
 		if nextID < _filter.GetDef().ID {
@@ -79,12 +78,12 @@ func (chain *Chain) Add(filter *app.Filter) (model.Filter, error) {
 	}
 
 	chain.filters = append(chain.filters, _filter)
-	log.Debug().Int("id", filter.ID).Str("name", filter.Name).Msg("filter created")
+	log.Info().Int("id", filter.ID).Str("name", filter.Name).Msg("filter added to the filter chain")
 	return _filter, nil
 }
 
 // Update a filter of the chain
-func (chain *Chain) Update(filter *app.Filter) (model.Filter, error) {
+func (chain *Chain) Update(filter *model.FilterDef) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
@@ -98,7 +97,7 @@ func (chain *Chain) Update(filter *app.Filter) (model.Filter, error) {
 				return nil, err
 			}
 			chain.filters[idx] = f
-			log.Debug().Int("id", filter.ID).Msg("filter updated")
+			log.Info().Int("id", filter.ID).Msg("filter updated")
 			return f, nil
 		}
 	}
@@ -106,7 +105,7 @@ func (chain *Chain) Update(filter *app.Filter) (model.Filter, error) {
 }
 
 // Remove a filter from the chain
-func (chain *Chain) Remove(filter *app.Filter) error {
+func (chain *Chain) Remove(filter *model.FilterDef) error {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
@@ -114,7 +113,7 @@ func (chain *Chain) Remove(filter *app.Filter) error {
 		if filter.ID == _filter.GetDef().ID {
 			log.Debug().Int("id", filter.ID).Msg("removing filter...")
 			chain.filters = append(chain.filters[:idx], chain.filters[idx+1:]...)
-			log.Debug().Int("id", filter.ID).Msg("filter removed")
+			log.Info().Int("id", filter.ID).Msg("filter removed from the filter chain")
 			return nil
 		}
 	}

@@ -1,14 +1,14 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 // OutputRepository interface to manage feeds
 type OutputRepository interface {
-	ListOutputs(page, limit int) (*app.OutputCollection, error)
-	GetOutput(ID int) (*app.Output, error)
-	DeleteOutput(ID int) (*app.Output, error)
-	SaveOutput(filter *app.Output) (*app.Output, error)
-	ForEachOutput(cb func(*app.Output) error) error
+	ListOutputs(page, limit int) (*model.OutputDefCollection, error)
+	GetOutput(ID int) (*model.OutputDef, error)
+	DeleteOutput(ID int) (*model.OutputDef, error)
+	SaveOutput(output model.OutputDef) (*model.OutputDef, error)
+	ForEachOutput(cb func(*model.OutputDef) error) error
 }

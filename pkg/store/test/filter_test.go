@@ -3,19 +3,19 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/assert"
 	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
 func TestFilterCRUD(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	filter := &app.Filter{
+	filter := &model.FilterDef{
 		ID: 0,
 	}
-	_, err := db.SaveFilter(filter)
+	_, err := db.SaveFilter(*filter)
 	assert.Nil(t, err, "should be nil")
 
 	filters, err := db.ListFilters(1, 10)

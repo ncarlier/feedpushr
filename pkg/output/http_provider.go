@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -34,18 +34,22 @@ type HTTPOutputProvider struct {
 	enabled   bool
 }
 
-func newHTTPOutputProvider(output *app.Output) *HTTPOutputProvider {
+func newHTTPOutputProvider(output *model.OutputDef) (*HTTPOutputProvider, error) {
 	u, ok := output.Props["url"]
 	if !ok {
-		return nil
+		return nil, fmt.Errorf("missing URL property")
+	}
+	_url, err := url.ParseRequestURI(fmt.Sprintf("%v", u))
+	if err != nil {
+		return nil, fmt.Errorf("invalid URL property: %s", err.Error())
 	}
 	return &HTTPOutputProvider{
 		id:        output.ID,
 		spec:      httpSpec,
 		tags:      output.Tags,
-		targetURL: fmt.Sprintf("%v", u),
+		targetURL: _url.String(),
 		enabled:   output.Enabled,
-	}
+	}, nil
 }
 
 // Send article to HTTP endpoint.

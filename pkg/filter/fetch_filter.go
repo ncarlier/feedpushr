@@ -4,7 +4,6 @@ import (
 	"context"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/readflow/pkg/readability"
 )
@@ -72,7 +71,7 @@ func (f *FetchFilter) GetDef() model.FilterDef {
 	return result
 }
 
-func newFetchFilter(filter *app.Filter) *FetchFilter {
+func newFetchFilter(filter *model.FilterDef) *FetchFilter {
 	return &FetchFilter{
 		id:      filter.ID,
 		spec:    fetchSpec,
