@@ -19,9 +19,6 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
   },
-  pos: {
-    marginBottom: 12,
-  },
 })
 
 interface Props {
@@ -39,10 +36,7 @@ export default ({onSelect}: Props) => {
           <Card className={classes.card}>
             <CardContent>
               <Typography variant="h5" component="h2">{spec.name}</Typography>
-              <Typography className={classes.pos} color="textSecondary">
-                contrib
-              </Typography>
-              <div dangerouslySetInnerHTML={{__html: marked(excerpt(spec.desc))}} />
+              <Typography color="textSecondary" dangerouslySetInnerHTML={{__html: marked(excerpt(spec.desc))}} />
             </CardContent>
             <CardActions>
               <Button size="small" onClick={() => onSelect(spec)}>Select</Button>

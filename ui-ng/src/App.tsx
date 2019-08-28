@@ -4,10 +4,12 @@ import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom'
 import {
     AppBar, Badge, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography
 } from '@material-ui/core'
-import { makeStyles, Theme } from '@material-ui/core/styles'
+import { blue, pink } from '@material-ui/core/colors'
+import { createMuiTheme, makeStyles, Theme } from '@material-ui/core/styles'
 import {
     ChevronLeft as ChevronLeftIcon, Menu as MenuIcon, Notifications as NotificationsIcon
 } from '@material-ui/icons'
+import { ThemeProvider } from '@material-ui/styles'
 
 import { MessageProvider } from './context/MessageContext'
 import Feeds from './feeds/Feeds'
@@ -15,6 +17,13 @@ import FilterRoutes from './filters/Routes'
 import classNames from './helpers/classNames'
 import Menu from './Menu'
 import OutputRoutes from './outputs/Routes'
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+    secondary: pink,
+  },
+})
 
 export default () => {
   const classes = useStyles()
@@ -25,54 +34,56 @@ export default () => {
 
   return (
     <Router>
-      <CssBaseline />
-      <AppBar position="absolute" className={classNames(classes.appBar, open ? classes.appBarShift : null)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="Open drawer"
-            onClick={handleDrawerOpen}
-            className={classNames(classes.menuButton, open ? classes.menuButtonHidden : null)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Feedpushr UI
-          </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: classNames(classes.drawerPaper, !open ? classes.drawerPaperClose : null),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <Menu />
-      </Drawer>
-      <MessageProvider>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg" className={classes.container}>
-            <Redirect exact from="/" to="/feeds" />
-            <Route path="/feeds" component={Feeds} />
-            <Route path="/filters" component={FilterRoutes} />
-            <Route path="/outputs" component={OutputRoutes} />
-          </Container>
-        </main>
-      </MessageProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppBar position="absolute" className={classNames(classes.appBar, open ? classes.appBarShift : null)}>
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={handleDrawerOpen}
+              className={classNames(classes.menuButton, open ? classes.menuButtonHidden : null)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+              Feedpushr UI
+            </Typography>
+            <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: classNames(classes.drawerPaper, !open ? classes.drawerPaperClose : null),
+          }}
+          open={open}
+        >
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <Menu />
+        </Drawer>
+        <MessageProvider>
+          <main className={classes.content}>
+            <div className={classes.appBarSpacer} />
+            <Container maxWidth="lg" className={classes.container}>
+              <Redirect exact from="/" to="/feeds" />
+              <Route path="/feeds" component={Feeds} />
+              <Route path="/filters" component={FilterRoutes} />
+              <Route path="/outputs" component={OutputRoutes} />
+            </Container>
+          </main>
+        </MessageProvider>
+      </ThemeProvider>
     </Router>
   );
 }

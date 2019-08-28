@@ -55,7 +55,7 @@ export default ({onSave, onCancel, spec, filter}: Props) => {
       <Typography variant="h4" gutterBottom>
         {spec.name}
       </Typography>
-      <div dangerouslySetInnerHTML={{__html: marked(spec.desc)}} />
+      <Typography color="textSecondary" dangerouslySetInnerHTML={{__html: marked(spec.desc)}} />
       <form>
         {spec.props.length > 0 && <Typography variant="h5">Properties</Typography>}
         {spec.props.map(prop => (
