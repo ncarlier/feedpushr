@@ -1,16 +1,13 @@
 import React from 'react'
-import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Link, Redirect, Route } from 'react-router-dom'
 
-import {
-    AppBar, Badge, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography
-} from '@material-ui/core'
+import { AppBar, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core'
 import { blue, pink } from '@material-ui/core/colors'
 import { createMuiTheme, makeStyles, Theme } from '@material-ui/core/styles'
-import {
-    ChevronLeft as ChevronLeftIcon, Menu as MenuIcon, Notifications as NotificationsIcon
-} from '@material-ui/icons'
+import { ChevronLeft as ChevronLeftIcon, Info as AboutIcon, Menu as MenuIcon } from '@material-ui/icons'
 import { ThemeProvider } from '@material-ui/styles'
 
+import About from './about/About'
 import { MessageProvider } from './context/MessageContext'
 import Feeds from './feeds/Feeds'
 import FilterRoutes from './filters/Routes'
@@ -50,10 +47,8 @@ export default () => {
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
               Feedpushr UI
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton color="inherit" component={Link} to="/about" >
+              <AboutIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -80,6 +75,7 @@ export default () => {
               <Route path="/feeds" component={Feeds} />
               <Route path="/filters" component={FilterRoutes} />
               <Route path="/outputs" component={OutputRoutes} />
+              <Route path="/about" component={About} />
             </Container>
           </main>
         </MessageProvider>
