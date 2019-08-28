@@ -5,7 +5,7 @@ import React, { useCallback } from 'react'
 import { Button, Paper, TextField, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { Filter, FilterForm, FilterProps, FilterSpec } from './Types'
+import { Output, OutputForm, OutputProps, OutputSpec } from './Types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,16 +23,16 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface Props {
-  filter?: Filter
-  spec: FilterSpec
+  output?: Output
+  spec: OutputSpec
   onCancel: () => void
-  onSave: (filter: FilterForm) => void
+  onSave: (output: OutputForm) => void
 }
 
-export default ({onSave, onCancel, spec, filter}: Props) => {
+export default ({onSave, onCancel, spec, output}: Props) => {
   const classes = useStyles()
-  const [props, setProps] = React.useState<FilterProps>(filter ? filter.props : {})
-  const [tags, setTags] = React.useState<string[]>(filter && filter.tags ? filter.tags : [])
+  const [props, setProps] = React.useState<OutputProps>(output ? output.props : {})
+  const [tags, setTags] = React.useState<string[]>(output && output.tags ? output.tags : [])
 
   const handleChangeProp = useCallback((name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setProps({ ...props, [name]: event.target.value })

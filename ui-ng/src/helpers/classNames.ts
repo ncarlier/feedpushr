@@ -1,4 +1,1 @@
-export default (...names: (string | undefined | null)[]) => {
-  return names.filter(name => name).join(' ')
-}
-
+export default (...names: (string | undefined | null)[]) => names.filter(name => name).join(' ')

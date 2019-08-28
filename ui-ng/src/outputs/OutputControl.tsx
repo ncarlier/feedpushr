@@ -5,32 +5,32 @@ import { Switch, Tooltip } from '@material-ui/core'
 import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
-import { Filter } from './Types'
+import { Output } from './Types'
 
 interface Props {
-  filter: Filter
+  output: Output
 }
 
-export default ({filter}: Props) => {
-  const [status, setStatus] = useState(filter.enabled)
+export default ({output}: Props) => {
+  const [status, setStatus] = useState(output.enabled)
   const { showMessage } = useContext(MessageContext)
 
-  async function switchFilterStatus(event: React.ChangeEvent, check: boolean) {
-    const update = {...filter, enabled: check, tags: filter.tags ? filter.tags.join(',') : '' }
+  async function switchOutputStatus(event: React.ChangeEvent, check: boolean) {
+    const update = {...output, enabled: check, tags: output.tags ? output.tags.join(',') : '' }
     try {
-      const res = await fetchAPI(`/filters/${filter.id}`, null, {
+      const res = await fetchAPI(`/outputs/${output.id}`, null, {
         method: 'PUT',
         body: JSON.stringify(update),
       })
       if (res.ok) {
         setStatus(check)
-        showMessage(<Message variant="success" message={`Filter ${filter.name} ${check ? 'enabled' : 'disabled'}`} />)
+        showMessage(<Message variant="success" message={`Output ${output.name} ${check ? 'enabled' : 'disabled'}`} />)
       } else {
         throw new Error(res.statusText)
       }
     }
     catch (err) {
-      showMessage(<Message variant="error"  message={`Unable to update filter: ${err.message}`} />)
+      showMessage(<Message variant="error"  message={`Unable to update output: ${err.message}`} />)
     }
   }
 
@@ -39,8 +39,8 @@ export default ({filter}: Props) => {
       <Switch
         color="primary"
         checked={status}
-        value={filter.enabled}
-        onChange={switchFilterStatus}
+        value={output.enabled}
+        onChange={switchOutputStatus}
       />
     </Tooltip>
   )

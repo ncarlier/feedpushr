@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { makeStyles, Theme, Tooltip } from '@material-ui/core'
+import { makeStyles, Theme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 
 import classNames from '../helpers/classNames'
-import { Feed } from './Types'
+import { Output } from './Types'
 
 const useStyles = makeStyles((theme: Theme) => ({
   status: {
@@ -28,23 +28,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 interface Props {
-  feed: Feed
+  output: Output
+  error?: boolean
 }
 
-export default ({feed}: Props) => {
+export default ({output, error = false}: Props) => {
   const classes = useStyles()
-  let $status = <div className={classNames(classes.status)}>0</div>
-  let title = 'No feed aggregated'
-  if (feed.errorCount) {
-    title = feed.errorMsg!
-    $status = <div className={classNames(classes.status, classes.error)}>{feed.errorCount}</div>
-  } else if (feed.nbProcessedItems) {
-    title = 'Aggregation success'
-    $status = <div className={classNames(classes.status, classes.success)}>{feed.nbProcessedItems}</div>
+  if (error) {
+    if (output.props.nbError && output.props.nbError > 0) {
+      return <div className={classNames(classes.status, classes.error)}>{output.props.nbError}</div>
+    }
+  } else if (output.props.nbSuccess && output.props.nbSuccess > 0) {
+    return <div className={classNames(classes.status, classes.success)}>{output.props.nbSuccess}</div>
   }
-  return (
-    <Tooltip title={title}>
-      { $status }
-    </Tooltip>
-  )
+  return <span>-</span>
 }

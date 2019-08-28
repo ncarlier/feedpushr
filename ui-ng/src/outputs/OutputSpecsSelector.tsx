@@ -7,8 +7,8 @@ import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mater
 import { makeStyles } from '@material-ui/core/styles'
 
 import excerpt from '../helpers/excerpt'
-import { FilterSpecsContext } from './FilterSpecsContext'
-import { FilterSpec } from './Types'
+import { OutputSpecsContext } from './OutputSpecsContext'
+import { OutputSpec } from './Types'
 
 const useStyles = makeStyles({
   card: {
@@ -25,12 +25,12 @@ const useStyles = makeStyles({
 })
 
 interface Props {
-  onSelect: (spec: FilterSpec) => void
+  onSelect: (spec: OutputSpec) => void
 }
 
 export default ({onSelect}: Props) => {
   const classes = useStyles()
-  const { specs } = useContext(FilterSpecsContext)
+  const { specs } = useContext(OutputSpecsContext)
 
   return (
     <Grid spacing={2} container style={{padding: '0 1em'}}>

@@ -7,17 +7,17 @@ import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import { usePageTitle } from '../hooks'
-import FilterConfig from './FilterConfig'
-import FilterSpecsSelector from './FilterSpecsSelector'
-import { FilterForm, FilterSpec } from './Types'
+import OutputConfig from './OutputConfig'
+import OutputSpecsSelector from './OutputSpecsSelector'
+import { OutputForm, OutputSpec } from './Types'
 
 export default withRouter(({ history }: RouteComponentProps) => {
-  usePageTitle('add filter')
-  const [spec, setSpec] = useState<FilterSpec | null>(null)
+  usePageTitle('add output')
+  const [spec, setSpec] = useState<OutputSpec | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
 
-  function handleSelectSpec(spec: FilterSpec) {
+  function handleSelectSpec(spec: OutputSpec) {
     setError(null)
     setSpec(spec)
   }
@@ -27,9 +27,9 @@ export default withRouter(({ history }: RouteComponentProps) => {
     setSpec(null)
   }
   
-  async function handleSave(form: FilterForm) {
+  async function handleSave(form: OutputForm) {
     try {
-      const res = await fetchAPI('/filters', null, {
+      const res = await fetchAPI('/outputs', null, {
         method: 'POST',
         body: JSON.stringify({...form, tags: form.tags.join(',')}),
       })
@@ -38,8 +38,8 @@ export default withRouter(({ history }: RouteComponentProps) => {
         throw new Error(msg)
       }
       const data = await res.json()
-      showMessage(<Message variant="success"  message={`Filter ${data.name} (#${data.id}) added`} />)
-      history.push('/filters')
+      showMessage(<Message variant="success"  message={`Output ${data.name} (#${data.id}) added`} />)
+      history.push('/outputs')
     } catch (err) {
       setError(err)
     }
@@ -48,17 +48,17 @@ export default withRouter(({ history }: RouteComponentProps) => {
   if (spec === null) {
     return (
       <>
-        <Typography variant="h5" gutterBottom>Add filter: Choose</Typography>
-        <FilterSpecsSelector onSelect={handleSelectSpec} />
+        <Typography variant="h5" gutterBottom>Add output: Choose</Typography>
+        <OutputSpecsSelector onSelect={handleSelectSpec} />
       </>
     )
   }
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>Add filter: Configure</Typography>
+      <Typography variant="h5" gutterBottom>Add output: Configure</Typography>
       { !!error && <Message message={error.message} variant="error" />}
-      <FilterConfig onSave={handleSave} onCancel={handleBack} spec={spec} />
+      <OutputConfig onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )
 })

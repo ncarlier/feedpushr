@@ -35,7 +35,11 @@ interface Props {
 export default ({filter, error = false}: Props) => {
   const classes = useStyles()
   if (error) {
-    return <div className={classNames(classes.status, classes.error)}>{filter.props.nbError}</div>
+    if (filter.props.nbError && filter.props.nbError > 0) {
+      return <div className={classNames(classes.status, classes.error)}>{filter.props.nbError}</div>
+    }
+  } else if (filter.props.nbSuccess && filter.props.nbSuccess > 0) {
+    return <div className={classNames(classes.status, classes.success)}>{filter.props.nbSuccess}</div>
   }
-  return <div className={classNames(classes.status, classes.success)}>{filter.props.nbSuccess}</div>
+  return <span>-</span>
 }

@@ -1,15 +1,13 @@
 import React, { useContext } from 'react'
+import { RouteComponentProps, withRouter } from 'react-router'
 
 import { Tooltip } from '@material-ui/core'
-import {
-  CloudUpload as CloudUploadIcon
-} from '@material-ui/icons'
+import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
 
-import UploadButton from '../common/UploadButton'
-import fetchAPI from '../helpers/fetchAPI'
-import { MessageContext } from '../context/MessageContext'
 import Message from '../common/Message'
-import { withRouter, RouteComponentProps } from 'react-router'
+import UploadButton from '../common/UploadButton'
+import { MessageContext } from '../context/MessageContext'
+import fetchAPI from '../helpers/fetchAPI'
 
 interface Props {
   style?: React.CSSProperties
@@ -27,6 +25,7 @@ export default withRouter(({style, history} : Props & RouteComponentProps) => {
       if (res.ok) {
         showMessage(<Message variant="success"  message={'OPML file imported'} />)
         history.push('/')
+        history.replace('/feeds')
       } else {
         const err = await res.json()
         throw new Error(err.detail || res.statusText)

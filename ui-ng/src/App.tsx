@@ -14,7 +14,7 @@ import Feeds from './feeds/Feeds'
 import FilterRoutes from './filters/Routes'
 import classNames from './helpers/classNames'
 import Menu from './Menu'
-import Outputs from './outputs/Outputs'
+import OutputRoutes from './outputs/Routes'
 
 export default () => {
   const classes = useStyles()
@@ -69,7 +69,7 @@ export default () => {
             <Redirect exact from="/" to="/feeds" />
             <Route path="/feeds" component={Feeds} />
             <Route path="/filters" component={FilterRoutes} />
-            <Route path="/outputs" component={Outputs} />
+            <Route path="/outputs" component={OutputRoutes} />
           </Container>
         </main>
       </MessageProvider>
