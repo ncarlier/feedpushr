@@ -53,8 +53,6 @@ You can configure the service by setting environment variables:
 | `APP_ADDR` | `:8080` | HTTP server address |
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
 | `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
-| `APP_FILTERS` | none | Filter chain (ex: `foo://,fetch://`) |
-| `APP_OUTPUTS` | `stdout://` | Output destinations (`stdout://,http://example.org`) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
 | `APP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
 | `APP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
@@ -67,25 +65,17 @@ Type `feedpushr --help` to see those parameters.
 
 ## Filters
 
-Before being sent articles can be modified through a filter chain.
-
-A filter is declared as a URL. The scheme of the URL is the filter name.
-Other parts of the URL configure the filter.
-The query parameters are the filter properties and the URL fragment configures the filter tags.
+Before being sent, articles can be modified through a filter chain.
 
 Currently, there are some built-in filter:
 
-- `title://?prefix=Feedpushr:`:
-  This filter will prefix the title of the article with a given value.
-- `fetch://`:
-  This filter will attempt to extract the content of the article from the source
-  URL.
-- `minify://`:
-  This filter will minify the HTML content of the article.
+| Filter | Properties | Description |
+|----------|---------|-------------|
+| `title`  | `prefix` (default: `foo:`)| This filter will prefix the title of the article with a given value. |
+| `fetch`  | None       | This filter will attempt to extract the content of the article from the source URL. |
+| `minify` | None       | This filter will minify the HTML content of the article. |
 
-You can chain all the filters you need.
-
-Filters can be extended using plugins.
+Filters can be extended using [plugins](#plugins).
 
 ## Tags
 
@@ -103,42 +93,53 @@ For example, this OMPL attribute `<category>/test,foo,/bar/bar</category>` will 
 Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
 
 Tags are also used by filters and outputs to manage their activation.
-If you start the service with a filter or an output using tags, only articles corresponding to these tags will be processed by this filter or output.
+If you have a filter or an output using tags, only articles corresponding to these tags will be processed by this filter or output.
 
-Example:
-
-```bash
-$ feedpushr --filter "title://?prefix=Sample:#foo,bar"
-```
-
-In this example, only new articles with tags `foo` and `bar` will have their title modified with a prefix.
+Example: If you add a `title` filter with `foo,bar` as tags, only new articles with tags `foo` and `bar` will have their title modified with a prefix.
 
 ## Outputs
 
 New articles are sent to outputs.
 
-An output is declared as a URL. The scheme of the URL is the output provider name.
-Other parts of the URL configure the output provider.
-
 Currently, there are two built-in output providers:
 
-- `stdout://`: New articles are sent as JSON document to the standard output of the
-  process.
-  This can be useful if you want to pipe the command to another shell command.
-  *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL
-  tool such as [Logstash][logstash], etc.*
-- `http://<URL>`: New articles are sent as JSON document to an HTTP endpoint (POST).
+| Output | Properties | Description |
+|----------|---------|-------------|
+| `stdout` | None    | New articles are sent as JSON documents to the standard output of the process. This can be useful if you want to pipe the command to another shell command. *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL tool such as [Logstash][logstash], etc.* |
+| `http` | `url` | New articles are sent as JSON documents to an HTTP endpoint (POST). |
 
-Outputs can be extended using plugins.
+JSON document format:
+
+```json
+{
+	"title": "Article title",
+	"description": "Article description",
+	"content": "Article HTML content",
+	"link": "Article URL",
+	"updated": "Article update date (String format)",
+	"updatedParsed": "Article update date (Date format)",
+	"published": "Article publication date (String format)",
+	"publishedParsed": "Article publication date (Date format)",
+	"guid": "Article feed GUID",
+	"meta": {
+		"key": "Metadata keys and values added by filters"
+	},
+	"tags": ["list", "of", "tags"]
+}
+```
+
+Outputs can be extended using [plugins](#plugins).
 
 ## Plugins
 
 You can easily extend the application by adding plugins.
 
-A plugin is a compiled library file that must be loaded when the application
-starts.
+A plugin is a compiled library file that must be loaded when the application starts.
 
-To load a plugin you have to use the `--plugin` parameter. Example:
+Plugins inside `$PWD` are automaticaly loaded.
+You can also load a plugin using the `--plugin` parameter.
+
+Example:
 
 ```bash
 $ feedpushr --plugin ./feedpushr-twitter-linux-amd64.so
@@ -160,13 +161,7 @@ You can access Web UI on http://localhost:8080/ui
 ```bash
 $ # Start service with default configuration:
 $ feedpushr
-$ # Start service and send new articles to a HTTP endpoint:
-$ feedpushr --output https://requestb.in/t4gdzct4
-$ # Start service with a database initialized
-$ # with subscriptions from an OPML file:
-$ feedpushr --import ./my-subscriptions.xml
 $ # Start service with custom configuration:
-$ export APP_OUTPUTS="https://requestb.in/t4gdzct4"
 $ export APP_STORE="boltdb:///var/opt/feedpushr.db"
 $ export APP_DELAY=20s
 $ export APP_LOG_LEVEL=warn
