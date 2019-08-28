@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/builder"
+	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/output"
 	"github.com/ncarlier/feedpushr/pkg/store"
 )
@@ -38,7 +38,11 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 	if err != nil {
 		return err
 	}
-	res := builder.NewOutputFromDef(provider.GetDef())
+	def, err := c.db.SaveOutput(provider.GetDef())
+	if err != nil {
+		return err
+	}
+	res := builder.NewOutputFromDef(*def)
 	return ctx.Created(res)
 }
 
@@ -51,6 +55,11 @@ func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
 	if err != nil {
 		return ctx.NotFound()
 	}
+	_, err = c.db.DeleteOutput(out.ID)
+	if err != nil {
+		return err
+	}
+
 	return ctx.NoContent()
 }
 
@@ -81,7 +90,12 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 		return err
 	}
 
-	res := builder.NewOutputFromDef(out.GetDef())
+	def, err := c.db.SaveOutput(out.GetDef())
+	if err != nil {
+		return err
+	}
+
+	res := builder.NewOutputFromDef(*def)
 	return ctx.OK(res)
 }
 
