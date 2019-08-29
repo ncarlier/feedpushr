@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Link, Redirect, Route } from 'react-router-dom'
+import { HashRouter as Router, Link, Redirect, Route } from 'react-router-dom'
 
 import { AppBar, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core'
 import { blue, pink } from '@material-ui/core/colors'
