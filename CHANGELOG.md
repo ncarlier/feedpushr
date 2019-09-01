@@ -1,5 +1,23 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v) (2019-06-12)
+# [](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v) (2019-09-01)
+
+
+### Features
+
+* **api:** WIP add CRUD API for filters and outputs ([fbbbd78](https://github.com/ncarlier/feedpushr/commit/fbbbd78))
+* **api:** WIP add CRUD API for filters and outputs ([a421877](https://github.com/ncarlier/feedpushr/commit/a421877))
+* **api:** WIP add Spec API for filters and outputs ([7c00d24](https://github.com/ncarlier/feedpushr/commit/7c00d24))
+* **store:** add filter repository ([f28665e](https://github.com/ncarlier/feedpushr/commit/f28665e))
+* **ui:** add about page ([ce341c8](https://github.com/ncarlier/feedpushr/commit/ce341c8))
+* **ui:** add output pages ([f0e1e63](https://github.com/ncarlier/feedpushr/commit/f0e1e63))
+* **ui:** configure main theme ([464f049](https://github.com/ncarlier/feedpushr/commit/464f049))
+* **ui:** new filter pages ([85eb0f6](https://github.com/ncarlier/feedpushr/commit/85eb0f6))
+* **ui:** switch to new UI ([495e410](https://github.com/ncarlier/feedpushr/commit/495e410))
+* **ui:** WIP filter pages ([209add6](https://github.com/ncarlier/feedpushr/commit/209add6))
+* auto create all buckets ([779e897](https://github.com/ncarlier/feedpushr/commit/779e897))
+* new UI foundation ([7307580](https://github.com/ncarlier/feedpushr/commit/7307580))
+* persist filter and output configuration ([c7bc4b3](https://github.com/ncarlier/feedpushr/commit/c7bc4b3))
+* persist output configuration ([2ff1d20](https://github.com/ncarlier/feedpushr/commit/2ff1d20))
 
 
 
