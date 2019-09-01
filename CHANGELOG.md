@@ -1,5 +1,10 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v) (2019-09-01)
+# [](https://github.com/ncarlier/feedpushr/compare/v2.0.0-rc.1...v) (2019-09-01)
+
+
+
+<a name="2.0.0-rc.1"></a>
+# [2.0.0-rc.1](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v2.0.0-rc.1) (2019-09-01)
 
 
 ### Features
@@ -101,7 +106,7 @@
 
 
 <a name="1.0.0"></a>
-# [1.0.0](https://github.com/ncarlier/feedpushr/compare/1.0.0...v1.0.0) (2019-04-09)
+# [1.0.0](https://github.com/ncarlier/feedpushr/compare/4a64395...v1.0.0) (2019-04-09)
 
 
 ### Bug Fixes
