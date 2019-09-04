@@ -1,7 +1,17 @@
 package model
 
+import "fmt"
+
 // FilterProps constain properties of a filter
 type FilterProps map[string]interface{}
+
+// Get property string value
+func (p FilterProps) Get(key string) string {
+	if val, ok := p[key]; ok {
+		return fmt.Sprintf("%v", val)
+	}
+	return ""
+}
 
 // Filter is the filter interface
 type Filter interface {

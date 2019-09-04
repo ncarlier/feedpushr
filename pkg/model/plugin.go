@@ -19,7 +19,7 @@ type PluginSpec struct {
 // OutputPlugin is the interface of an output plugin
 type OutputPlugin interface {
 	// Build an output plugin
-	Build(props OutputProps, tags []string) (OutputProvider, error)
+	Build(def *OutputDef) (OutputProvider, error)
 	// Spec returns plugin specs
 	Spec() Spec
 }
@@ -27,7 +27,7 @@ type OutputPlugin interface {
 // FilterPlugin is the interface of an filter plugin
 type FilterPlugin interface {
 	// Build a filter
-	Build(props FilterProps, tags []string) (Filter, error)
+	Build(def *FilterDef) (Filter, error)
 	// Spec returns plugin specs
 	Spec() Spec
 }

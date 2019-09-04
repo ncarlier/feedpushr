@@ -9,6 +9,14 @@ import (
 // OutputProps contains properties of an output
 type OutputProps map[string]interface{}
 
+// Get property string value
+func (p OutputProps) Get(key string) string {
+	if val, ok := p[key]; ok {
+		return fmt.Sprintf("%v", val)
+	}
+	return ""
+}
+
 // OutputProvider is the output provider interface
 type OutputProvider interface {
 	Send(article *Article) error

@@ -128,7 +128,7 @@ func (c *FilterController) Specs(ctx *app.SpecsFilterContext) error {
 			s.Props = append(s.Props, &app.PropSpec{
 				Name: prop.Name,
 				Desc: prop.Desc,
-				Type: prop.Type,
+				Type: prop.Type.String(),
 			})
 		}
 

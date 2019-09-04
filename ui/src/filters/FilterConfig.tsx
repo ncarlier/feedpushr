@@ -64,6 +64,7 @@ export default ({onSave, onCancel, spec, filter}: Props) => {
             key={prop.name}
             label={prop.name}
             helperText={prop.desc}
+            type={prop.type}
             defaultValue={props[prop.name]}
             onChange={handleChangeProp(prop.name)}
             fullWidth

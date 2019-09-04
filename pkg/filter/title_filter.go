@@ -14,7 +14,7 @@ var titleSpec = model.Spec{
 		{
 			Name: "prefix",
 			Desc: "Prefix to add to the article title",
-			Type: "string",
+			Type: model.Text,
 		},
 	},
 }

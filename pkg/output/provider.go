@@ -22,21 +22,21 @@ func GetAvailableOutputs() []model.Spec {
 }
 
 // newOutputProvider creates new output provider.
-func newOutputProvider(output *model.OutputDef) (model.OutputProvider, error) {
+func newOutputProvider(def *model.OutputDef) (model.OutputProvider, error) {
 	var provider model.OutputProvider
 	var err error
-	switch output.Name {
+	switch def.Name {
 	case "stdout":
-		provider = newStdOutputProvider(output)
+		provider = newStdOutputProvider(def)
 	case "http":
-		provider, err = newHTTPOutputProvider(output)
+		provider, err = newHTTPOutputProvider(def)
 	default:
 		// Try to load plugin regarding the scheme
-		plug := plugin.GetRegsitry().LookupOutputPlugin(output.Name)
+		plug := plugin.GetRegsitry().LookupOutputPlugin(def.Name)
 		if plug == nil {
-			return nil, fmt.Errorf("unsuported output provider: %s", output.Name)
+			return nil, fmt.Errorf("unsuported output provider: %s", def.Name)
 		}
-		provider, err = plug.Build(output.Props, output.Tags)
+		provider, err = plug.Build(def)
 		if err != nil {
 			return nil, fmt.Errorf("unable to create output provider: %v", err)
 		}

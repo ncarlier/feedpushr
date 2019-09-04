@@ -21,28 +21,28 @@ func NewChainFilter() *Chain {
 	return &Chain{}
 }
 
-func newFilter(filter *model.FilterDef) (model.Filter, error) {
-	var _filter model.Filter
-	switch filter.Name {
+func newFilter(def *model.FilterDef) (model.Filter, error) {
+	var filter model.Filter
+	switch def.Name {
 	case "title":
-		_filter = newTitleFilter(filter)
+		filter = newTitleFilter(def)
 	case "fetch":
-		_filter = newFetchFilter(filter)
+		filter = newFetchFilter(def)
 	case "minify":
-		_filter = newMinifyFilter(filter)
+		filter = newMinifyFilter(def)
 	default:
 		// Try to load plugin regarding the name
-		plug := plugin.GetRegsitry().LookupFilterPlugin(filter.Name)
+		plug := plugin.GetRegsitry().LookupFilterPlugin(def.Name)
 		if plug == nil {
-			return nil, fmt.Errorf("unsuported filter: %s", filter.Name)
+			return nil, fmt.Errorf("unsuported filter: %s", def.Name)
 		}
 		var err error
-		_filter, err = plug.Build(filter.Props, filter.Tags)
+		filter, err = plug.Build(def)
 		if err != nil {
 			return nil, fmt.Errorf("unable to create filter: %v", err)
 		}
 	}
-	return _filter, nil
+	return filter, nil
 }
 
 // GetAvailableFilters get all available filters

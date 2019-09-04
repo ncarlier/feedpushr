@@ -18,7 +18,7 @@ var httpSpec = model.Spec{
 		{
 			Name: "url",
 			Desc: "Target URL",
-			Type: "string",
+			Type: model.URL,
 		},
 	},
 }

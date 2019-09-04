@@ -1,5 +1,19 @@
 package model
 
+type PropType int
+
+const (
+	Email PropType = iota
+	Number
+	Password
+	Text
+	URL
+)
+
+func (p PropType) String() string {
+	return [...]string{"email", "number", "password", "text", "url"}[p]
+}
+
 // Spec describe specifications of a processor
 type Spec struct {
 	Name      string     `json:"name"`
@@ -11,5 +25,5 @@ type Spec struct {
 type PropSpec struct {
 	Desc string
 	Name string
-	Type string
+	Type PropType
 }
