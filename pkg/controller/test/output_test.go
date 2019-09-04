@@ -75,7 +75,7 @@ func TestOutputDefs(t *testing.T) {
 			assert.True(t, len(spec.Props) == 1, "")
 			assert.Equal(t, "url", spec.Props[0].Name, "")
 			assert.Equal(t, "Target URL", spec.Props[0].Desc, "")
-			assert.Equal(t, "string", spec.Props[0].Type, "")
+			assert.Equal(t, "url", spec.Props[0].Type, "")
 		}
 	}
 }

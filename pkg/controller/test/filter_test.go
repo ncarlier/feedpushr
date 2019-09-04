@@ -81,7 +81,7 @@ func TestFilterDefs(t *testing.T) {
 			assert.True(t, len(spec.Props) == 1, "")
 			assert.Equal(t, "prefix", spec.Props[0].Name, "")
 			assert.Equal(t, "Prefix to add to the article title", spec.Props[0].Desc, "")
-			assert.Equal(t, "string", spec.Props[0].Type, "")
+			assert.Equal(t, "text", spec.Props[0].Type, "")
 		}
 	}
 }
