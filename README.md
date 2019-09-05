@@ -142,11 +142,11 @@ You can also load a plugin using the `--plugin` parameter.
 Example:
 
 ```bash
-$ feedpushr --plugin ./feedpushr-twitter-linux-amd64.so
+$ feedpushr --plugin ./feedpushr-twitter.so
 ```
 
 You can find some external plugins (such as for Twitter) into this
-[repository][contrib].
+[directory](./contrib).
 
 ## UI
 
@@ -237,5 +237,4 @@ Type `make help` to see other possibilities.
 [pubsubhubbud]: https://github.com/pubsubhubbub/
 [boltdb]: https://github.com/coreos/bbolt
 [logstash]: https://www.elastic.co/fr/products/logstash
-[contrib]: https://github.com/ncarlier/feedpushr-contrib/
 [opml-category]: http://dev.opml.org/spec2.html#otherSpecialAttributes

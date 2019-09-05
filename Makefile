@@ -28,6 +28,12 @@ EXECUTABLE=$(APPNAME)$(EXT)
 # CTL executable name
 CTL_EXECUTABLE=$(APPNAME)-ctl$(EXT)
 
+# Plugin name
+PLUGIN?=twitter
+
+# Plugin filename
+PLUGIN_SO=$(APPNAME)-$(PLUGIN).so
+
 # Extract version infos
 VERSION:=`git describe --tags`
 GIT_COMMIT:=`git rev-list -1 HEAD`
@@ -121,16 +127,30 @@ changelog:
 ## Create archive
 archive:
 	echo ">>> Creating release/$(ARCHIVE) archive..."
-	tar czf release/$(ARCHIVE) README.md LICENSE CHANGELOG.md -C release/ $(EXECUTABLE) $(CTL_EXECUTABLE)
-	rm release/$(EXECUTABLE) release/$(CTL_EXECUTABLE)
+	tar czf release/$(ARCHIVE) README.md LICENSE CHANGELOG.md -C release/ $(EXECUTABLE) $(CTL_EXECUTABLE) $(subst release/,,$(wildcard release/*.so))
+	-rm release/$(EXECUTABLE) release/$(CTL_EXECUTABLE) release/*.so
 .PHONY: archive
 
 ## Create distribution binaries
 distribution:
-	GOARCH=amd64 make build archive
+	GOARCH=amd64 make build plugins archive
 	GOARCH=arm64 make build archive
 	GOARCH=arm make build archive
 	GOOS=windows make build archive
 	GOOS=darwin make build archive
 .PHONY: distribution
 
+## Bulid plugin (defined by PLUGIN variable)
+plugin:
+	-mkdir -p release
+	echo ">>> Building: $(PLUGIN_SO) $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	cd contrib/$(PLUGIN) && GOOS=$(GOOS) GOARCH=$(GOARCH) go build -buildmode=plugin -o ../../release/$(PLUGIN_SO)
+.PHONY: plugin
+
+## Build all plugins
+plugins:
+	GOARCH=amd64 PLUGIN=twitter make plugin
+	GOARCH=amd64 PLUGIN=mastodon make plugin
+	GOARCH=amd64 PLUGIN=readflow make plugin
+	GOARCH=amd64 PLUGIN=rake make plugin
+.PHONY: plugins
