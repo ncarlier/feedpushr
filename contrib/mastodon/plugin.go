@@ -108,11 +108,11 @@ func (op *MastodonOutputProvider) GetDef() model.OutputDef {
 		Enabled: op.enabled,
 	}
 	result.Props = map[string]interface{}{
-		"url":         op.targetURL,
-		"accessToken": op.accessToken,
-		"visibility":  op.visibility,
-		"nbError":     op.nbError,
-		"nbSuccess":   op.nbSuccess,
+		"url":        op.targetURL,
+		"token":      op.accessToken,
+		"visibility": op.visibility,
+		"nbError":    op.nbError,
+		"nbSuccess":  op.nbSuccess,
 	}
 	return result
 }

@@ -67,26 +67,29 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvid
 	api := anaconda.NewTwitterApi(accessToken, accessTokenSecret)
 
 	return &TwitterOutputProvider{
-		id:      output.ID,
-		alias:   output.Alias,
-		spec:    spec,
-		tags:    output.Tags,
-		enabled: output.Enabled,
-		api:     api,
+		id:             output.ID,
+		alias:          output.Alias,
+		spec:           spec,
+		tags:           output.Tags,
+		enabled:        output.Enabled,
+		api:            api,
+		consumerKey:    consumerKey,
+		consumerSecret: consumerSecret,
 	}, nil
 }
 
 // TwitterOutputProvider output provider to send articles to Twitter
 type TwitterOutputProvider struct {
-	id        int
-	alias     string
-	spec      model.Spec
-	tags      []string
-	enabled   bool
-	nbError   uint64
-	nbSuccess uint64
-	// TODO add credentials
-	api *anaconda.TwitterApi
+	id             int
+	alias          string
+	spec           model.Spec
+	tags           []string
+	enabled        bool
+	nbError        uint64
+	nbSuccess      uint64
+	consumerKey    string
+	consumerSecret string
+	api            *anaconda.TwitterApi
 }
 
 // Send sent an article as Tweet to a Twitter timeline
@@ -119,6 +122,8 @@ func (op *TwitterOutputProvider) GetDef() model.OutputDef {
 		Enabled: op.enabled,
 	}
 	result.Props = map[string]interface{}{
+		"consumerKey":       op.consumerKey,
+		"consumerSecret":    op.consumerSecret,
 		"accessToken":       op.api.Credentials.Token,
 		"accessTokenSecret": model.MaskSecret(op.api.Credentials.Secret),
 		"nbError":           op.nbError,
