@@ -93,7 +93,7 @@ func (op *ReadflowOutputProvider) GetDef() model.OutputDef {
 	}
 	result.Props = map[string]interface{}{
 		"url":       op.targetURL,
-		"api_key":   model.MaskSecret(op.apiKey),
+		"apiKey":   op.apiKey,
 		"nbError":   op.nbError,
 		"nbSuccess": op.nbSuccess,
 	}
