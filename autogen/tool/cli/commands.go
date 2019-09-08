@@ -234,6 +234,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
+   "alias": "foo",
    "name": "fetch",
    "props": "-",
    "tags": "foo,bar"
@@ -252,6 +253,7 @@ Payload example:
 Payload example:
 
 {
+   "alias": "foo",
    "name": "http",
    "props": "-",
    "tags": "foo,bar"
@@ -495,6 +497,7 @@ Payload example:
 Payload example:
 
 {
+   "alias": "foo",
    "enabled": "-",
    "props": "-",
    "tags": "foo,bar"
@@ -513,6 +516,7 @@ Payload example:
 Payload example:
 
 {
+   "alias": "foo",
    "enabled": "-",
    "props": "-",
    "tags": "foo,bar"

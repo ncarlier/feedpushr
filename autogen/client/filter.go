@@ -21,6 +21,8 @@ import (
 
 // CreateFilterPayload is the filter create action payload.
 type CreateFilterPayload struct {
+	// Alias of the filter
+	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Name of the filter
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Filter properties
@@ -192,6 +194,8 @@ func (c *Client) NewSpecsFilterRequest(ctx context.Context, path string) (*http.
 
 // UpdateFilterPayload is the filter update action payload.
 type UpdateFilterPayload struct {
+	// Alias of the filter
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Filter status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Filter properties

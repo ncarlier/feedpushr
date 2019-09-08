@@ -49,6 +49,7 @@ func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 	}
 	return &ReadflowOutputProvider{
 		id:        output.ID,
+		alias:     output.Alias,
 		spec:      spec,
 		tags:      output.Tags,
 		targetURL: _url.String(),
@@ -60,6 +61,7 @@ func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 // ReadflowOutputProvider output provider to send articles to Readflow
 type ReadflowOutputProvider struct {
 	id        int
+	alias     string
 	spec      model.Spec
 	tags      []string
 	enabled   bool
@@ -84,6 +86,7 @@ func (op *ReadflowOutputProvider) Send(article *model.Article) error {
 func (op *ReadflowOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
 		ID:      op.id,
+		Alias:   op.alias,
 		Spec:    op.spec,
 		Tags:    op.tags,
 		Enabled: op.enabled,

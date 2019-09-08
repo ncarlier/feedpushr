@@ -26,6 +26,7 @@ var httpSpec = model.Spec{
 // HTTPOutputProvider HTTP output provider
 type HTTPOutputProvider struct {
 	id        int
+	alias     string
 	spec      model.Spec
 	tags      []string
 	nbError   uint64
@@ -45,6 +46,7 @@ func newHTTPOutputProvider(output *model.OutputDef) (*HTTPOutputProvider, error)
 	}
 	return &HTTPOutputProvider{
 		id:        output.ID,
+		alias:     output.Alias,
 		spec:      httpSpec,
 		tags:      output.Tags,
 		targetURL: _url.String(),
@@ -72,6 +74,7 @@ func (op *HTTPOutputProvider) Send(article *model.Article) error {
 func (op *HTTPOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
 		ID:      op.id,
+		Alias:   op.alias,
 		Spec:    op.spec,
 		Tags:    op.tags,
 		Enabled: op.enabled,

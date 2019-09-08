@@ -21,6 +21,8 @@ import (
 
 // CreateOutputPayload is the output create action payload.
 type CreateOutputPayload struct {
+	// Alias of the output
+	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Name of the output
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Output properties
@@ -192,6 +194,8 @@ func (c *Client) NewSpecsOutputRequest(ctx context.Context, path string) (*http.
 
 // UpdateOutputPayload is the output update action payload.
 type UpdateOutputPayload struct {
+	// Alias of the output
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Output status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Output properties

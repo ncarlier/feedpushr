@@ -174,6 +174,9 @@ var _ = Resource("filter", func() {
 		)
 		Description("Create a new filter")
 		Payload(func() {
+			Member("alias", String, "Alias of the filter", func() {
+				Example("foo")
+			})
 			Member("name", String, "Name of the filter", func() {
 				Example("fetch")
 			})
@@ -181,7 +184,7 @@ var _ = Resource("filter", func() {
 			Member("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
 			})
-			Required("name")
+			Required("alias", "name")
 		})
 		Response(Created, Filter)
 		Response(BadRequest, ErrorMedia)
@@ -196,6 +199,9 @@ var _ = Resource("filter", func() {
 			Param("id", Integer, "Filter ID")
 		})
 		Payload(func() {
+			Member("alias", String, "Alias of the filter", func() {
+				Example("foo")
+			})
 			Member("props", HashOf(String, Any), "Filter properties", NoExample)
 			Member("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
@@ -268,6 +274,9 @@ var _ = Resource("output", func() {
 		)
 		Description("Create a new output")
 		Payload(func() {
+			Member("alias", String, "Alias of the output", func() {
+				Example("foo")
+			})
 			Member("name", String, "Name of the output", func() {
 				Example("http")
 			})
@@ -275,7 +284,7 @@ var _ = Resource("output", func() {
 			Member("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
 			})
-			Required("name")
+			Required("alias", "name")
 		})
 		Response(Created, Output)
 		Response(BadRequest, ErrorMedia)
@@ -290,6 +299,9 @@ var _ = Resource("output", func() {
 			Param("id", Integer, "Output ID")
 		})
 		Payload(func() {
+			Member("alias", String, "Alias of the output", func() {
+				Example("foo")
+			})
 			Member("props", HashOf(String, Any), "Output properties", NoExample)
 			Member("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")

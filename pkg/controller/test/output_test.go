@@ -19,11 +19,14 @@ func TestOutputCRUD(t *testing.T) {
 
 	// CREATE
 	tags := "test"
+	alias := "test output"
 	payload := &app.CreateOutputPayload{
-		Name: "stdout",
-		Tags: &tags,
+		Alias: alias,
+		Name:  "stdout",
+		Tags:  &tags,
 	}
 	_, out := test.CreateOutputCreated(t, ctx, srv, ctrl, payload)
+	assert.Equal(t, alias, out.Alias, "")
 	assert.Equal(t, "stdout", out.Name, "")
 	assert.Equal(t, false, out.Enabled, "")
 	assert.ContainsStr(t, "test", out.Tags, "")
@@ -33,6 +36,7 @@ func TestOutputCRUD(t *testing.T) {
 	// GET
 	_, out = test.GetOutputOK(t, ctx, srv, ctrl, id)
 	assert.Equal(t, id, out.ID, "")
+	assert.Equal(t, "test output", out.Alias, "")
 	assert.Equal(t, "stdout", out.Name, "")
 
 	// FIND
@@ -43,12 +47,15 @@ func TestOutputCRUD(t *testing.T) {
 
 	// UPDATE
 	tags = "test,foo"
+	alias = "updated output"
 	update := &app.UpdateOutputPayload{
+		Alias:   &alias,
 		Enabled: true,
 		Tags:    &tags,
 	}
 	_, out = test.UpdateOutputOK(t, ctx, srv, ctrl, id, update)
 	assert.Equal(t, id, out.ID, "")
+	assert.Equal(t, alias, out.Alias, "")
 	assert.Equal(t, "stdout", out.Name, "")
 	assert.ContainsStr(t, "test", out.Tags, "")
 	assert.ContainsStr(t, "foo", out.Tags, "")

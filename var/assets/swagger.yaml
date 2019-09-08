@@ -7,10 +7,15 @@ consumes:
 definitions:
   CreateFilterPayload:
     example:
+      alias: foo
       name: fetch
       props: '-'
       tags: foo,bar
     properties:
+      alias:
+        description: Alias of the filter
+        example: foo
+        type: string
       name:
         description: Name of the filter
         example: fetch
@@ -25,15 +30,21 @@ definitions:
         example: foo,bar
         type: string
     required:
+    - alias
     - name
     title: CreateFilterPayload
     type: object
   CreateOutputPayload:
     example:
+      alias: foo
       name: http
       props: '-'
       tags: foo,bar
     properties:
+      alias:
+        description: Alias of the output
+        example: foo
+        type: string
       name:
         description: Name of the output
         example: http
@@ -48,6 +59,7 @@ definitions:
         example: foo,bar
         type: string
     required:
+    - alias
     - name
     title: CreateOutputPayload
     type: object
@@ -199,6 +211,7 @@ definitions:
   Filter:
     description: A filter (default view)
     example:
+      alias: foo
       desc: This filter will...
       enabled: true
       id: 1
@@ -208,6 +221,10 @@ definitions:
       - foo
       - bar
     properties:
+      alias:
+        description: Alias of the filter
+        example: foo
+        type: string
       desc:
         description: Description of the filter
         example: This filter will...
@@ -242,6 +259,7 @@ definitions:
         type: array
     required:
     - id
+    - alias
     - name
     - desc
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; view=default'
@@ -250,7 +268,8 @@ definitions:
     description: FilterCollection is the media type for an array of Filter (default
       view)
     example:
-    - desc: This filter will...
+    - alias: foo
+      desc: This filter will...
       enabled: true
       id: 1
       name: fetch
@@ -307,6 +326,7 @@ definitions:
   Output:
     description: The output channel (default view)
     example:
+      alias: foo
       desc: New articles are sent as JSON document to...
       enabled: false
       id: 1
@@ -316,6 +336,10 @@ definitions:
       - foo
       - bar
     properties:
+      alias:
+        description: Alias of the output channel
+        example: foo
+        type: string
       desc:
         description: Description of the output channel
         example: New articles are sent as JSON document to...
@@ -350,6 +374,7 @@ definitions:
         type: array
     required:
     - id
+    - alias
     - name
     - desc
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; view=default'
@@ -358,7 +383,8 @@ definitions:
     description: OutputCollection is the media type for an array of Output (default
       view)
     example:
-    - desc: New articles are sent as JSON document to...
+    - alias: foo
+      desc: New articles are sent as JSON document to...
       enabled: false
       id: 1
       name: fetch
@@ -481,10 +507,15 @@ definitions:
     type: array
   UpdateFilterPayload:
     example:
+      alias: foo
       enabled: '-'
       props: '-'
       tags: foo,bar
     properties:
+      alias:
+        description: Alias of the filter
+        example: foo
+        type: string
       enabled:
         default: false
         description: Filter status
@@ -503,10 +534,15 @@ definitions:
     type: object
   UpdateOutputPayload:
     example:
+      alias: foo
       enabled: '-'
       props: '-'
       tags: foo,bar
     properties:
+      alias:
+        description: Alias of the output
+        example: foo
+        type: string
       enabled:
         default: false
         description: Output status

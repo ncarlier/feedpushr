@@ -22,6 +22,7 @@ var titleSpec = model.Spec{
 // TitleFilter is a foo filter
 type TitleFilter struct {
 	id        int
+	alias     string
 	spec      model.Spec
 	tags      []string
 	prefix    string
@@ -40,6 +41,7 @@ func (f *TitleFilter) DoFilter(article *model.Article) error {
 func (f *TitleFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
 		ID:      f.id,
+		Alias:   f.alias,
 		Tags:    f.tags,
 		Spec:    f.spec,
 		Enabled: f.enabled,
@@ -60,6 +62,7 @@ func newTitleFilter(filter *model.FilterDef) *TitleFilter {
 	}
 	return &TitleFilter{
 		id:      filter.ID,
+		alias:   filter.Alias,
 		spec:    titleSpec,
 		tags:    filter.Tags,
 		prefix:  fmt.Sprintf("%v", prefix),

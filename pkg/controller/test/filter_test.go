@@ -20,14 +20,17 @@ func TestFilterCRUD(t *testing.T) {
 
 	// CREATE
 	tags := "test"
+	alias := "Add test prefix"
 	payload := &app.CreateFilterPayload{
-		Name: "title",
+		Alias: alias,
+		Name:  "title",
 		Props: map[string]interface{}{
 			"prefix": "[test]",
 		},
 		Tags: &tags,
 	}
 	_, f := test.CreateFilterCreated(t, ctx, srv, ctrl, payload)
+	assert.Equal(t, alias, f.Alias, "")
 	assert.Equal(t, "title", f.Name, "")
 	assert.Equal(t, false, f.Enabled, "")
 	assert.ContainsStr(t, "test", f.Tags, "")
@@ -39,6 +42,7 @@ func TestFilterCRUD(t *testing.T) {
 	_, f = test.GetFilterOK(t, ctx, srv, ctrl, id)
 	assert.Equal(t, id, f.ID, "")
 	assert.Equal(t, "title", f.Name, "")
+	assert.Equal(t, "Add test prefix", f.Alias, "")
 
 	// FIND
 	_, list := test.ListFilterOK(t, ctx, srv, ctrl)
@@ -54,6 +58,7 @@ func TestFilterCRUD(t *testing.T) {
 	}
 	_, f = test.UpdateFilterOK(t, ctx, srv, ctrl, id, update)
 	assert.Equal(t, id, f.ID, "")
+	assert.Equal(t, "Add test prefix", f.Alias, "")
 	assert.Equal(t, "title", f.Name, "")
 	assert.ContainsStr(t, "test", f.Tags, "")
 	assert.ContainsStr(t, "foo", f.Tags, "")

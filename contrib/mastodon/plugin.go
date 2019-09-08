@@ -59,6 +59,7 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 	}
 	return &MastodonOutputProvider{
 		id:          output.ID,
+		alias:       output.Alias,
 		spec:        spec,
 		tags:        output.Tags,
 		enabled:     output.Enabled,
@@ -71,6 +72,7 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 // MastodonOutputProvider output provider to send articles to Mastodon
 type MastodonOutputProvider struct {
 	id          int
+	alias       string
 	spec        model.Spec
 	tags        []string
 	enabled     bool
@@ -100,6 +102,7 @@ func (op *MastodonOutputProvider) Send(article *model.Article) error {
 func (op *MastodonOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
 		ID:      op.id,
+		Alias:   op.alias,
 		Spec:    op.spec,
 		Tags:    op.tags,
 		Enabled: op.enabled,

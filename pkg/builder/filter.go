@@ -25,6 +25,14 @@ func (fb *FilterBuilder) Build() *model.FilterDef {
 	return fb.filter
 }
 
+// From creates filter form an other
+func (fb *FilterBuilder) From(source model.FilterDef) *FilterBuilder {
+	clone := source
+	copy(clone.Tags, source.Tags)
+	fb.filter = &clone
+	return fb
+}
+
 // FromURI creates a filter definition form an URI
 func (fb *FilterBuilder) FromURI(URI string) *FilterBuilder {
 	u, err := url.Parse(URI)
@@ -36,6 +44,7 @@ func (fb *FilterBuilder) FromURI(URI string) *FilterBuilder {
 		fb.filter.Props[key] = value[0]
 	}
 	fb.filter.Name = u.Scheme
+	fb.filter.Alias = u.Scheme
 	fb.filter.Tags = tags
 	fb.filter.Enabled = true
 	return fb
@@ -47,6 +56,14 @@ func (fb *FilterBuilder) ID(ID int) *FilterBuilder {
 	return fb
 }
 
+// Alias set alias
+func (fb *FilterBuilder) Alias(alias *string) *FilterBuilder {
+	if alias != nil {
+		fb.filter.Alias = *alias
+	}
+	return fb
+}
+
 // Spec set spec name
 func (fb *FilterBuilder) Spec(name string) *FilterBuilder {
 	fb.filter.Name = name
@@ -55,7 +72,9 @@ func (fb *FilterBuilder) Spec(name string) *FilterBuilder {
 
 // Tags set tags
 func (fb *FilterBuilder) Tags(tags *string) *FilterBuilder {
-	fb.filter.Tags = GetFeedTags(tags)
+	if tags != nil {
+		fb.filter.Tags = GetFeedTags(tags)
+	}
 	return fb
 }
 
@@ -75,6 +94,7 @@ func (fb *FilterBuilder) Enable(status bool) *FilterBuilder {
 func NewFilterFromDef(def model.FilterDef) *app.Filter {
 	return &app.Filter{
 		ID:      def.ID,
+		Alias:   def.Alias,
 		Name:    def.Name,
 		Desc:    def.Desc,
 		Props:   def.Props,

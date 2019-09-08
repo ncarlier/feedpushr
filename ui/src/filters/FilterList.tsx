@@ -22,7 +22,11 @@ const columns: Column[] = [
     searchable: false,
   },
   { 
-    title: 'Name',
+    title: 'Alias',
+    field: 'alias',
+  },
+  { 
+    title: 'Type',
     field: 'name',
   },
   { 

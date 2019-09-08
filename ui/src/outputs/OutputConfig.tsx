@@ -31,8 +31,13 @@ interface Props {
 
 export default ({onSave, onCancel, spec, output}: Props) => {
   const classes = useStyles()
+  const [alias, setAlias] = React.useState<string>(output ? output.alias : "")
   const [props, setProps] = React.useState<OutputProps>(output ? output.props : {})
   const [tags, setTags] = React.useState<string[]>(output && output.tags ? output.tags : [])
+
+  const handleChangeAlias = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAlias(event.target.value)
+  }, [])
 
   const handleChangeProp = useCallback((name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setProps({ ...props, [name]: event.target.value })
@@ -44,11 +49,12 @@ export default ({onSave, onCancel, spec, output}: Props) => {
 
   const handleSave = useCallback(() => {
     onSave({
+      alias,
       name: spec.name,
       props,
       tags,
     })
-  }, [onSave, spec, props, tags])
+  }, [onSave, alias, spec, props, tags])
 
   return (
     <Paper className={classes.root}>
@@ -57,6 +63,14 @@ export default ({onSave, onCancel, spec, output}: Props) => {
       </Typography>
       <Typography color="textSecondary" dangerouslySetInnerHTML={{__html: marked(spec.desc)}} />
       <form>
+        <Typography variant="h5">Alias</Typography>
+        <TextField
+          id="alias"
+          helperText="Alias"
+          value={alias}
+          onChange={handleChangeAlias()}
+          fullWidth
+        />
         {spec.props.length > 0 && <Typography variant="h5">Properties</Typography>}
         {spec.props.map(prop => (
           <TextField

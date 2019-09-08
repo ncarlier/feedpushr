@@ -4,6 +4,7 @@ import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/builder"
+	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/output"
 	"github.com/ncarlier/feedpushr/pkg/store"
@@ -27,7 +28,9 @@ func NewOutputController(service *goa.Service, db store.DB, om *output.Manager) 
 
 // Create runs the create action.
 func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
-	out := builder.NewOutputBuilder().Spec(
+	out := builder.NewOutputBuilder().Alias(
+		&ctx.Payload.Alias,
+	).Spec(
 		ctx.Payload.Name,
 	).Props(
 		ctx.Payload.Props,
@@ -76,8 +79,18 @@ func (c *OutputController) Get(ctx *app.GetOutputContext) error {
 
 // Update runs the update action.
 func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
-	update := builder.NewOutputBuilder().ID(
-		ctx.ID,
+	out, err := c.om.Get(ctx.ID)
+	if err != nil {
+		if err == common.ErrOutputNotFound {
+			return ctx.NotFound()
+		}
+		return err
+	}
+
+	update := builder.NewOutputBuilder().From(
+		out.GetDef(),
+	).Alias(
+		ctx.Payload.Alias,
 	).Props(
 		ctx.Payload.Props,
 	).Tags(
@@ -85,7 +98,8 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 	).Enable(
 		ctx.Payload.Enabled,
 	).Build()
-	out, err := c.om.Update(update)
+
+	out, err = c.om.Update(update)
 	if err != nil {
 		return err
 	}

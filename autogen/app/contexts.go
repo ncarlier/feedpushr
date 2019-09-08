@@ -471,6 +471,8 @@ func NewCreateFilterContext(ctx context.Context, r *http.Request, service *goa.S
 
 // createFilterPayload is the filter create action payload.
 type createFilterPayload struct {
+	// Alias of the filter
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Name of the filter
 	Name *string `form:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty" xml:"name,omitempty"`
 	// Filter properties
@@ -481,6 +483,9 @@ type createFilterPayload struct {
 
 // Validate runs the validation rules defined in the design.
 func (payload *createFilterPayload) Validate() (err error) {
+	if payload.Alias == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "alias"))
+	}
 	if payload.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
 	}
@@ -490,6 +495,9 @@ func (payload *createFilterPayload) Validate() (err error) {
 // Publicize creates CreateFilterPayload from createFilterPayload
 func (payload *createFilterPayload) Publicize() *CreateFilterPayload {
 	var pub CreateFilterPayload
+	if payload.Alias != nil {
+		pub.Alias = *payload.Alias
+	}
 	if payload.Name != nil {
 		pub.Name = *payload.Name
 	}
@@ -504,6 +512,8 @@ func (payload *createFilterPayload) Publicize() *CreateFilterPayload {
 
 // CreateFilterPayload is the filter create action payload.
 type CreateFilterPayload struct {
+	// Alias of the filter
+	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Name of the filter
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Filter properties
@@ -514,6 +524,9 @@ type CreateFilterPayload struct {
 
 // Validate runs the validation rules defined in the design.
 func (payload *CreateFilterPayload) Validate() (err error) {
+	if payload.Alias == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "alias"))
+	}
 	if payload.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
 	}
@@ -728,6 +741,8 @@ func NewUpdateFilterContext(ctx context.Context, r *http.Request, service *goa.S
 
 // updateFilterPayload is the filter update action payload.
 type updateFilterPayload struct {
+	// Alias of the filter
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Filter status
 	Enabled *bool `form:"enabled,omitempty" json:"enabled,omitempty" yaml:"enabled,omitempty" xml:"enabled,omitempty"`
 	// Filter properties
@@ -747,6 +762,9 @@ func (payload *updateFilterPayload) Finalize() {
 // Publicize creates UpdateFilterPayload from updateFilterPayload
 func (payload *updateFilterPayload) Publicize() *UpdateFilterPayload {
 	var pub UpdateFilterPayload
+	if payload.Alias != nil {
+		pub.Alias = payload.Alias
+	}
 	if payload.Enabled != nil {
 		pub.Enabled = *payload.Enabled
 	}
@@ -761,6 +779,8 @@ func (payload *updateFilterPayload) Publicize() *UpdateFilterPayload {
 
 // UpdateFilterPayload is the filter update action payload.
 type UpdateFilterPayload struct {
+	// Alias of the filter
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Filter status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Filter properties
@@ -912,6 +932,8 @@ func NewCreateOutputContext(ctx context.Context, r *http.Request, service *goa.S
 
 // createOutputPayload is the output create action payload.
 type createOutputPayload struct {
+	// Alias of the output
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Name of the output
 	Name *string `form:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty" xml:"name,omitempty"`
 	// Output properties
@@ -922,6 +944,9 @@ type createOutputPayload struct {
 
 // Validate runs the validation rules defined in the design.
 func (payload *createOutputPayload) Validate() (err error) {
+	if payload.Alias == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "alias"))
+	}
 	if payload.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
 	}
@@ -931,6 +956,9 @@ func (payload *createOutputPayload) Validate() (err error) {
 // Publicize creates CreateOutputPayload from createOutputPayload
 func (payload *createOutputPayload) Publicize() *CreateOutputPayload {
 	var pub CreateOutputPayload
+	if payload.Alias != nil {
+		pub.Alias = *payload.Alias
+	}
 	if payload.Name != nil {
 		pub.Name = *payload.Name
 	}
@@ -945,6 +973,8 @@ func (payload *createOutputPayload) Publicize() *CreateOutputPayload {
 
 // CreateOutputPayload is the output create action payload.
 type CreateOutputPayload struct {
+	// Alias of the output
+	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Name of the output
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Output properties
@@ -955,6 +985,9 @@ type CreateOutputPayload struct {
 
 // Validate runs the validation rules defined in the design.
 func (payload *CreateOutputPayload) Validate() (err error) {
+	if payload.Alias == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "alias"))
+	}
 	if payload.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
 	}
@@ -1169,6 +1202,8 @@ func NewUpdateOutputContext(ctx context.Context, r *http.Request, service *goa.S
 
 // updateOutputPayload is the output update action payload.
 type updateOutputPayload struct {
+	// Alias of the output
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Output status
 	Enabled *bool `form:"enabled,omitempty" json:"enabled,omitempty" yaml:"enabled,omitempty" xml:"enabled,omitempty"`
 	// Output properties
@@ -1188,6 +1223,9 @@ func (payload *updateOutputPayload) Finalize() {
 // Publicize creates UpdateOutputPayload from updateOutputPayload
 func (payload *updateOutputPayload) Publicize() *UpdateOutputPayload {
 	var pub UpdateOutputPayload
+	if payload.Alias != nil {
+		pub.Alias = payload.Alias
+	}
 	if payload.Enabled != nil {
 		pub.Enabled = *payload.Enabled
 	}
@@ -1202,6 +1240,8 @@ func (payload *updateOutputPayload) Publicize() *UpdateOutputPayload {
 
 // UpdateOutputPayload is the output update action payload.
 type UpdateOutputPayload struct {
+	// Alias of the output
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
 	// Output status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Output properties

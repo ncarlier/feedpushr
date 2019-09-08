@@ -68,6 +68,7 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvid
 
 	return &TwitterOutputProvider{
 		id:      output.ID,
+		alias:   output.Alias,
 		spec:    spec,
 		tags:    output.Tags,
 		enabled: output.Enabled,
@@ -78,6 +79,7 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvid
 // TwitterOutputProvider output provider to send articles to Twitter
 type TwitterOutputProvider struct {
 	id        int
+	alias     string
 	spec      model.Spec
 	tags      []string
 	enabled   bool
@@ -110,8 +112,11 @@ func (op *TwitterOutputProvider) Send(article *model.Article) error {
 // GetDef return filter definition
 func (op *TwitterOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		Spec: op.spec,
-		Tags: op.tags,
+		ID:      op.id,
+		Alias:   op.alias,
+		Spec:    op.spec,
+		Tags:    op.tags,
+		Enabled: op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"accessToken":       op.api.Credentials.Token,

@@ -4,6 +4,7 @@ import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/builder"
+	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
 	"github.com/ncarlier/feedpushr/pkg/store"
@@ -27,7 +28,9 @@ func NewFilterController(service *goa.Service, db store.DB, cf *filter.Chain) *F
 
 // Create runs the create action.
 func (c *FilterController) Create(ctx *app.CreateFilterContext) error {
-	filter := builder.NewFilterBuilder().Spec(
+	filter := builder.NewFilterBuilder().Alias(
+		&ctx.Payload.Alias,
+	).Spec(
 		ctx.Payload.Name,
 	).Props(
 		ctx.Payload.Props,
@@ -80,8 +83,18 @@ func (c *FilterController) Get(ctx *app.GetFilterContext) error {
 
 // Update runs the update action.
 func (c *FilterController) Update(ctx *app.UpdateFilterContext) error {
-	update := builder.NewFilterBuilder().ID(
-		ctx.ID,
+	f, err := c.cf.Get(ctx.ID)
+	if err != nil {
+		if err == common.ErrFilterNotFound {
+			return ctx.NotFound()
+		}
+		return err
+	}
+
+	update := builder.NewFilterBuilder().From(
+		f.GetDef(),
+	).Alias(
+		ctx.Payload.Alias,
 	).Props(
 		ctx.Payload.Props,
 	).Tags(
@@ -89,7 +102,8 @@ func (c *FilterController) Update(ctx *app.UpdateFilterContext) error {
 	).Enable(
 		ctx.Payload.Enabled,
 	).Build()
-	f, err := c.cf.Update(update)
+
+	f, err = c.cf.Update(update)
 	if err != nil {
 		return err
 	}

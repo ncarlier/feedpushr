@@ -24,7 +24,8 @@ type FilterDefCollection []*FilterDef
 
 // FilterDef contains filter definition
 type FilterDef struct {
-	ID int `json:"id"`
+	ID    int    `json:"id"`
+	Alias string `json:"alias"`
 	Spec
 	Tags    []string    `json:"tags,omitempty"`
 	Props   FilterProps `json:"props:omitempty"`

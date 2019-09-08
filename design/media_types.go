@@ -88,6 +88,9 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 		Attribute("id", Integer, "ID of the filter", func() {
 			Example(1)
 		})
+		Attribute("alias", String, "Alias of the filter", func() {
+			Example("foo")
+		})
 		Attribute("name", String, "Name of the filter", func() {
 			Example("fetch")
 		})
@@ -101,11 +104,12 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 		Attribute("enabled", Boolean, "Status", func() {
 			Default(false)
 		})
-		Required("id", "name", "desc")
+		Required("id", "alias", "name", "desc")
 	})
 
 	View("default", func() {
 		Attribute("id")
+		Attribute("alias")
 		Attribute("name")
 		Attribute("desc")
 		Attribute("props")
@@ -123,6 +127,9 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("id", Integer, "ID of the output", func() {
 			Example(1)
 		})
+		Attribute("alias", String, "Alias of the output channel", func() {
+			Example("foo")
+		})
 		Attribute("name", String, "Name of the output channel", func() {
 			Example("fetch")
 		})
@@ -136,12 +143,13 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("enabled", Boolean, "Status", func() {
 			Default(false)
 		})
-		Required("id", "name", "desc")
+		Required("id", "alias", "name", "desc")
 	})
 
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")
+		Attribute("alias")
 		Attribute("desc")
 		Attribute("props")
 		Attribute("tags")

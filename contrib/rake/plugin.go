@@ -60,6 +60,7 @@ func (p *RakeFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	rake.SetStopWords(stopWords)
 	return &RakeFilter{
 		id:      def.ID,
+		alias:   def.Alias,
 		spec:    spec,
 		tags:    def.Tags,
 		enabled: def.Enabled,
@@ -70,6 +71,7 @@ func (p *RakeFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 // RakeFilter filter articles by adding extracted keywords
 type RakeFilter struct {
 	id        int
+	alias     string
 	spec      model.Spec
 	tags      []string
 	enabled   bool
@@ -93,6 +95,7 @@ func (f *RakeFilter) DoFilter(article *model.Article) error {
 func (f *RakeFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
 		ID:      f.id,
+		Alias:   f.alias,
 		Spec:    f.spec,
 		Tags:    f.tags,
 		Enabled: f.enabled,

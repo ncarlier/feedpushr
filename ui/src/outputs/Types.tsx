@@ -7,6 +7,7 @@ export interface OutputProps {
 
 export interface Output {
   id: number
+  alias: string
   name: string
   desc: string
   enabled: boolean
@@ -28,6 +29,7 @@ export interface OutputSpec {
 
 export interface OutputForm {
   id?: number
+  alias: string
   name: string
   tags: string[]
   props: OutputProps

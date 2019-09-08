@@ -7,6 +7,7 @@ export interface FilterProps {
 
 export interface Filter {
   id: number
+  alias: string
   name: string
   desc: string
   enabled: boolean
@@ -28,6 +29,7 @@ export interface FilterSpec {
 
 export interface FilterForm {
   id?: number
+  alias: string
   name: string
   tags: string[]
   props: FilterProps

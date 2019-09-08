@@ -39,6 +39,7 @@ var stdoutSpec = model.Spec{
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
 	id        int
+	alias     string
 	spec      model.Spec
 	tags      []string
 	nbSuccess uint64
@@ -48,6 +49,7 @@ type StdOutputProvider struct {
 func newStdOutputProvider(output *model.OutputDef) *StdOutputProvider {
 	return &StdOutputProvider{
 		id:      output.ID,
+		alias:   output.Alias,
 		spec:    stdoutSpec,
 		tags:    output.Tags,
 		enabled: output.Enabled,
@@ -67,6 +69,7 @@ func (op *StdOutputProvider) Send(article *model.Article) error {
 func (op *StdOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
 		ID:      op.id,
+		Alias:   op.alias,
 		Spec:    op.spec,
 		Tags:    op.tags,
 		Enabled: op.enabled,

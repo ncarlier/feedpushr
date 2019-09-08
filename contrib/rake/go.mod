@@ -6,3 +6,5 @@ require (
 )
 
 replace github.com/ncarlier/feedpushr => ../..
+
+go 1.13

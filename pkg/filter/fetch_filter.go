@@ -24,6 +24,7 @@ If succeeded, following metadata are added to the article:
 // FetchFilter is a filter that try to fetch the original article content
 type FetchFilter struct {
 	id        int
+	alias     string
 	spec      model.Spec
 	tags      []string
 	nbError   uint64
@@ -59,6 +60,7 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 func (f *FetchFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
 		ID:      f.id,
+		Alias:   f.alias,
 		Tags:    f.tags,
 		Spec:    f.spec,
 		Enabled: f.enabled,
@@ -74,6 +76,7 @@ func (f *FetchFilter) GetDef() model.FilterDef {
 func newFetchFilter(filter *model.FilterDef) *FetchFilter {
 	return &FetchFilter{
 		id:      filter.ID,
+		alias:   filter.Alias,
 		spec:    fetchSpec,
 		tags:    filter.Tags,
 		enabled: filter.Enabled,

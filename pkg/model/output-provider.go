@@ -28,7 +28,8 @@ type OutputDefCollection []*OutputDef
 
 // OutputDef contains output definition
 type OutputDef struct {
-	ID int `json:"id"`
+	ID    int    `json:"id"`
+	Alias string `json:"alias"`
 	Spec
 	Tags    []string    `json:"tags,omitempty"`
 	Props   OutputProps `json:"props:omitempty"`
@@ -37,7 +38,6 @@ type OutputDef struct {
 
 // Hash computes spec hash
 func (spec OutputDef) Hash() string {
-	// TODO add props to the key computation
 	key := fmt.Sprintf("%s-%d", spec.Name, spec.ID)
 	hasher := md5.New()
 	hasher.Write([]byte(key))

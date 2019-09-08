@@ -206,6 +206,8 @@ func (mt FilterSpecCollection) Validate() (err error) {
 //
 // Identifier: application/vnd.feedpushr.filter.v1+json; view=default
 type Filter struct {
+	// Alias of the filter
+	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Description of the filter
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Status
@@ -223,6 +225,9 @@ type Filter struct {
 // Validate validates the Filter media type instance.
 func (mt *Filter) Validate() (err error) {
 
+	if mt.Alias == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "alias"))
+	}
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}
@@ -298,6 +303,8 @@ func (mt OutputSpecCollection) Validate() (err error) {
 //
 // Identifier: application/vnd.feedpushr.output.v1+json; view=default
 type Output struct {
+	// Alias of the output channel
+	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Description of the output channel
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Status
@@ -315,6 +322,9 @@ type Output struct {
 // Validate validates the Output media type instance.
 func (mt *Output) Validate() (err error) {
 
+	if mt.Alias == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "alias"))
+	}
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}

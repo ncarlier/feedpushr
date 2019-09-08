@@ -83,21 +83,20 @@ func (chain *Chain) Add(filter *model.FilterDef) (model.Filter, error) {
 }
 
 // Update a filter of the chain
-func (chain *Chain) Update(filter *model.FilterDef) (model.Filter, error) {
+func (chain *Chain) Update(update *model.FilterDef) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
-	for idx, _filter := range chain.filters {
-		if filter.ID == _filter.GetDef().ID {
-			log.Debug().Int("id", filter.ID).Msg("updating filter...")
-			// TODO merge objects
-			filter.Name = _filter.GetDef().Name
-			f, err := newFilter(filter)
+	for idx, filter := range chain.filters {
+		if update.ID == filter.GetDef().ID {
+			log.Debug().Int("id", update.ID).Msg("updating filter...")
+			update.Name = filter.GetDef().Name
+			f, err := newFilter(update)
 			if err != nil {
 				return nil, err
 			}
 			chain.filters[idx] = f
-			log.Info().Int("id", filter.ID).Msg("filter updated")
+			log.Info().Int("id", update.ID).Msg("filter updated")
 			return f, nil
 		}
 	}
