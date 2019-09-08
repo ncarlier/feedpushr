@@ -125,7 +125,7 @@ func (op *TwitterOutputProvider) GetDef() model.OutputDef {
 		"consumerKey":       op.consumerKey,
 		"consumerSecret":    op.consumerSecret,
 		"accessToken":       op.api.Credentials.Token,
-		"accessTokenSecret": model.MaskSecret(op.api.Credentials.Secret),
+		"accessTokenSecret": op.api.Credentials.Secret,
 		"nbError":           op.nbError,
 		"nbSuccess":         op.nbSuccess,
 	}
