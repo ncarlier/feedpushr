@@ -11,6 +11,11 @@ import (
 // OUTPUT_BUCKET bucket name
 var OUTPUT_BUCKET = []byte("OUTPUT")
 
+// ClearOutputs clear all outputs
+func (store *BoltStore) ClearOutputs() error {
+	return store.clear(OUTPUT_BUCKET)
+}
+
 // GetOutput returns a stored Output.
 func (store *BoltStore) GetOutput(ID int) (*model.OutputDef, error) {
 	var result model.OutputDef

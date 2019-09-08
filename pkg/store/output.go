@@ -11,4 +11,5 @@ type OutputRepository interface {
 	DeleteOutput(ID int) (*model.OutputDef, error)
 	SaveOutput(output model.OutputDef) (*model.OutputDef, error)
 	ForEachOutput(cb func(*model.OutputDef) error) error
+	ClearOutputs() error
 }

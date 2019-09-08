@@ -15,6 +15,14 @@ func (store *InMemoryStore) nextOutputSequence() int {
 	return max + 1
 }
 
+// ClearOutputs clear all outputs
+func (store *InMemoryStore) ClearOutputs() error {
+	store.outputsLock.RLock()
+	defer store.outputsLock.RUnlock()
+	store.outputs = make(map[int]model.OutputDef)
+	return nil
+}
+
 // GetOutput returns a stored Output.
 func (store *InMemoryStore) GetOutput(ID int) (*model.OutputDef, error) {
 	output, exists := store.outputs[ID]

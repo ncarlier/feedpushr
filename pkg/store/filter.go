@@ -11,4 +11,5 @@ type FilterRepository interface {
 	DeleteFilter(ID int) (*model.FilterDef, error)
 	SaveFilter(filter model.FilterDef) (*model.FilterDef, error)
 	ForEachFilter(cb func(*model.FilterDef) error) error
+	ClearFilters() error
 }

@@ -19,6 +19,11 @@ func itob(v int) []byte {
 	return b
 }
 
+// ClearFilters clear all filters
+func (store *BoltStore) ClearFilters() error {
+	return store.clear(FILTER_BUCKET)
+}
+
 // GetFilter returns a stored Filter.
 func (store *BoltStore) GetFilter(ID int) (*model.FilterDef, error) {
 	var result model.FilterDef

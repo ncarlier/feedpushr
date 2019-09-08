@@ -83,6 +83,19 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 		log.Error().Err(err).Msg("unable to init plugins")
 		return nil, err
 	}
+
+	// Clear configuration if asked
+	if conf.ClearConfig {
+		if err := db.ClearFilters(); err != nil {
+			log.Error().Err(err).Msg("unable to clear filters")
+			return nil, err
+		}
+		if err := db.ClearOutputs(); err != nil {
+			log.Error().Err(err).Msg("unable to clear outputs")
+			return nil, err
+		}
+	}
+
 	// Init chain filter
 	cf, err := loadChainFilter(db)
 	if err != nil {

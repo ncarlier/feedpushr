@@ -52,6 +52,19 @@ func (store *BoltStore) Close() error {
 	return store.db.Close()
 }
 
+func (store *BoltStore) clear(bucketName []byte) error {
+	err := store.db.Update(func(tx *bolt.Tx) error {
+		// Remove the bucket
+		if e := tx.DeleteBucket(bucketName); e != nil {
+			return e
+		}
+		// Create the bucket
+		_, e := tx.CreateBucketIfNotExists(bucketName)
+		return e
+	})
+	return err
+}
+
 func (store *BoltStore) save(bucketName, key []byte, dataStruct interface{}) error {
 	err := store.db.Update(func(tx *bolt.Tx) error {
 		// Create the bucket

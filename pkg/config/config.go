@@ -16,6 +16,7 @@ type Config struct {
 	Plugins        ArrayFlags
 	ImportFilename string
 	ClearCache     bool
+	ClearConfig    bool
 	ShowVersion    bool
 	LogPretty      bool
 	LogLevel       string
@@ -38,6 +39,7 @@ func init() {
 	setFlagEnvString(&config.SentryDSN, "sentry-dsn", "Sentry DSN URL", "")
 	setFlagString(&config.ImportFilename, "import", "Import a OPML file at boot time", "")
 	setFlagBool(&config.ClearCache, "clear-cache", "Clear cache at bootstrap", false)
+	setFlagBool(&config.ClearConfig, "clear-config", "Clear configuration at bootstrap", false)
 	setFlagBool(&config.ShowVersion, "version", "Show version", false)
 	setFlagEnvArray(&config.Plugins, "plugin", "Plugin to load", []string{})
 

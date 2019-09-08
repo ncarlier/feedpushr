@@ -15,6 +15,14 @@ func (store *InMemoryStore) nextFilterSequence() int {
 	return max + 1
 }
 
+// ClearFilters clear all filters
+func (store *InMemoryStore) ClearFilters() error {
+	store.filtersLock.RLock()
+	defer store.filtersLock.RUnlock()
+	store.filters = make(map[int]model.FilterDef)
+	return nil
+}
+
 // GetFilter returns a stored Filter.
 func (store *InMemoryStore) GetFilter(ID int) (*model.FilterDef, error) {
 	filter, exists := store.filters[ID]
