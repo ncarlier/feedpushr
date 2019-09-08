@@ -125,7 +125,7 @@ export default ({feeds}: Props) => {
   return <>
     { !!error && <Message message={error.message} variant="error" />}
     <MaterialTable
-      title="Feeds"
+      title={`${data.length} feeds`}
       columns={ columns }
       data= { data }
       editable = {{
