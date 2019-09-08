@@ -32,6 +32,16 @@ ARG ARTIFACT=feedpushr
 # Install project files
 COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/ /usr/local/share/$ARTIFACT/
 
+# Update certificates
+RUN apt-get update \
+    && apt-get dist-upgrade -y \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && apt-get clean -y \
+    && apt-get autoremove -y \
+    && rm -rf /tmp/* /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-ca-certificates --fresh
+
 # Install binary
 RUN ln -s /usr/local/share/$ARTIFACT/$ARTIFACT /usr/local/bin/$ARTIFACT
 
