@@ -21,19 +21,13 @@ RUN make build plugins
 #########################################
 # Distribution stage
 #########################################
-FROM alpine
+FROM debian:stable-slim
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
 
 # Artifact name
 ARG ARTIFACT=feedpushr
-
-# Fix lib dep
-RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
-
-# Install root certificates
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 # Install project files
 COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/ /usr/local/share/$ARTIFACT/
