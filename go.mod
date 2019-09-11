@@ -7,6 +7,8 @@ require (
 	github.com/coreos/bbolt v1.3.0
 	github.com/dimfeld/httppath v0.0.0-20170720192232-ee938bf73598 // indirect
 	github.com/dimfeld/httptreemux v5.0.1+incompatible // indirect
+	github.com/getlantern/golog v0.0.0-20190830074920-4ef2e798c2d7 // indirect
+	github.com/getlantern/systray v0.0.0-20190727060347-6f0e5a3c556c // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/goadesign/goa v1.4.0
 	github.com/google/gxui v0.0.0-20151028112939-f85e0a97b3a4 // indirect

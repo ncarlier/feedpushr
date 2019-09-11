@@ -34,6 +34,9 @@ PLUGIN?=twitter
 # Plugin filename
 PLUGIN_SO=$(APPNAME)-$(PLUGIN).so
 
+# Agent filename
+AGENT=$(APPNAME)-agent$(EXT)
+
 # Extract version infos
 VERSION:=`git describe --tags`
 GIT_COMMIT:=`git rev-list -1 HEAD`
@@ -154,3 +157,9 @@ plugins:
 	GOARCH=amd64 PLUGIN=readflow make plugin
 	GOARCH=amd64 PLUGIN=rake make plugin
 .PHONY: plugins
+
+## Build agent
+agent:
+	echo ">>> Building: $(AGENT)release/feedpushr-agent $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	cd contrib/agent && GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o ../../release/$(AGENT)
+.PHONY: agent
