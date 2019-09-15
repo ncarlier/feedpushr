@@ -34,12 +34,15 @@ func (ct *CustomAtomTranslator) Translate(feed interface{}) (*gofeed.Feed, error
 		return nil, err
 	}
 
-	hub := firstLinkWithType("hub", rss.Links)
-	if hub != nil {
-		if f.Custom == nil {
-			f.Custom = make(map[string]string)
-		}
+	if f.Custom == nil {
+		f.Custom = make(map[string]string)
+	}
+
+	if hub := firstLinkWithType("hub", rss.Links); hub != nil {
 		f.Custom["hub"] = hub.Href
+	}
+	if self := firstLinkWithType("self", rss.Links); self != nil {
+		f.Custom["self"] = self.Href
 	}
 
 	return f, nil
@@ -70,23 +73,22 @@ func (ct *CustomRSSTranslator) Translate(feed interface{}) (*gofeed.Feed, error)
 		return nil, err
 	}
 
-	var hub string
+	if f.Custom == nil {
+		f.Custom = make(map[string]string)
+	}
+
 	atomExtensions := extensionsForKeys([]string{"atom", "atom10", "atom03"}, rss.Extensions)
 	for _, ex := range atomExtensions {
 		if links, ok := ex["link"]; ok {
 			for _, l := range links {
 				if l.Attrs["rel"] == "hub" {
-					hub = l.Attrs["href"]
+					f.Custom["hub"] = l.Attrs["href"]
+				}
+				if l.Attrs["rel"] == "self" {
+					f.Custom["self"] = l.Attrs["href"]
 				}
 			}
 		}
-	}
-
-	if hub != "" {
-		if f.Custom == nil {
-			f.Custom = make(map[string]string)
-		}
-		f.Custom["hub"] = hub
 	}
 
 	return f, nil

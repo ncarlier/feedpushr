@@ -31,12 +31,15 @@ type PshbController struct {
 
 // NewPshbController creates a pshb controller.
 func NewPshbController(service *goa.Service, db store.DB, am *aggregator.Manager, om *output.Manager) *PshbController {
+	parser := gofeed.NewParser()
+	parser.AtomTranslator = builder.NewCustomAtomTranslator()
+	parser.RSSTranslator = builder.NewCustomRSSTranslator()
 	return &PshbController{
 		Controller: service.NewController("PshbController"),
 		db:         db,
 		output:     om,
 		aggregator: am,
-		parser:     gofeed.NewParser(),
+		parser:     parser,
 		log:        log.With().Str("component", "pshb-ctrl").Logger(),
 	}
 }
@@ -53,8 +56,8 @@ func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
 	}
 
 	link := parsedFeed.FeedLink
-	if link == "" {
-		link = parsedFeed.Link
+	if self, ok := parsedFeed.Custom["self"]; ok {
+		link = self
 	}
 
 	id := builder.GetFeedID(link)
