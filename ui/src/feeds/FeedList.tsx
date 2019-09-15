@@ -6,10 +6,10 @@ import { Link } from '@material-ui/core'
 
 import Message from '../common/Message'
 import Tags from '../common/Tags'
-import TimeAgo from '../common/TimeAgo'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import FeedControl from './FeedControl'
+import FeedDates from './FeedDates'
 import FeedHub from './FeedHub'
 import FeedStatus from './FeedStatus'
 import OPMLExportButton from './OPMLExportButton'
@@ -52,7 +52,7 @@ const columns: Column[] = [
     title: 'Next check',
     field: 'nextCheck',
     editable: 'never',
-    render: (feed: Feed) => (!!feed && <TimeAgo value={feed.nextCheck} />)
+    render: (feed: Feed) => (!!feed && <FeedDates feed={feed} />)
   }
 ]
 
@@ -78,10 +78,12 @@ export default withRouter(({feeds, history}: Props & RouteComponentProps) => {
     }
   }
 
+  let title = data.length > 1 ? `${data.length} feeds` : `${data.length} feed`
+
   return <>
     { !!error && <Message message={error.message} variant="error" />}
     <MaterialTable
-      title={`${data.length} feeds`}
+      title={title}
       columns={ columns }
       data= { data }
       editable = {{
