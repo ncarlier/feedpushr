@@ -1,5 +1,6 @@
 import MaterialTable, { Column, MTableToolbar } from 'material-table'
 import React, { useContext, useState } from 'react'
+import { RouteComponentProps, withRouter } from 'react-router'
 
 import { Link } from '@material-ui/core'
 
@@ -15,10 +16,6 @@ import OPMLExportButton from './OPMLExportButton'
 import OPMLImportButton from './OPMLImportButton'
 import { Feed } from './Types'
 
-const headers = {
-  "Content-Type": "application/x-www-form-urlencoded",
-}
-
 interface Props {
   feeds: Feed[]
 }
@@ -27,7 +24,6 @@ const columns: Column[] = [
   { 
     title: 'Aggregation',
     render: (feed: Feed) => ( !!feed && <FeedControl feed={feed} /> ),
-    editable: 'never',
     sorting: false,
     searchable: false,
   },
@@ -35,17 +31,13 @@ const columns: Column[] = [
     title: 'Status',
     field: 'status',
     render: (feed: Feed) => ( !!feed && <FeedStatus feed={feed} /> ),
-    editable: 'never',
   },
-  { title: 'Title', field: 'title' },
   { 
-    title: 'URL',
-    field: 'xmlUrl',
-    editable: 'onAdd',
-
+    title: 'Title',
+    field: 'title',
     render: (feed: Feed) => (
       <>
-        <Link href={feed.xmlUrl} target="_blank">{feed.xmlUrl}</Link>
+        <Link href={feed.xmlUrl} target="_blank">{feed.title}</Link>
         &nbsp;
         <FeedHub feed={feed} />
       </>
@@ -64,47 +56,11 @@ const columns: Column[] = [
   }
 ]
 
-export default ({feeds}: Props) => {
+export default withRouter(({feeds, history}: Props & RouteComponentProps) => {
   const [data, setData] = useState<Feed[]>(feeds)
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
 
-  const onRowAdd = async (newFeed: Feed) => {
-    const { title, xmlUrl: url, tags } = newFeed
-    try {
-      const res = await fetchAPI('/feeds', {title, url, tags}, {method: 'POST', headers})
-      if (res.ok) {
-        setError(null)
-        const feed = await res.json()
-        showMessage(<Message variant="success"  message={`Feed ${feed.title} added`} />)
-        return setData([...data, feed])
-      }
-      const _err = await res.json()
-      throw new Error(_err.detail || res.statusText)
-    } catch (err) {
-      setError(err)
-      throw err
-    }
-  }
-
-  const onRowUpdate = async (newFeed: Feed, oldFeed?: Feed) => {
-    const { id, title, tags } = newFeed
-    try {
-      const res = await fetchAPI(`/feeds/${id}`, {title, tags}, {method: 'PUT', headers})
-      if (res.ok) {
-        setError(null)
-        const feed = await res.json()
-        showMessage(<Message variant="success"  message={`Feed ${feed.title} updated`} />)
-        return setData(data.map(f => f.id === feed.id ? feed : f))
-      }
-      const _err = await res.json()
-      throw new Error(_err.detail || res.statusText)
-    } catch (err) {
-      setError(err)
-      throw err
-    }
-  }
-  
   const onRowDelete = async (oldFeed: Feed) => {
     const { id, title } = oldFeed
     try {
@@ -129,14 +85,25 @@ export default ({feeds}: Props) => {
       columns={ columns }
       data= { data }
       editable = {{
-        onRowAdd,
-        onRowUpdate,
         onRowDelete
       }}
       options={{
         actionsColumnIndex: -1,
         paging: false
       }}
+      actions={[
+        {
+          icon: 'edit',
+          tooltip: 'Edit',
+          onClick: (event, rowData) => history.push(`/feeds/${rowData.id}`)
+        },
+        {
+          icon: 'add_box',
+          tooltip: 'Add',
+          isFreeAction: true,
+          onClick: () => history.push('/feeds/add')
+        }
+      ]}
       components={{
         Toolbar: props => (
           <div>
@@ -150,4 +117,4 @@ export default ({feeds}: Props) => {
       }}
     />
   </>
-}
+})

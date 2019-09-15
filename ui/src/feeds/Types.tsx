@@ -14,3 +14,9 @@ export interface Feed {
   cdate: string
   mdate?: string
 }
+
+export interface FeedForm {
+  title: string
+  xmlUrl: string
+  tags: string[]
+}

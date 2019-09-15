@@ -85,8 +85,12 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 		// Reload aggegator data
 		// For now we are recreating the aggregator
 		c.aggregator.UnRegisterFeedAggregator(feed.ID)
-		c.aggregator.RegisterFeedAggregator(feed)
-		c.log.Info().Str("id", feed.ID).Msg("feed updated and aggregation restarted")
+		if feed.Status != nil && *feed.Status == aggregator.RunningStatus.String() {
+			c.aggregator.RegisterFeedAggregator(feed)
+			c.log.Info().Str("id", feed.ID).Msg("feed updated and aggregation restarted")
+		} else {
+			c.log.Info().Str("id", feed.ID).Msg("feed updated and aggregation stopped")
+		}
 	} else {
 		c.log.Info().Str("id", feed.ID).Msg("feed updated")
 	}
