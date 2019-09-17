@@ -7,7 +7,7 @@ require (
 	github.com/dustin/go-jsonpointer v0.0.0-20160814072949-ba0abeacc3dc // indirect
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
 	github.com/garyburd/go-oauth v0.0.0-20180319155456-bca2e7f09a17 // indirect
-	github.com/ncarlier/feedpushr v0.0.0-20190904181222-1c60d74ca482
+	github.com/ncarlier/feedpushr v0.0.0-00010101000000-000000000000
 )
 
 replace github.com/ncarlier/feedpushr => ../..
