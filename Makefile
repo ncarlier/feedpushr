@@ -130,16 +130,21 @@ changelog:
 ## Create archive
 archive:
 	echo ">>> Creating release/$(ARCHIVE) archive..."
-	tar czf release/$(ARCHIVE) README.md LICENSE CHANGELOG.md -C release/ $(EXECUTABLE) $(CTL_EXECUTABLE) $(subst release/,,$(wildcard release/*.so))
-	-rm release/$(EXECUTABLE) release/$(CTL_EXECUTABLE) release/*.so
+	tar czf release/$(ARCHIVE) \
+		--exclude=*.tgz \
+	 	README.md \
+		LICENSE \
+		CHANGELOG.md \
+		-C release/ $(subst release/,,$(wildcard release/*))
+	find release/ -type f -not -name '*.tgz' -delete
 .PHONY: archive
 
 ## Create distribution binaries
 distribution:
-	GOARCH=amd64 make build plugins archive
+	GOARCH=amd64 make build agent plugins archive
 	GOARCH=arm64 make build archive
 	GOARCH=arm make build archive
-	GOOS=windows make build archive
+	GOOS=windows make build agent archive
 	GOOS=darwin make build archive
 .PHONY: distribution
 
@@ -160,6 +165,7 @@ plugins:
 
 ## Build agent
 agent:
-	echo ">>> Building: $(AGENT)release/feedpushr-agent $(VERSION) for $(GOOS)-$(GOARCH) ..."
-	cd contrib/agent && GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o ../../release/$(AGENT)
+	echo ">>> Building: $(AGENT) $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	cd contrib/agent && GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDLAGS_AGENT) -o ../../release/$(AGENT)
 .PHONY: agent
+

@@ -5,14 +5,13 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os/exec"
 	"runtime"
 	"strings"
 
 	"github.com/getlantern/systray"
 	"github.com/ncarlier/feedpushr/pkg/assets"
-	"github.com/ncarlier/feedpushr/pkg/config"
-	"github.com/rs/zerolog/log"
 )
 
 type fn func()
@@ -24,18 +23,18 @@ type Agent struct {
 }
 
 // NewAgent creates a new service agent
-func NewAgent(onStart, onStop fn, conf config.Config) *Agent {
+func NewAgent(onStart, onStop fn, url string) (*Agent, error) {
 	iconPath := "/ui/logo.png"
 	if runtime.GOOS == "windows" {
 		iconPath = "/ui/favicon.ico"
 	}
 	file, err := assets.GetFS().Open(iconPath)
 	if err != nil {
-		log.Fatal().Err(err).Msg("unable to load agent icon")
+		return nil, fmt.Errorf("unable to load agent icon: %v", err)
 	}
 	icon, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Fatal().Err(err).Msg("unable to load agent icon")
+		return nil, fmt.Errorf("unable to load agent icon: %v", err)
 	}
 	onReady := func() {
 		systray.SetIcon(icon)
@@ -48,9 +47,9 @@ func NewAgent(onStart, onStop fn, conf config.Config) *Agent {
 			for {
 				select {
 				case <-mOpen.ClickedCh:
-					err := openbrowser(conf.ListenAddr)
+					err := openbrowser(url)
 					if err != nil {
-						log.Error().Err(err).Msg("unable to open web UI")
+						log.Println("unable to open web UI", err)
 					}
 				case <-mQuit.ClickedCh:
 					systray.Quit()
@@ -63,7 +62,7 @@ func NewAgent(onStart, onStop fn, conf config.Config) *Agent {
 	return &Agent{
 		onReady: onReady,
 		onExit:  onStop,
-	}
+	}, nil
 }
 
 // Start the agent

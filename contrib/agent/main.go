@@ -1,97 +1,96 @@
 package main
 
 import (
-	"context"
-	"flag"
-	"time"
-
-	"github.com/ncarlier/feedpushr/pkg/config"
-	"github.com/ncarlier/feedpushr/pkg/job"
-	"github.com/ncarlier/feedpushr/pkg/logging"
-	"github.com/ncarlier/feedpushr/pkg/metric"
-	"github.com/ncarlier/feedpushr/pkg/service"
-	"github.com/ncarlier/feedpushr/pkg/store"
-	"github.com/rs/zerolog/log"
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"os/signal"
+	"syscall"
 )
 
+func lookupArg(args []string, name string) (string, bool) {
+	for idx, arg := range args {
+		if (arg == name || arg == "-"+name) && idx+1 < len(args) {
+			return args[idx+1], true
+		}
+	}
+	return "", false
+}
+
 func main() {
-	done := make(chan bool)
-	// Parse command line (and environment variables)
-	flag.Parse()
-
-	// Get global configuration
-	conf := config.Get()
-
-	// Log configuration
-	if err := logging.Configure(conf.LogOutput, conf.LogLevel, conf.LogPretty, conf.SentryDSN); err != nil {
-		log.Fatal().Err(err).Msg("unable to configure logger")
-	}
-
-	// Metric configuration
-	metric.Configure()
-
-	// Init the data store
-	db, err := store.Configure(conf.DB)
+	binary, err := exec.LookPath("feedpushr")
 	if err != nil {
-		log.Fatal().Err(err).Msg("unable to init data store")
+		binary = "./feedpushr"
 	}
+	args := os.Args[1:]
 
-	// Init global service
-	srv, err := service.Configure(db, conf)
+	cmd := exec.Command(binary, args...)
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		db.Close()
-		log.Fatal().Err(err).Msg("unable to init main service")
+		log.Fatal("unable to pipe STDOUT for cmd", err)
 	}
 
-	// Clear cache if asked
-	if conf.ClearCache {
-		log.Debug().Msg("clearing the cache...")
-		if err := srv.ClearCache(); err != nil {
-			db.Close()
-			log.Fatal().Err(err).Msg("unable to clear the cache")
+	scanner := bufio.NewScanner(stdout)
+	go func() {
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
 		}
-		log.Info().Msg("cache cleared")
+	}()
+
+	err = cmd.Start()
+	if err != nil {
+		log.Fatal("unable to start cmd", err)
 	}
 
-	// Import OPML file if asked
-	if conf.ImportFilename != "" {
-		log.Debug().Str("filename", conf.ImportFilename).Msg("importing OPML file...")
-		if err := srv.ImportOPMLFile(conf.ImportFilename); err != nil {
-			db.Close()
-			log.Fatal().Err(err).Str("filename", conf.ImportFilename).Msg("unable to import OPML file")
-		}
-		log.Info().Str("filename", conf.ImportFilename).Msg("OPML file imported")
-	}
-
-	// Starts background jobs (cache-buster)
-	scheduler := job.StartNewScheduler(db, conf)
+	waitChan := make(chan error, 1)
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan)
 
 	start := func() {
-		log.Info().Str("listen", conf.ListenAddr).Msg("starting HTTP server...")
-		if err := srv.ListenAndServe(conf.ListenAddr); err != nil {
-			log.Fatal().Err(err).Msg("unable to start server")
-		}
+		go func() {
+			waitChan <- cmd.Wait()
+			close(waitChan)
+		}()
 	}
 
 	stop := func() {
-		log.Debug().Msg("shutting down server...")
-		// Shutdown the scheduler...
-		scheduler.Shutdown()
-		// Shutdown the server...
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-		if err := srv.Shutdown(ctx); err != nil {
-			log.Fatal().Err(err).Msg("could not gracefully shutdown the server")
-		}
-		// Shutdown the database...
-		db.Close()
-		close(done)
+		cmd.Process.Signal(os.Interrupt)
 	}
 
-	// Start agent
-	agent := NewAgent(start, stop, conf)
-	agent.Start()
+	// Lookup URL
+	url := ":8080"
+	if value, ok := lookupArg(args, "-addr"); ok {
+		url = value
+	} else if value, ok := os.LookupEnv("APP_ADDR"); ok {
+		url = value
+	}
 
-	<-done
-	log.Debug().Msg("server stopped")
+	agent, err := NewAgent(start, stop, url)
+	if err != nil {
+		log.Fatal("unable to start agent", err)
+	}
+	go agent.Start()
+
+	for {
+		select {
+		case sig := <-sigChan:
+			// Forward signal
+			if err := cmd.Process.Signal(sig); err != nil {
+				log.Println("unable to forwrard signal", sig, err)
+			}
+		case err := <-waitChan:
+			// Subprocess exited. Get the return code, if we can
+			var waitStatus syscall.WaitStatus
+			if exitError, ok := err.(*exec.ExitError); ok {
+				waitStatus = exitError.Sys().(syscall.WaitStatus)
+				os.Exit(waitStatus.ExitStatus())
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+			return
+		}
+	}
 }
