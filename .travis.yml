@@ -1,6 +1,11 @@
 language: go
 go:
 - "1.12"
+before_install:
+- sudo apt-get install -y libgtk-3-dev libappindicator3-dev
+addons:
+  apt:
+    update: true
 script:
 - make test
 - make distribution
