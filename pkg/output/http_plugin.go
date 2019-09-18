@@ -23,19 +23,16 @@ var httpSpec = model.Spec{
 	},
 }
 
-// HTTPOutputProvider HTTP output provider
-type HTTPOutputProvider struct {
-	id        int
-	alias     string
-	spec      model.Spec
-	tags      []string
-	nbError   uint64
-	nbSuccess uint64
-	targetURL string
-	enabled   bool
+// HTTPOutputPlugin is the HTTP output plugin
+type HTTPOutputPlugin struct{}
+
+// Spec returns plugin spec
+func (p *HTTPOutputPlugin) Spec() model.Spec {
+	return httpSpec
 }
 
-func newHTTPOutputProvider(output *model.OutputDef) (*HTTPOutputProvider, error) {
+// Build creates output provider instance
+func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
 	u, ok := output.Props["url"]
 	if !ok {
 		return nil, fmt.Errorf("missing URL property")
@@ -52,6 +49,20 @@ func newHTTPOutputProvider(output *model.OutputDef) (*HTTPOutputProvider, error)
 		targetURL: _url.String(),
 		enabled:   output.Enabled,
 	}, nil
+}
+
+var httpOutputPlugin = &HTTPOutputPlugin{}
+
+// HTTPOutputProvider HTTP output provider
+type HTTPOutputProvider struct {
+	id        int
+	alias     string
+	spec      model.Spec
+	tags      []string
+	nbError   uint64
+	nbSuccess uint64
+	targetURL string
+	enabled   bool
 }
 
 // Send article to HTTP endpoint.

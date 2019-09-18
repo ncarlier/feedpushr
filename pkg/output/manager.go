@@ -8,6 +8,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -16,6 +17,7 @@ import (
 // Manager of output channel.
 type Manager struct {
 	lock           sync.RWMutex
+	plugins        map[string]model.OutputPlugin
 	providers      []model.OutputProvider
 	db             store.DB
 	ChainFilter    *filter.Chain
@@ -26,12 +28,28 @@ type Manager struct {
 // NewManager creates a new manager
 func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
 	manager := &Manager{
+		plugins:        make(map[string]model.OutputPlugin),
 		providers:      []model.OutputProvider{},
 		db:             db,
 		cacheRetention: cacheRetention,
 		log:            log.With().Str("component", "output").Logger(),
 	}
-	err := db.ForEachOutput(func(o *model.OutputDef) error {
+	// Register builtin  output plugins...
+	manager.plugins[stdoutOutputPlugin.Spec().Name] = stdoutOutputPlugin
+	manager.plugins[httpOutputPlugin.Spec().Name] = httpOutputPlugin
+	manager.plugins[readflowOutputPlugin.Spec().Name] = readflowOutputPlugin
+
+	// Register external output plugins...
+	err := plugin.GetRegsitry().ForEachOutputPlugin(func(plug model.OutputPlugin) error {
+		manager.plugins[plug.Spec().Name] = plug
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Load output providers from DB
+	err = db.ForEachOutput(func(o *model.OutputDef) error {
 		if o == nil {
 			return fmt.Errorf("output is null")
 		}
@@ -39,6 +57,15 @@ func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
 		return err
 	})
 	return manager, err
+}
+
+// GetAvailableOutputs get all available outputs
+func (m *Manager) GetAvailableOutputs() []model.Spec {
+	result := []model.Spec{}
+	for _, plugin := range m.plugins {
+		result = append(result, plugin.Spec())
+	}
+	return result
 }
 
 // Send feeds to the output provider

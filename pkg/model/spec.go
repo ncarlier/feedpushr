@@ -1,12 +1,18 @@
 package model
 
+// PropType is a enum to specify a property type
 type PropType int
 
 const (
+	// Email type
 	Email PropType = iota
+	// Number type
 	Number
+	// Password type
 	Password
+	// Text type
 	Text
+	// URL type
 	URL
 )
 

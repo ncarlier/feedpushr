@@ -36,6 +36,27 @@ var stdoutSpec = model.Spec{
 	PropsSpec: []model.PropSpec{},
 }
 
+// StdoutOutputPlugin is the STDOUT output plugin
+type StdoutOutputPlugin struct{}
+
+// Spec returns plugin spec
+func (p *StdoutOutputPlugin) Spec() model.Spec {
+	return stdoutSpec
+}
+
+// Build creates output provider instance
+func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+	return &StdOutputProvider{
+		id:      output.ID,
+		alias:   output.Alias,
+		spec:    stdoutSpec,
+		tags:    output.Tags,
+		enabled: output.Enabled,
+	}, nil
+}
+
+var stdoutOutputPlugin = &StdoutOutputPlugin{}
+
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
 	id        int
@@ -44,16 +65,6 @@ type StdOutputProvider struct {
 	tags      []string
 	nbSuccess uint64
 	enabled   bool
-}
-
-func newStdOutputProvider(output *model.OutputDef) *StdOutputProvider {
-	return &StdOutputProvider{
-		id:      output.ID,
-		alias:   output.Alias,
-		spec:    stdoutSpec,
-		tags:    output.Tags,
-		enabled: output.Enabled,
-	}
 }
 
 // Send article to STDOUT.

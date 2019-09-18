@@ -1,4 +1,4 @@
-package main
+package output
 
 import (
 	"fmt"
@@ -57,6 +57,8 @@ func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 		enabled:   output.Enabled,
 	}, nil
 }
+
+var readflowOutputPlugin = &ReadflowOutputPlugin{}
 
 // ReadflowOutputProvider output provider to send articles to Readflow
 type ReadflowOutputProvider struct {

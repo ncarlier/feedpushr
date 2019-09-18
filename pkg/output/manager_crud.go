@@ -5,63 +5,32 @@ import (
 
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
-	"github.com/ncarlier/feedpushr/pkg/plugin"
 )
 
-// GetAvailableOutputs get all available outputs
-func GetAvailableOutputs() []model.Spec {
-	result := []model.Spec{
-		stdoutSpec,
-		httpSpec,
-	}
-	plugin.GetRegsitry().ForEachOutputPlugin(func(plug model.OutputPlugin) error {
-		result = append(result, plug.Spec())
-		return nil
-	})
-	return result
-}
-
-// newOutputProvider creates new output provider.
-func newOutputProvider(def *model.OutputDef) (model.OutputProvider, error) {
-	var provider model.OutputProvider
-	var err error
-	switch def.Name {
-	case "stdout":
-		provider = newStdOutputProvider(def)
-	case "http":
-		provider, err = newHTTPOutputProvider(def)
-	default:
-		// Try to load plugin regarding the scheme
-		plug := plugin.GetRegsitry().LookupOutputPlugin(def.Name)
-		if plug == nil {
-			return nil, fmt.Errorf("unsuported output provider: %s", def.Name)
-		}
-		provider, err = plug.Build(def)
-		if err != nil {
-			return nil, fmt.Errorf("unable to create output provider: %v", err)
-		}
-	}
-	return provider, err
-}
-
 // Add an output
-func (m *Manager) Add(output *model.OutputDef) (model.OutputProvider, error) {
+func (m *Manager) Add(def *model.OutputDef) (model.OutputProvider, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	m.log.Debug().Str("name", output.Name).Msg("adding output...")
+	m.log.Debug().Str("name", def.Name).Msg("adding output...")
+
+	plug, ok := m.plugins[def.Name]
+	if !ok {
+		return nil, fmt.Errorf("unsuported output provider: %s", def.Name)
+	}
+
 	nextID := 0
-	for _, _output := range m.providers {
-		if nextID < _output.GetDef().ID {
-			nextID = _output.GetDef().ID
+	for _, _provider := range m.providers {
+		if nextID < _provider.GetDef().ID {
+			nextID = _provider.GetDef().ID
 		}
 	}
-	output.ID = nextID + 1
-	provider, err := newOutputProvider(output)
+	def.ID = nextID + 1
+	provider, err := plug.Build(def)
 	if err != nil {
 		return nil, err
 	}
 	m.providers = append(m.providers, provider)
-	m.log.Info().Str("name", output.Name).Msg("output added")
+	m.log.Info().Str("name", def.Name).Msg("output added")
 	return provider, nil
 }
 
@@ -75,7 +44,11 @@ func (m *Manager) Update(output *model.OutputDef) (model.OutputProvider, error) 
 			// TODO merge objects
 			output.Name = provider.GetDef().Name
 			m.log.Debug().Int("id", output.ID).Msg("updating output...")
-			p, err := newOutputProvider(output)
+			plug, ok := m.plugins[output.Name]
+			if !ok {
+				return nil, fmt.Errorf("unsuported output provider: %s", output.Name)
+			}
+			p, err := plug.Build(output)
 			if err != nil {
 				return nil, err
 			}

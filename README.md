@@ -107,6 +107,7 @@ Currently, there are two built-in output providers:
 |----------|---------|-------------|
 | `stdout` | None    | New articles are sent as JSON documents to the standard output of the process. This can be useful if you want to pipe the command to another shell command. *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL tool such as [Logstash][logstash], etc.* |
 | `http` | `url` | New articles are sent as JSON documents to an HTTP endpoint (POST). |
+| `readflow` | - `url` (default: [official API][readflow-api] <br>- `apiKey` | New articles are sent to [readflow][readflow] instance. |
 
 JSON document format:
 
@@ -148,7 +149,11 @@ $ feedpushr --plugin ./feedpushr-twitter.so
 You can find some external plugins (such as for Twitter) into this
 [directory](./contrib).
 
-## UI
+## Agent
+
+Feedpushr can be started in "desktop mode" thanks to an agent. The purpose of `feedpushr-agent` is to start the daemon and add an icon to your taskbar. This icon allows you to control the daemon and quickly access the user interface.
+
+## User Interface
 
 You can access Web UI on http://localhost:8080/ui
 
@@ -238,3 +243,5 @@ Type `make help` to see other possibilities.
 [boltdb]: https://github.com/coreos/bbolt
 [logstash]: https://www.elastic.co/fr/products/logstash
 [opml-category]: http://dev.opml.org/spec2.html#otherSpecialAttributes
+[readflow]: https://about.readflow.app
+[readflow-api]: https://api.readflow.app

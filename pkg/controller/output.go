@@ -125,7 +125,7 @@ func (c *OutputController) List(ctx *app.ListOutputContext) error {
 
 // Specs runs the specs action.
 func (c *OutputController) Specs(ctx *app.SpecsOutputContext) error {
-	specs := output.GetAvailableOutputs()
+	specs := c.om.GetAvailableOutputs()
 
 	res := app.OutputSpecCollection{}
 	for _, spec := range specs {

@@ -9,7 +9,6 @@ Some plugins for [Feedpushr][feedpushr].
 
 - [Twitter](./twitter/README.md)
 - [Mastodon](./mastodon/README.md)
-- [Readflow](./readflow/README.md)
 
 ### Filter
 
