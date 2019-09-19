@@ -235,6 +235,12 @@ $ make
 
 Type `make help` to see other possibilities.
 
+## License
+
+GNU General Public License v3.0
+
+See [LICENSE](./LICENSE) to see the full text.
+
 ---
 
 [opml]: https://en.wikipedia.org/wiki/OPML

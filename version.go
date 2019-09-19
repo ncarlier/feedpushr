@@ -17,11 +17,13 @@ func printVersion() {
 		version = GitCommit
 	}
 	fmt.Printf(`feedpushr (%s)
-Copyright (C) 2018 Nunux, Org.
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
 
-Written by Nicolas Carlier.`, version)
+Copyright (C) 2018 Nicolas Carlier
+
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it under certain conditions:
+GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt).
+`, version)
 }
 
 func init() {
