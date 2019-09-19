@@ -40,6 +40,11 @@ type Article struct {
 // Send article to a Readflow instance.
 func sendToReadflow(url string, apiKey string, article *model.Article) (int, error) {
 	result := 0
+
+	if !strings.HasSuffix(url, "/articles") {
+		url = url + "/articles"
+	}
+
 	b := new(bytes.Buffer)
 	articleForm := ArticleForm{
 		Title:       article.Title,

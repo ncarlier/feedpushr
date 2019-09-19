@@ -37,7 +37,7 @@ func (p *ReadflowOutputPlugin) Spec() model.Spec {
 func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
 	u := output.Props.Get("url")
 	if u == "" {
-		return nil, fmt.Errorf("missing URL property")
+		u = "https://api.readflow.app"
 	}
 	_url, err := url.ParseRequestURI(u)
 	if err != nil {
@@ -95,7 +95,7 @@ func (op *ReadflowOutputProvider) GetDef() model.OutputDef {
 	}
 	result.Props = map[string]interface{}{
 		"url":       op.targetURL,
-		"apiKey":   op.apiKey,
+		"apiKey":    op.apiKey,
 		"nbError":   op.nbError,
 		"nbSuccess": op.nbSuccess,
 	}
