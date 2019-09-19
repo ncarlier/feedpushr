@@ -1,28 +1,49 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v2.0.0-rc.1...v) (2019-09-01)
+# [](https://github.com/ncarlier/feedpushr/compare/v2.0.0...v) (2019-09-19)
 
 
 
-<a name="2.0.0-rc.1"></a>
-# [2.0.0-rc.1](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v2.0.0-rc.1) (2019-09-01)
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v2.0.0) (2019-09-19)
+
+
+### Bug Fixes
+
+* **contrib:** fix plugin configuration ([7afd946](https://github.com/ncarlier/feedpushr/commit/7afd946))
+* **contrib:** fix readflow plugin ([61f8c0d](https://github.com/ncarlier/feedpushr/commit/61f8c0d))
+* **contrib:** fix twitter plugin configuration ([dfed7af](https://github.com/ncarlier/feedpushr/commit/dfed7af))
+* **pshb:** try to get feed link from other attribute ([b6ef0db](https://github.com/ncarlier/feedpushr/commit/b6ef0db))
+* fix PSHB callback ([c5f01f0](https://github.com/ncarlier/feedpushr/commit/c5f01f0))
+* fix unit tests ([e228d47](https://github.com/ncarlier/feedpushr/commit/e228d47))
 
 
 ### Features
 
+* **agent:** refactoring of the agent ([6cd7c39](https://github.com/ncarlier/feedpushr/commit/6cd7c39))
 * **api:** WIP add CRUD API for filters and outputs ([fbbbd78](https://github.com/ncarlier/feedpushr/commit/fbbbd78))
 * **api:** WIP add CRUD API for filters and outputs ([a421877](https://github.com/ncarlier/feedpushr/commit/a421877))
 * **api:** WIP add Spec API for filters and outputs ([7c00d24](https://github.com/ncarlier/feedpushr/commit/7c00d24))
+* **feed:** use dedicated forms ([18e9cd1](https://github.com/ncarlier/feedpushr/commit/18e9cd1))
+* **output:** make readflow plugin as builtin ([e42c9fb](https://github.com/ncarlier/feedpushr/commit/e42c9fb))
 * **store:** add filter repository ([f28665e](https://github.com/ncarlier/feedpushr/commit/f28665e))
 * **ui:** add about page ([ce341c8](https://github.com/ncarlier/feedpushr/commit/ce341c8))
+* add agent ([212d399](https://github.com/ncarlier/feedpushr/commit/212d399))
 * **ui:** add output pages ([f0e1e63](https://github.com/ncarlier/feedpushr/commit/f0e1e63))
-* **ui:** configure main theme ([464f049](https://github.com/ncarlier/feedpushr/commit/464f049))
-* **ui:** new filter pages ([85eb0f6](https://github.com/ncarlier/feedpushr/commit/85eb0f6))
-* **ui:** switch to new UI ([495e410](https://github.com/ncarlier/feedpushr/commit/495e410))
-* **ui:** WIP filter pages ([209add6](https://github.com/ncarlier/feedpushr/commit/209add6))
+* add alias for filters and outputs ([f76e3e6](https://github.com/ncarlier/feedpushr/commit/f76e3e6))
+* add CLI attribute to clear configuration ([401390f](https://github.com/ncarlier/feedpushr/commit/401390f))
 * auto create all buckets ([779e897](https://github.com/ncarlier/feedpushr/commit/779e897))
+* backport contrib repository inside the project ([238390b](https://github.com/ncarlier/feedpushr/commit/238390b))
+* map attribute types on HTML input types ([1c60d74](https://github.com/ncarlier/feedpushr/commit/1c60d74))
 * new UI foundation ([7307580](https://github.com/ncarlier/feedpushr/commit/7307580))
 * persist filter and output configuration ([c7bc4b3](https://github.com/ncarlier/feedpushr/commit/c7bc4b3))
 * persist output configuration ([2ff1d20](https://github.com/ncarlier/feedpushr/commit/2ff1d20))
+* **ui:** WIP filter pages ([209add6](https://github.com/ncarlier/feedpushr/commit/209add6))
+* update LICENSE to GPLv3 ([bcb15a6](https://github.com/ncarlier/feedpushr/commit/bcb15a6))
+* **ui:** configure main theme ([464f049](https://github.com/ncarlier/feedpushr/commit/464f049))
+* **ui:** improve date rendering ([0ede79f](https://github.com/ncarlier/feedpushr/commit/0ede79f))
+* **ui:** new filter pages ([85eb0f6](https://github.com/ncarlier/feedpushr/commit/85eb0f6))
+* **ui:** show total nb of feeds ([7ab8109](https://github.com/ncarlier/feedpushr/commit/7ab8109))
+* **ui:** switch to new UI ([495e410](https://github.com/ncarlier/feedpushr/commit/495e410))
 
 
 
