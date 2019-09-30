@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"strings"
 	"sync/atomic"
 
 	"github.com/ChimeraCoder/anaconda"
@@ -105,6 +106,10 @@ func (op *TwitterOutputProvider) Send(article *model.Article) error {
 	v := url.Values{}
 	_, err := op.api.PostTweet(tweet, v)
 	if err != nil {
+		// Ignore error due to duplicate status
+		if strings.Contains(err.Error(), "\"code\":187") {
+			return nil
+		}
 		atomic.AddUint64(&op.nbError, 1)
 	} else {
 		atomic.AddUint64(&op.nbSuccess, 1)
