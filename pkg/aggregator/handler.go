@@ -18,6 +18,7 @@ import (
 const (
 	errCreateRequest = "unable to create request"
 	errDoRequest     = "unable to fetch feed (bad request)"
+	errTimeout       = "unable to fetch feed (timeout)"
 	errEmptyBody     = "unable to fetch feed (empty)"
 	errParssingBody  = "unable to fetch feed (bad body)"
 	errBadStatus     = "unable to fetch feed (status: %d)"
@@ -75,7 +76,11 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	// Do HTTP call
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fh.log.Error().Err(err).Msg(errDoRequest)
+		if ctx.Err() != nil && ctx.Err() == context.Canceled {
+			fh.log.Warn().Err(err).Msg(errDoRequest)
+		} else {
+			fh.log.Error().Err(err).Msg(errDoRequest)
+		}
 		fh.status.Err(err)
 		return *fh.status, nil
 	}
