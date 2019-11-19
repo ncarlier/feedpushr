@@ -18,24 +18,25 @@ GOARCH?=amd64
 # Add exe extension if windows target
 is_windows:=$(filter windows,$(GOOS))
 EXT:=$(if $(is_windows),".exe","")
+LDLAGS_LAUNCHER:=$(if $(is_windows),-ldflags "-H=windowsgui",)
 
 # Archive name
 ARCHIVE=$(APPNAME)-$(GOOS)-$(GOARCH).tgz
 
-# Executable name
-EXECUTABLE=$(APPNAME)$(EXT)
+# Main executable name
+MAIN_EXE=$(APPNAME)$(EXT)
 
-# CTL executable name
-CTL_EXECUTABLE=$(APPNAME)-ctl$(EXT)
+# CLI executable name
+CLI_EXE=$(APPNAME)-ctl$(EXT)
+
+# Launcher filename
+LAUNCHER_EXE=$(APPNAME)-launcher$(EXT)
 
 # Plugin name
 PLUGIN?=twitter
 
 # Plugin filename
 PLUGIN_SO=$(APPNAME)-$(PLUGIN).so
-
-# Agent filename
-AGENT=$(APPNAME)-agent$(EXT)
 
 # Extract version infos
 VERSION:=`git describe --tags`
@@ -92,17 +93,34 @@ pkg/assets/statik.go:
 	go get -u github.com/rakyll/statik
 	statik -p assets -src var/assets -dest pkg -f
 
+# Build SYSO Windows file
+contrib/launcher/main.syso:
+	# go get github.com/akavel/rsrc
+	rsrc -arch="amd64" -ico var/assets/ui/favicon.ico -o contrib/launcher/main.syso
+
 ## Build executable
 build: autogen pkg/assets/statik.go
 	-mkdir -p release
-	echo ">>> Building: $(EXECUTABLE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o release/$(EXECUTABLE)
-	echo ">>> Building: $(CTL_EXECUTABLE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
-	cd ./autogen/tool/$(APPNAME)-cli && \
-		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ../../../release/$(CTL_EXECUTABLE)
+	echo ">>> Building: $(MAIN_EXE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o release/$(MAIN_EXE)
 .PHONY: build
 
-release/$(EXECUTABLE): build
+## Build CLI executable
+cli:
+	-mkdir -p release
+	echo ">>> Building: $(CLI_EXE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	cd ./autogen/tool/$(APPNAME)-cli && \
+		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ../../../release/$(CLI_EXE)
+.PHONY: cli
+
+## Build launcher executable
+launcher: contrib/launcher/main.syso
+	echo ">>> Building: $(LAUNCHER_EXE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	cd contrib/launcher && \
+		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDLAGS_LAUNCHER) -o ../../release/$(LAUNCHER_EXE)
+.PHONY: launcher
+
+release/$(MAIN_EXE): build
 
 ## Run tests
 test:
@@ -111,9 +129,9 @@ test:
 .PHONY: test
 
 ## Install executable
-install: release/$(EXECUTABLE)
-	echo ">>> Installing $(EXECUTABLE) to ${HOME}/.local/bin/$(EXECUTABLE) ..."
-	cp release/$(EXECUTABLE) ${HOME}/.local/bin/$(EXECUTABLE)
+install: release/$(MAIN_EXE)
+	echo ">>> Installing $(MAIN_EXE) to ${HOME}/.local/bin/$(MAIN_EXE) ..."
+	cp release/$(MAIN_EXE) ${HOME}/.local/bin/$(MAIN_EXE)
 .PHONY: install
 
 ## Create Docker image
@@ -141,11 +159,11 @@ archive:
 
 ## Create distribution binaries
 distribution:
-	GOARCH=amd64 make build agent plugins archive
-	GOARCH=arm64 make build archive
-	GOARCH=arm make build archive
-	GOOS=windows make build agent archive
-	GOOS=darwin make build archive
+	GOARCH=amd64 make build cli launcher plugins archive
+	GOARCH=arm64 make build cli archive
+	GOARCH=arm make build cli archive
+	GOOS=windows make build cli launcher archive
+	GOOS=darwin make build cli archive
 .PHONY: distribution
 
 ## Bulid plugin (defined by PLUGIN variable)
@@ -161,10 +179,3 @@ plugins:
 	GOARCH=amd64 PLUGIN=mastodon make plugin
 	GOARCH=amd64 PLUGIN=rake make plugin
 .PHONY: plugins
-
-## Build agent
-agent:
-	echo ">>> Building: $(AGENT) $(VERSION) for $(GOOS)-$(GOARCH) ..."
-	cd contrib/agent && GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDLAGS_AGENT) -o ../../release/$(AGENT)
-.PHONY: agent
-

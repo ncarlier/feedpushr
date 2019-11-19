@@ -150,9 +150,11 @@ $ feedpushr --plugin ./feedpushr-twitter.so
 You can find some external plugins (such as for Twitter) into this
 [directory](./contrib).
 
-## Agent
+## Launcher
 
-Feedpushr can be started in "desktop mode" thanks to an agent. The purpose of `feedpushr-agent` is to start the daemon and add an icon to your taskbar. This icon allows you to control the daemon and quickly access the user interface.
+Feedpushr can be started in "desktop mode" thanks to a launcher.
+The purpose of `feedpushr-launcher` is to start the daemon and add an icon to your taskbar.
+This icon allows you to control the daemon and quickly access the user interface.
 
 ## User Interface
 
