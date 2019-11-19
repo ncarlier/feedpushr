@@ -11,7 +11,7 @@ import (
 // Article model structure.
 type Article struct {
 	Title           string                 `json:"title,omitempty"`
-	Description     string                 `json:"description,omitempty"`
+	Text            string                 `json:"text,omitempty"`
 	Content         string                 `json:"content,omitempty"`
 	Link            string                 `json:"link,omitempty"`
 	Updated         string                 `json:"updated,omitempty"`

@@ -136,9 +136,10 @@ func (c *OutputController) Specs(ctx *app.SpecsOutputContext) error {
 		}
 		for _, prop := range spec.PropsSpec {
 			s.Props = append(s.Props, &app.PropSpec{
-				Name: prop.Name,
-				Desc: prop.Desc,
-				Type: prop.Type.String(),
+				Name:    prop.Name,
+				Desc:    prop.Desc,
+				Type:    prop.Type.String(),
+				Options: prop.Options,
 			})
 		}
 

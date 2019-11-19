@@ -143,7 +143,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Id earum accusantium.
+          example: Minus et ut pariatur.
           type: string
         type: array
       text:
@@ -169,6 +169,23 @@ definitions:
   FeedCollection:
     description: FeedCollection is the media type for an array of Feed (default view)
     example:
+    - cdate: "2010-10-23T13:34:07Z"
+      errorCount: 3.336917582948419e+17
+      errorMsg: Est suscipit.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1993-05-15T16:34:02Z"
+      mdate: "1981-09-22T23:39:59Z"
+      nbProcessedItems: 5.41887129200626e+17
+      nextCheck: "1999-10-11T23:32:13Z"
+      status: stopped
+      tags:
+      - foo
+      - bar
+      text: RSS Feed
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
     - cdate: "2010-10-23T13:34:07Z"
       errorCount: 3.336917582948419e+17
       errorMsg: Est suscipit.
@@ -254,7 +271,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Quia officia minus et ut.
+          example: Fugit doloribus in.
           type: string
         type: array
     required:
@@ -290,7 +307,25 @@ definitions:
       props:
       - desc: New articles are sent as JSON document to...
         name: url
-        type: string
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
     properties:
       desc:
         description: Description of the filter
@@ -317,7 +352,25 @@ definitions:
       props:
       - desc: New articles are sent as JSON document to...
         name: url
-        type: string
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
     items:
       $ref: '#/definitions/FilterSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection;
@@ -369,7 +422,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Doloribus in culpa mollitia modi consequatur.
+          example: Maxime occaecati necessitatibus.
           type: string
         type: array
     required:
@@ -392,6 +445,15 @@ definitions:
       tags:
       - foo
       - bar
+    - alias: foo
+      desc: New articles are sent as JSON document to...
+      enabled: false
+      id: 1
+      name: fetch
+      props: '-'
+      tags:
+      - foo
+      - bar
     items:
       $ref: '#/definitions/Output'
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; type=collection;
@@ -405,13 +467,18 @@ definitions:
       props:
       - desc: New articles are sent as JSON document to...
         name: url
-        type: string
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
       - desc: New articles are sent as JSON document to...
         name: url
-        type: string
-      - desc: New articles are sent as JSON document to...
-        name: url
-        type: string
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
     properties:
       desc:
         description: Description of the output channel
@@ -438,25 +505,18 @@ definitions:
       props:
       - desc: New articles are sent as JSON document to...
         name: url
-        type: string
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
       - desc: New articles are sent as JSON document to...
         name: url
-        type: string
-      - desc: New articles are sent as JSON document to...
-        name: url
-        type: string
-    - desc: New articles are sent as JSON document to...
-      name: fetch
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        type: string
-      - desc: New articles are sent as JSON document to...
-        name: url
-        type: string
-      - desc: New articles are sent as JSON document to...
-        name: url
-        type: string
+        options:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        type: text
     items:
       $ref: '#/definitions/OutputSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection;
@@ -467,7 +527,11 @@ definitions:
     example:
       desc: New articles are sent as JSON document to...
       name: url
-      type: string
+      options:
+      - Vitae ducimus veritatis laudantium.
+      - Vitae ducimus veritatis laudantium.
+      - Vitae ducimus veritatis laudantium.
+      type: text
     properties:
       desc:
         description: Description of the output channel
@@ -477,9 +541,19 @@ definitions:
         description: Name of the property
         example: url
         type: string
+      options:
+        description: Property options
+        example:
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        - Vitae ducimus veritatis laudantium.
+        items:
+          example: Vitae ducimus veritatis laudantium.
+          type: string
+        type: array
       type:
-        description: Property type ('string', 'number')
-        example: string
+        description: Property type ('text', 'url', ...)
+        example: text
         type: string
     required:
     - name
@@ -493,13 +567,11 @@ definitions:
     example:
     - desc: New articles are sent as JSON document to...
       name: url
-      type: string
-    - desc: New articles are sent as JSON document to...
-      name: url
-      type: string
-    - desc: New articles are sent as JSON document to...
-      name: url
-      type: string
+      options:
+      - Vitae ducimus veritatis laudantium.
+      - Vitae ducimus veritatis laudantium.
+      - Vitae ducimus veritatis laudantium.
+      type: text
     items:
       $ref: '#/definitions/PropSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.prop-spec.v1+json; type=collection;

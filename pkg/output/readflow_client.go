@@ -52,7 +52,7 @@ func sendToReadflow(url string, apiKey string, article *model.Article) (int, err
 		PublishedAt: article.PublishedParsed,
 	}
 	if article.Content == "" {
-		articleForm.HTML = &article.Description
+		articleForm.HTML = &article.Text
 	} else {
 		articleForm.HTML = &article.Content
 	}

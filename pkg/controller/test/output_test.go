@@ -79,7 +79,7 @@ func TestOutputDefs(t *testing.T) {
 	assert.True(t, len(specs) > 0, "")
 	for _, spec := range specs {
 		if spec.Name == "http" {
-			assert.True(t, len(spec.Props) == 1, "")
+			assert.Equal(t, 3, len(spec.Props), "")
 			assert.Equal(t, "url", spec.Props[0].Name, "")
 			assert.Equal(t, "Target URL", spec.Props[0].Desc, "")
 			assert.Equal(t, "url", spec.Props[0].Type, "")

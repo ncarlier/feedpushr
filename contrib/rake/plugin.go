@@ -84,7 +84,7 @@ type RakeFilter struct {
 func (f *RakeFilter) DoFilter(article *model.Article) error {
 	plain := html2text.HTML2Text(article.Content)
 	if plain == "" {
-		plain = article.Description
+		plain = article.Text
 	}
 	article.Meta["KeywordScore"] = f.rake.Run(plain)
 	atomic.AddUint64(&f.nbSuccess, 1)

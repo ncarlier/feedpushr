@@ -7,18 +7,46 @@ import (
 	"net/http"
 	"net/url"
 	"sync/atomic"
+	"text/template"
 
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
+const (
+	contentTypeJSON = "application/json; charset=utf-8"
+	contentTypeText = "text/plain; charset=utf-8"
+)
+
+var supportedContentTypes = []string{contentTypeJSON, contentTypeText}
+
+func contains(arr []string, str string) bool {
+	for _, a := range arr {
+		if a == str {
+			return true
+		}
+	}
+	return false
+}
+
 var httpSpec = model.Spec{
 	Name: "http",
-	Desc: "New articles are sent as JSON document to an HTTP endpoint (POST).\n\n" + jsonFormatDesc,
+	Desc: "New articles are sent to a HTTP endpoint (POST).\nYou can customize the payload using the [template engine](https://github.com/ncarlier/feedpushr#output-format).",
 	PropsSpec: []model.PropSpec{
 		{
 			Name: "url",
 			Desc: "Target URL",
 			Type: model.URL,
+		},
+		{
+			Name:    "contentType",
+			Desc:    "Content type",
+			Type:    model.Select,
+			Options: supportedContentTypes,
+		},
+		{
+			Name: "format",
+			Desc: "Payload format (internal JSON format if not provided)",
+			Type: model.Textarea,
 		},
 	},
 }
@@ -41,13 +69,32 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider,
 	if err != nil {
 		return nil, fmt.Errorf("invalid URL property: %s", err.Error())
 	}
+	var tpl *template.Template
+	var format string
+	if _format, ok := output.Props["format"]; ok && _format != "" {
+		tplName := fmt.Sprintf("stdout-%d", output.ID)
+		format = fmt.Sprintf("%v", _format)
+		var err error
+		tpl, err = template.New(tplName).Parse(format)
+		if err != nil {
+			return nil, err
+		}
+	}
+	contentType := contentTypeJSON
+	if ct, ok := output.Props["contentType"]; ok && contains(supportedContentTypes, fmt.Sprintf("%v", ct)) {
+		contentType = fmt.Sprintf("%v", ct)
+	}
+
 	return &HTTPOutputProvider{
-		id:        output.ID,
-		alias:     output.Alias,
-		spec:      httpSpec,
-		tags:      output.Tags,
-		targetURL: _url.String(),
-		enabled:   output.Enabled,
+		id:          output.ID,
+		alias:       output.Alias,
+		spec:        httpSpec,
+		tags:        output.Tags,
+		enabled:     output.Enabled,
+		targetURL:   _url.String(),
+		contentType: contentType,
+		format:      format,
+		tpl:         tpl,
 	}, nil
 }
 
@@ -55,21 +102,32 @@ var httpOutputPlugin = &HTTPOutputPlugin{}
 
 // HTTPOutputProvider HTTP output provider
 type HTTPOutputProvider struct {
-	id        int
-	alias     string
-	spec      model.Spec
-	tags      []string
-	nbError   uint64
-	nbSuccess uint64
-	targetURL string
-	enabled   bool
+	id          int
+	alias       string
+	spec        model.Spec
+	tags        []string
+	nbError     uint64
+	nbSuccess   uint64
+	enabled     bool
+	targetURL   string
+	contentType string
+	format      string
+	tpl         *template.Template
 }
 
 // Send article to HTTP endpoint.
 func (op *HTTPOutputProvider) Send(article *model.Article) error {
 	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(article)
-	resp, err := http.Post(op.targetURL, "application/json; charset=utf-8", b)
+	if op.tpl != nil {
+		if err := op.tpl.Execute(b, article); err != nil {
+			return err
+		}
+	} else {
+		if err := json.NewEncoder(b).Encode(article); err != nil {
+			return err
+		}
+	}
+	resp, err := http.Post(op.targetURL, op.contentType, b)
 	if err != nil {
 		atomic.AddUint64(&op.nbError, 1)
 		return err
@@ -91,9 +149,11 @@ func (op *HTTPOutputProvider) GetDef() model.OutputDef {
 		Enabled: op.enabled,
 	}
 	result.Props = map[string]interface{}{
-		"url":       op.targetURL,
-		"nbError":   op.nbError,
-		"nbSuccess": op.nbSuccess,
+		"nbError":     op.nbError,
+		"nbSuccess":   op.nbSuccess,
+		"url":         op.targetURL,
+		"format":      op.format,
+		"contentType": op.contentType,
 	}
 	return result
 }

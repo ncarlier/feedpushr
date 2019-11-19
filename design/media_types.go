@@ -169,9 +169,10 @@ var PropSpec = MediaType("application/vnd.feedpushr.prop-spec.v1+json", func() {
 		Attribute("desc", String, "Description of the output channel", func() {
 			Example("New articles are sent as JSON document to...")
 		})
-		Attribute("type", String, "Property type ('string', 'number')", func() {
-			Example("string")
+		Attribute("type", String, "Property type ('text', 'url', ...)", func() {
+			Example("text")
 		})
+		Attribute("options", ArrayOf(String), "Property options")
 		Required("name", "desc", "type")
 	})
 
@@ -179,6 +180,7 @@ var PropSpec = MediaType("application/vnd.feedpushr.prop-spec.v1+json", func() {
 		Attribute("name")
 		Attribute("desc")
 		Attribute("type")
+		Attribute("options")
 	})
 })
 

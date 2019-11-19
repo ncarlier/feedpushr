@@ -10,7 +10,7 @@ import (
 func NewArticle(feed *app.Feed, item *gofeed.Item) *model.Article {
 	article := &model.Article{}
 	article.Content = item.Content
-	article.Description = item.Description
+	article.Text = item.Description
 	article.GUID = item.GUID
 	article.Link = item.Link
 	article.Title = item.Title
