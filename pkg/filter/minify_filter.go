@@ -38,13 +38,13 @@ func (f *MinifyFilter) DoFilter(article *model.Article) error {
 		}
 		article.Content = content
 	}
-	if article.Description != "" {
-		description, err := f.minifier.String("text/html", article.Description)
+	if article.Text != "" {
+		desc, err := f.minifier.String("text/html", article.Text)
 		if err != nil {
 			atomic.AddUint64(&f.nbError, 1)
 			return err
 		}
-		article.Description = description
+		article.Text = desc
 	}
 
 	atomic.AddUint64(&f.nbSuccess, 1)

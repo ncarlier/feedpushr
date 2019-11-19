@@ -102,20 +102,26 @@ Example: If you add a `title` filter with `foo,bar` as tags, only new articles w
 
 New articles are sent to outputs.
 
-Currently, there are two built-in output providers:
+Currently, there are some built-in output providers:
 
 | Output | Properties | Description |
-|----------|---------|-------------|
-| `stdout` | None    | New articles are sent as JSON documents to the standard output of the process. This can be useful if you want to pipe the command to another shell command. *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL tool such as [Logstash][logstash], etc.* |
-| `http` | `url` | New articles are sent as JSON documents to an HTTP endpoint (POST). |
-| `readflow` | - `url` (default: [official API][readflow-api] <br>- `apiKey` | New articles are sent to [readflow][readflow] instance. |
+|----------|----------|-------------|
+| `stdout` | `format` | New articles are sent to the standard output of the process. This can be useful if you want to pipe the command to another shell command. *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL tool such as [Logstash][logstash], etc.* |
+| `http` | `url`<br>`contentType`<br>`format` | New articles are sent to an HTTP endpoint (POST). |
+| `readflow` | `url` (default: [official API][readflow-api] <br>`apiKey` | New articles are sent to [readflow][readflow] instance. |
 
-JSON document format:
+Outputs can be extended using [plugins](#plugins).
+
+### Output format
+
+The output format for `stdout` and `http` providers is configurable.
+
+If the format is not specified, the output will be formatted as the following JSON document:
 
 ```json
 {
 	"title": "Article title",
-	"description": "Article description",
+	"text": "Article text description",
 	"content": "Article HTML content",
 	"link": "Article URL",
 	"updated": "Article update date (String format)",
@@ -130,7 +136,19 @@ JSON document format:
 }
 ```
 
-Outputs can be extended using [plugins](#plugins).
+If, on the other hand, you specify a format, it must comply with the [Golang template syntax](https://golang.org/pkg/text/template/).
+
+Basically, you have access to the JSON properties above but prefixed with a dot and a capital letter all surrounded by 2 brackets.
+For example, the `title` property is accessible with the syntax : `{{.Title}}`.
+
+Let's say you want to send a JSON payload to a [Mattermost Webhook](https://docs.mattermost.com/developer/webhooks-incoming.html).
+You can format the payload like this:
+
+```json
+{
+	"text": ":tada: {{.Title}} (<{{.Link}}|more>) cc @all",
+}
+```
 
 ## Plugins
 

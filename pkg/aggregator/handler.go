@@ -33,7 +33,7 @@ type FeedHandler struct {
 	timeout time.Duration
 }
 
-// NewFeedHandler creats new feed handler
+// NewFeedHandler create new feed handler
 func NewFeedHandler(feed *app.Feed, timeout time.Duration) *FeedHandler {
 	handler := FeedHandler{
 		log:     log.With().Str("handler", feed.ID).Logger(),

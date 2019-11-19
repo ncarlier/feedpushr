@@ -5,35 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync/atomic"
+	"text/template"
 
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
-const jsonFormatDesc = `
-JSON Format:
-~~~~
-{
-	title: "Article title",
-	description: "Article description",
-	content: "Article HTML content",
-	link: "Article URL",
-	updated: "Article update date (String format)",
-	updatedParsed: "Article update date (Date format)",
-	published: "Article publication date (String format)",
-	publishedParsed: "Article publication date (Date format)",
-	guid: "Article feed GUID",
-	meta: {
-		"key": "Metadata keys and values"
-	},
-	tags: ["list", "of", "tags"]
-}
-~~~~
-`
-
 var stdoutSpec = model.Spec{
-	Name:      "stdout",
-	Desc:      "New articles are sent as JSON document to the standard output of the process.\n\n" + jsonFormatDesc,
-	PropsSpec: []model.PropSpec{},
+	Name: "stdout",
+	Desc: "New articles are sent to the standard output of the process.",
+	PropsSpec: []model.PropSpec{
+		{
+			Name: "format",
+			Desc: "Payload format (internal JSON format if not provided)",
+			Type: model.Textarea,
+		},
+	},
 }
 
 // StdoutOutputPlugin is the STDOUT output plugin
@@ -46,12 +32,25 @@ func (p *StdoutOutputPlugin) Spec() model.Spec {
 
 // Build creates output provider instance
 func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+	var tpl *template.Template
+	var format string
+	if _format, ok := output.Props["format"]; ok && _format != "" {
+		tplName := fmt.Sprintf("stdout-%d", output.ID)
+		format = fmt.Sprintf("%v", _format)
+		var err error
+		tpl, err = template.New(tplName).Parse(format)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &StdOutputProvider{
 		id:      output.ID,
 		alias:   output.Alias,
 		spec:    stdoutSpec,
 		tags:    output.Tags,
 		enabled: output.Enabled,
+		format:  format,
+		tpl:     tpl,
 	}, nil
 }
 
@@ -65,12 +64,22 @@ type StdOutputProvider struct {
 	tags      []string
 	nbSuccess uint64
 	enabled   bool
+	format    string
+	tpl       *template.Template
 }
 
 // Send article to STDOUT.
 func (op *StdOutputProvider) Send(article *model.Article) error {
 	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(article)
+	if op.tpl != nil {
+		if err := op.tpl.Execute(b, article); err != nil {
+			return err
+		}
+	} else {
+		if err := json.NewEncoder(b).Encode(article); err != nil {
+			return err
+		}
+	}
 	fmt.Println(b.String())
 	atomic.AddUint64(&op.nbSuccess, 1)
 	return nil
@@ -87,6 +96,7 @@ func (op *StdOutputProvider) GetDef() model.OutputDef {
 	}
 	result.Props = map[string]interface{}{
 		"nbSuccess": op.nbSuccess,
+		"format":    op.format,
 	}
 	return result
 }
