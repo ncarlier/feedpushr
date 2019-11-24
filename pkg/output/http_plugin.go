@@ -9,15 +9,11 @@ import (
 	"sync/atomic"
 	"text/template"
 
+	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
-const (
-	contentTypeJSON = "application/json; charset=utf-8"
-	contentTypeText = "text/plain; charset=utf-8"
-)
-
-var supportedContentTypes = []string{contentTypeJSON, contentTypeText}
+var supportedContentTypes = []string{common.ContentTypeJSON, common.ContentTypeText}
 
 func contains(arr []string, str string) bool {
 	for _, a := range arr {
@@ -30,7 +26,7 @@ func contains(arr []string, str string) bool {
 
 var httpSpec = model.Spec{
 	Name: "http",
-	Desc: "New articles are sent to a HTTP endpoint (POST).\nYou can customize the payload using the [template engine](https://github.com/ncarlier/feedpushr#output-format).",
+	Desc: "New articles are sent to a HTTP endpoint (POST).\n\nYou can customize the payload using the [template engine](https://github.com/ncarlier/feedpushr#output-format).",
 	PropsSpec: []model.PropSpec{
 		{
 			Name: "url",
@@ -80,7 +76,7 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider,
 			return nil, err
 		}
 	}
-	contentType := contentTypeJSON
+	contentType := common.ContentTypeJSON
 	if ct, ok := output.Props["contentType"]; ok && contains(supportedContentTypes, fmt.Sprintf("%v", ct)) {
 		contentType = fmt.Sprintf("%v", ct)
 	}
@@ -127,11 +123,22 @@ func (op *HTTPOutputProvider) Send(article *model.Article) error {
 			return err
 		}
 	}
-	resp, err := http.Post(op.targetURL, op.contentType, b)
+
+	req, err := http.NewRequest("POST", op.targetURL, b)
 	if err != nil {
 		atomic.AddUint64(&op.nbError, 1)
 		return err
-	} else if resp.StatusCode >= 300 {
+	}
+	req.Header.Set("User-Agent", common.UserAgent)
+	req.Header.Set("Content-Type", op.contentType)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		atomic.AddUint64(&op.nbError, 1)
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
 		atomic.AddUint64(&op.nbError, 1)
 		return fmt.Errorf("bad status code: %d", resp.StatusCode)
 	}

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -74,7 +75,8 @@ func sendToReadflow(url string, apiKey string, article *model.Article) (int, err
 	if err != nil {
 		return result, err
 	}
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", common.UserAgent)
+	req.Header.Set("Content-Type", common.ContentTypeJSON)
 	req.SetBasicAuth("api", apiKey)
 	client := &http.Client{}
 	resp, err := client.Do(req)
