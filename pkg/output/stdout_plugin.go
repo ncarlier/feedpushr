@@ -12,7 +12,7 @@ import (
 
 var stdoutSpec = model.Spec{
 	Name: "stdout",
-	Desc: "New articles are sent to the standard output of the process.",
+	Desc: "New articles are sent to the process standard output.\n\nYou can customize the payload using the [template engine](https://github.com/ncarlier/feedpushr#output-format).",
 	PropsSpec: []model.PropSpec{
 		{
 			Name: "format",

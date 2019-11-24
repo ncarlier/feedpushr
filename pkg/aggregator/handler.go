@@ -69,6 +69,9 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	}
 	req = req.WithContext(ctx)
 
+	// Set custom headers
+	req.Header.Set("User-Agent", common.UserAgent)
+
 	// Add cache headers
 	req.Header.Add("If-Modified-Since", fh.status.LastModifiedHeader)
 	req.Header.Add("If-None-Match", fh.status.EtagHeader)
