@@ -8,6 +8,13 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
+var tootVisibilities = map[string]string{
+	"public": "Public",
+	"private": "Private",
+	"direct": "Direct",
+	"unlisted": "Unlisted",
+}
+
 var spec = model.Spec{
 	Name: "mastodon",
 	Desc: "Send new articles as *Toot* to a Mastodon instance.",
@@ -24,8 +31,9 @@ var spec = model.Spec{
 		},
 		{
 			Name: "visibility",
-			Desc: "Toot visibiliy (public, unlisted, private, direct)",
-			Type: model.Text,
+			Desc: "Toot visibility",
+			Type:    model.Select,
+			Options: tootVisibilities,
 		},
 	},
 }
@@ -54,7 +62,7 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 		return nil, fmt.Errorf("missing access token property")
 	}
 	visibility := output.Props.Get("visibility")
-	if visibility == "" {
+	if _, exists := tootVisibilities[visibility]; !exists {
 		visibility = "public"
 	}
 	return &MastodonOutputProvider{

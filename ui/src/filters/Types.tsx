@@ -19,6 +19,7 @@ export interface PropsSpec {
   name: string
   desc: string
   type: string
+  options?: Object
 }
 
 export interface FilterSpec {

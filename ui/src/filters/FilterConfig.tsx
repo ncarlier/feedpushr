@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 import React, { useCallback } from 'react'
 
-import { Button, Paper, TextField, Typography } from '@material-ui/core'
+import { Button, Paper, TextField, Typography, MenuItem } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { Filter, FilterForm, FilterProps, FilterSpec } from './Types'
@@ -78,11 +78,20 @@ export default ({onSave, onCancel, spec, filter}: Props) => {
             key={prop.name}
             label={prop.name}
             helperText={prop.desc}
-            type={prop.type}
+            value={props[prop.name]}
+            type={['select', 'textarea'].includes(prop.type) ? undefined : prop.type}
+            multiline={prop.type === 'textarea'}
+            select={prop.type === 'select'}
             defaultValue={props[prop.name]}
             onChange={handleChangeProp(prop.name)}
             fullWidth
-          />
+          >
+            {prop.options && Object.entries(prop.options).map(option => (
+              <MenuItem key={option[0]} value={option[0]}>
+                {option[1]}
+              </MenuItem>
+            ))}
+          </TextField>
         ))}
         <Typography variant="h5" className={classes.tags}>Tags</Typography>
         <TextField

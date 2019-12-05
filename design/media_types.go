@@ -172,7 +172,7 @@ var PropSpec = MediaType("application/vnd.feedpushr.prop-spec.v1+json", func() {
 		Attribute("type", String, "Property type ('text', 'url', ...)", func() {
 			Example("text")
 		})
-		Attribute("options", ArrayOf(String), "Property options")
+		Attribute("options", HashOf(String, String), "Property options")
 		Required("name", "desc", "type")
 	})
 

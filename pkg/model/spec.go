@@ -36,5 +36,5 @@ type PropSpec struct {
 	Desc    string
 	Name    string
 	Type    PropType
-	Options []string
+	Options map[string]string
 }

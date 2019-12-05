@@ -19,7 +19,7 @@ export interface PropsSpec {
   name: string
   desc: string
   type: string
-  options?: string[]
+  options?: Object
 }
 
 export interface OutputSpec {

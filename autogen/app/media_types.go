@@ -360,7 +360,7 @@ type PropSpec struct {
 	// Name of the property
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Property options
-	Options []string `form:"options,omitempty" json:"options,omitempty" yaml:"options,omitempty" xml:"options,omitempty"`
+	Options map[string]string `form:"options,omitempty" json:"options,omitempty" yaml:"options,omitempty" xml:"options,omitempty"`
 	// Property type ('text', 'url', ...)
 	Type string `form:"type" json:"type" yaml:"type" xml:"type"`
 }

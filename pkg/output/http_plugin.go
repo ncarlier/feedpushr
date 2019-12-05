@@ -13,7 +13,10 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
-var supportedContentTypes = []string{common.ContentTypeJSON, common.ContentTypeText}
+var supportedContentTypes = map[string]string{
+	common.ContentTypeJSON: "JSON",
+	common.ContentTypeText: "Text",
+}
 
 func contains(arr []string, str string) bool {
 	for _, a := range arr {
@@ -77,8 +80,11 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider,
 		}
 	}
 	contentType := common.ContentTypeJSON
-	if ct, ok := output.Props["contentType"]; ok && contains(supportedContentTypes, fmt.Sprintf("%v", ct)) {
-		contentType = fmt.Sprintf("%v", ct)
+	if val, ok := output.Props["contentType"]; ok {
+		_contentType := fmt.Sprintf("%v", val)
+		if _, supported := supportedContentTypes[_contentType]; supported {
+			contentType = _contentType
+		}
 	}
 
 	return &HTTPOutputProvider{

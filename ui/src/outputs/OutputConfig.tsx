@@ -86,9 +86,9 @@ export default ({onSave, onCancel, spec, output}: Props) => {
             onChange={handleChangeProp(prop.name)}
             fullWidth
           >
-            {prop.options && prop.options.map(option => (
-              <MenuItem key={option} value={option}>
-                {option}
+            {prop.options && Object.entries(prop.options).map(option => (
+              <MenuItem key={option[0]} value={option[0]}>
+                {option[1]}
               </MenuItem>
             ))}
           </TextField>
