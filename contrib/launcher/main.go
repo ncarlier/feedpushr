@@ -78,7 +78,7 @@ func main() {
 		case sig := <-sigChan:
 			// Forward signal
 			if err := cmd.Process.Signal(sig); err != nil {
-				log.Println("unable to forwrard signal", sig, err)
+				log.Println("unable to forward signal", sig, err)
 			}
 		case err := <-waitChan:
 			// Subprocess exited. Get the return code, if we can

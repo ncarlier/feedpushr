@@ -88,8 +88,8 @@ You can define tags on feeds using the Web UI or the API:
 $ curl -XPOST http://localhost:8080/v1/feeds?url=http://www.hashicorp.com/feed.xml&tags=foo,bar
 ```
 
-Tags can also be imported/exported in OPML format. When using OMPL, tags are stored into the [category attribute][opml-category]. OPML category is a string of comma-separated slash-delimited category strings.
-For example, this OMPL attribute `<category>/test,foo,/bar/bar</category>` will be converted to the following tag list: `test, foo, bar_bar`.
+Tags can also be imported/exported in OPML format. When using OPML, tags are stored into the [category attribute][opml-category]. OPML category is a string of comma-separated slash-delimited category strings.
+For example, this OPML attribute `<category>/test,foo,/bar/bar</category>` will be converted to the following tag list: `test, foo, bar_bar`.
 
 Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
 
@@ -156,7 +156,7 @@ You can easily extend the application by adding plugins.
 
 A plugin is a compiled library file that must be loaded when the application starts.
 
-Plugins inside `$PWD` are automaticaly loaded.
+Plugins inside `$PWD` are automatically loaded.
 You can also load a plugin using the `--plugin` parameter.
 
 Example:

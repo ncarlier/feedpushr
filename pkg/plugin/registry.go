@@ -16,8 +16,8 @@ type Registry struct {
 
 var instance *Registry
 
-// GetRegsitry returns global plugin registry
-func GetRegsitry() *Registry {
+// GetRegistry returns global plugin registry
+func GetRegistry() *Registry {
 	if instance == nil {
 		Configure([]string{})
 	}
@@ -33,11 +33,11 @@ func Configure(plugins []string) error {
 	for _, filename := range plugins {
 		plug, err := _plugin.Open(filename)
 		if err != nil {
-			return fmt.Errorf("unsuported plugin file: %s - %v", filename, err)
+			return fmt.Errorf("unsupported plugin file: %s - %v", filename, err)
 		}
 		getPluginSpec, err := plug.Lookup("GetPluginSpec")
 		if err != nil {
-			return fmt.Errorf("unsuported plugin type: %s - %v", filename, err)
+			return fmt.Errorf("unsupported plugin type: %s - %v", filename, err)
 		}
 		spec := getPluginSpec.(func() model.PluginSpec)()
 		log.Debug().Str("name", spec.Name).Str("filename", filename).Msg("loading plugin...")
@@ -46,17 +46,17 @@ func Configure(plugins []string) error {
 		case model.OUTPUT_PLUGIN:
 			getOutputPlugin, err := plug.Lookup("GetOutputPlugin")
 			if err != nil {
-				return fmt.Errorf("unsuported output plugin: %s - %v", spec.Name, err)
+				return fmt.Errorf("unsupported output plugin: %s - %v", spec.Name, err)
 			}
 			outputPlugin, err := getOutputPlugin.(func() (model.OutputPlugin, error))()
 			if err != nil {
-				return fmt.Errorf("unable to load ouput plugin: %s - %v", spec.Name, err)
+				return fmt.Errorf("unable to load output plugin: %s - %v", spec.Name, err)
 			}
 			reg.outputPlugins[spec.Name] = outputPlugin
 		case model.FILTER_PLUGIN:
 			getFilter, err := plug.Lookup("GetFilterPlugin")
 			if err != nil {
-				return fmt.Errorf("unsuported filter plugin: %s - %v", spec.Name, err)
+				return fmt.Errorf("unsupported filter plugin: %s - %v", spec.Name, err)
 			}
 			filterPlugin, err := getFilter.(func() (model.FilterPlugin, error))()
 			if err != nil {

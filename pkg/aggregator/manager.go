@@ -57,7 +57,7 @@ func (m *Manager) RegisterFeedAggregator(feed *app.Feed) *FeedAggregator {
 func (m *Manager) UnRegisterFeedAggregator(id string) {
 	fa := m.GetFeedAggregator(id)
 	if fa == nil {
-		m.log.Warn().Str("feed", id).Msg("unable to unregister feed aggregator: not found")
+		m.log.Warn().Str("feed", id).Msg("unable to deregister feed aggregator: not found")
 		return
 	}
 	fa.Stop()

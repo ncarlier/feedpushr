@@ -82,7 +82,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 	}
 	fa := c.aggregator.GetFeedAggregator(feed.ID)
 	if fa != nil {
-		// Reload aggegator data
+		// Reload aggregator data
 		// For now we are recreating the aggregator
 		c.aggregator.UnRegisterFeedAggregator(feed.ID)
 		if feed.Status != nil && *feed.Status == aggregator.RunningStatus.String() {

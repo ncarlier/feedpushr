@@ -57,7 +57,7 @@ func (c *OpmlController) Get(ctx *app.GetOpmlContext) error {
 	return ctx.OK([]byte(xml))
 }
 
-// Upload OMPL file to creates feeds.
+// Upload OPML file to creates feeds.
 func (c *OpmlController) Upload(ctx *app.UploadOpmlContext) error {
 	reader, err := ctx.MultipartReader()
 	if err != nil {
@@ -93,7 +93,7 @@ func (c *OpmlController) Upload(ctx *app.UploadOpmlContext) error {
 				metas[idx*2] = r[0]
 				metas[(idx*2)+1] = r[1]
 			}
-			return goa.ErrBadRequest("unable to import all OPLM items", metas...)
+			return goa.ErrBadRequest("unable to import all OPML items", metas...)
 		} else if err != nil {
 			return ctx.BadRequest(err)
 		}

@@ -37,7 +37,7 @@ import (
 )
 
 func main() {
-	// Shutdwon channels
+	// Shutdown channels
 	done := make(chan bool)
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)

@@ -32,7 +32,7 @@ func newFilter(def *model.FilterDef) (model.Filter, error) {
 		filter = newMinifyFilter(def)
 	default:
 		// Try to load plugin regarding the name
-		plug := plugin.GetRegsitry().LookupFilterPlugin(def.Name)
+		plug := plugin.GetRegistry().LookupFilterPlugin(def.Name)
 		if plug == nil {
 			return nil, fmt.Errorf("unsuported filter: %s", def.Name)
 		}
@@ -52,7 +52,7 @@ func GetAvailableFilters() []model.Spec {
 		fetchSpec,
 		minifySpec,
 	}
-	plugin.GetRegsitry().ForEachFilterPlugin(func(plug model.FilterPlugin) error {
+	plugin.GetRegistry().ForEachFilterPlugin(func(plug model.FilterPlugin) error {
 		result = append(result, plug.Spec())
 		return nil
 	})

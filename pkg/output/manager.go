@@ -40,7 +40,7 @@ func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
 	manager.plugins[readflowOutputPlugin.Spec().Name] = readflowOutputPlugin
 
 	// Register external output plugins...
-	err := plugin.GetRegsitry().ForEachOutputPlugin(func(plug model.OutputPlugin) error {
+	err := plugin.GetRegistry().ForEachOutputPlugin(func(plug model.OutputPlugin) error {
 		manager.plugins[plug.Spec().Name] = plug
 		return nil
 	})

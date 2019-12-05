@@ -15,7 +15,7 @@ func (m *Manager) Add(def *model.OutputDef) (model.OutputProvider, error) {
 
 	plug, ok := m.plugins[def.Name]
 	if !ok {
-		return nil, fmt.Errorf("unsuported output provider: %s", def.Name)
+		return nil, fmt.Errorf("unsupported output provider: %s", def.Name)
 	}
 
 	nextID := 0
@@ -46,7 +46,7 @@ func (m *Manager) Update(output *model.OutputDef) (model.OutputProvider, error) 
 			m.log.Debug().Int("id", output.ID).Msg("updating output...")
 			plug, ok := m.plugins[output.Name]
 			if !ok {
-				return nil, fmt.Errorf("unsuported output provider: %s", output.Name)
+				return nil, fmt.Errorf("unsupported output provider: %s", output.Name)
 			}
 			p, err := plug.Build(output)
 			if err != nil {
