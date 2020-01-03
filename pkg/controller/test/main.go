@@ -7,14 +7,14 @@ import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/filter"
-	"github.com/ncarlier/feedpushr/pkg/output"
+	"github.com/ncarlier/feedpushr/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/pkg/store"
 )
 
 var (
-	db  store.DB
-	srv = goa.New("ctrl-test")
-	om  *output.Manager
+	db   store.DB
+	srv  = goa.New("ctrl-test")
+	pipe *pipeline.Pipeline
 )
 
 func setup(t *testing.T) func(t *testing.T) {
@@ -24,14 +24,14 @@ func setup(t *testing.T) func(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unable to setup Database: %v", err)
 	}
-	// Init output manager
-	om, err = output.NewManager(db, time.Hour)
+	// Init the pipeline
+	pipe, err = pipeline.NewPipeline(db, time.Hour)
 	if err != nil {
 		t.Fatalf("Unable to setup Output Manager: %v", err)
 	}
-	om.ChainFilter = filter.NewChainFilter()
+	pipe.ChainFilter = filter.NewChainFilter()
 	filter := builder.NewFilterBuilder().FromURI("title://?prefix=[test]").Build()
-	om.ChainFilter.Add(filter)
+	pipe.ChainFilter.Add(filter)
 
 	return func(t *testing.T) {
 		t.Log("teardown test case")

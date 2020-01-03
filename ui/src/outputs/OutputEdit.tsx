@@ -32,10 +32,11 @@ export default ({ match, history }: Props) => {
     try {
       const res = await fetchAPI(`/outputs/${id}`, null, {
         method: 'PUT',
-        body: JSON.stringify({...form, tags: form.tags.join(',')}),
+        body: JSON.stringify(form),
       })
       if (!res.ok) {
-        throw new Error(res.statusText)
+        const msg = await res.text()
+        throw new Error(msg)
       }
       const data = await res.json()
       showMessage(<Message variant="success"  message={`Output ${data.name} (#${data.id}) configured`} />)

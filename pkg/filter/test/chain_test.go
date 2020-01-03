@@ -1,6 +1,7 @@
 package test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/ncarlier/feedpushr/pkg/assert"
@@ -12,7 +13,13 @@ import (
 func buildChainFilter(t *testing.T, URIs ...string) *filter.Chain {
 	chain := filter.NewChainFilter()
 	for _, URI := range URIs {
-		filter := builder.NewFilterBuilder().FromURI(URI).Build()
+		condition := ""
+		if strings.Contains(URI, "|") {
+			parts := strings.Split(URI, "|")
+			URI = parts[0]
+			condition = parts[1]
+		}
+		filter := builder.NewFilterBuilder().FromURI(URI).Condition(&condition).Build()
 		chain.Add(filter)
 	}
 	return chain
@@ -21,21 +28,19 @@ func buildChainFilter(t *testing.T, URIs ...string) *filter.Chain {
 func TestNewFilterChain(t *testing.T) {
 	chain := buildChainFilter(
 		t,
-		"title://?prefix=Hello#foo,/bar,bar",
-		"title://?prefix=Ignore#foo,/bar,missing",
-		"title://?prefix=[test]",
+		"title://?prefix=Hello",
+		"title://?prefix=[ignore]|\"foo\" in Tags",
+		"title://?prefix=[test]|\"test\" in Tags",
 	)
 
 	defs := chain.GetFilterDefs()
 	assert.Equal(t, 3, len(defs), "invalid filter chain definitions")
 	assert.Equal(t, "title", defs[0].Name, "invalid filter name")
 	assert.Equal(t, "Hello", defs[0].Props["prefix"], "invalid filter parameter")
-	assert.Equal(t, 2, len(defs[0].Tags), "invalid filter tags")
-	assert.Equal(t, "foo", defs[0].Tags[0], "invalid filter tag")
 
 	article := &model.Article{
 		Title: "World",
-		Tags:  []string{"bar", "foo"},
+		Tags:  []string{"test"},
 	}
 	err := chain.Apply(article)
 	assert.Nil(t, err, "error should be nil")
@@ -46,14 +51,14 @@ func TestNewFilterChain(t *testing.T) {
 	}
 	err = chain.Apply(article)
 	assert.Nil(t, err, "error should be nil")
-	assert.Equal(t, "[test] Other", article.Title, "invalid article title")
+	assert.Equal(t, "Hello Other", article.Title, "invalid article title")
 }
 
 func TestFilterChainCRUD(t *testing.T) {
 	// CREATE
 	chain := buildChainFilter(
 		t,
-		"title://?prefix=Hello#foo,/bar,bar",
+		"title://?prefix=Hello",
 	)
 
 	defs := chain.GetFilterDefs()
@@ -63,8 +68,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "Hello", _filter.Props["prefix"], "invalid filter property")
 
 	// UPDATE
-	tags := "test"
-	update := builder.NewFilterBuilder().ID(_filter.ID).Spec(_filter.Name).Tags(&tags).Build()
+	update := builder.NewFilterBuilder().ID(_filter.ID).Spec(_filter.Name).Build()
 	update.Props["prefix"] = "Updated"
 	_, err := chain.Update(update)
 	assert.Nil(t, err, "error should be nil")
@@ -72,8 +76,6 @@ func TestFilterChainCRUD(t *testing.T) {
 	id := _filter.ID
 	assert.Equal(t, "title", _filter.Name, "invalid filter type")
 	assert.Equal(t, "Updated", _filter.Props["prefix"], "invalid filter property")
-	assert.Equal(t, 1, len(_filter.Tags), "invalid filter tags")
-	assert.Equal(t, "test", _filter.Tags[0], "invalid filter tag")
 
 	// ADD
 	add := builder.NewFilterBuilder().FromURI("minify://").Build()

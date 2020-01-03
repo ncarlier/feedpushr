@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/pkg/expr"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -48,6 +49,10 @@ func (p *MastodonOutputPlugin) Spec() model.Spec {
 
 // Build creates Mastodon output provider instance
 func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+	condition, err := expr.NewConditionalExpression(output.Condition)
+	if err != nil {
+		return nil, err
+	}
 	u := output.Props.Get("url")
 	if u == "" {
 		return nil, fmt.Errorf("missing URL property")
@@ -69,7 +74,7 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 		id:          output.ID,
 		alias:       output.Alias,
 		spec:        spec,
-		tags:        output.Tags,
+		condition:   condition,
 		enabled:     output.Enabled,
 		targetURL:   _url.String(),
 		accessToken: accessToken,
@@ -82,7 +87,7 @@ type MastodonOutputProvider struct {
 	id          int
 	alias       string
 	spec        model.Spec
-	tags        []string
+	condition   *expr.ConditionalExpression
 	enabled     bool
 	nbError     uint64
 	nbSuccess   uint64
@@ -93,6 +98,10 @@ type MastodonOutputProvider struct {
 
 // Send article to a Mastodon instance.
 func (op *MastodonOutputProvider) Send(article *model.Article) error {
+	if !op.enabled || !op.condition.Match(article) {
+		// Ignore if disabled or if the article doesn't match the condition
+		return nil
+	}
 	toot := Toot{
 		Status:     fmt.Sprintf("%s\n%s", article.Title, article.Link),
 		Sensitive:  false,
@@ -109,11 +118,11 @@ func (op *MastodonOutputProvider) Send(article *model.Article) error {
 // GetDef return output definition
 func (op *MastodonOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		ID:      op.id,
-		Alias:   op.alias,
-		Spec:    op.spec,
-		Tags:    op.tags,
-		Enabled: op.enabled,
+		ID:        op.id,
+		Alias:     op.alias,
+		Spec:      op.spec,
+		Condition: op.condition.String(),
+		Enabled:   op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"url":        op.targetURL,

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/output"
+	"github.com/ncarlier/feedpushr/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/pkg/pshb"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -20,7 +20,7 @@ type FeedAggregator struct {
 	log               zerolog.Logger
 	feed              *app.Feed
 	handler           *FeedHandler
-	outputsManager    *output.Manager
+	pipeline          *pipeline.Pipeline
 	status            Status
 	delay             time.Duration
 	nextCheck         time.Time
@@ -30,7 +30,7 @@ type FeedAggregator struct {
 }
 
 // NewFeedAggregator creats a new feed aggregator
-func NewFeedAggregator(feed *app.Feed, om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *FeedAggregator {
+func NewFeedAggregator(feed *app.Feed, pipe *pipeline.Pipeline, delay time.Duration, timeout time.Duration, callbackURL string) *FeedAggregator {
 	handler := NewFeedHandler(feed, timeout)
 	aggregator := FeedAggregator{
 		id:                feed.ID,
@@ -39,7 +39,7 @@ func NewFeedAggregator(feed *app.Feed, om *output.Manager, delay time.Duration, 
 		stopChannel:       make(chan bool),
 		feed:              feed,
 		handler:           handler,
-		outputsManager:    om,
+		pipeline:          pipe,
 		status:            StoppedStatus,
 		delay:             delay,
 		log:               log.With().Str("aggregator", feed.ID).Logger(),
@@ -63,7 +63,7 @@ func (fa *FeedAggregator) running() {
 				status, items := fa.handler.Refresh()
 				if items != nil && len(items) > 0 {
 					// Send feed's articles to the output provider
-					nb := fa.outputsManager.Send(items)
+					nb := fa.pipeline.Process(items)
 					atomic.AddUint64(&fa.nbProcessedItems, nb)
 				}
 				if fa.feed.HubURL != nil && *fa.feed.HubURL != "" && fa.callbackURL != "" {

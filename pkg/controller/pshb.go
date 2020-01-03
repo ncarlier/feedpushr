@@ -11,7 +11,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/pkg/builder"
 	"github.com/ncarlier/feedpushr/pkg/common"
-	"github.com/ncarlier/feedpushr/pkg/output"
+	"github.com/ncarlier/feedpushr/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -24,20 +24,20 @@ type PshbController struct {
 	*goa.Controller
 	db         store.DB
 	parser     *gofeed.Parser
-	output     *output.Manager
+	pipeline   *pipeline.Pipeline
 	aggregator *aggregator.Manager
 	log        zerolog.Logger
 }
 
 // NewPshbController creates a pshb controller.
-func NewPshbController(service *goa.Service, db store.DB, am *aggregator.Manager, om *output.Manager) *PshbController {
+func NewPshbController(service *goa.Service, db store.DB, am *aggregator.Manager, pipe *pipeline.Pipeline) *PshbController {
 	parser := gofeed.NewParser()
 	parser.AtomTranslator = builder.NewCustomAtomTranslator()
 	parser.RSSTranslator = builder.NewCustomRSSTranslator()
 	return &PshbController{
 		Controller: service.NewController("PshbController"),
 		db:         db,
-		output:     om,
+		pipeline:   pipe,
 		aggregator: am,
 		parser:     parser,
 		log:        log.With().Str("component", "pshb-ctrl").Logger(),
@@ -67,7 +67,7 @@ func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
-	c.output.Send(builder.NewArticles(feed, parsedFeed.Items))
+	c.pipeline.Process(builder.NewArticles(feed, parsedFeed.Items))
 
 	return ctx.OK([]byte("ok"))
 }

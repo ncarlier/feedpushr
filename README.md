@@ -17,8 +17,8 @@ A simple feed aggregator service with sugar on top.
 - Aggressive and tunable aggregation process.
 - Manage feed aggregation individually.
 - Apply modifications on articles with a pluggable filter system.
-- Push new articles to a pluggable output system (STDOUT, HTTP endpoint, ...).
-- Use tags to customize the pipeline.
+- Push new articles to a pluggable output system (STDOUT, HTTP, Twitter ...).
+- Customize the pipeline thanks to a powerful expression language.
 - Support of [PubSubHubbud][pubsubhubbud] the open, simple, web-scale and
   decentralized pubsub protocol.
 - REST API with complete [OpenAPI][openapi] documentation.
@@ -53,7 +53,7 @@ You can configure the service by setting environment variables:
 |----------|---------|-------------|
 | `APP_ADDR` | `:8080` | HTTP server address |
 | `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
-| `APP_STORE` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
+| `APP_DB` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
 | `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
 | `APP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
 | `APP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
@@ -64,6 +64,19 @@ You can configure the service by setting environment variables:
 You can override this settings by using program parameters.
 Type `feedpushr --help` to see those parameters.
 
+## Tags
+
+You can define tags on feeds using the Web UI or the API:
+
+```bash
+$ curl -XPOST http://localhost:8080/v1/feeds?url=http://www.hashicorp.com/feed.xml&tags=foo,bar
+```
+
+Tags can also be imported/exported in OPML format. When using OMPL, tags are stored into the [category attribute][opml-category]. OPML category is a string of comma-separated slash-delimited category strings.
+For example, this OMPL attribute `<category>/test,foo,/bar/bar</category>` will be converted to the following tag list: `test, foo, bar_bar`.
+
+Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
+
 ## Filters
 
 Before being sent, articles can be modified through a filter chain.
@@ -72,31 +85,22 @@ Currently, there are some built-in filter:
 
 | Filter | Properties | Description |
 |----------|---------|-------------|
-| `title`  | `prefix` (default: `foo:`)| This filter will prefix the title of the article with a given value. |
+| `title`  | `prefix` (default: `feedpushr:`)| This filter will prefix the title of the article with a given value. |
 | `fetch`  | None       | This filter will attempt to extract the content of the article from the source URL. |
 | `minify` | None       | This filter will minify the HTML content of the article. |
 
 Filters can be extended using [plugins](#plugins).
 
-## Tags
+### Conditional expression
 
-Tags are used to customize the pipeline.
+Filters are activated according to a conditional expression.
+If the filter has no condition it will be activated regardless of the input article.
+Otherwise the expression will be applied to the article and its result will decide whether the filter is activated or not.
 
-You can define tags on feeds using the Web UI or the API:
+For example, if we want to activate a filter only on articles tagged *news* and mentioning *Paris* in their title.
+We can use the following expression: `"news" in Tags and Title contains "Paris"`
 
-```bash
-$ curl -XPOST http://localhost:8080/v1/feeds?url=http://www.hashicorp.com/feed.xml&tags=foo,bar
-```
-
-Tags can also be imported/exported in OPML format. When using OPML, tags are stored into the [category attribute][opml-category]. OPML category is a string of comma-separated slash-delimited category strings.
-For example, this OPML attribute `<category>/test,foo,/bar/bar</category>` will be converted to the following tag list: `test, foo, bar_bar`.
-
-Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
-
-Tags are also used by filters and outputs to manage their activation.
-If you have a filter or an output using tags, only articles corresponding to these tags will be processed by this filter or output.
-
-Example: If you add a `title` filter with `foo,bar` as tags, only new articles with tags `foo` and `bar` will have their title modified with a prefix.
+The conditional expression language is documented [here](./EXPRESSION.md).
 
 ## Outputs
 
@@ -111,6 +115,8 @@ Currently, there are some built-in output providers:
 | `readflow` | `url` (default: [official API][readflow-api] <br>`apiKey` | New articles are sent to [readflow][readflow] instance. |
 
 Outputs can be extended using [plugins](#plugins).
+
+Like filters, outputs are activated according to a [conditional expression](#conditional-expression).
 
 ### Output format
 

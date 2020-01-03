@@ -14,22 +14,21 @@ func TestOutputCRUD(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewOutputController(srv, db, om)
+	ctrl := controller.NewOutputController(srv, db, pipe)
 	ctx := context.Background()
 
 	// CREATE
-	tags := "test"
 	alias := "test output"
 	payload := &app.CreateOutputPayload{
-		Alias: alias,
-		Name:  "stdout",
-		Tags:  &tags,
+		Alias:     alias,
+		Name:      "stdout",
+		Condition: "\"test\" in Tags",
 	}
 	_, out := test.CreateOutputCreated(t, ctx, srv, ctrl, payload)
 	assert.Equal(t, alias, out.Alias, "")
 	assert.Equal(t, "stdout", out.Name, "")
 	assert.Equal(t, false, out.Enabled, "")
-	assert.ContainsStr(t, "test", out.Tags, "")
+	assert.Equal(t, "\"test\" in Tags", out.Condition, "")
 	assert.Equal(t, uint64(0), out.Props["nbSuccess"], "")
 	id := out.ID
 
@@ -46,19 +45,16 @@ func TestOutputCRUD(t *testing.T) {
 	assert.Equal(t, id, item.ID, "")
 
 	// UPDATE
-	tags = "test,foo"
 	alias = "updated output"
 	update := &app.UpdateOutputPayload{
 		Alias:   &alias,
 		Enabled: true,
-		Tags:    &tags,
 	}
 	_, out = test.UpdateOutputOK(t, ctx, srv, ctrl, id, update)
 	assert.Equal(t, id, out.ID, "")
 	assert.Equal(t, alias, out.Alias, "")
 	assert.Equal(t, "stdout", out.Name, "")
-	assert.ContainsStr(t, "test", out.Tags, "")
-	assert.ContainsStr(t, "foo", out.Tags, "")
+	assert.Equal(t, "\"test\" in Tags", out.Condition, "")
 	assert.Equal(t, true, out.Enabled, "")
 
 	// DELETE
@@ -72,7 +68,7 @@ func TestOutputDefs(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewOutputController(srv, db, om)
+	ctrl := controller.NewOutputController(srv, db, pipe)
 	ctx := context.Background()
 
 	_, specs := test.SpecsOutputOK(t, ctx, srv, ctrl)

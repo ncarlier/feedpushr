@@ -2,9 +2,10 @@
 /*eslint no-undef: "error"*/
 import React, { useCallback } from 'react'
 
-import { Button, Paper, TextField, Typography, MenuItem } from '@material-ui/core'
+import { Button, MenuItem, Paper, TextField, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
+import Doc from '../common/Doc'
 import { Output, OutputForm, OutputProps, OutputSpec } from './Types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -12,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(2),
     },
-    tags: {
+    condition: {
       marginTop: theme.spacing(2),
     },
     button: {
@@ -33,7 +34,7 @@ export default ({onSave, onCancel, spec, output}: Props) => {
   const classes = useStyles()
   const [alias, setAlias] = React.useState<string>(output ? output.alias : "")
   const [props, setProps] = React.useState<OutputProps>(output ? output.props : {})
-  const [tags, setTags] = React.useState<string[]>(output && output.tags ? output.tags : [])
+  const [condition, setCondition] = React.useState<string>(output ? output.condition : "")
 
   const handleChangeAlias = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
     setAlias(event.target.value)
@@ -43,8 +44,8 @@ export default ({onSave, onCancel, spec, output}: Props) => {
     setProps({ ...props, [name]: event.target.value })
   }, [props])
   
-  const handleChangeTags = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTags(event.target.value.split(','))
+  const handleChangeCondition = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCondition(event.target.value)
   }, [])
 
   const handleSave = useCallback(() => {
@@ -52,9 +53,10 @@ export default ({onSave, onCancel, spec, output}: Props) => {
       alias,
       name: spec.name,
       props,
-      tags,
+      condition,
+      enabled: output ? output.enabled : false,
     })
-  }, [onSave, alias, spec, props, tags])
+  }, [onSave, alias, spec, props, condition, output])
 
   return (
     <Paper className={classes.root}>
@@ -93,12 +95,12 @@ export default ({onSave, onCancel, spec, output}: Props) => {
             ))}
           </TextField>
         ))}
-        <Typography variant="h5" className={classes.tags}>Tags</Typography>
+        <Typography variant="h5" className={classes.condition}>Condition</Typography>
         <TextField
-          id="tags"
-          helperText="Comma separated list of tags"
-          value={tags.join(',')}
-          onChange={handleChangeTags()}
+          id="condition"
+          helperText={<>Conditional expression (<Doc href="EXPRESSION.md">documentation</Doc>)</>}
+          value={condition}
+          onChange={handleChangeCondition()}
           fullWidth
         />
       </form>

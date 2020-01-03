@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 	"text/template"
 
+	"github.com/ncarlier/feedpushr/pkg/expr"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -32,6 +33,10 @@ func (p *StdoutOutputPlugin) Spec() model.Spec {
 
 // Build creates output provider instance
 func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+	condition, err := expr.NewConditionalExpression(output.Condition)
+	if err != nil {
+		return nil, err
+	}
 	var tpl *template.Template
 	var format string
 	if _format, ok := output.Props["format"]; ok && _format != "" {
@@ -44,24 +49,22 @@ func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.OutputProvide
 		}
 	}
 	return &StdOutputProvider{
-		id:      output.ID,
-		alias:   output.Alias,
-		spec:    stdoutSpec,
-		tags:    output.Tags,
-		enabled: output.Enabled,
-		format:  format,
-		tpl:     tpl,
+		id:        output.ID,
+		alias:     output.Alias,
+		spec:      stdoutSpec,
+		condition: condition,
+		enabled:   output.Enabled,
+		format:    format,
+		tpl:       tpl,
 	}, nil
 }
-
-var stdoutOutputPlugin = &StdoutOutputPlugin{}
 
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
 	id        int
 	alias     string
 	spec      model.Spec
-	tags      []string
+	condition *expr.ConditionalExpression
 	nbSuccess uint64
 	enabled   bool
 	format    string
@@ -70,6 +73,10 @@ type StdOutputProvider struct {
 
 // Send article to STDOUT.
 func (op *StdOutputProvider) Send(article *model.Article) error {
+	if !op.enabled || !op.condition.Match(article) {
+		// Ignore if disabled or if the article doesn't match the condition
+		return nil
+	}
 	b := new(bytes.Buffer)
 	if op.tpl != nil {
 		if err := op.tpl.Execute(b, article); err != nil {
@@ -88,11 +95,11 @@ func (op *StdOutputProvider) Send(article *model.Article) error {
 // GetDef return output provider definition
 func (op *StdOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		ID:      op.id,
-		Alias:   op.alias,
-		Spec:    op.spec,
-		Tags:    op.tags,
-		Enabled: op.enabled,
+		ID:        op.id,
+		Alias:     op.alias,
+		Spec:      op.spec,
+		Condition: op.condition.String(),
+		Enabled:   op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"nbSuccess": op.nbSuccess,

@@ -23,12 +23,12 @@ import (
 type CreateOutputPayload struct {
 	// Alias of the output
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
+	// Conditional expression of the output
+	Condition string `form:"condition" json:"condition" yaml:"condition" xml:"condition"`
 	// Name of the output
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // CreateOutputPath computes a request path to the create action of output.
@@ -196,12 +196,12 @@ func (c *Client) NewSpecsOutputRequest(ctx context.Context, path string) (*http.
 type UpdateOutputPayload struct {
 	// Alias of the output
 	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
 	// Output status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // UpdateOutputPath computes a request path to the update action of output.

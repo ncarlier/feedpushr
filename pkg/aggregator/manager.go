@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/output"
+	"github.com/ncarlier/feedpushr/pkg/pipeline"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -14,7 +14,7 @@ import (
 type Manager struct {
 	feedAggregators   map[string]*FeedAggregator
 	shutdownWaitGroup sync.WaitGroup
-	output            *output.Manager
+	pipeline          *pipeline.Pipeline
 	log               zerolog.Logger
 	delay             time.Duration
 	timeout           time.Duration
@@ -22,10 +22,10 @@ type Manager struct {
 }
 
 // NewManager creates a new aggregator manager
-func NewManager(om *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
+func NewManager(pipe *pipeline.Pipeline, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
 	return &Manager{
 		feedAggregators: make(map[string]*FeedAggregator),
-		output:          om,
+		pipeline:        pipe,
 		log:             log.With().Str("component", "aggregator").Logger(),
 		delay:           delay,
 		timeout:         timeout,
@@ -45,7 +45,7 @@ func (m *Manager) RegisterFeedAggregator(feed *app.Feed) *FeedAggregator {
 		m.log.Debug().Str("source", feed.ID).Msg("feed aggregator already registered")
 		return fa
 	}
-	fa = NewFeedAggregator(feed, m.output, m.delay, m.timeout, m.callbackURL)
+	fa = NewFeedAggregator(feed, m.pipeline, m.delay, m.timeout, m.callbackURL)
 	m.feedAggregators[feed.ID] = fa
 	m.shutdownWaitGroup.Add(1)
 	fa.Start()

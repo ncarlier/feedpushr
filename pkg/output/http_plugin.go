@@ -10,6 +10,7 @@ import (
 	"text/template"
 
 	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/expr"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -60,6 +61,10 @@ func (p *HTTPOutputPlugin) Spec() model.Spec {
 
 // Build creates output provider instance
 func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+	condition, err := expr.NewConditionalExpression(output.Condition)
+	if err != nil {
+		return nil, err
+	}
 	u, ok := output.Props["url"]
 	if !ok {
 		return nil, fmt.Errorf("missing URL property")
@@ -91,7 +96,7 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider,
 		id:          output.ID,
 		alias:       output.Alias,
 		spec:        httpSpec,
-		tags:        output.Tags,
+		condition:   condition,
 		enabled:     output.Enabled,
 		targetURL:   _url.String(),
 		contentType: contentType,
@@ -100,14 +105,12 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider,
 	}, nil
 }
 
-var httpOutputPlugin = &HTTPOutputPlugin{}
-
 // HTTPOutputProvider HTTP output provider
 type HTTPOutputProvider struct {
 	id          int
 	alias       string
 	spec        model.Spec
-	tags        []string
+	condition   *expr.ConditionalExpression
 	nbError     uint64
 	nbSuccess   uint64
 	enabled     bool
@@ -119,6 +122,10 @@ type HTTPOutputProvider struct {
 
 // Send article to HTTP endpoint.
 func (op *HTTPOutputProvider) Send(article *model.Article) error {
+	if !op.enabled || !op.condition.Match(article) {
+		// Ignore if disabled or if the article doesn't match the condition
+		return nil
+	}
 	b := new(bytes.Buffer)
 	if op.tpl != nil {
 		if err := op.tpl.Execute(b, article); err != nil {
@@ -155,11 +162,11 @@ func (op *HTTPOutputProvider) Send(article *model.Article) error {
 // GetDef return output provider definition
 func (op *HTTPOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		ID:      op.id,
-		Alias:   op.alias,
-		Spec:    op.spec,
-		Tags:    op.tags,
-		Enabled: op.enabled,
+		ID:        op.id,
+		Alias:     op.alias,
+		Spec:      op.spec,
+		Condition: op.condition.String(),
+		Enabled:   op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"nbError":     op.nbError,

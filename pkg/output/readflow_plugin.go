@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/pkg/expr"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -35,6 +36,10 @@ func (p *ReadflowOutputPlugin) Spec() model.Spec {
 
 // Build creates Readflow output provider instance
 func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+	condition, err := expr.NewConditionalExpression(output.Condition)
+	if err != nil {
+		return nil, err
+	}
 	u := output.Props.Get("url")
 	if u == "" {
 		u = "https://api.readflow.app"
@@ -51,21 +56,19 @@ func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 		id:        output.ID,
 		alias:     output.Alias,
 		spec:      spec,
-		tags:      output.Tags,
+		condition: condition,
 		targetURL: _url.String(),
 		apiKey:    apiKey,
 		enabled:   output.Enabled,
 	}, nil
 }
 
-var readflowOutputPlugin = &ReadflowOutputPlugin{}
-
 // ReadflowOutputProvider output provider to send articles to Readflow
 type ReadflowOutputProvider struct {
 	id        int
 	alias     string
 	spec      model.Spec
-	tags      []string
+	condition *expr.ConditionalExpression
 	enabled   bool
 	nbError   uint64
 	nbSuccess uint64
@@ -75,6 +78,10 @@ type ReadflowOutputProvider struct {
 
 // Send article to a Readflow instance.
 func (op *ReadflowOutputProvider) Send(article *model.Article) error {
+	if !op.enabled || !op.condition.Match(article) {
+		// Ignore if disabled or if the article doesn't match the condition
+		return nil
+	}
 	nb, err := sendToReadflow(op.targetURL, op.apiKey, article)
 	if err != nil {
 		atomic.AddUint64(&op.nbError, 1)
@@ -87,11 +94,11 @@ func (op *ReadflowOutputProvider) Send(article *model.Article) error {
 // GetDef return output definition
 func (op *ReadflowOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		ID:      op.id,
-		Alias:   op.alias,
-		Spec:    op.spec,
-		Tags:    op.tags,
-		Enabled: op.enabled,
+		ID:        op.id,
+		Alias:     op.alias,
+		Spec:      op.spec,
+		Condition: op.condition.String(),
+		Enabled:   op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"url":       op.targetURL,

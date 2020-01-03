@@ -19,7 +19,6 @@ func TestFilterCRUD(t *testing.T) {
 	ctx := context.Background()
 
 	// CREATE
-	tags := "test"
 	alias := "Add test prefix"
 	payload := &app.CreateFilterPayload{
 		Alias: alias,
@@ -27,13 +26,13 @@ func TestFilterCRUD(t *testing.T) {
 		Props: map[string]interface{}{
 			"prefix": "[test]",
 		},
-		Tags: &tags,
+		Condition: "\"test\" in Tags",
 	}
 	_, f := test.CreateFilterCreated(t, ctx, srv, ctrl, payload)
 	assert.Equal(t, alias, f.Alias, "")
 	assert.Equal(t, "title", f.Name, "")
 	assert.Equal(t, false, f.Enabled, "")
-	assert.ContainsStr(t, "test", f.Tags, "")
+	assert.Equal(t, "\"test\" in Tags", f.Condition, "")
 	assert.Equal(t, "[test]", f.Props["prefix"], "")
 	assert.Equal(t, uint64(0), f.Props["nbSuccess"], "")
 	id := f.ID
@@ -51,17 +50,14 @@ func TestFilterCRUD(t *testing.T) {
 	assert.Equal(t, id, item.ID, "")
 
 	// UPDATE
-	tags = "test,foo"
 	update := &app.UpdateFilterPayload{
 		Enabled: true,
-		Tags:    &tags,
 	}
 	_, f = test.UpdateFilterOK(t, ctx, srv, ctrl, id, update)
 	assert.Equal(t, id, f.ID, "")
 	assert.Equal(t, "Add test prefix", f.Alias, "")
 	assert.Equal(t, "title", f.Name, "")
-	assert.ContainsStr(t, "test", f.Tags, "")
-	assert.ContainsStr(t, "foo", f.Tags, "")
+	assert.Equal(t, "\"test\" in Tags", f.Condition, "")
 	assert.Equal(t, true, f.Enabled, "")
 
 	// DELETE

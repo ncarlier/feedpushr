@@ -5,6 +5,7 @@ import (
 	"sync/atomic"
 
 	"github.com/k3a/html2text"
+	"github.com/ncarlier/feedpushr/pkg/expr"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -50,6 +51,10 @@ func (p *RakeFilterPlugin) Spec() model.Spec {
 
 // Build creates RAKE filter
 func (p *RakeFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
+	condition, err := expr.NewConditionalExpression(def.Condition)
+	if err != nil {
+		return nil, err
+	}
 	val := def.Props.Get("minCharLength")
 	minCharLength := safeAtoi(val, 4)
 	val = def.Props.Get("maxWordsLength")
@@ -59,12 +64,12 @@ func (p *RakeFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	rake := NewRake("", minCharLength, maxWordsLength, minKeywordFrequency)
 	rake.SetStopWords(stopWords)
 	return &RakeFilter{
-		id:      def.ID,
-		alias:   def.Alias,
-		spec:    spec,
-		tags:    def.Tags,
-		enabled: def.Enabled,
-		rake:    rake,
+		id:        def.ID,
+		alias:     def.Alias,
+		spec:      spec,
+		condition: condition,
+		enabled:   def.Enabled,
+		rake:      rake,
 	}, nil
 }
 
@@ -73,7 +78,7 @@ type RakeFilter struct {
 	id        int
 	alias     string
 	spec      model.Spec
-	tags      []string
+	condition *expr.ConditionalExpression
 	enabled   bool
 	nbError   uint64
 	nbSuccess uint64
@@ -94,11 +99,11 @@ func (f *RakeFilter) DoFilter(article *model.Article) error {
 // GetDef return output definition
 func (f *RakeFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:      f.id,
-		Alias:   f.alias,
-		Spec:    f.spec,
-		Tags:    f.tags,
-		Enabled: f.enabled,
+		ID:        f.id,
+		Alias:     f.alias,
+		Spec:      f.spec,
+		Condition: f.condition.String(),
+		Enabled:   f.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"minCharLength":       f.rake.minCharLength,

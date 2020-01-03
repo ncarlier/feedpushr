@@ -258,6 +258,8 @@ func (c *Client) DecodeFilterSpecCollection(resp *http.Response) (FilterSpecColl
 type Filter struct {
 	// Alias of the filter
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
+	// Conditional expression of the filter
+	Condition string `form:"condition" json:"condition" yaml:"condition" xml:"condition"`
 	// Description of the filter
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Status
@@ -268,8 +270,6 @@ type Filter struct {
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// List of tags
-	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate validates the Filter media type instance.
@@ -283,6 +283,9 @@ func (mt *Filter) Validate() (err error) {
 	}
 	if mt.Desc == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Condition == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "condition"))
 	}
 	return
 }
@@ -383,6 +386,8 @@ func (c *Client) DecodeOutputSpecCollection(resp *http.Response) (OutputSpecColl
 type Output struct {
 	// Alias of the output channel
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
+	// Conditional expression of the filter
+	Condition string `form:"condition" json:"condition" yaml:"condition" xml:"condition"`
 	// Description of the output channel
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Status
@@ -393,8 +398,6 @@ type Output struct {
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Output channel properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// List of tags
-	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate validates the Output media type instance.
@@ -408,6 +411,9 @@ func (mt *Output) Validate() (err error) {
 	}
 	if mt.Desc == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Condition == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "condition"))
 	}
 	return
 }

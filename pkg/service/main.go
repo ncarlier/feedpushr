@@ -14,7 +14,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/controller"
 	"github.com/ncarlier/feedpushr/pkg/logging"
 	"github.com/ncarlier/feedpushr/pkg/opml"
-	"github.com/ncarlier/feedpushr/pkg/output"
+	"github.com/ncarlier/feedpushr/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog/log"
@@ -103,8 +103,8 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 		return nil, err
 	}
 
-	// Init output manager
-	om, err := output.NewManager(db, conf.CacheRetention)
+	// Init the pipeline
+	om, err := pipeline.NewPipeline(db, conf.CacheRetention)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init output manager")
 		return nil, err

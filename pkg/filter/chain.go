@@ -23,24 +23,24 @@ func NewChainFilter() *Chain {
 
 func newFilter(def *model.FilterDef) (model.Filter, error) {
 	var filter model.Filter
+	var err error
 	switch def.Name {
 	case "title":
-		filter = newTitleFilter(def)
+		filter, err = newTitleFilter(def)
 	case "fetch":
-		filter = newFetchFilter(def)
+		filter, err = newFetchFilter(def)
 	case "minify":
-		filter = newMinifyFilter(def)
+		filter, err = newMinifyFilter(def)
 	default:
 		// Try to load plugin regarding the name
 		plug := plugin.GetRegistry().LookupFilterPlugin(def.Name)
 		if plug == nil {
 			return nil, fmt.Errorf("unsuported filter: %s", def.Name)
 		}
-		var err error
 		filter, err = plug.Build(def)
-		if err != nil {
-			return nil, fmt.Errorf("unable to create filter: %v", err)
-		}
+	}
+	if err != nil {
+		return nil, fmt.Errorf("unable to create filter: %v", err)
 	}
 	return filter, nil
 }
@@ -122,13 +122,7 @@ func (chain *Chain) Remove(filter *model.FilterDef) error {
 // Apply applies filter chain on an article
 func (chain *Chain) Apply(article *model.Article) error {
 	for idx, filter := range chain.filters {
-		tags := filter.GetDef().Tags
-		if !filter.GetDef().Enabled || !article.Match(tags) {
-			// Ignore disabled filters or that do not match the article tags
-			continue
-		}
-		err := filter.DoFilter(article)
-		if err != nil {
+		if err := filter.DoFilter(article); err != nil {
 			return fmt.Errorf("error while applying filter #%d: %v", idx, err)
 		}
 	}

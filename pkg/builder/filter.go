@@ -28,7 +28,6 @@ func (fb *FilterBuilder) Build() *model.FilterDef {
 // From creates filter form an other
 func (fb *FilterBuilder) From(source model.FilterDef) *FilterBuilder {
 	clone := source
-	copy(clone.Tags, source.Tags)
 	fb.filter = &clone
 	return fb
 }
@@ -39,13 +38,11 @@ func (fb *FilterBuilder) FromURI(URI string) *FilterBuilder {
 	if err != nil {
 		return fb
 	}
-	tags := GetFeedTags(&u.Fragment)
 	for key, value := range u.Query() {
 		fb.filter.Props[key] = value[0]
 	}
 	fb.filter.Name = u.Scheme
 	fb.filter.Alias = u.Scheme
-	fb.filter.Tags = tags
 	fb.filter.Enabled = true
 	return fb
 }
@@ -70,17 +67,19 @@ func (fb *FilterBuilder) Spec(name string) *FilterBuilder {
 	return fb
 }
 
-// Tags set tags
-func (fb *FilterBuilder) Tags(tags *string) *FilterBuilder {
-	if tags != nil {
-		fb.filter.Tags = GetFeedTags(tags)
+// Condition set condition
+func (fb *FilterBuilder) Condition(condition *string) *FilterBuilder {
+	if condition != nil {
+		fb.filter.Condition = *condition
 	}
 	return fb
 }
 
 // Props set props
 func (fb *FilterBuilder) Props(props model.FilterProps) *FilterBuilder {
-	fb.filter.Props = props
+	if len(props) > 0 {
+		fb.filter.Props = props
+	}
 	return fb
 }
 
@@ -93,12 +92,12 @@ func (fb *FilterBuilder) Enable(status bool) *FilterBuilder {
 // NewFilterFromDef creates new Filter from a definition
 func NewFilterFromDef(def model.FilterDef) *app.Filter {
 	return &app.Filter{
-		ID:      def.ID,
-		Alias:   def.Alias,
-		Name:    def.Name,
-		Desc:    def.Desc,
-		Props:   def.Props,
-		Tags:    def.Tags,
-		Enabled: def.Enabled,
+		ID:        def.ID,
+		Alias:     def.Alias,
+		Name:      def.Name,
+		Desc:      def.Desc,
+		Props:     def.Props,
+		Condition: def.Condition,
+		Enabled:   def.Enabled,
 	}
 }

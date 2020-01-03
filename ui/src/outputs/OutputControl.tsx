@@ -16,7 +16,7 @@ export default ({output}: Props) => {
   const { showMessage } = useContext(MessageContext)
 
   async function switchOutputStatus(event: React.ChangeEvent, check: boolean) {
-    const update = {...output, enabled: check, tags: output.tags ? output.tags.join(',') : '' }
+    const update = {...output, enabled: check}
     try {
       const res = await fetchAPI(`/outputs/${output.id}`, null, {
         method: 'PUT',

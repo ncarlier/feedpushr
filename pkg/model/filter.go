@@ -27,7 +27,7 @@ type FilterDef struct {
 	ID    int    `json:"id"`
 	Alias string `json:"alias"`
 	Spec
-	Tags    []string    `json:"tags,omitempty"`
-	Props   FilterProps `json:"props:omitempty"`
-	Enabled bool        `json:"enabled"`
+	Condition string      `json:"condition"`
+	Props     FilterProps `json:"props:omitempty"`
+	Enabled   bool        `json:"enabled"`
 }

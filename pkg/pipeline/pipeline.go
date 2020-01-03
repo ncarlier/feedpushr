@@ -1,4 +1,4 @@
-package output
+package pipeline
 
 import (
 	"fmt"
@@ -8,73 +8,70 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/filter"
 	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/pkg/output"
 	"github.com/ncarlier/feedpushr/pkg/plugin"
 	"github.com/ncarlier/feedpushr/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
-// Manager of output channel.
-type Manager struct {
+// Pipeline is the object that process filters and outputs.
+type Pipeline struct {
 	lock           sync.RWMutex
 	plugins        map[string]model.OutputPlugin
-	providers      []model.OutputProvider
+	outputs        []model.OutputProvider
 	db             store.DB
 	ChainFilter    *filter.Chain
 	cacheRetention time.Duration
 	log            zerolog.Logger
 }
 
-// NewManager creates a new manager
-func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
-	manager := &Manager{
-		plugins:        make(map[string]model.OutputPlugin),
-		providers:      []model.OutputProvider{},
+// NewPipeline creates a new pipeline
+func NewPipeline(db store.DB, cacheRetention time.Duration) (*Pipeline, error) {
+	pipeline := &Pipeline{
+		plugins:        output.GetBuiltinOutputPlugins(),
+		outputs:        []model.OutputProvider{},
 		db:             db,
 		cacheRetention: cacheRetention,
-		log:            log.With().Str("component", "output").Logger(),
+		log:            log.With().Str("component", "pipeline").Logger(),
 	}
-	// Register builtin  output plugins...
-	manager.plugins[stdoutOutputPlugin.Spec().Name] = stdoutOutputPlugin
-	manager.plugins[httpOutputPlugin.Spec().Name] = httpOutputPlugin
-	manager.plugins[readflowOutputPlugin.Spec().Name] = readflowOutputPlugin
 
 	// Register external output plugins...
 	err := plugin.GetRegistry().ForEachOutputPlugin(func(plug model.OutputPlugin) error {
-		manager.plugins[plug.Spec().Name] = plug
+		pipeline.plugins[plug.Spec().Name] = plug
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	// Load output providers from DB
+	// Load output outputs from DB
 	err = db.ForEachOutput(func(o *model.OutputDef) error {
 		if o == nil {
 			return fmt.Errorf("output is null")
 		}
-		_, err := manager.Add(o)
+		_, err := pipeline.AddOutput(o)
 		return err
 	})
-	return manager, err
+	return pipeline, err
 }
 
 // GetAvailableOutputs get all available outputs
-func (m *Manager) GetAvailableOutputs() []model.Spec {
+func (p *Pipeline) GetAvailableOutputs() []model.Spec {
 	result := []model.Spec{}
-	for _, plugin := range m.plugins {
+	for _, plugin := range p.plugins {
 		result = append(result, plugin.Spec())
 	}
 	return result
 }
 
-// Send feeds to the output provider
-func (m *Manager) Send(articles []*model.Article) uint64 {
+// Process articles
+func (p *Pipeline) Process(articles []*model.Article) uint64 {
 	var nbProcessedArticles uint64
-	maxAge := time.Now().Add(-m.cacheRetention)
-	m.log.Debug().Int("items", len(articles)).Str("before", maxAge.String()).Msg("processing articles")
+	maxAge := time.Now().Add(-p.cacheRetention)
+	p.log.Debug().Int("items", len(articles)).Str("before", maxAge.String()).Msg("processing articles")
 	for _, article := range articles {
-		logger := m.log.With().Str("GUID", article.GUID).Logger()
+		logger := p.log.With().Str("GUID", article.GUID).Logger()
 		if err := article.IsValid(maxAge); err != nil {
 			logger.Debug().Err(err).Msg("unable to push article")
 			continue
@@ -83,15 +80,15 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 		// Send article to all outputs...
 		filteredOnce := false
 		sentOnce := false
-		for _, provider := range m.providers {
-			tags := provider.GetDef().Tags
-			if !provider.GetDef().Enabled || !article.Match(tags) {
-				// Ignore output that are disabled or don't match article tags
+		for _, provider := range p.outputs {
+			if !provider.GetDef().Enabled {
+				// Ignore output that are disabled
+				// TODO also ignore if the article doesn't match the condition
 				continue
 			}
 			logger = logger.With().Str("output", provider.GetDef().Name).Logger()
 			// Check that the article is not already sent
-			cached, err := m.hasAlreadySent(article, provider)
+			cached, err := p.hasAlreadySent(article, provider)
 			if err != nil {
 				logger.Debug().Err(err).Msg("unable to get article from cache: ignore")
 			}
@@ -100,9 +97,9 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 				continue
 			}
 
-			if m.ChainFilter != nil && !filteredOnce {
+			if p.ChainFilter != nil && !filteredOnce {
 				// Apply filter chain on article
-				err = m.ChainFilter.Apply(article)
+				err = p.ChainFilter.Apply(article)
 				if err != nil {
 					logger.Error().Err(err).Msg("unable to apply chain filter on article")
 					break
@@ -111,7 +108,7 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 			}
 
 			// Send article
-			err = m.send(article, provider)
+			err = p.send(article, provider)
 			if err != nil {
 				logger.Error().Err(err).Msg("unable to push article")
 				continue
@@ -126,9 +123,9 @@ func (m *Manager) Send(articles []*model.Article) uint64 {
 	return nbProcessedArticles
 }
 
-func (m *Manager) hasAlreadySent(article *model.Article, output model.OutputProvider) (bool, error) {
+func (p *Pipeline) hasAlreadySent(article *model.Article, output model.OutputProvider) (bool, error) {
 	key := common.Hash(article.Hash(), output.GetDef().Hash())
-	item, err := m.db.GetFromCache(key)
+	item, err := p.db.GetFromCache(key)
 	if err != nil {
 		return false, err
 	} else if item != nil {
@@ -142,7 +139,7 @@ func (m *Manager) hasAlreadySent(article *model.Article, output model.OutputProv
 	return false, nil
 }
 
-func (m *Manager) send(article *model.Article, output model.OutputProvider) error {
+func (p *Pipeline) send(article *model.Article, output model.OutputProvider) error {
 	// Send the article
 	err := output.Send(article)
 	if err != nil {
@@ -155,22 +152,13 @@ func (m *Manager) send(article *model.Article, output model.OutputProvider) erro
 		Value: article.GUID,
 		Date:  *article.RefDate(),
 	}
-	err = m.db.StoreToCache(key, item)
+	err = p.db.StoreToCache(key, item)
 	if err != nil {
-		m.log.Error().Err(err).Str(
+		p.log.Error().Err(err).Str(
 			"GUID", article.GUID,
 		).Str(
 			"provider", output.GetDef().Name,
 		).Msg("unable to store article into the cache: ignore")
 	}
 	return nil
-}
-
-// GetOutputDefs return all output definitions of the manager
-func (m *Manager) GetOutputDefs() []model.OutputDef {
-	result := make([]model.OutputDef, len(m.providers))
-	for idx, provider := range m.providers {
-		result[idx] = provider.GetDef()
-	}
-	return result
 }

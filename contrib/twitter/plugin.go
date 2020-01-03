@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 
 	"github.com/ChimeraCoder/anaconda"
+	"github.com/ncarlier/feedpushr/pkg/expr"
 	"github.com/ncarlier/feedpushr/pkg/model"
 )
 
@@ -47,6 +48,10 @@ func (p *TwitterOutputPlugin) Spec() model.Spec {
 
 // Build creates Twitter output provider instance
 func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+	condition, err := expr.NewConditionalExpression(output.Condition)
+	if err != nil {
+		return nil, err
+	}
 	consumerKey := output.Props.Get("consumerKey")
 	if consumerKey == "" {
 		return nil, fmt.Errorf("missing consumer key property")
@@ -71,7 +76,7 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvid
 		id:             output.ID,
 		alias:          output.Alias,
 		spec:           spec,
-		tags:           output.Tags,
+		condition:      condition,
 		enabled:        output.Enabled,
 		api:            api,
 		consumerKey:    consumerKey,
@@ -84,7 +89,7 @@ type TwitterOutputProvider struct {
 	id             int
 	alias          string
 	spec           model.Spec
-	tags           []string
+	condition      *expr.ConditionalExpression
 	enabled        bool
 	nbError        uint64
 	nbSuccess      uint64
@@ -95,6 +100,10 @@ type TwitterOutputProvider struct {
 
 // Send sent an article as Tweet to a Twitter timeline
 func (op *TwitterOutputProvider) Send(article *model.Article) error {
+	if !op.enabled || !op.condition.Match(article) {
+		// Ignore if disabled or if the article doesn't match the condition
+		return nil
+	}
 	tweet := fmt.Sprintf("%s\n%s", article.Title, article.Link)
 	r := []rune(tweet)
 	if len(r) > 280 {
@@ -120,11 +129,11 @@ func (op *TwitterOutputProvider) Send(article *model.Article) error {
 // GetDef return filter definition
 func (op *TwitterOutputProvider) GetDef() model.OutputDef {
 	result := model.OutputDef{
-		ID:      op.id,
-		Alias:   op.alias,
-		Spec:    op.spec,
-		Tags:    op.tags,
-		Enabled: op.enabled,
+		ID:        op.id,
+		Alias:     op.alias,
+		Spec:      op.spec,
+		Condition: op.condition.String(),
+		Enabled:   op.enabled,
 	}
 	result.Props = map[string]interface{}{
 		"consumerKey":       op.consumerKey,

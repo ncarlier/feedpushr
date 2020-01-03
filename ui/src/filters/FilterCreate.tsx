@@ -31,7 +31,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
     try {
       const res = await fetchAPI('/filters', null, {
         method: 'POST',
-        body: JSON.stringify({...form, tags: form.tags.join(',')}),
+        body: JSON.stringify(form),
       })
       if (!res.ok) {
         const msg = await res.text()

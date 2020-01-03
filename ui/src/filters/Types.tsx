@@ -11,7 +11,7 @@ export interface Filter {
   name: string
   desc: string
   enabled: boolean
-  tags: string[]
+  condition: string
   props: FilterProps
 }
 
@@ -32,6 +32,7 @@ export interface FilterForm {
   id?: number
   alias: string
   name: string
-  tags: string[]
+  enabled: boolean
+  condition: string
   props: FilterProps
 }

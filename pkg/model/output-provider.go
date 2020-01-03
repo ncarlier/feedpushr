@@ -31,9 +31,9 @@ type OutputDef struct {
 	ID    int    `json:"id"`
 	Alias string `json:"alias"`
 	Spec
-	Tags    []string    `json:"tags,omitempty"`
-	Props   OutputProps `json:"props:omitempty"`
-	Enabled bool        `json:"enabled"`
+	Condition string      `json:"condition"`
+	Props     OutputProps `json:"props:omitempty"`
+	Enabled   bool        `json:"enabled"`
 }
 
 // Hash computes spec hash

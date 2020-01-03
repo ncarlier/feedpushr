@@ -98,13 +98,13 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 			Example("This filter will...")
 		})
 		Attribute("props", HashOf(String, Any), "Filter properties", NoExample)
-		Attribute("tags", ArrayOf(String), "List of tags", func() {
-			Example([]string{"foo", "bar"})
+		Attribute("condition", String, "Conditional expression of the filter", func() {
+			Example("\"foo\" in Tags")
 		})
 		Attribute("enabled", Boolean, "Status", func() {
 			Default(false)
 		})
-		Required("id", "alias", "name", "desc")
+		Required("id", "alias", "name", "desc", "condition")
 	})
 
 	View("default", func() {
@@ -113,7 +113,7 @@ var Filter = MediaType("application/vnd.feedpushr.filter.v1+json", func() {
 		Attribute("name")
 		Attribute("desc")
 		Attribute("props")
-		Attribute("tags")
+		Attribute("condition")
 		Attribute("enabled")
 	})
 })
@@ -137,13 +137,13 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 			Example("New articles are sent as JSON document to...")
 		})
 		Attribute("props", HashOf(String, Any), "Output channel properties", NoExample)
-		Attribute("tags", ArrayOf(String), "List of tags", func() {
-			Example([]string{"foo", "bar"})
+		Attribute("condition", String, "Conditional expression of the filter", func() {
+			Example("\"foo\" in Tags")
 		})
 		Attribute("enabled", Boolean, "Status", func() {
 			Default(false)
 		})
-		Required("id", "alias", "name", "desc")
+		Required("id", "alias", "name", "desc", "condition")
 	})
 
 	View("default", func() {
@@ -152,7 +152,7 @@ var Output = MediaType("application/vnd.feedpushr.output.v1+json", func() {
 		Attribute("alias")
 		Attribute("desc")
 		Attribute("props")
-		Attribute("tags")
+		Attribute("condition")
 		Attribute("enabled")
 	})
 })

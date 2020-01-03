@@ -473,12 +473,12 @@ func NewCreateFilterContext(ctx context.Context, r *http.Request, service *goa.S
 type createFilterPayload struct {
 	// Alias of the filter
 	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
 	// Name of the filter
 	Name *string `form:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty" xml:"name,omitempty"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate runs the validation rules defined in the design.
@@ -489,6 +489,9 @@ func (payload *createFilterPayload) Validate() (err error) {
 	if payload.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
 	}
+	if payload.Condition == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "condition"))
+	}
 	return
 }
 
@@ -498,14 +501,14 @@ func (payload *createFilterPayload) Publicize() *CreateFilterPayload {
 	if payload.Alias != nil {
 		pub.Alias = *payload.Alias
 	}
+	if payload.Condition != nil {
+		pub.Condition = *payload.Condition
+	}
 	if payload.Name != nil {
 		pub.Name = *payload.Name
 	}
 	if payload.Props != nil {
 		pub.Props = payload.Props
-	}
-	if payload.Tags != nil {
-		pub.Tags = payload.Tags
 	}
 	return &pub
 }
@@ -514,12 +517,12 @@ func (payload *createFilterPayload) Publicize() *CreateFilterPayload {
 type CreateFilterPayload struct {
 	// Alias of the filter
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
+	// Conditional expression of the output
+	Condition string `form:"condition" json:"condition" yaml:"condition" xml:"condition"`
 	// Name of the filter
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate runs the validation rules defined in the design.
@@ -529,6 +532,9 @@ func (payload *CreateFilterPayload) Validate() (err error) {
 	}
 	if payload.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+	if payload.Condition == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "condition"))
 	}
 	return
 }
@@ -743,12 +749,12 @@ func NewUpdateFilterContext(ctx context.Context, r *http.Request, service *goa.S
 type updateFilterPayload struct {
 	// Alias of the filter
 	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
 	// Filter status
 	Enabled *bool `form:"enabled,omitempty" json:"enabled,omitempty" yaml:"enabled,omitempty" xml:"enabled,omitempty"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Finalize sets the default values defined in the design.
@@ -765,14 +771,14 @@ func (payload *updateFilterPayload) Publicize() *UpdateFilterPayload {
 	if payload.Alias != nil {
 		pub.Alias = payload.Alias
 	}
+	if payload.Condition != nil {
+		pub.Condition = payload.Condition
+	}
 	if payload.Enabled != nil {
 		pub.Enabled = *payload.Enabled
 	}
 	if payload.Props != nil {
 		pub.Props = payload.Props
-	}
-	if payload.Tags != nil {
-		pub.Tags = payload.Tags
 	}
 	return &pub
 }
@@ -781,12 +787,12 @@ func (payload *updateFilterPayload) Publicize() *UpdateFilterPayload {
 type UpdateFilterPayload struct {
 	// Alias of the filter
 	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
 	// Filter status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // OK sends a HTTP response with status code 200.
@@ -934,12 +940,12 @@ func NewCreateOutputContext(ctx context.Context, r *http.Request, service *goa.S
 type createOutputPayload struct {
 	// Alias of the output
 	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
 	// Name of the output
 	Name *string `form:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty" xml:"name,omitempty"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate runs the validation rules defined in the design.
@@ -950,6 +956,9 @@ func (payload *createOutputPayload) Validate() (err error) {
 	if payload.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
 	}
+	if payload.Condition == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "condition"))
+	}
 	return
 }
 
@@ -959,14 +968,14 @@ func (payload *createOutputPayload) Publicize() *CreateOutputPayload {
 	if payload.Alias != nil {
 		pub.Alias = *payload.Alias
 	}
+	if payload.Condition != nil {
+		pub.Condition = *payload.Condition
+	}
 	if payload.Name != nil {
 		pub.Name = *payload.Name
 	}
 	if payload.Props != nil {
 		pub.Props = payload.Props
-	}
-	if payload.Tags != nil {
-		pub.Tags = payload.Tags
 	}
 	return &pub
 }
@@ -975,12 +984,12 @@ func (payload *createOutputPayload) Publicize() *CreateOutputPayload {
 type CreateOutputPayload struct {
 	// Alias of the output
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
+	// Conditional expression of the output
+	Condition string `form:"condition" json:"condition" yaml:"condition" xml:"condition"`
 	// Name of the output
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Validate runs the validation rules defined in the design.
@@ -990,6 +999,9 @@ func (payload *CreateOutputPayload) Validate() (err error) {
 	}
 	if payload.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "name"))
+	}
+	if payload.Condition == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "condition"))
 	}
 	return
 }
@@ -1204,12 +1216,12 @@ func NewUpdateOutputContext(ctx context.Context, r *http.Request, service *goa.S
 type updateOutputPayload struct {
 	// Alias of the output
 	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
 	// Output status
 	Enabled *bool `form:"enabled,omitempty" json:"enabled,omitempty" yaml:"enabled,omitempty" xml:"enabled,omitempty"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // Finalize sets the default values defined in the design.
@@ -1226,14 +1238,14 @@ func (payload *updateOutputPayload) Publicize() *UpdateOutputPayload {
 	if payload.Alias != nil {
 		pub.Alias = payload.Alias
 	}
+	if payload.Condition != nil {
+		pub.Condition = payload.Condition
+	}
 	if payload.Enabled != nil {
 		pub.Enabled = *payload.Enabled
 	}
 	if payload.Props != nil {
 		pub.Props = payload.Props
-	}
-	if payload.Tags != nil {
-		pub.Tags = payload.Tags
 	}
 	return &pub
 }
@@ -1242,12 +1254,12 @@ func (payload *updateOutputPayload) Publicize() *UpdateOutputPayload {
 type UpdateOutputPayload struct {
 	// Alias of the output
 	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
 	// Output status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// Output properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
-	// Comma separated list of tags
-	Tags *string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
 }
 
 // OK sends a HTTP response with status code 200.

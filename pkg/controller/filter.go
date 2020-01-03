@@ -34,8 +34,8 @@ func (c *FilterController) Create(ctx *app.CreateFilterContext) error {
 		ctx.Payload.Name,
 	).Props(
 		ctx.Payload.Props,
-	).Tags(
-		ctx.Payload.Tags,
+	).Condition(
+		&ctx.Payload.Condition,
 	).Enable(false).Build()
 
 	f, err := c.cf.Add(filter)
@@ -97,8 +97,8 @@ func (c *FilterController) Update(ctx *app.UpdateFilterContext) error {
 		ctx.Payload.Alias,
 	).Props(
 		ctx.Payload.Props,
-	).Tags(
-		ctx.Payload.Tags,
+	).Condition(
+		ctx.Payload.Condition,
 	).Enable(
 		ctx.Payload.Enabled,
 	).Build()

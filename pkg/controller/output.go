@@ -4,24 +4,24 @@ import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/autogen/app"
 	"github.com/ncarlier/feedpushr/pkg/builder"
+	"github.com/ncarlier/feedpushr/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/pkg/common"
 	"github.com/ncarlier/feedpushr/pkg/model"
-	"github.com/ncarlier/feedpushr/pkg/output"
 	"github.com/ncarlier/feedpushr/pkg/store"
 )
 
 // OutputController implements the output resource.
 type OutputController struct {
 	*goa.Controller
-	om *output.Manager
+	pipeline *pipeline.Pipeline
 	db store.DB
 }
 
 // NewOutputController creates a output controller.
-func NewOutputController(service *goa.Service, db store.DB, om *output.Manager) *OutputController {
+func NewOutputController(service *goa.Service, db store.DB, pipe *pipeline.Pipeline) *OutputController {
 	return &OutputController{
 		Controller: service.NewController("OutputController"),
-		om:         om,
+		pipeline:        pipe,
 		db:         db,
 	}
 }
@@ -34,10 +34,10 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 		ctx.Payload.Name,
 	).Props(
 		ctx.Payload.Props,
-	).Tags(
-		ctx.Payload.Tags,
+	).Condition(
+		&ctx.Payload.Condition,
 	).Enable(false).Build()
-	provider, err := c.om.Add(out)
+	provider, err := c.pipeline.AddOutput(out)
 	if err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
 	out := &model.OutputDef{
 		ID: ctx.ID,
 	}
-	err := c.om.Remove(out)
+	err := c.pipeline.RemoveOutput(out)
 	if err != nil {
 		return ctx.NotFound()
 	}
@@ -68,7 +68,7 @@ func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
 
 // Get runs the get action.
 func (c *OutputController) Get(ctx *app.GetOutputContext) error {
-	out, err := c.om.Get(ctx.ID)
+	out, err := c.pipeline.GetOutput(ctx.ID)
 	if err != nil {
 		return ctx.NotFound()
 	}
@@ -79,7 +79,7 @@ func (c *OutputController) Get(ctx *app.GetOutputContext) error {
 
 // Update runs the update action.
 func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
-	out, err := c.om.Get(ctx.ID)
+	out, err := c.pipeline.GetOutput(ctx.ID)
 	if err != nil {
 		if err == common.ErrOutputNotFound {
 			return ctx.NotFound()
@@ -93,13 +93,13 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 		ctx.Payload.Alias,
 	).Props(
 		ctx.Payload.Props,
-	).Tags(
-		ctx.Payload.Tags,
+	).Condition(
+		ctx.Payload.Condition,
 	).Enable(
 		ctx.Payload.Enabled,
 	).Build()
 
-	out, err = c.om.Update(update)
+	out, err = c.pipeline.UpdateOutput(update)
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 // List runs the list action.
 func (c *OutputController) List(ctx *app.ListOutputContext) error {
 	res := app.OutputCollection{}
-	outputs := c.om.GetOutputDefs()
+	outputs := c.pipeline.GetOutputDefs()
 	for _, def := range outputs {
 		res = append(res, builder.NewOutputFromDef(def))
 	}
@@ -125,7 +125,7 @@ func (c *OutputController) List(ctx *app.ListOutputContext) error {
 
 // Specs runs the specs action.
 func (c *OutputController) Specs(ctx *app.SpecsOutputContext) error {
-	specs := c.om.GetAvailableOutputs()
+	specs := c.pipeline.GetAvailableOutputs()
 
 	res := app.OutputSpecCollection{}
 	for _, spec := range specs {

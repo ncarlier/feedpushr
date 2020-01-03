@@ -3,6 +3,7 @@ package filter
 import (
 	"sync/atomic"
 
+	"github.com/ncarlier/feedpushr/pkg/expr"
 	"github.com/ncarlier/feedpushr/pkg/model"
 
 	"github.com/tdewolff/minify/v2"
@@ -21,7 +22,7 @@ var minifySpec = model.Spec{
 type MinifyFilter struct {
 	id        int
 	spec      model.Spec
-	tags      []string
+	condition *expr.ConditionalExpression
 	nbSuccess uint64
 	nbError   uint64
 	enabled   bool
@@ -30,6 +31,10 @@ type MinifyFilter struct {
 
 // DoFilter applies filter on the article
 func (f *MinifyFilter) DoFilter(article *model.Article) error {
+	if !f.enabled || !f.condition.Match(article) {
+		// Ignore if disabled or if the article doesn't match the condition
+		return nil
+	}
 	if article.Content != "" {
 		content, err := f.minifier.String("text/html", article.Content)
 		if err != nil {
@@ -54,10 +59,10 @@ func (f *MinifyFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *MinifyFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:      f.id,
-		Tags:    f.tags,
-		Spec:    f.spec,
-		Enabled: f.enabled,
+		ID:        f.id,
+		Spec:      f.spec,
+		Condition: f.condition.String(),
+		Enabled:   f.enabled,
 	}
 
 	result.Props = map[string]interface{}{
@@ -68,16 +73,20 @@ func (f *MinifyFilter) GetDef() model.FilterDef {
 	return result
 }
 
-func newMinifyFilter(filter *model.FilterDef) *MinifyFilter {
+func newMinifyFilter(filter *model.FilterDef) (*MinifyFilter, error) {
+	condition, err := expr.NewConditionalExpression(filter.Condition)
+	if err != nil {
+		return nil, err
+	}
 	minifier := minify.New()
 	minifier.AddFunc("text/css", css.Minify)
 	minifier.AddFunc("text/html", html.Minify)
 	minifier.AddFunc("image/svg+xml", svg.Minify)
 	return &MinifyFilter{
-		id:       filter.ID,
-		spec:     minifySpec,
-		tags:     filter.Tags,
-		minifier: minifier,
-		enabled:  filter.Enabled,
-	}
+		id:        filter.ID,
+		spec:      minifySpec,
+		condition: condition,
+		minifier:  minifier,
+		enabled:   filter.Enabled,
+	}, nil
 }

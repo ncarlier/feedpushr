@@ -8,13 +8,17 @@ definitions:
   CreateFilterPayload:
     example:
       alias: foo
+      condition: '"foo" in Tags'
       name: fetch
       props: '-'
-      tags: foo,bar
     properties:
       alias:
         description: Alias of the filter
         example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
         type: string
       name:
         description: Name of the filter
@@ -25,25 +29,26 @@ definitions:
         description: Filter properties
         example: '-'
         type: object
-      tags:
-        description: Comma separated list of tags
-        example: foo,bar
-        type: string
     required:
     - alias
     - name
+    - condition
     title: CreateFilterPayload
     type: object
   CreateOutputPayload:
     example:
       alias: foo
+      condition: '"foo" in Tags'
       name: http
       props: '-'
-      tags: foo,bar
     properties:
       alias:
         description: Alias of the output
         example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
         type: string
       name:
         description: Name of the output
@@ -54,13 +59,10 @@ definitions:
         description: Output properties
         example: '-'
         type: object
-      tags:
-        description: Comma separated list of tags
-        example: foo,bar
-        type: string
     required:
     - alias
     - name
+    - condition
     title: CreateOutputPayload
     type: object
   Feed:
@@ -195,18 +197,20 @@ definitions:
     description: A filter (default view)
     example:
       alias: foo
+      condition: '"foo" in Tags'
       desc: This filter will...
       enabled: true
       id: 1
       name: fetch
       props: '-'
-      tags:
-      - foo
-      - bar
     properties:
       alias:
         description: Alias of the filter
         example: foo
+        type: string
+      condition:
+        description: Conditional expression of the filter
+        example: '"foo" in Tags'
         type: string
       desc:
         description: Description of the filter
@@ -231,20 +235,12 @@ definitions:
         description: Filter properties
         example: '-'
         type: object
-      tags:
-        description: List of tags
-        example:
-        - foo
-        - bar
-        items:
-          example: Consequatur maxime occaecati necessitatibus architecto eligendi.
-          type: string
-        type: array
     required:
     - id
     - alias
     - name
     - desc
+    - condition
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; view=default'
     type: object
   FilterCollection:
@@ -252,23 +248,12 @@ definitions:
       view)
     example:
     - alias: foo
+      condition: '"foo" in Tags'
       desc: This filter will...
       enabled: true
       id: 1
       name: fetch
       props: '-'
-      tags:
-      - foo
-      - bar
-    - alias: foo
-      desc: This filter will...
-      enabled: true
-      id: 1
-      name: fetch
-      props: '-'
-      tags:
-      - foo
-      - bar
     items:
       $ref: '#/definitions/Filter'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; type=collection;
@@ -328,21 +313,6 @@ definitions:
           Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
             id earum accusantium.
         type: text
-    - desc: Add a prefix to the tittle...
-      name: title
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
     items:
       $ref: '#/definitions/FilterSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection;
@@ -352,18 +322,20 @@ definitions:
     description: The output channel (default view)
     example:
       alias: foo
+      condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
       enabled: true
       id: 1
       name: fetch
       props: '-'
-      tags:
-      - foo
-      - bar
     properties:
       alias:
         description: Alias of the output channel
         example: foo
+        type: string
+      condition:
+        description: Conditional expression of the filter
+        example: '"foo" in Tags'
         type: string
       desc:
         description: Description of the output channel
@@ -388,20 +360,12 @@ definitions:
         description: Output channel properties
         example: '-'
         type: object
-      tags:
-        description: List of tags
-        example:
-        - foo
-        - bar
-        items:
-          example: Ea accusamus sint tenetur.
-          type: string
-        type: array
     required:
     - id
     - alias
     - name
     - desc
+    - condition
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; view=default'
     type: object
   OutputCollection:
@@ -409,23 +373,19 @@ definitions:
       view)
     example:
     - alias: foo
+      condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
       enabled: true
       id: 1
       name: fetch
       props: '-'
-      tags:
-      - foo
-      - bar
     - alias: foo
+      condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
       enabled: true
       id: 1
       name: fetch
       props: '-'
-      tags:
-      - foo
-      - bar
     items:
       $ref: '#/definitions/Output'
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; type=collection;
@@ -497,6 +457,48 @@ definitions:
           Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
             id earum accusantium.
         type: text
+    - desc: New articles are sent as JSON document to...
+      name: fetch
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+    - desc: New articles are sent as JSON document to...
+      name: fetch
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
     items:
       $ref: '#/definitions/OutputSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection;
@@ -547,18 +549,6 @@ definitions:
         Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
           id earum accusantium.
       type: text
-    - desc: New articles are sent as JSON document to...
-      name: url
-      options:
-        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-          id earum accusantium.
-      type: text
-    - desc: New articles are sent as JSON document to...
-      name: url
-      options:
-        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-          id earum accusantium.
-      type: text
     items:
       $ref: '#/definitions/PropSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.prop-spec.v1+json; type=collection;
@@ -567,13 +557,17 @@ definitions:
   UpdateFilterPayload:
     example:
       alias: foo
+      condition: '"foo" in Tags'
       enabled: '-'
       props: '-'
-      tags: foo,bar
     properties:
       alias:
         description: Alias of the filter
         example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
         type: string
       enabled:
         default: false
@@ -585,22 +579,22 @@ definitions:
         description: Filter properties
         example: '-'
         type: object
-      tags:
-        description: Comma separated list of tags
-        example: foo,bar
-        type: string
     title: UpdateFilterPayload
     type: object
   UpdateOutputPayload:
     example:
       alias: foo
+      condition: '"foo" in Tags'
       enabled: '-'
       props: '-'
-      tags: foo,bar
     properties:
       alias:
         description: Alias of the output
         example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
         type: string
       enabled:
         default: false
@@ -612,10 +606,6 @@ definitions:
         description: Output properties
         example: '-'
         type: object
-      tags:
-        description: Comma separated list of tags
-        example: foo,bar
-        type: string
     title: UpdateOutputPayload
     type: object
   error:

@@ -16,7 +16,7 @@ export default ({filter}: Props) => {
   const { showMessage } = useContext(MessageContext)
 
   async function switchFilterStatus(event: React.ChangeEvent, check: boolean) {
-    const update = {...filter, enabled: check, tags: filter.tags ? filter.tags.join(',') : '' }
+    const update = {...filter, enabled: check }
     try {
       const res = await fetchAPI(`/filters/${filter.id}`, null, {
         method: 'PUT',

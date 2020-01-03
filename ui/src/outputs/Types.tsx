@@ -11,7 +11,7 @@ export interface Output {
   name: string
   desc: string
   enabled: boolean
-  tags: string[]
+  condition: string
   props: OutputProps
 }
 
@@ -32,6 +32,7 @@ export interface OutputForm {
   id?: number
   alias: string
   name: string
-  tags: string[]
+  enabled: boolean
+  condition: string
   props: OutputProps
 }

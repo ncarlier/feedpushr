@@ -235,9 +235,9 @@ Payload example:
 
 {
    "alias": "foo",
+   "condition": "\"foo\" in Tags",
    "name": "fetch",
-   "props": "-",
-   "tags": "foo,bar"
+   "props": "-"
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -254,9 +254,9 @@ Payload example:
 
 {
    "alias": "foo",
+   "condition": "\"foo\" in Tags",
    "name": "http",
-   "props": "-",
-   "tags": "foo,bar"
+   "props": "-"
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
@@ -498,9 +498,9 @@ Payload example:
 
 {
    "alias": "foo",
+   "condition": "\"foo\" in Tags",
    "enabled": "-",
-   "props": "-",
-   "tags": "foo,bar"
+   "props": "-"
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp24.Run(c, args) },
 	}
@@ -517,9 +517,9 @@ Payload example:
 
 {
    "alias": "foo",
+   "condition": "\"foo\" in Tags",
    "enabled": "-",
-   "props": "-",
-   "tags": "foo,bar"
+   "props": "-"
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp25.Run(c, args) },
 	}

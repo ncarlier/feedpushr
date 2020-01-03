@@ -181,10 +181,10 @@ var _ = Resource("filter", func() {
 				Example("fetch")
 			})
 			Member("props", HashOf(String, Any), "Filter properties", NoExample)
-			Member("tags", String, "Comma separated list of tags", func() {
-				Example("foo,bar")
+			Member("condition", String, "Conditional expression of the output", func() {
+				Example("\"foo\" in Tags")
 			})
-			Required("alias", "name")
+			Required("alias", "name", "condition")
 		})
 		Response(Created, Filter)
 		Response(BadRequest, ErrorMedia)
@@ -203,8 +203,8 @@ var _ = Resource("filter", func() {
 				Example("foo")
 			})
 			Member("props", HashOf(String, Any), "Filter properties", NoExample)
-			Member("tags", String, "Comma separated list of tags", func() {
-				Example("foo,bar")
+			Member("condition", String, "Conditional expression of the output", func() {
+				Example("\"foo\" in Tags")
 			})
 			Member("enabled", Boolean, "Filter status", NoExample)
 		})
@@ -281,10 +281,10 @@ var _ = Resource("output", func() {
 				Example("http")
 			})
 			Member("props", HashOf(String, Any), "Output properties", NoExample)
-			Member("tags", String, "Comma separated list of tags", func() {
-				Example("foo,bar")
+			Member("condition", String, "Conditional expression of the output", func() {
+				Example("\"foo\" in Tags")
 			})
-			Required("alias", "name")
+			Required("alias", "name", "condition")
 		})
 		Response(Created, Output)
 		Response(BadRequest, ErrorMedia)
@@ -303,8 +303,8 @@ var _ = Resource("output", func() {
 				Example("foo")
 			})
 			Member("props", HashOf(String, Any), "Output properties", NoExample)
-			Member("tags", String, "Comma separated list of tags", func() {
-				Example("foo,bar")
+			Member("condition", String, "Conditional expression of the output", func() {
+				Example("\"foo\" in Tags")
 			})
 			Member("enabled", Boolean, "Output status", NoExample)
 		})

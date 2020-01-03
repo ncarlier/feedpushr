@@ -2,8 +2,8 @@ import MaterialTable, { Column } from 'material-table'
 import React, { useContext, useState } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 
+import Ellipsis from '../common/Ellipsis'
 import Message from '../common/Message'
-import Tags from '../common/Tags'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import OutputControl from './OutputControl'
@@ -40,9 +40,10 @@ const columns: Column[] = [
     searchable: false,
   },
   { 
-    title: 'Tags',
-    field: 'tags',
-    render: (Output: Output) => <Tags value={Output.tags} />
+    title: 'Condition',
+    field: 'condition',
+    render: (output: Output) => <Ellipsis value={output.condition} />
+
   }
 ]
 
