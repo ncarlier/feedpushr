@@ -161,7 +161,6 @@ archive:
 distribution:
 	GOARCH=amd64 make build cli launcher plugins archive
 	GOARCH=arm64 make build cli archive
-	GOARCH=arm make build cli archive
 	GOOS=windows make build cli launcher archive
 	GOOS=darwin make build cli archive
 .PHONY: distribution
