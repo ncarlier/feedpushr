@@ -1,7 +1,6 @@
 # feedpushr contrib
 
-Some plugins for [Feedpushr][feedpushr].
-
+Some plugins and tools for [Feedpushr][feedpushr].
 
 ## Plugins
 
@@ -13,6 +12,11 @@ Some plugins for [Feedpushr][feedpushr].
 ### Filter
 
 - [RAKE](./rake/README.md)
+
+## Tools
+
+- [Desktop launcher](https://github.com/ncarlier/feedpushr#launcher)
+- [Ruby API client](https://github.com/bluengreen/feedpushr_client)
 
 ---
 
