@@ -33,6 +33,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/metric"
 	"github.com/ncarlier/feedpushr/pkg/service"
 	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/pkg/version"
 	"github.com/rs/zerolog/log"
 )
 
@@ -50,7 +51,7 @@ func main() {
 
 	// Show version if asked
 	if conf.ShowVersion {
-		printVersion()
+		version.Print()
 		os.Exit(0)
 	}
 

@@ -846,6 +846,33 @@ func (ctx *GetHealthContext) OK(resp []byte) error {
 	return err
 }
 
+// GetIndexContext provides the index get action context.
+type GetIndexContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+}
+
+// NewGetIndexContext parses the incoming request URL and body, performs validations and creates the
+// context used by the index controller get action.
+func NewGetIndexContext(ctx context.Context, r *http.Request, service *goa.Service) (*GetIndexContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := GetIndexContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *GetIndexContext) OK(r *Info) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
 // GetOpmlContext provides the opml get action context.
 type GetOpmlContext struct {
 	context.Context

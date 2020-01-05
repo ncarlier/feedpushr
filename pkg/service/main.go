@@ -131,6 +131,8 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	srv.Use(middleware.ErrorHandler(srv, true))
 	srv.Use(middleware.Recover())
 
+	// Mount "index" controller
+	app.MountIndexController(srv, controller.NewIndexController(srv))
 	// Mount "feed" controller
 	app.MountFeedController(srv, controller.NewFeedController(srv, db, am))
 	// Mount "filter" controller

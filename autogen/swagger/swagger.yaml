@@ -145,7 +145,7 @@ definitions:
         - foo
         - bar
         items:
-          example: In culpa.
+          example: Occaecati necessitatibus architecto eligendi illum possimus fugit.
           type: string
         type: array
       text:
@@ -254,6 +254,20 @@ definitions:
       id: 1
       name: fetch
       props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: 1
+      name: fetch
+      props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: 1
+      name: fetch
+      props: '-'
     items:
       $ref: '#/definitions/Filter'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; type=collection;
@@ -313,18 +327,84 @@ definitions:
           Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
             id earum accusantium.
         type: text
+    - desc: Add a prefix to the tittle...
+      name: title
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+    - desc: Add a prefix to the tittle...
+      name: title
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+            id earum accusantium.
+        type: text
     items:
       $ref: '#/definitions/FilterSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection;
       view=default'
     type: array
+  Info:
+    description: API info (default view)
+    example:
+      _links:
+        Ut pariatur qui voluptatibus.:
+          href: url
+      desc: Feed aggregator daemon with sugar on top
+      name: feedpushr
+      version: v2.0.0
+    properties:
+      _links:
+        additionalProperties: true
+        description: HAL links
+        example:
+          Ut pariatur qui voluptatibus.:
+            href: url
+        type: object
+      desc:
+        description: Service description
+        example: Feed aggregator daemon with sugar on top
+        type: string
+      name:
+        description: Service name
+        example: feedpushr
+        type: string
+      version:
+        description: Service version
+        example: v2.0.0
+        type: string
+    required:
+    - name
+    - desc
+    - version
+    - _links
+    title: 'Mediatype identifier: application/vnd.feedpushr.info.v1+json; view=default'
+    type: object
   Output:
     description: The output channel (default view)
     example:
       alias: foo
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
-      enabled: true
+      enabled: false
       id: 1
       name: fetch
       props: '-'
@@ -344,7 +424,7 @@ definitions:
       enabled:
         default: false
         description: Status
-        example: true
+        example: false
         type: boolean
       id:
         description: ID of the output
@@ -375,14 +455,14 @@ definitions:
     - alias: foo
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
-      enabled: true
+      enabled: false
       id: 1
       name: fetch
       props: '-'
     - alias: foo
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
-      enabled: true
+      enabled: false
       id: 1
       name: fetch
       props: '-'
@@ -478,27 +558,6 @@ definitions:
           Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
             id earum accusantium.
         type: text
-    - desc: New articles are sent as JSON document to...
-      name: fetch
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
     items:
       $ref: '#/definitions/OutputSpec'
     title: 'Mediatype identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection;
@@ -543,6 +602,18 @@ definitions:
     description: PropSpecCollection is the media type for an array of PropSpec (default
       view)
     example:
+    - desc: New articles are sent as JSON document to...
+      name: url
+      options:
+        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+          id earum accusantium.
+      type: text
+    - desc: New articles are sent as JSON document to...
+      name: url
+      options:
+        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
+          id earum accusantium.
+      type: text
     - desc: New articles are sent as JSON document to...
       name: url
       options:
@@ -660,6 +731,22 @@ info:
   title: The feedpushr API
   version: ""
 paths:
+  /:
+    get:
+      description: Get basic API information.
+      operationId: index#get
+      produces:
+      - application/vnd.feedpushr.info.v1+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Info'
+      schemes:
+      - http
+      summary: get index
+      tags:
+      - index
   /feeds:
     get:
       description: Retrieve all feeds

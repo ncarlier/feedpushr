@@ -427,6 +427,61 @@ func handleHealthOrigin(h goa.Handler) goa.Handler {
 	}
 }
 
+// IndexController is the controller interface for the Index actions.
+type IndexController interface {
+	goa.Muxer
+	Get(*GetIndexContext) error
+}
+
+// MountIndexController "mounts" a Index resource controller on the given service.
+func MountIndexController(service *goa.Service, ctrl IndexController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/v1/", ctrl.MuxHandler("preflight", handleIndexOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewGetIndexContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Get(rctx)
+	}
+	h = handleIndexOrigin(h)
+	service.Mux.Handle("GET", "/v1/", ctrl.MuxHandler("get", h, nil))
+	service.LogInfo("mount", "ctrl", "Index", "action", "Get", "route", "GET /v1/")
+}
+
+// handleIndexOrigin applies the CORS response headers corresponding to the origin.
+func handleIndexOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
 // OpmlController is the controller interface for the Opml actions.
 type OpmlController interface {
 	goa.Muxer

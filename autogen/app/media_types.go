@@ -257,6 +257,60 @@ func (mt FilterCollection) Validate() (err error) {
 	return
 }
 
+// HAL link (default view)
+//
+// Identifier: application/vnd.feedpushr.hal-links.v1+json; view=default
+type HALLink struct {
+	// Link's destination
+	Href string `form:"href" json:"href" yaml:"href" xml:"href"`
+}
+
+// Validate validates the HALLink media type instance.
+func (mt *HALLink) Validate() (err error) {
+	if mt.Href == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "href"))
+	}
+	return
+}
+
+// API info (default view)
+//
+// Identifier: application/vnd.feedpushr.info.v1+json; view=default
+type Info struct {
+	// HAL links
+	Links map[string]*HALLink `form:"_links" json:"_links" yaml:"_links" xml:"_links"`
+	// Service description
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// Service name
+	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Service version
+	Version string `form:"version" json:"version" yaml:"version" xml:"version"`
+}
+
+// Validate validates the Info media type instance.
+func (mt *Info) Validate() (err error) {
+	if mt.Name == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.Version == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "version"))
+	}
+	if mt.Links == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "_links"))
+	}
+	for _, e := range mt.Links {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // The output channel specification (default view)
 //
 // Identifier: application/vnd.feedpushr.output-spec.v1+json; view=default

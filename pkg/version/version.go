@@ -1,4 +1,4 @@
-package main
+package version
 
 import (
 	"expvar"
@@ -11,7 +11,11 @@ var Version = ""
 // GitCommit hash
 var GitCommit = "HEAD"
 
-func printVersion() {
+// Built date
+var Built = ""
+
+// Print version to STDOUT
+func Print() {
 	version := Version
 	if version == "" {
 		version = GitCommit
@@ -29,4 +33,5 @@ GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gp
 func init() {
 	expvar.NewString("version").Set(Version)
 	expvar.NewString("rev").Set(GitCommit)
+	expvar.NewString("built").Set(Built)
 }

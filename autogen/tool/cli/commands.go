@@ -130,6 +130,11 @@ type (
 		PrettyPrint bool
 	}
 
+	// GetIndexCommand is the command line data structure for the get action of index
+	GetIndexCommand struct {
+		PrettyPrint bool
+	}
+
 	// GetOpmlCommand is the command line data structure for the get action of opml
 	GetOpmlCommand struct {
 		PrettyPrint bool
@@ -327,82 +332,77 @@ Payload example:
 	tmp9.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp9.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp10 := new(GetOpmlCommand)
+	tmp10 := new(GetIndexCommand)
 	sub = &cobra.Command{
-		Use:   `opml ["/v1/opml"]`,
+		Use:   `index ["/v1/"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp10.Run(c, args) },
 	}
 	tmp10.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp10.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp11 := new(GetOutputCommand)
+	tmp11 := new(GetOpmlCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v1/outputs/ID"]`,
+		Use:   `opml ["/v1/opml"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
 	tmp11.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp11.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp12 := new(GetSwaggerCommand)
+	tmp12 := new(GetOutputCommand)
 	sub = &cobra.Command{
-		Use:   `swagger ["/v1/swagger.json"]`,
+		Use:   `output ["/v1/outputs/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
 	}
 	tmp12.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp12.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp13 := new(GetVarsCommand)
+	tmp13 := new(GetSwaggerCommand)
 	sub = &cobra.Command{
-		Use:   `vars ["/v1/vars"]`,
+		Use:   `swagger ["/v1/swagger.json"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp13.Run(c, args) },
 	}
 	tmp13.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp13.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "list",
-		Short: `list action`,
-	}
-	tmp14 := new(ListFeedCommand)
+	tmp14 := new(GetVarsCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds"]`,
+		Use:   `vars ["/v1/vars"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp14.Run(c, args) },
 	}
 	tmp14.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp14.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp15 := new(ListFilterCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "list",
+		Short: `list action`,
+	}
+	tmp15 := new(ListFeedCommand)
 	sub = &cobra.Command{
-		Use:   `filter ["/v1/filters"]`,
+		Use:   `feed ["/v1/feeds"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
 	}
 	tmp15.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp15.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp16 := new(ListOutputCommand)
+	tmp16 := new(ListFilterCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v1/outputs"]`,
+		Use:   `filter ["/v1/filters"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp16.Run(c, args) },
 	}
 	tmp16.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp16.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "pub",
-		Short: `Publication endpoint for PSHB hubs`,
-	}
-	tmp17 := new(PubPshbCommand)
+	tmp17 := new(ListOutputCommand)
 	sub = &cobra.Command{
-		Use:   `pshb ["/v1/pshb"]`,
+		Use:   `output ["/v1/outputs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp17.Run(c, args) },
 	}
@@ -411,35 +411,35 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "specs",
-		Short: `specs action`,
+		Use:   "pub",
+		Short: `Publication endpoint for PSHB hubs`,
 	}
-	tmp18 := new(SpecsFilterCommand)
+	tmp18 := new(PubPshbCommand)
 	sub = &cobra.Command{
-		Use:   `filter ["/v1/filters/_specs"]`,
+		Use:   `pshb ["/v1/pshb"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp18.Run(c, args) },
 	}
 	tmp18.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp18.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp19 := new(SpecsOutputCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "specs",
+		Short: `specs action`,
+	}
+	tmp19 := new(SpecsFilterCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v1/outputs/_specs"]`,
+		Use:   `filter ["/v1/filters/_specs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp19.Run(c, args) },
 	}
 	tmp19.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp19.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "start",
-		Short: `Start feed aggregation`,
-	}
-	tmp20 := new(StartFeedCommand)
+	tmp20 := new(SpecsOutputCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID/start"]`,
+		Use:   `output ["/v1/outputs/_specs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp20.Run(c, args) },
 	}
@@ -448,12 +448,12 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "stop",
-		Short: `Stop feed aggregation`,
+		Use:   "start",
+		Short: `Start feed aggregation`,
 	}
-	tmp21 := new(StopFeedCommand)
+	tmp21 := new(StartFeedCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID/stop"]`,
+		Use:   `feed ["/v1/feeds/ID/start"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp21.Run(c, args) },
 	}
@@ -462,12 +462,12 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "sub",
-		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
+		Use:   "stop",
+		Short: `Stop feed aggregation`,
 	}
-	tmp22 := new(SubPshbCommand)
+	tmp22 := new(StopFeedCommand)
 	sub = &cobra.Command{
-		Use:   `pshb ["/v1/pshb"]`,
+		Use:   `feed ["/v1/feeds/ID/stop"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp22.Run(c, args) },
 	}
@@ -476,40 +476,35 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "update",
-		Short: `update action`,
+		Use:   "sub",
+		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
 	}
-	tmp23 := new(UpdateFeedCommand)
+	tmp23 := new(SubPshbCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v1/feeds/ID"]`,
+		Use:   `pshb ["/v1/pshb"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp23.Run(c, args) },
 	}
 	tmp23.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp23.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp24 := new(UpdateFilterCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "update",
+		Short: `update action`,
+	}
+	tmp24 := new(UpdateFeedCommand)
 	sub = &cobra.Command{
-		Use:   `filter ["/v1/filters/ID"]`,
+		Use:   `feed ["/v1/feeds/ID"]`,
 		Short: ``,
-		Long: `
-
-Payload example:
-
-{
-   "alias": "foo",
-   "condition": "\"foo\" in Tags",
-   "enabled": "-",
-   "props": "-"
-}`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp24.Run(c, args) },
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp24.Run(c, args) },
 	}
 	tmp24.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp24.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp25 := new(UpdateOutputCommand)
+	tmp25 := new(UpdateFilterCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v1/outputs/ID"]`,
+		Use:   `filter ["/v1/filters/ID"]`,
 		Short: ``,
 		Long: `
 
@@ -526,19 +521,38 @@ Payload example:
 	tmp25.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp25.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
+	tmp26 := new(UpdateOutputCommand)
+	sub = &cobra.Command{
+		Use:   `output ["/v1/outputs/ID"]`,
+		Short: ``,
+		Long: `
+
+Payload example:
+
+{
+   "alias": "foo",
+   "condition": "\"foo\" in Tags",
+   "enabled": "-",
+   "props": "-"
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp26.Run(c, args) },
+	}
+	tmp26.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp26.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
 		Use:   "upload",
 		Short: `Upload an OPML file to create feeds`,
 	}
-	tmp26 := new(UploadOpmlCommand)
+	tmp27 := new(UploadOpmlCommand)
 	sub = &cobra.Command{
 		Use:   `opml ["/v1/opml"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp26.Run(c, args) },
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp27.Run(c, args) },
 	}
-	tmp26.RegisterFlags(sub, c)
-	sub.PersistentFlags().BoolVar(&tmp26.PrettyPrint, "pp", false, "Pretty print response body")
+	tmp27.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp27.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 }
@@ -1076,6 +1090,30 @@ func (cmd *GetHealthCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *GetHealthCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the GetIndexCommand command.
+func (cmd *GetIndexCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/v1/"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.GetIndex(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *GetIndexCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 }
 
 // Run makes the HTTP request corresponding to the GetOpmlCommand command.

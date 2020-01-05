@@ -7,15 +7,21 @@ import { Favorite as SupportIcon, NewReleases as FeatureIcon } from '@material-u
 
 import logo from './feedpushr.svg'
 import SourceIcon from './Github'
+import Version from './Version'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(3, 2),
-      textAlign: "center",
+      display: "flex",
+      flexDirection: "column",
     },
     logo: {
       maxWidth: "50vw",
+      alignSelf: "center",
+    },
+    link: {
+      color: "rgba(0, 0, 0, 0.54)",
     }
   }),
 )
@@ -26,6 +32,7 @@ export default () => {
   return (
     <div>
       <Paper className={classes.root}>
+        <Version />
         <img src={logo} alt="feedpushr" className={classes.logo}/>
         <BottomNavigation showLabels>
           <BottomNavigationAction
@@ -35,6 +42,7 @@ export default () => {
             href="https://github.com/ncarlier/feedpushr"
             target="_blank"
             rel="noreferrer"
+            className={classes.link}
           />
           <BottomNavigationAction
             label="Features &amp; Bugs"
@@ -43,6 +51,7 @@ export default () => {
             href="https://github.com/ncarlier/feedpushr/issues"
             target="_blank"
             rel="noreferrer"
+            className={classes.link}
           />
           <BottomNavigationAction
             label="Support this project"
@@ -51,6 +60,7 @@ export default () => {
             href="https://www.paypal.me/nunux"
             target="_blank"
             rel="noreferrer"
+            className={classes.link}
           />
         </BottomNavigation>
       </Paper>

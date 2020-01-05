@@ -39,9 +39,15 @@ PLUGIN?=twitter
 PLUGIN_SO=$(APPNAME)-$(PLUGIN).so
 
 # Extract version infos
+PKG_VERSION:=github.com/ncarlier/$(APPNAME)/pkg/version
 VERSION:=`git describe --tags`
-GIT_COMMIT:=`git rev-list -1 HEAD`
-LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.GitCommit=${GIT_COMMIT}"
+GIT_COMMIT:=`git rev-list -1 HEAD --abbrev-commit`
+BUILT:=`date`
+define LDFLAGS
+-X '$(PKG_VERSION).Version=$(VERSION)' \
+-X '$(PKG_VERSION).GitCommit=$(GIT_COMMIT)' \
+-X '$(PKG_VERSION).Built=$(BUILT)'
+endef
 
 all: build
 
@@ -102,7 +108,7 @@ contrib/launcher/main.syso:
 build: autogen pkg/assets/statik.go
 	-mkdir -p release
 	echo ">>> Building: $(MAIN_EXE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o release/$(MAIN_EXE)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -o release/$(MAIN_EXE)
 .PHONY: build
 
 ## Build CLI executable
@@ -110,7 +116,7 @@ cli:
 	-mkdir -p release
 	echo ">>> Building: $(CLI_EXE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
 	cd ./autogen/tool/$(APPNAME)-cli && \
-		GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o ../../../release/$(CLI_EXE)
+		GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -o ../../../release/$(CLI_EXE)
 .PHONY: cli
 
 ## Build launcher executable
