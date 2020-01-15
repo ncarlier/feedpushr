@@ -24,14 +24,15 @@ base_download_url=`dirname $artefact_url`
 
 download_url=$base_download_url/feedpushr-$os-${arch}.tgz
 download_file=/tmp/feedpushr-$os-${arch}.tgz
+bin_target=${1:-$HOME/.local/bin}
 
 echo "Downloading $download_url to $download_file ..."
-curl -o $download_file --fail -L $download_url
+curl -o $download_file -s --fail -L $download_url
 [ $? != 0 ] && die "Unable to download binary for your architecture."
 
-echo "Extracting $download_file ..."
+echo "Extracting $download_file to $bin_target ..."
 [ -d $bin_target ] || mkdir -p $bin_target
-tar xvzf ${download_file} -C $bin_target
+tar xvzf $download_file -C $bin_target
 [ $? != 0 ] && die "Unable to extract archive."
 
 echo "Cleaning ..."
