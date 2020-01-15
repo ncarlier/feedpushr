@@ -1,15 +1,20 @@
 package builder
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
+	"mime"
+	"net/http"
 	"strings"
 	"time"
 
-	"github.com/ncarlier/feedpushr/pkg/strcase"
-
 	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/pkg/html"
+	"github.com/ncarlier/feedpushr/pkg/strcase"
 )
 
 // GetFeedID converts URL to feed ID (HASH)
@@ -21,11 +26,60 @@ func GetFeedID(url string) string {
 
 // NewFeed creates new Feed DTO
 func NewFeed(url string, tags *string) (*app.Feed, error) {
+	// Set timeout context
+	ctx, cancel := context.WithCancel(context.TODO())
+	timeout := time.AfterFunc(common.DefaultTimeout, func() {
+		cancel()
+	})
+
+	// Create the request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	req.Header.Set("User-Agent", common.UserAgent)
+
+	// Do HTTP call
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	timeout.Stop()
+
+	if res.StatusCode < 200 || res.StatusCode >= 300 {
+		return nil, fmt.Errorf("http error: %s", res.Status)
+	}
+
+	// Get content-type
+	contentTypeHeader := res.Header.Get("Content-type")
+	contentType, _, err := mime.ParseMediaType(contentTypeHeader)
+	if err != nil {
+		return nil, err
+	}
+
+	if contentType == "text/html" {
+		urls, err := html.ExtractFeedLinks(res.Body)
+		if err != nil {
+			return nil, err
+		}
+		if len(urls) == 0 {
+			return nil, fmt.Errorf("no feed URL found on this page: %s", url)
+		}
+		return NewFeed(urls[0], tags)
+	}
+
+	if !common.ValidFeedContentType.MatchString(contentType) {
+		return nil, fmt.Errorf("unsupported content type: %s", contentType)
+	}
+
+	// Parse feed
 	fp := gofeed.NewParser()
 	fp.AtomTranslator = NewCustomAtomTranslator()
 	fp.RSSTranslator = NewCustomRSSTranslator()
 
-	rawFeed, err := fp.ParseURL(url)
+	rawFeed, err := fp.Parse(res.Body)
 	if err != nil {
 		return nil, err
 	}

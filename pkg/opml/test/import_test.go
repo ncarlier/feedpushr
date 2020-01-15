@@ -56,7 +56,7 @@ func testImportOPML(t *testing.T, filename string) {
 		id := common.Hash(tc.url)
 		feed, err := db.GetFeed(id)
 		assert.Nil(t, err, fmt.Sprintf("error #%d should be nil", idx))
-		assert.NotNil(t, feed, fmt.Sprintf("feed #%d should  notbe nil", idx))
+		assert.NotNil(t, feed, fmt.Sprintf("feed #%d should not be nil", idx))
 		assert.ContainsStr(t, tc.tag, feed.Tags, fmt.Sprintf("invalid tags for feed #%d", idx))
 	}
 }

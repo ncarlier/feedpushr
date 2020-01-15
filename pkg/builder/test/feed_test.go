@@ -7,7 +7,7 @@ import (
 	"github.com/ncarlier/feedpushr/pkg/builder"
 )
 
-func TestNewFeed(t *testing.T) {
+func TestNewDirectFeed(t *testing.T) {
 	url := "https://keeper.nunux.org/index.xml"
 	feed, err := builder.NewFeed(url, nil)
 	assert.Nil(t, err, "error should be nil")
@@ -18,8 +18,18 @@ func TestNewFeed(t *testing.T) {
 	assert.Equal(t, "Nunux Keeper", feed.Title, "title missmatch")
 }
 
+func TestNewIndirectFeed(t *testing.T) {
+	url := "https://keeper.nunux.org"
+	feed, err := builder.NewFeed(url, nil)
+	assert.Nil(t, err, "error should be nil")
+	assert.NotNil(t, feed, "feed shouldn't be nil")
+	assert.NotEqual(t, "", feed.ID, "ID shouldn't be empty")
+	assert.Equal(t, 0, len(feed.Tags), "Tags should be empty")
+	assert.Equal(t, "Nunux Keeper", feed.Title, "title missmatch")
+}
+
 func TestBadNewFeed(t *testing.T) {
-	url := "https://keeper.nunux.org/"
+	url := "https://keeper.nunux.org/doc/en/"
 	_, err := builder.NewFeed(url, nil)
 	assert.NotNil(t, err, "error shouldn't be nil")
 }

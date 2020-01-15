@@ -2,6 +2,7 @@ package output
 
 import "github.com/ncarlier/feedpushr/pkg/model"
 
+// GetBuiltinOutputPlugins get builtin plugins list
 func GetBuiltinOutputPlugins() map[string]model.OutputPlugin {
 	plugins := make(map[string]model.OutputPlugin)
 	stdoutOutputPlugin := &StdoutOutputPlugin{}

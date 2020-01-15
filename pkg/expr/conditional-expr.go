@@ -19,7 +19,7 @@ type ConditionalExpression struct {
 
 // NewConditionalExpression creates a new conditional expression
 func NewConditionalExpression(expression string) (*ConditionalExpression, error) {
-	var prog *vm.Program = nil
+	var prog *vm.Program
 	var err error
 	if strings.TrimSpace(expression) != "" {
 		prog, err = expr.Compile(expression, expr.Env(model.Article{}))
