@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/pkg/expr"
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/expr"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 var titleSpec = model.Spec{

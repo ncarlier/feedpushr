@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ncarlier/feedpushr/pkg/assert"
-	"github.com/ncarlier/feedpushr/pkg/common"
-	"github.com/ncarlier/feedpushr/pkg/opml"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/assert"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/opml"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 var db store.DB

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	multierror "github.com/hashicorp/go-multierror"
-	"github.com/ncarlier/feedpushr/pkg/builder"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/builder"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

@@ -1,11 +1,11 @@
-//go:generate goagen bootstrap -d github.com/ncarlier/feedpushr/design
+//go:generate goagen bootstrap -d github.com/ncarlier/feedpushr/v2/design
 
 package main
 
 import (
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
-	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
 )
 
 func main() {

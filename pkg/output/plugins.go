@@ -1,6 +1,6 @@
 package output
 
-import "github.com/ncarlier/feedpushr/pkg/model"
+import "github.com/ncarlier/feedpushr/v2/pkg/model"
 
 // GetBuiltinOutputPlugins get builtin plugins list
 func GetBuiltinOutputPlugins() map[string]model.OutputPlugin {

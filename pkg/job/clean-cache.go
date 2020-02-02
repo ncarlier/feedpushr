@@ -3,7 +3,7 @@ package job
 import (
 	"time"
 
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

@@ -69,14 +69,14 @@ definitions:
     description: A RSS feed (default view)
     example:
       cdate: "2010-10-23T13:34:07Z"
-      errorCount: 3.336917582948419e+17
+      errorCount: 333691758294841896
       errorMsg: Est suscipit.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
       lastCheck: "1993-05-15T16:34:02Z"
       mdate: "1981-09-22T23:39:59Z"
-      nbProcessedItems: 5.41887129200626e+17
+      nbProcessedItems: 541887129200626015
       nextCheck: "1999-10-11T23:32:13Z"
       status: stopped
       tags:
@@ -93,7 +93,7 @@ definitions:
         type: string
       errorCount:
         description: Number of consecutive aggregation errors
-        example: 3.336917582948419e+17
+        example: 333691758294841896
         format: int64
         type: integer
       errorMsg:
@@ -124,7 +124,7 @@ definitions:
         type: string
       nbProcessedItems:
         description: Total number of processed items
-        example: 5.41887129200626e+17
+        example: 541887129200626015
         format: int64
         type: integer
       nextCheck:
@@ -172,14 +172,14 @@ definitions:
     description: FeedCollection is the media type for an array of Feed (default view)
     example:
     - cdate: "2010-10-23T13:34:07Z"
-      errorCount: 3.336917582948419e+17
+      errorCount: 333691758294841896
       errorMsg: Est suscipit.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
       lastCheck: "1993-05-15T16:34:02Z"
       mdate: "1981-09-22T23:39:59Z"
-      nbProcessedItems: 5.41887129200626e+17
+      nbProcessedItems: 541887129200626015
       nextCheck: "1999-10-11T23:32:13Z"
       status: stopped
       tags:
@@ -686,7 +686,7 @@ definitions:
       detail: Value of ID must be an integer
       id: 3F1FKVRR
       meta:
-        timestamp: 1.458609066e+09
+        timestamp: 1458609066
       status: "400"
     properties:
       code:
@@ -707,7 +707,7 @@ definitions:
         description: a meta object containing non-standard meta-information about
           the error.
         example:
-          timestamp: 1.458609066e+09
+          timestamp: 1458609066
         type: object
       status:
         description: the HTTP status code applicable to this problem, expressed as

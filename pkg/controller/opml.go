@@ -8,9 +8,9 @@ import (
 
 	"github.com/goadesign/goa"
 	multierror "github.com/hashicorp/go-multierror"
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/opml"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/opml"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 // OpmlController implements the opml resource.

@@ -8,9 +8,6 @@ BASE_PACKAGE=github.com/ncarlier
 # App name
 APPNAME=feedpushr
 
-# Go app path
-APPBASE=${GOPATH}/src/$(BASE_PACKAGE)
-
 # Go configuration
 GOOS?=linux
 GOARCH?=amd64
@@ -39,7 +36,7 @@ PLUGIN?=twitter
 PLUGIN_SO=$(APPNAME)-$(PLUGIN).so
 
 # Extract version infos
-PKG_VERSION:=github.com/ncarlier/$(APPNAME)/pkg/version
+PKG_VERSION:=github.com/ncarlier/$(APPNAME)/v2/pkg/version
 VERSION:=`git describe --tags`
 GIT_COMMIT:=`git rev-list -1 HEAD --abbrev-commit`
 BUILT:=`date`
@@ -64,16 +61,10 @@ clean:
 
 ## Run code generation
 autogen:
-	-rm $(APPBASE)/$(APPNAME)
-	echo ">>> Creating GO src link: $(APPBASE)/$(APPNAME) ..."
-	mkdir -p $(APPBASE)
-	ln -s $(root_dir) $(APPBASE)/$(APPNAME)
 	echo ">>> Generating code ..."
-	cd $(APPBASE)/$(APPNAME) && goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/design
+	goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/v2/design
 	echo ">>> Moving Swagger files to assets ..."
 	cp -f $(root_dir)/autogen/swagger/** $(root_dir)/var/assets/
-	echo ">>> Removing GO src link: $(APPBASE)/$(APPNAME) ..."
-	rm $(APPBASE)/$(APPNAME)
 
 ## Build web UI
 ui:

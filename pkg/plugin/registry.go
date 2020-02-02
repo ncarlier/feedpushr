@@ -4,7 +4,7 @@ import (
 	"fmt"
 	_plugin "plugin"
 
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/rs/zerolog/log"
 )
 

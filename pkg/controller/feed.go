@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/pkg/builder"
-	"github.com/ncarlier/feedpushr/pkg/common"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/v2/pkg/builder"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ncarlier/feedpushr/autogen/app/test"
-	"github.com/ncarlier/feedpushr/pkg/controller"
+	"github.com/ncarlier/feedpushr/v2/autogen/app/test"
+	"github.com/ncarlier/feedpushr/v2/pkg/controller"
 )
 
 func TestGetHealth(t *testing.T) {

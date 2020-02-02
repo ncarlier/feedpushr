@@ -3,9 +3,9 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/assert"
-	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/assert"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
 )
 
 func TestFeedCRUD(t *testing.T) {

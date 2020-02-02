@@ -2,8 +2,8 @@ package builder
 
 import (
 	"github.com/mmcdole/gofeed"
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // NewArticle creates a new article from a feed item

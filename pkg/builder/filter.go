@@ -3,8 +3,8 @@ package builder
 import (
 	"net/url"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // FilterBuilder is a builder to create an Filter definition

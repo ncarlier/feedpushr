@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // OutputRepository interface to manage feeds

@@ -27,13 +27,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ncarlier/feedpushr/pkg/config"
-	"github.com/ncarlier/feedpushr/pkg/job"
-	"github.com/ncarlier/feedpushr/pkg/logging"
-	"github.com/ncarlier/feedpushr/pkg/metric"
-	"github.com/ncarlier/feedpushr/pkg/service"
-	"github.com/ncarlier/feedpushr/pkg/store"
-	"github.com/ncarlier/feedpushr/pkg/version"
+	"github.com/ncarlier/feedpushr/v2/pkg/config"
+	"github.com/ncarlier/feedpushr/v2/pkg/job"
+	"github.com/ncarlier/feedpushr/v2/pkg/logging"
+	"github.com/ncarlier/feedpushr/v2/pkg/metric"
+	"github.com/ncarlier/feedpushr/v2/pkg/service"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/version"
 	"github.com/rs/zerolog/log"
 )
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
 )
 
 // FilterController implements the filter resource.

@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ncarlier/feedpushr/pkg/assert"
-	"github.com/ncarlier/feedpushr/pkg/builder"
-	"github.com/ncarlier/feedpushr/pkg/filter"
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/assert"
+	"github.com/ncarlier/feedpushr/v2/pkg/builder"
+	"github.com/ncarlier/feedpushr/v2/pkg/filter"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 func buildChainFilter(t *testing.T, URIs ...string) *filter.Chain {

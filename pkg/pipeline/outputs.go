@@ -3,8 +3,8 @@ package pipeline
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/pkg/common"
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // AddOutput add an output to the pipeline

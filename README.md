@@ -30,13 +30,13 @@ A simple feed aggregator service with sugar on top.
 Run the following command:
 
 ```bash
-$ go get -v github.com/ncarlier/feedpushr
+$ go get -v github.com/ncarlier/feedpushr/v2
 ```
 
 **Or** download the binary regarding your architecture:
 
 ```bash
-$ sudo curl -s https://raw.githubusercontent.com/ncarlier/feedpushr/master/install.sh | bash
+$ curl -s https://raw.githubusercontent.com/ncarlier/feedpushr/master/install.sh | bash
 ```
 
 **Or** use Docker:
@@ -251,7 +251,7 @@ To be able to build the project you will need to:
   ```
 - Install `goa`:
   ```bash
-  $ go get -u github.com/goadesign/goa/...
+  $ go get -u github.com/goadesign/goa/...@v1
   ```
 
 Then you can build the project using make:

@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/pkg/builder"
-	"github.com/ncarlier/feedpushr/pkg/filter"
-	"github.com/ncarlier/feedpushr/pkg/pipeline"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/builder"
+	"github.com/ncarlier/feedpushr/v2/pkg/filter"
+	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 var (

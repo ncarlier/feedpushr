@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 func loadFeedAggregators(db store.DB, m *aggregator.Manager) error {

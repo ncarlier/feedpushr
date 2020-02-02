@@ -3,8 +3,8 @@ package controller
 import (
 	"expvar"
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/version"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/version"
 )
 
 // IndexController implements the index resource.

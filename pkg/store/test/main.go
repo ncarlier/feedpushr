@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 var db store.DB

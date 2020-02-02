@@ -11,10 +11,10 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/common"
-	"github.com/ncarlier/feedpushr/pkg/html"
-	"github.com/ncarlier/feedpushr/pkg/strcase"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/html"
+	"github.com/ncarlier/feedpushr/v2/pkg/strcase"
 )
 
 // GetFeedID converts URL to feed ID (HASH)

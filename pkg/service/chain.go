@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/pkg/filter"
-	"github.com/ncarlier/feedpushr/pkg/model"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/filter"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 func loadChainFilter(db store.DB) (*filter.Chain, error) {

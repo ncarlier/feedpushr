@@ -3,8 +3,8 @@ package store
 import (
 	"sync"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // InMemoryStore is a data store backed by InMemoryDB

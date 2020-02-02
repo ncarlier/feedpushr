@@ -5,12 +5,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ncarlier/feedpushr/pkg/common"
-	"github.com/ncarlier/feedpushr/pkg/filter"
-	"github.com/ncarlier/feedpushr/pkg/model"
-	"github.com/ncarlier/feedpushr/pkg/output"
-	"github.com/ncarlier/feedpushr/pkg/plugin"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/filter"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/output"
+	"github.com/ncarlier/feedpushr/v2/pkg/plugin"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

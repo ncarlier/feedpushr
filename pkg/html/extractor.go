@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
 	"golang.org/x/net/html"
 )
 

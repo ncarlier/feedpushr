@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/getlantern/systray"
-	"github.com/ncarlier/feedpushr/pkg/assets"
+	"github.com/ncarlier/feedpushr/v2/pkg/assets"
 )
 
 type fn func()

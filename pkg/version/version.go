@@ -22,7 +22,7 @@ func Print() {
 	}
 	fmt.Printf(`feedpushr (%s)
 
-Copyright (C) 2018 Nicolas Carlier
+Copyright (C) 2020 Nicolas Carlier
 
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it under certain conditions:

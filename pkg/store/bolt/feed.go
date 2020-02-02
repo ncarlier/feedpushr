@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 
 	bolt "github.com/coreos/bbolt"
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
 )
 
 // FEED_BUCKET bucket name

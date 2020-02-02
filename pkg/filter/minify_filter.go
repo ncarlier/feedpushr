@@ -3,8 +3,8 @@ package filter
 import (
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/pkg/expr"
-	"github.com/ncarlier/feedpushr/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/expr"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"

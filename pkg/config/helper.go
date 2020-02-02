@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ncarlier/feedpushr/pkg/strcase"
+	"github.com/ncarlier/feedpushr/v2/pkg/strcase"
 )
 
 const envPrefix = "APP_"

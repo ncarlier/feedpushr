@@ -1,8 +1,8 @@
 package job
 
 import (
-	"github.com/ncarlier/feedpushr/pkg/config"
-	"github.com/ncarlier/feedpushr/pkg/store"
+	"github.com/ncarlier/feedpushr/v2/pkg/config"
+	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 // Scheduler is a job scheduler

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	goaclient "github.com/goadesign/goa/client"
-	"github.com/ncarlier/feedpushr/autogen/client"
-	"github.com/ncarlier/feedpushr/autogen/tool/cli"
+	"github.com/ncarlier/feedpushr/v2/autogen/client"
+	"github.com/ncarlier/feedpushr/v2/autogen/tool/cli"
 	"github.com/spf13/cobra"
 	"net/http"
 	"os"

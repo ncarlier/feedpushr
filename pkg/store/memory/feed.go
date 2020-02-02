@@ -1,8 +1,8 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/common"
 )
 
 // ExistsFeed returns true if a feed exists for this url.

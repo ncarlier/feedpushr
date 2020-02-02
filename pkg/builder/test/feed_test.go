@@ -3,8 +3,8 @@ package builder_test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/pkg/assert"
-	"github.com/ncarlier/feedpushr/pkg/builder"
+	"github.com/ncarlier/feedpushr/v2/pkg/assert"
+	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 )
 
 func TestNewDirectFeed(t *testing.T) {

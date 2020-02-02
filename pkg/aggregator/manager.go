@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ncarlier/feedpushr/autogen/app"
-	"github.com/ncarlier/feedpushr/pkg/pipeline"
+	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
