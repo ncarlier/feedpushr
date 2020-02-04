@@ -85,17 +85,18 @@ func Bind(conf interface{}, prefix string) error {
 		case reflect.Slice:
 			sliceType := field.Type().Elem()
 			if sliceType.Kind() == reflect.String {
+				var sl []string
 				if len(strings.TrimSpace(val)) != 0 {
 					vals := strings.Split(val, ",")
-					sl := make([]string, len(vals), len(vals))
+					sl = make([]string, len(vals), len(vals))
 					for i, v := range vals {
 						sl[i] = v
 					}
-					field.Set(reflect.ValueOf(sl))
-					ptr, _ := field.Addr().Interface().(*[]string)
-					af := newArrayFlags(ptr)
-					flag.Var(af, key, desc)
 				}
+				field.Set(reflect.ValueOf(sl))
+				ptr, _ := field.Addr().Interface().(*[]string)
+				af := newArrayFlags(ptr)
+				flag.Var(af, key, desc)
 			}
 		}
 	}
