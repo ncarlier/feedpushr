@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/webhookd/pkg/assert"
-	configflag "github.com/ncarlier/webhookd/pkg/config/flag"
+	"github.com/ncarlier/feedpushr/v2/pkg/assert"
+	configflag "github.com/ncarlier/feedpushr/v2/pkg/config/flag"
 )
 
 type sampleConfig struct {
