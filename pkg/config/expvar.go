@@ -11,9 +11,8 @@ func exportConfigVar(key, value string) {
 	configMap.Get(key).(*expvar.String).Set(value)
 }
 
-// ExportConfigVars export some configuration variables to expvar
-func ExportConfigVars() {
-	conf := Get()
+// ExportVars export some configuration variables to expvar
+func ExportVars(conf Config) {
 	exportConfigVar("addr", conf.ListenAddr)
 	exportConfigVar("db", conf.DB)
 	exportConfigVar("public-url", conf.PublicURL)

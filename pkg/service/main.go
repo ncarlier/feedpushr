@@ -69,7 +69,7 @@ func (s *Service) Shutdown(ctx context.Context) error {
 // Configure the global service
 func Configure(db store.DB, conf config.Config) (*Service, error) {
 	// Auto add plugins if not configured
-	plugins := conf.Plugins.Values()
+	plugins := conf.Plugins
 	if len(plugins) == 0 {
 		var err error
 		plugins, err = filepath.Glob("feedpushr-*.so")

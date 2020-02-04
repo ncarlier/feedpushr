@@ -21,10 +21,10 @@ func uptime() interface{} {
 }
 
 // Configure additional metrics
-func Configure() {
+func Configure(conf config.Config) {
 	// Export system metrics
 	expvar.Publish("goroutines", expvar.Func(goroutines))
 	expvar.Publish("uptime", expvar.Func(uptime))
 	// Export configuration variables
-	config.ExportConfigVars()
+	config.ExportVars(conf)
 }

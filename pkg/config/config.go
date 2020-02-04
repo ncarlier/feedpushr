@@ -1,57 +1,23 @@
 package config
 
 import (
-	"flag"
 	"time"
 )
 
 // Config contain global configuration
 type Config struct {
-	ListenAddr     string
-	PublicURL      string
-	DB             string
-	Delay          time.Duration
-	Timeout        time.Duration
-	CacheRetention time.Duration
-	Plugins        ArrayFlags
-	ImportFilename string
-	ClearCache     bool
-	ClearConfig    bool
-	ShowVersion    bool
-	LogPretty      bool
-	LogLevel       string
-	LogOutput      string
-	SentryDSN      string
-}
-
-var config = Config{}
-
-func init() {
-	setFlagEnvString(&config.ListenAddr, "addr", "HTTP service address", ":8080")
-	setFlagEnvString(&config.PublicURL, "public-url", "Public URL used for PSHB subscriptions", "")
-	setFlagEnvString(&config.DB, "db", "Database location", "boltdb://data.db")
-	setFlagEnvString(&config.LogOutput, "log-output", "Log output (STDOUT if empty)", "")
-	setFlagEnvString(&config.LogLevel, "log-level", "Logging level (debug, info, warn, error)", "info")
-	setFlagEnvBool(&config.LogPretty, "log-pretty", "Writes log using plain text format", false)
-	setFlagEnvDuration(&config.Delay, "delay", "Delay between aggregations", 1*time.Minute)
-	setFlagEnvDuration(&config.Timeout, "timeout", "Aggregation timeout", 5*time.Second)
-	setFlagEnvDuration(&config.CacheRetention, "cache-retention", "Cache retention duration", 72*time.Hour)
-	setFlagEnvString(&config.SentryDSN, "sentry-dsn", "Sentry DSN URL", "")
-	setFlagString(&config.ImportFilename, "import", "Import a OPML file at boot time", "")
-	setFlagBool(&config.ClearCache, "clear-cache", "Clear cache at bootstrap", false)
-	setFlagBool(&config.ClearConfig, "clear-config", "Clear configuration at bootstrap", false)
-	setFlagBool(&config.ShowVersion, "version", "Show version", false)
-	setFlagEnvArray(&config.Plugins, "plugin", "Plugin to load", []string{})
-
-	// set shorthand parameters
-	const shorthand = " (shorthand)"
-	usage := flag.Lookup("addr").Usage + shorthand
-	flag.StringVar(&config.ListenAddr, "l", config.ListenAddr, usage)
-	usage = flag.Lookup("version").Usage + shorthand
-	flag.BoolVar(&config.ShowVersion, "v", config.ShowVersion, usage)
-}
-
-// Get global configuration
-func Get() Config {
-	return config
+	ListenAddr     string        `flag:"listen-addr" desc:"HTTP listen address" default:":8080"`
+	PublicURL      string        `flag:"public-url" desc:"Public URL used for PSHB subscriptions" default:""`
+	DB             string        `flag:"db" desc:"Database location" default:"boltdb://data.db"`
+	Delay          time.Duration `flag:"delay" desc:"Delay between aggregations" default:"1m"`
+	Timeout        time.Duration `flag:"timeout" desc:"Aggregation timeout" default:"5s"`
+	CacheRetention time.Duration `flag:"cache-retention" desc:"Cache retention duration" default:"72h"`
+	Plugins        []string      `flag:"plugin" desc:"Plugin to load" default:""`
+	ImportFilename string        `flag:"import" desc:"Import an OPML file at boot time" default:""`
+	ClearCache     bool          `flag:"clear-cache" desc:"Clear cache at bootstrap" default:"false"`
+	ClearConfig    bool          `flag:"clear-config" desc:"Clear configuration at bootstrap" default:"false"`
+	LogPretty      bool          `flag:"log-pretty" desc:"Writes log using plain text format" default:"false"`
+	LogLevel       string        `flag:"log-level" desc:"Logging level (debug, info, warn or error)" default:"info"`
+	LogOutput      string        `flag:"log-output" desc:"Log output (STDOUT if empty)" default:""`
+	SentryDSN      string        `flag:"sentry-dsn" desc:"Sentry DSN URL" default:""`
 }

@@ -51,15 +51,15 @@ You can configure the service by setting environment variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `APP_ADDR` | `:8080` | HTTP server address |
-| `APP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
-| `APP_DB` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
-| `APP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
-| `APP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
-| `APP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
-| `APP_LOG_LEVEL` | `info` | Logging level (`debug`, `info`, `warn` or `error`) |
-| `APP_LOG_PRETTY` | `false` | Plain text log output format if true (JSON otherwise) |
-| `APP_LOG_OUTPUT` | `stdout` | Log output target (`stdout` or `file://sample.log`) |
+| `FP_ADDR` | `:8080` | HTTP server address |
+| `FP_PUBLIC_URL` | none | Public URL used by PubSubHubbud Hubs. PSHB is disabled if not set. |
+| `FP_DB` | `boltdb://data.db` | Data store location ([BoltDB][boltdb] file) |
+| `FP_DELAY` | `1m` | Delay between aggregations (ex: `30s`, `2m`, `1h`, ...) |
+| `FP_TIMEOUT` | `5s` | Aggregation timeout (ex: `2s`, `30s`, ...) |
+| `FP_CACHE_RETENTION` | `72h` | Cache retention duration (ex: `24h`, `48h`, ...) |
+| `FP_LOG_LEVEL` | `info` | Logging level (`debug`, `info`, `warn` or `error`) |
+| `FP_LOG_PRETTY` | `false` | Plain text log output format if true (JSON otherwise) |
+| `FP_LOG_OUTPUT` | `stdout` | Log output target (`stdout` or `file://sample.log`) |
 
 You can override this settings by using program parameters.
 Type `feedpushr --help` to see those parameters.
@@ -194,9 +194,9 @@ You can access Web UI on http://localhost:8080/ui
 $ # Start service with default configuration:
 $ feedpushr
 $ # Start service with custom configuration:
-$ export APP_STORE="boltdb:///var/opt/feedpushr.db"
-$ export APP_DELAY=20s
-$ export APP_LOG_LEVEL=warn
+$ export FP_STORE="boltdb:///var/opt/feedpushr.db"
+$ export FP_DELAY=20s
+$ export FP_LOG_LEVEL=warn
 $ feedpushr
 ```
 

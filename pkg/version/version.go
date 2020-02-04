@@ -2,6 +2,7 @@ package version
 
 import (
 	"expvar"
+	"flag"
 	"fmt"
 )
 
@@ -13,6 +14,9 @@ var GitCommit = "HEAD"
 
 // Built date
 var Built = ""
+
+// ShowVersion is the flag used to print version
+var ShowVersion = flag.Bool("version", false, "Print version")
 
 // Print version to STDOUT
 func Print() {

@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/config"
+	configflag "github.com/ncarlier/feedpushr/v2/pkg/config/flag"
 	"github.com/ncarlier/feedpushr/v2/pkg/job"
 	"github.com/ncarlier/feedpushr/v2/pkg/logging"
 	"github.com/ncarlier/feedpushr/v2/pkg/metric"
@@ -38,19 +39,20 @@ import (
 )
 
 func main() {
+	// Get global configuration
+	conf := config.Config{}
+	configflag.Bind(&conf, "FP")
+
+	// Parse command line (and environment variables)
+	flag.Parse()
+
 	// Shutdown channels
 	done := make(chan bool)
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
-	// Parse command line (and environment variables)
-	flag.Parse()
-
-	// Get global configuration
-	conf := config.Get()
-
 	// Show version if asked
-	if conf.ShowVersion {
+	if *version.ShowVersion {
 		version.Print()
 		os.Exit(0)
 	}
@@ -61,7 +63,7 @@ func main() {
 	}
 
 	// Metric configuration
-	metric.Configure()
+	metric.Configure(conf)
 
 	// Init the data store
 	db, err := store.Configure(conf.DB)
