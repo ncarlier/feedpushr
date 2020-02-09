@@ -10,6 +10,7 @@ import (
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/v2/pkg/assets"
+	"github.com/ncarlier/feedpushr/v2/pkg/auth"
 	"github.com/ncarlier/feedpushr/v2/pkg/config"
 	"github.com/ncarlier/feedpushr/v2/pkg/controller"
 	"github.com/ncarlier/feedpushr/v2/pkg/logging"
@@ -130,6 +131,12 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	srv.Use(middleware.LogRequest(false))
 	srv.Use(middleware.ErrorHandler(srv, true))
 	srv.Use(middleware.Recover())
+	htpasswd, err := auth.NewHtpasswdFromFile(conf.PasswdFile)
+	if err != nil {
+		log.Debug().Err(err).Msg("unable to load htpasswd file: authentication deactivated")
+	} else {
+		srv.Use(auth.NewMiddleware(htpasswd, "/pshb"))
+	}
 
 	// Mount "index" controller
 	app.MountIndexController(srv, controller.NewIndexController(srv))
