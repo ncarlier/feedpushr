@@ -133,6 +133,7 @@ func (fa *FeedAggregator) Start() {
 // StartWithDelay starts feed aggregator with a delay.
 func (fa *FeedAggregator) StartWithDelay(delay time.Duration) {
 	fa.nextCheck = time.Now().Add(delay)
+	fa.handler.ResetStatus()
 	fa.Start()
 }
 

@@ -133,3 +133,8 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 
 	return *fh.status, builder.NewArticles(fh.feed, feed.Items)
 }
+
+// ResetStatus reset handler status
+func (fh *FeedHandler) ResetStatus() {
+	fh.status = &FeedStatus{}
+}
