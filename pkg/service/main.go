@@ -161,6 +161,7 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	// Mount custom handlers (aka: not generated)...
 	srv.Mux.Handle("GET", "/ui/*asset", assets.Handler())
 	srv.Mux.Handle("GET", "/ui/", assets.Handler())
+	srv.Mux.Handle("GET", "/", controller.Redirect("/ui/"))
 
 	return &Service{
 		db:         db,
