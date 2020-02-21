@@ -52,7 +52,7 @@ func (c *FeedController) List(ctx *app.ListFeedContext) error {
 
 	// Put your logic here
 
-	res := app.FeedCollection{}
+	res := &app.FeedsPage{}
 	return ctx.OK(res)
 	// FeedController_List: end_implement
 }

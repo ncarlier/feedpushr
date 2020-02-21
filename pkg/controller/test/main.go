@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/goadesign/goa"
+	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 	"github.com/ncarlier/feedpushr/v2/pkg/filter"
 	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
@@ -12,9 +13,10 @@ import (
 )
 
 var (
-	db   store.DB
-	srv  = goa.New("ctrl-test")
-	pipe *pipeline.Pipeline
+	db     store.DB
+	srv    = goa.New("ctrl-test")
+	pipe   *pipeline.Pipeline
+	aggreg *aggregator.Manager
 )
 
 func setup(t *testing.T) func(t *testing.T) {
@@ -33,8 +35,11 @@ func setup(t *testing.T) func(t *testing.T) {
 	filter := builder.NewFilterBuilder().FromURI("title://?prefix=[test]").Build()
 	pipe.ChainFilter.Add(filter)
 
+	aggreg = aggregator.NewManager(pipe, time.Minute, time.Second*5, "")
+
 	return func(t *testing.T) {
 		t.Log("teardown test case")
+		aggreg.Shutdown()
 		defer db.Close()
 	}
 }

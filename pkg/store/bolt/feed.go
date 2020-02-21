@@ -76,6 +76,11 @@ func (store *BoltStore) ListFeeds(page, limit int) (*app.FeedCollection, error) 
 	return &feeds, nil
 }
 
+// CountFeeds returns total numer of feeds.
+func (store *BoltStore) CountFeeds() (int, error) {
+	return store.count(FEED_BUCKET)
+}
+
 // ForEachFeed iterates over all feeds
 func (store *BoltStore) ForEachFeed(cb func(*app.Feed) error) error {
 	err := store.db.View(func(tx *bolt.Tx) error {

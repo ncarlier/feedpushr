@@ -65,6 +65,21 @@ func (store *BoltStore) clear(bucketName []byte) error {
 	return err
 }
 
+func (store *BoltStore) count(bucketName []byte) (nb int, err error) {
+	nb = 0
+	err = store.db.View(func(tx *bolt.Tx) error {
+		// Get the bucket
+		b := tx.Bucket(bucketName)
+		if b == nil {
+			return bolt.ErrBucketNotFound
+		}
+		stats := b.Stats()
+		nb = stats.KeyN
+		return nil
+	})
+	return
+}
+
 func (store *BoltStore) save(bucketName, key []byte, dataStruct interface{}) error {
 	err := store.db.Update(func(tx *bolt.Tx) error {
 		// Create the bucket

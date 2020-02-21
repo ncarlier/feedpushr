@@ -3,6 +3,8 @@ import React from 'react'
 import { Chip } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
+import { Feed } from './Types'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     tag: {
@@ -12,9 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface Props {
-  value: string[]
+  feed: Feed
 }
 
-export default ({value = []}: Props) => (
-  <>{ value.map(tag => <Chip key={tag} label={tag} className={useStyles().tag} />) }</>
-)
+export default ({feed: {tags = []}}: Props) => {
+  const classes = useStyles()
+  return (
+    <>{ tags.map(tag => <Chip key={tag} label={tag} className={classes.tag} />) }</>
+  )
+}

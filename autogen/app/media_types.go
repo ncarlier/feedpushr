@@ -140,6 +140,23 @@ func (mt FeedCollection) Validate() (err error) {
 	return
 }
 
+// FeedCollection is the media type for an array of Feed (link view)
+//
+// Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=link
+type FeedLinkCollection []*FeedLink
+
+// Validate validates the FeedLinkCollection media type instance.
+func (mt FeedLinkCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // FeedCollection is the media type for an array of Feed (tiny view)
 //
 // Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=tiny
@@ -153,6 +170,29 @@ func (mt FeedTinyCollection) Validate() (err error) {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	return
+}
+
+// A pagignated list of feeds (default view)
+//
+// Identifier: application/vnd.feedpushr.feeds-page.v1+json; view=default
+type FeedsPage struct {
+	// Current page number
+	Current int `form:"current" json:"current" yaml:"current" xml:"current"`
+	// List of feeds
+	Data FeedCollection `form:"data,omitempty" json:"data,omitempty" yaml:"data,omitempty" xml:"data,omitempty"`
+	// Max number of feeds by page
+	Limit int `form:"limit" json:"limit" yaml:"limit" xml:"limit"`
+	// Total number of feeds
+	Total int `form:"total" json:"total" yaml:"total" xml:"total"`
+}
+
+// Validate validates the FeedsPage media type instance.
+func (mt *FeedsPage) Validate() (err error) {
+
+	if err2 := mt.Data.Validate(); err2 != nil {
+		err = goa.MergeErrors(err, err2)
 	}
 	return
 }

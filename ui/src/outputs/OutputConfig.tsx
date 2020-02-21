@@ -40,7 +40,7 @@ export default ({onSave, onCancel, spec, output}: Props) => {
     setAlias(event.target.value)
   }, [])
 
-  const handleChangeProp = useCallback((name: string) => (event: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
+  const handleChangeProp = useCallback((name: string) => (event: React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>) => {
     setProps({ ...props, [name]: event.target.value })
   }, [props])
   

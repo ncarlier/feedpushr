@@ -249,23 +249,9 @@ func NewListFeedContext(ctx context.Context, r *http.Request, service *goa.Servi
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ListFeedContext) OK(r FeedCollection) error {
+func (ctx *ListFeedContext) OK(r *FeedsPage) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.feed.v1+json; type=collection")
-	}
-	if r == nil {
-		r = FeedCollection{}
-	}
-	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
-}
-
-// OKTiny sends a HTTP response with status code 200.
-func (ctx *ListFeedContext) OKTiny(r FeedTinyCollection) error {
-	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.feed.v1+json; type=collection")
-	}
-	if r == nil {
-		r = FeedTinyCollection{}
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }

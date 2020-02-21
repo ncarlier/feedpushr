@@ -1,29 +1,40 @@
-import MaterialTable, { Column, MTableToolbar } from 'material-table'
+import MaterialTable, { MTableToolbar } from 'material-table'
 import React, { useContext, useState } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 
-import { Link } from '@material-ui/core'
+import { Link as Href, makeStyles, Theme } from '@material-ui/core'
+import { Pagination, PaginationItem } from '@material-ui/lab'
 
 import Message from '../common/Message'
-import Tags from '../common/Tags'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import FeedControl from './FeedControl'
 import FeedDates from './FeedDates'
 import FeedHub from './FeedHub'
 import FeedStatus from './FeedStatus'
+import FeedTags from './FeedTags'
 import OPMLExportButton from './OPMLExportButton'
 import OPMLImportButton from './OPMLImportButton'
-import { Feed } from './Types'
+import { Feed, FeedPage } from './Types'
+
+const useStyles = makeStyles((theme: Theme) => ({
+  pagination: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+}))
 
 interface Props {
-  feeds: Feed[]
+  page: FeedPage
 }
 
-const columns: Column[] = [
+const columns = [
   { 
     title: 'Aggregation',
     render: (feed: Feed) => ( !!feed && <FeedControl feed={feed} /> ),
+    field: 'id',
     sorting: false,
     searchable: false,
   },
@@ -37,7 +48,7 @@ const columns: Column[] = [
     field: 'title',
     render: (feed: Feed) => (
       <>
-        <Link href={feed.xmlUrl} target="_blank">{feed.title}</Link>
+        <Href href={feed.xmlUrl} target="_blank">{feed.title}</Href>
         &nbsp;
         <FeedHub feed={feed} />
       </>
@@ -46,20 +57,21 @@ const columns: Column[] = [
   { 
     title: 'Tags',
     field: 'tags',
-    render: (feed: Feed) => <Tags value={feed.tags} />
+    render: (feed: Feed) => (!!feed && <FeedTags feed={feed} />)
   },
   {
     title: 'Next check',
     field: 'nextCheck',
-    editable: 'never',
     render: (feed: Feed) => (!!feed && <FeedDates feed={feed} />)
   }
 ]
 
-export default withRouter(({feeds, history}: Props & RouteComponentProps) => {
-  const [data, setData] = useState<Feed[]>(feeds)
+export default withRouter(({page, history}: Props & RouteComponentProps) => {
+  const classes = useStyles()
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
+
+  const totalPages = Math.ceil(page.total / page.limit)
 
   const onRowDelete = async (oldFeed: Feed) => {
     const { id, title } = oldFeed
@@ -68,7 +80,7 @@ export default withRouter(({feeds, history}: Props & RouteComponentProps) => {
       if (res.ok) {
         setError(null)
         showMessage(<Message variant="success"  message={`Feed ${title} removed`} />)
-        return setData(data.filter(f => f.id !== id))
+        return
       }
       const _err = await res.json()
       throw new Error(_err.detail || res.statusText)
@@ -78,26 +90,27 @@ export default withRouter(({feeds, history}: Props & RouteComponentProps) => {
     }
   }
 
-  let title = data.length > 1 ? `${data.length} feeds` : `${data.length} feed`
+  let title = `${page.total} feed${page.total > 1 ? 's' : ''}`
 
   return <>
     { !!error && <Message message={error.message} variant="error" />}
     <MaterialTable
       title={title}
       columns={ columns }
-      data= { data }
+      data= { page.data }
       editable = {{
         onRowDelete
       }}
       options={{
         actionsColumnIndex: -1,
-        paging: false
+        paging: true,
+        pageSize: page.data.length
       }}
       actions={[
         {
           icon: 'edit',
           tooltip: 'Edit',
-          onClick: (event, rowData) => history.push(`/feeds/${rowData.id}`)
+          onClick: (event, rowData) => history.push(`/feeds/${(rowData as Feed).id}`)
         },
         {
           icon: 'add_box',
@@ -116,6 +129,21 @@ export default withRouter(({feeds, history}: Props & RouteComponentProps) => {
             </div>
           </div>
         ),
+        Pagination: props => (
+          <td className={classes.pagination}>
+            <Pagination
+              count={totalPages}
+              defaultPage={page.current}
+              renderItem={(item: any) => (
+                <PaginationItem
+                  component={Link}
+                  to={`/feeds${item.page === 1 ? '' : `?page=${item.page}`}`}
+                  {...item}
+                />
+              )}
+            />
+          </td>
+        )
       }}
     />
   </>

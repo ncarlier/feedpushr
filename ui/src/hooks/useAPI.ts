@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
+
+import { useEffect, useState } from 'react'
 
 import fetchAPI from '../helpers/fetchAPI'
 
@@ -12,6 +13,7 @@ export default <T>(uri = '/', params: any = {}, init: RequestInit = {headers: de
   const [error, setError] = useState<Error>()
   const [data, setData] = useState<T>()
 
+  const stringifiedParams = JSON.stringify(params)
   useEffect(() => {
     const abortController = new AbortController()
     const doFetchAPI = async () => {
@@ -29,12 +31,11 @@ export default <T>(uri = '/', params: any = {}, init: RequestInit = {headers: de
       } finally {
         setLoading(false)
       }
-
-      return () => abortController.abort()
     }
     doFetchAPI()
+    return () => abortController.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [uri, stringifiedParams])
 
   return [loading, data, error]
 }

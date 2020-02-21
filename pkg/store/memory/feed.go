@@ -67,6 +67,11 @@ func (store *InMemoryStore) ListFeeds(page, limit int) (*app.FeedCollection, err
 	return &feeds, nil
 }
 
+// CountFeeds returns total numer of feeds.
+func (store *InMemoryStore) CountFeeds() (int, error) {
+	return len(store.feeds), nil
+}
+
 // ForEachFeed iterates over all feeds
 func (store *InMemoryStore) ForEachFeed(cb func(*app.Feed) error) error {
 	store.feedsLock.RLock()

@@ -114,6 +114,10 @@ func (c *FeedController) Delete(ctx *app.DeleteFeedContext) error {
 
 // List shows all feeds
 func (c *FeedController) List(ctx *app.ListFeedContext) error {
+	total, err := c.db.CountFeeds()
+	if err != nil {
+		return goa.ErrInternal(err)
+	}
 	feeds, err := c.db.ListFeeds(ctx.Page, ctx.Limit)
 	if err != nil {
 		return goa.ErrInternal(err)
@@ -128,7 +132,13 @@ func (c *FeedController) List(ctx *app.ListFeedContext) error {
 		}
 		(*feeds)[i] = feed
 	}
-	return ctx.OK(*feeds)
+	res := &app.FeedsPage{
+		Limit:   ctx.Limit,
+		Current: ctx.Page,
+		Total:   total,
+		Data:    *feeds,
+	}
+	return ctx.OK(res)
 }
 
 // Get shows a feed

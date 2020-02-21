@@ -1,4 +1,4 @@
-import MaterialTable, { Column } from 'material-table'
+import MaterialTable from 'material-table'
 import React, { useContext, useState } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 
@@ -14,7 +14,7 @@ interface Props {
   filters: Filter[]
 }
 
-const columns: Column[] = [
+const columns = [
   { 
     title: 'Enabled',
     render: (filter: Filter) => ( !!filter && <FilterControl filter={filter} /> ),
@@ -85,7 +85,7 @@ export default withRouter(({filters, history}: Props & RouteComponentProps) => {
         {
           icon: 'build',
           tooltip: 'Configure',
-          onClick: (event, rowData) => history.push(`/filters/${rowData.id}`)
+          onClick: (event, rowData) => history.push(`/filters/${(rowData as Filter).id}`)
         },
         {
           icon: 'add_box',

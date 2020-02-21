@@ -229,3 +229,30 @@ var FilterSpec = MediaType("application/vnd.feedpushr.filter-spec.v1+json", func
 		Attribute("props")
 	})
 })
+
+// FeedsPage is a page of feeds media type.
+var FeedsPage = MediaType("application/vnd.feedpushr.feeds-page.v1+json", func() {
+	Description("A pagignated list of feeds")
+	TypeName("FeedsPage")
+	ContentType("application/json")
+	Attributes(func() {
+		Attribute("total", Integer, "Total number of feeds", func() {
+			Example(99)
+		})
+		Attribute("current", Integer, "Current page number", func() {
+			Example(1)
+		})
+		Attribute("limit", Integer, "Max number of feeds by page", func() {
+			Example(100)
+		})
+		Attribute("data", CollectionOf(Feed), "List of feeds")
+		Required("total", "current", "limit")
+	})
+
+	View("default", func() {
+		Attribute("total")
+		Attribute("current")
+		Attribute("limit")
+		Attribute("data")
+	})
+})

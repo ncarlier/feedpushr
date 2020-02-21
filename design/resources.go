@@ -28,10 +28,7 @@ var _ = Resource("feed", func() {
 			})
 		})
 		Response(OK, func() {
-			Media(CollectionOf(Feed, func() {
-				View("default")
-				View("tiny")
-			}))
+			Media(FeedsPage)
 		})
 		Response(NotFound)
 		Response(BadRequest, ErrorMedia)

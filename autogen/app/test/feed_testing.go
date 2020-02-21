@@ -1127,7 +1127,7 @@ func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) (http.ResponseWriter, app.FeedCollection) {
+func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) (http.ResponseWriter, *app.FeedsPage) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1197,103 +1197,12 @@ func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt app.FeedCollection
+	var mt *app.FeedsPage
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(app.FeedCollection)
+		mt, _ok = resp.(*app.FeedsPage)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedCollection", resp, resp)
-		}
-		_err = mt.Validate()
-		if _err != nil {
-			t.Errorf("invalid response media type: %s", _err)
-		}
-	}
-
-	// Return results
-	return rw, mt
-}
-
-// ListFeedOKTiny runs the method List of the given controller with the given parameters.
-// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
-// If ctx is nil then context.Background() is used.
-// If service is nil then a default service is created.
-func ListFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) (http.ResponseWriter, app.FeedTinyCollection) {
-	// Setup service
-	var (
-		logBuf bytes.Buffer
-		resp   interface{}
-
-		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
-	)
-	if service == nil {
-		service = goatest.Service(&logBuf, respSetter)
-	} else {
-		logger := log.New(&logBuf, "", log.Ltime)
-		service.WithLogger(goa.NewLogger(logger))
-		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
-		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
-		service.Encoder.Register(newEncoder, "*/*")
-	}
-
-	// Setup request context
-	rw := httptest.NewRecorder()
-	query := url.Values{}
-	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		query["limit"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(page)}
-		query["page"] = sliceVal
-	}
-	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
-		RawQuery: query.Encode(),
-	}
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		panic("invalid test " + err.Error()) // bug
-	}
-	prms := url.Values{}
-	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		prms["limit"] = sliceVal
-	}
-	{
-		sliceVal := []string{strconv.Itoa(page)}
-		prms["page"] = sliceVal
-	}
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	goaCtx := goa.NewContext(goa.WithAction(ctx, "FeedTest"), rw, req, prms)
-	listCtx, _err := app.NewListFeedContext(goaCtx, req, service)
-	if _err != nil {
-		e, ok := _err.(goa.ServiceError)
-		if !ok {
-			panic("invalid test data " + _err.Error()) // bug
-		}
-		t.Errorf("unexpected parameter validation error: %+v", e)
-		return nil, nil
-	}
-
-	// Perform action
-	_err = ctrl.List(listCtx)
-
-	// Validate response
-	if _err != nil {
-		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
-	}
-	if rw.Code != 200 {
-		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
-	}
-	var mt app.FeedTinyCollection
-	if resp != nil {
-		var _ok bool
-		mt, _ok = resp.(app.FeedTinyCollection)
-		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedTinyCollection", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedsPage", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {

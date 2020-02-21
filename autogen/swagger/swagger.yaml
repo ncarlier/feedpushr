@@ -193,6 +193,88 @@ definitions:
     title: 'Mediatype identifier: application/vnd.feedpushr.feed.v1+json; type=collection;
       view=default'
     type: array
+  FeedsPage:
+    description: A pagignated list of feeds (default view)
+    example:
+      current: 1
+      data:
+      - cdate: "2010-10-23T13:34:07Z"
+        errorCount: 333691758294841896
+        errorMsg: Est suscipit.
+        htmlUrl: http://www.hashicorp.com/blog
+        hubUrl: http://pubsubhubbub.appspot.com
+        id: 5bfb841c028281c0051828c115fd1f50
+        lastCheck: "1993-05-15T16:34:02Z"
+        mdate: "1981-09-22T23:39:59Z"
+        nbProcessedItems: 541887129200626015
+        nextCheck: "1999-10-11T23:32:13Z"
+        status: stopped
+        tags:
+        - foo
+        - bar
+        text: RSS Feed
+        title: Hashicorp Blog
+        xmlUrl: http://www.hashicorp.com/feed.xml
+      - cdate: "2010-10-23T13:34:07Z"
+        errorCount: 333691758294841896
+        errorMsg: Est suscipit.
+        htmlUrl: http://www.hashicorp.com/blog
+        hubUrl: http://pubsubhubbub.appspot.com
+        id: 5bfb841c028281c0051828c115fd1f50
+        lastCheck: "1993-05-15T16:34:02Z"
+        mdate: "1981-09-22T23:39:59Z"
+        nbProcessedItems: 541887129200626015
+        nextCheck: "1999-10-11T23:32:13Z"
+        status: stopped
+        tags:
+        - foo
+        - bar
+        text: RSS Feed
+        title: Hashicorp Blog
+        xmlUrl: http://www.hashicorp.com/feed.xml
+      - cdate: "2010-10-23T13:34:07Z"
+        errorCount: 333691758294841896
+        errorMsg: Est suscipit.
+        htmlUrl: http://www.hashicorp.com/blog
+        hubUrl: http://pubsubhubbub.appspot.com
+        id: 5bfb841c028281c0051828c115fd1f50
+        lastCheck: "1993-05-15T16:34:02Z"
+        mdate: "1981-09-22T23:39:59Z"
+        nbProcessedItems: 541887129200626015
+        nextCheck: "1999-10-11T23:32:13Z"
+        status: stopped
+        tags:
+        - foo
+        - bar
+        text: RSS Feed
+        title: Hashicorp Blog
+        xmlUrl: http://www.hashicorp.com/feed.xml
+      limit: 100
+      total: 99
+    properties:
+      current:
+        description: Current page number
+        example: 1
+        format: int64
+        type: integer
+      data:
+        $ref: '#/definitions/FeedCollection'
+      limit:
+        description: Max number of feeds by page
+        example: 100
+        format: int64
+        type: integer
+      total:
+        description: Total number of feeds
+        example: 99
+        format: int64
+        type: integer
+    required:
+    - total
+    - current
+    - limit
+    title: 'Mediatype identifier: application/vnd.feedpushr.feeds-page.v1+json; view=default'
+    type: object
   Filter:
     description: A filter (default view)
     example:
@@ -282,14 +364,14 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
     properties:
       desc:
@@ -318,29 +400,14 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-    - desc: Add a prefix to the tittle...
-      name: title
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
     - desc: Add a prefix to the tittle...
       name: title
@@ -348,14 +415,14 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
     items:
       $ref: '#/definitions/FilterSpec'
@@ -480,20 +547,20 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
     properties:
       desc:
@@ -522,41 +589,20 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-    - desc: New articles are sent as JSON document to...
-      name: fetch
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: text
     items:
       $ref: '#/definitions/OutputSpec'
@@ -569,8 +615,8 @@ definitions:
       desc: New articles are sent as JSON document to...
       name: url
       options:
-        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-          id earum accusantium.
+        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+          accusantium.
       type: text
     properties:
       desc:
@@ -585,8 +631,8 @@ definitions:
         additionalProperties: true
         description: Property options
         example:
-          Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-            id earum accusantium.
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
         type: object
       type:
         description: Property type ('text', 'url', ...)
@@ -605,20 +651,20 @@ definitions:
     - desc: New articles are sent as JSON document to...
       name: url
       options:
-        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-          id earum accusantium.
+        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+          accusantium.
       type: text
     - desc: New articles are sent as JSON document to...
       name: url
       options:
-        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-          id earum accusantium.
+        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+          accusantium.
       type: text
     - desc: New articles are sent as JSON document to...
       name: url
       options:
-        Vitae ducimus veritatis laudantium.: Deserunt saepe exercitationem consequuntur
-          id earum accusantium.
+        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+          accusantium.
       type: text
     items:
       $ref: '#/definitions/PropSpec'
@@ -767,13 +813,13 @@ paths:
         required: false
         type: integer
       produces:
-      - application/vnd.feedpushr.feed.v1+json; type=collection
+      - application/vnd.feedpushr.feeds-page.v1+json
       - application/vnd.goa.error
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/FeedCollection'
+            $ref: '#/definitions/FeedsPage'
         "400":
           description: Bad Request
           schema:

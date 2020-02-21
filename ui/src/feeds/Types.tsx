@@ -20,3 +20,11 @@ export interface FeedForm {
   xmlUrl: string
   tags: string[]
 }
+
+export interface FeedPage {
+  total: number
+  current: number
+  limit: number
+  data: Feed[]
+}
+
