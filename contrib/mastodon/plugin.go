@@ -6,13 +6,14 @@ import (
 	"sync/atomic"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/expr"
+	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 var tootVisibilities = map[string]string{
-	"public": "Public",
-	"private": "Private",
-	"direct": "Direct",
+	"public":   "Public",
+	"private":  "Private",
+	"direct":   "Direct",
 	"unlisted": "Unlisted",
 }
 
@@ -31,10 +32,15 @@ var spec = model.Spec{
 			Type: model.Password,
 		},
 		{
-			Name: "visibility",
-			Desc: "Toot visibility",
+			Name:    "visibility",
+			Desc:    "Toot visibility",
 			Type:    model.Select,
 			Options: tootVisibilities,
+		},
+		{
+			Name: "format",
+			Desc: "Toot format (default: `{{.Title}}\\n{{.Link}}`)",
+			Type: model.Textarea,
 		},
 	},
 }
@@ -50,6 +56,14 @@ func (p *MastodonOutputPlugin) Spec() model.Spec {
 // Build creates Mastodon output provider instance
 func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
 	condition, err := expr.NewConditionalExpression(output.Condition)
+	if err != nil {
+		return nil, err
+	}
+	// Default format
+	if frmt, ok := output.Props["format"]; !ok || frmt == "" {
+		output.Props["format"] = "{{.Title}}\n{{.Link}}"
+	}
+	formatter, err := format.NewOutputFormatter(output)
 	if err != nil {
 		return nil, err
 	}
@@ -75,6 +89,7 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvi
 		alias:       output.Alias,
 		spec:        spec,
 		condition:   condition,
+		formatter:   formatter,
 		enabled:     output.Enabled,
 		targetURL:   _url.String(),
 		accessToken: accessToken,
@@ -88,6 +103,7 @@ type MastodonOutputProvider struct {
 	alias       string
 	spec        model.Spec
 	condition   *expr.ConditionalExpression
+	formatter   format.Formatter
 	enabled     bool
 	nbError     uint64
 	nbSuccess   uint64
@@ -102,8 +118,13 @@ func (op *MastodonOutputProvider) Send(article *model.Article) error {
 		// Ignore if disabled or if the article doesn't match the condition
 		return nil
 	}
+	b, err := op.formatter.Format(article)
+	if err != nil {
+		atomic.AddUint64(&op.nbError, 1)
+		return err
+	}
 	toot := Toot{
-		Status:     fmt.Sprintf("%s\n%s", article.Title, article.Link),
+		Status:     truncate(b.String(), 500),
 		Sensitive:  false,
 		Visibility: op.visibility,
 	}
@@ -130,6 +151,7 @@ func (op *MastodonOutputProvider) GetDef() model.OutputDef {
 		"visibility": op.visibility,
 		"nbError":    op.nbError,
 		"nbSuccess":  op.nbSuccess,
+		"format":     op.formatter.Value(),
 	}
 	return result
 }

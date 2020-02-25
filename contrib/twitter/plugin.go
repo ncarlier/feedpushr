@@ -8,6 +8,7 @@ import (
 
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/ncarlier/feedpushr/v2/pkg/expr"
+	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
@@ -35,6 +36,11 @@ var spec = model.Spec{
 			Desc: "Access token secret",
 			Type: model.Password,
 		},
+		{
+			Name: "format",
+			Desc: "Tweet format (default: `{{.Title}}\\n{{.Link}}`)",
+			Type: model.Textarea,
+		},
 	},
 }
 
@@ -49,6 +55,14 @@ func (p *TwitterOutputPlugin) Spec() model.Spec {
 // Build creates Twitter output provider instance
 func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
 	condition, err := expr.NewConditionalExpression(output.Condition)
+	if err != nil {
+		return nil, err
+	}
+	// Default format
+	if frmt, ok := output.Props["format"]; !ok || frmt == "" {
+		output.Props["format"] = "{{.Title}}\n{{.Link}}"
+	}
+	formatter, err := format.NewOutputFormatter(output)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +91,7 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvid
 		alias:          output.Alias,
 		spec:           spec,
 		condition:      condition,
+		formatter:      formatter,
 		enabled:        output.Enabled,
 		api:            api,
 		consumerKey:    consumerKey,
@@ -90,6 +105,7 @@ type TwitterOutputProvider struct {
 	alias          string
 	spec           model.Spec
 	condition      *expr.ConditionalExpression
+	formatter      format.Formatter
 	enabled        bool
 	nbError        uint64
 	nbSuccess      uint64
@@ -104,16 +120,14 @@ func (op *TwitterOutputProvider) Send(article *model.Article) error {
 		// Ignore if disabled or if the article doesn't match the condition
 		return nil
 	}
-	tweet := fmt.Sprintf("%s\n%s", article.Title, article.Link)
-	r := []rune(tweet)
-	if len(r) > 280 {
-		nbCharToTruncate := len(r) - 280
-		title := []rune(article.Title)
-		end := len(title) - nbCharToTruncate
-		tweet = fmt.Sprintf("%s\n%s", string(title[:end]), article.Link)
+	b, err := op.formatter.Format(article)
+	if err != nil {
+		atomic.AddUint64(&op.nbError, 1)
+		return err
 	}
+	tweet := truncate(b.String(), 280)
 	v := url.Values{}
-	_, err := op.api.PostTweet(tweet, v)
+	_, err = op.api.PostTweet(tweet, v)
 	if err != nil {
 		// Ignore error due to duplicate status
 		if strings.Contains(err.Error(), "\"code\":187") {
@@ -142,6 +156,7 @@ func (op *TwitterOutputProvider) GetDef() model.OutputDef {
 		"accessTokenSecret": op.api.Credentials.Secret,
 		"nbError":           op.nbError,
 		"nbSuccess":         op.nbSuccess,
+		"format":            op.formatter.Value(),
 	}
 	return result
 }
