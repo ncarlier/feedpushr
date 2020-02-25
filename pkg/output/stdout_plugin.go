@@ -1,13 +1,11 @@
 package output
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"sync/atomic"
-	"text/template"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/expr"
+	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
@@ -37,25 +35,19 @@ func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.OutputProvide
 	if err != nil {
 		return nil, err
 	}
-	var tpl *template.Template
-	var format string
-	if _format, ok := output.Props["format"]; ok && _format != "" {
-		tplName := fmt.Sprintf("stdout-%d", output.ID)
-		format = fmt.Sprintf("%v", _format)
-		var err error
-		tpl, err = template.New(tplName).Parse(format)
-		if err != nil {
-			return nil, err
-		}
+
+	formatter, err := format.NewOutputFormatter(output)
+	if err != nil {
+		return nil, err
 	}
+
 	return &StdOutputProvider{
 		id:        output.ID,
 		alias:     output.Alias,
 		spec:      stdoutSpec,
 		condition: condition,
 		enabled:   output.Enabled,
-		format:    format,
-		tpl:       tpl,
+		formatter: formatter,
 	}, nil
 }
 
@@ -66,9 +58,9 @@ type StdOutputProvider struct {
 	spec      model.Spec
 	condition *expr.ConditionalExpression
 	nbSuccess uint64
+	nbError   uint64
 	enabled   bool
-	format    string
-	tpl       *template.Template
+	formatter format.Formatter
 }
 
 // Send article to STDOUT.
@@ -77,15 +69,10 @@ func (op *StdOutputProvider) Send(article *model.Article) error {
 		// Ignore if disabled or if the article doesn't match the condition
 		return nil
 	}
-	b := new(bytes.Buffer)
-	if op.tpl != nil {
-		if err := op.tpl.Execute(b, article); err != nil {
-			return err
-		}
-	} else {
-		if err := json.NewEncoder(b).Encode(article); err != nil {
-			return err
-		}
+	b, err := op.formatter.Format(article)
+	if err != nil {
+		atomic.AddUint64(&op.nbError, 1)
+		return err
 	}
 	fmt.Println(b.String())
 	atomic.AddUint64(&op.nbSuccess, 1)
@@ -103,7 +90,8 @@ func (op *StdOutputProvider) GetDef() model.OutputDef {
 	}
 	result.Props = map[string]interface{}{
 		"nbSuccess": op.nbSuccess,
-		"format":    op.format,
+		"nbError":   op.nbError,
+		"format":    op.formatter.Value(),
 	}
 	return result
 }

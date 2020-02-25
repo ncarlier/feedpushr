@@ -1,16 +1,14 @@
 package output
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"sync/atomic"
-	"text/template"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
 	"github.com/ncarlier/feedpushr/v2/pkg/expr"
+	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
@@ -73,16 +71,9 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider,
 	if err != nil {
 		return nil, fmt.Errorf("invalid URL property: %s", err.Error())
 	}
-	var tpl *template.Template
-	var format string
-	if _format, ok := output.Props["format"]; ok && _format != "" {
-		tplName := fmt.Sprintf("stdout-%d", output.ID)
-		format = fmt.Sprintf("%v", _format)
-		var err error
-		tpl, err = template.New(tplName).Parse(format)
-		if err != nil {
-			return nil, err
-		}
+	formatter, err := format.NewOutputFormatter(output)
+	if err != nil {
+		return nil, err
 	}
 	contentType := common.ContentTypeJSON
 	if val, ok := output.Props["contentType"]; ok {
@@ -100,8 +91,7 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider,
 		enabled:     output.Enabled,
 		targetURL:   _url.String(),
 		contentType: contentType,
-		format:      format,
-		tpl:         tpl,
+		formatter:   formatter,
 	}, nil
 }
 
@@ -116,8 +106,7 @@ type HTTPOutputProvider struct {
 	enabled     bool
 	targetURL   string
 	contentType string
-	format      string
-	tpl         *template.Template
+	formatter   format.Formatter
 }
 
 // Send article to HTTP endpoint.
@@ -126,15 +115,11 @@ func (op *HTTPOutputProvider) Send(article *model.Article) error {
 		// Ignore if disabled or if the article doesn't match the condition
 		return nil
 	}
-	b := new(bytes.Buffer)
-	if op.tpl != nil {
-		if err := op.tpl.Execute(b, article); err != nil {
-			return err
-		}
-	} else {
-		if err := json.NewEncoder(b).Encode(article); err != nil {
-			return err
-		}
+
+	b, err := op.formatter.Format(article)
+	if err != nil {
+		atomic.AddUint64(&op.nbError, 1)
+		return err
 	}
 
 	req, err := http.NewRequest("POST", op.targetURL, b)
@@ -172,7 +157,7 @@ func (op *HTTPOutputProvider) GetDef() model.OutputDef {
 		"nbError":     op.nbError,
 		"nbSuccess":   op.nbSuccess,
 		"url":         op.targetURL,
-		"format":      op.format,
+		"format":      op.formatter.Value(),
 		"contentType": op.contentType,
 	}
 	return result
