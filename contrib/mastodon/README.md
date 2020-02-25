@@ -11,6 +11,7 @@ You have to provides Mastodon configuration in order to use this plugin:
 | `url` | Mastodon instance URL (by default: https://mastodon.social) |
 | `token` | Access token |
 | `visibility` | Toot visibility ("direct", "private", "unlisted" or by default "public") |
+| `format` | Toot [format](https://github.com/ncarlier/feedpushr#output-format) (by default: `{{.Title}}\n{{.Link}}`) | 
 
 You can create your access token by using [this type of tool](https://takahashim.github.io/mastodon-access-token/).
 

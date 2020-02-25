@@ -12,6 +12,7 @@ You have to provides Twitter configuration in order to use this plugin:
 | `consumerSecret` | Consumer secret |
 | `accessToken` | Access token |
 | `accessTokenSecret` | Access token secret |
+| `format` | Tweet [format](https://github.com/ncarlier/feedpushr#output-format) (by default: `{{.Title}}\n{{.Link}}`) | 
 
 ## Installation
 
