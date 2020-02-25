@@ -181,7 +181,7 @@ type FeedsPage struct {
 	// Current page number
 	Current int `form:"current" json:"current" yaml:"current" xml:"current"`
 	// List of feeds
-	Data FeedCollection `form:"data,omitempty" json:"data,omitempty" yaml:"data,omitempty" xml:"data,omitempty"`
+	Data FeedCollection `form:"data" json:"data" yaml:"data" xml:"data"`
 	// Max number of feeds by page
 	Limit int `form:"limit" json:"limit" yaml:"limit" xml:"limit"`
 	// Total number of feeds
@@ -191,6 +191,9 @@ type FeedsPage struct {
 // Validate validates the FeedsPage media type instance.
 func (mt *FeedsPage) Validate() (err error) {
 
+	if mt.Data == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "data"))
+	}
 	if err2 := mt.Data.Validate(); err2 != nil {
 		err = goa.MergeErrors(err, err2)
 	}

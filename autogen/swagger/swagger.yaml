@@ -273,6 +273,7 @@ definitions:
     - total
     - current
     - limit
+    - data
     title: 'Mediatype identifier: application/vnd.feedpushr.feeds-page.v1+json; view=default'
     type: object
   Filter:

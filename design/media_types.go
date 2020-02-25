@@ -246,7 +246,7 @@ var FeedsPage = MediaType("application/vnd.feedpushr.feeds-page.v1+json", func()
 			Example(100)
 		})
 		Attribute("data", CollectionOf(Feed), "List of feeds")
-		Required("total", "current", "limit")
+		Required("total", "current", "limit", "data")
 	})
 
 	View("default", func() {
