@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 
 import { Switch, Tooltip } from '@material-ui/core'
 
@@ -12,8 +12,12 @@ interface Props {
 }
 
 export default ({feed}: Props) => {
-  const [status, setStatus] = useState(feed.status === 'running')
+  const [status, setStatus] = useState(false)
   const { showMessage } = useContext(MessageContext)
+
+  useEffect(() => {
+    setStatus(feed.status === 'running')
+  }, [feed])
 
   const switchFeedStatus = (event: React.ChangeEvent, check: boolean) => {
     const action = check ? 'start' : 'stop'
