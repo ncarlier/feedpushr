@@ -81,8 +81,14 @@ func (m *Manager) RestartFeedAggregator(id string, delay time.Duration) {
 // Shutdown stop the manager (aka. stop and unregister all feed aggregator)
 func (m *Manager) Shutdown() {
 	m.log.Debug().Msg("shutting down all aggregators")
-	for _, fa := range m.feedAggregators {
-		go m.UnRegisterFeedAggregator(fa.id)
+	// Build temporary list of IDs
+	// This is necessary because feddAggregators will be mutate
+	ids := make([]string, 0, len(m.feedAggregators))
+	for id := range m.feedAggregators {
+		ids = append(ids, id)
+	}
+	for _, id := range ids {
+		go m.UnRegisterFeedAggregator(id)
 	}
 	m.shutdownWaitGroup.Wait()
 	m.log.Debug().Msg("all aggregators stopped")
