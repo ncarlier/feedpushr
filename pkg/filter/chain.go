@@ -35,7 +35,7 @@ func newFilter(def *model.FilterDef) (model.Filter, error) {
 		// Try to load plugin regarding the name
 		plug := plugin.GetRegistry().LookupFilterPlugin(def.Name)
 		if plug == nil {
-			return nil, fmt.Errorf("unsuported filter: %s", def.Name)
+			return nil, fmt.Errorf("unsupported filter: %s", def.Name)
 		}
 		filter, err = plug.Build(def)
 	}

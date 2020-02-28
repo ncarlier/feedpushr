@@ -3,6 +3,7 @@ export interface Feed {
   id: string
   title: string
   xmlUrl: string
+  htmlUrl?: string
   hubUrl?: string
   status: string
   tags: string[]

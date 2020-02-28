@@ -17,6 +17,7 @@ import FeedTags from './FeedTags'
 import OPMLExportButton from './OPMLExportButton'
 import OPMLImportButton from './OPMLImportButton'
 import { Feed, FeedPage } from './Types'
+import FeedHtmlLink from './FeedHtmlLink';
 
 const useStyles = makeStyles((theme: Theme) => ({
   pagination: {
@@ -37,19 +38,21 @@ const columns = [
     field: 'id',
     sorting: false,
     searchable: false,
+    width: 120,
   },
   { 
     title: 'Status',
     field: 'status',
     render: (feed: Feed) => ( !!feed && <FeedStatus feed={feed} /> ),
+    width: 100,
   },
   { 
     title: 'Title',
     field: 'title',
     render: (feed: Feed) => (
       <>
+        <FeedHtmlLink feed={feed} />
         <Href href={feed.xmlUrl} target="_blank">{feed.title}</Href>
-        &nbsp;
         <FeedHub feed={feed} />
       </>
     )

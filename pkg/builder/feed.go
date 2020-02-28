@@ -85,12 +85,13 @@ func NewFeed(url string, tags *string) (*app.Feed, error) {
 	}
 
 	feed := &app.Feed{
-		ID:     GetFeedID(url),
-		XMLURL: url,
-		Title:  rawFeed.Title,
-		Mdate:  time.Now(),
-		Cdate:  time.Now(),
-		Tags:   GetFeedTags(tags),
+		ID:      GetFeedID(url),
+		XMLURL:  url,
+		HTMLURL: &rawFeed.Link,
+		Title:   rawFeed.Title,
+		Mdate:   time.Now(),
+		Cdate:   time.Now(),
+		Tags:    GetFeedTags(tags),
 	}
 
 	if hub, ok := rawFeed.Custom["hub"]; ok {
