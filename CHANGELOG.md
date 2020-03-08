@@ -1,5 +1,34 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v2.0.0...v) (2020-01-06)
+# [](https://github.com/ncarlier/feedpushr/compare/v2.1.0...v) (2020-03-08)
+
+
+### Bug Fixes
+
+* fix bad package ref ([d95c4cf](https://github.com/ncarlier/feedpushr/commit/d95c4cf))
+* fix feed page attributes ([928cfa5](https://github.com/ncarlier/feedpushr/commit/928cfa5))
+* fix flag binding for slice ([a3f6a71](https://github.com/ncarlier/feedpushr/commit/a3f6a71))
+* **aggregator:** fix concurrent iteration and write ([0bb8124](https://github.com/ncarlier/feedpushr/commit/0bb8124)), closes [#23](https://github.com/ncarlier/feedpushr/issues/23)
+* **aggregator:** reset handler status on start ([298a149](https://github.com/ncarlier/feedpushr/commit/298a149))
+* **ui:** fix feed control state on pagination ([870eb31](https://github.com/ncarlier/feedpushr/commit/870eb31)), closes [#20](https://github.com/ncarlier/feedpushr/issues/20)
+
+
+### Features
+
+* configuration refactoring ([d7480be](https://github.com/ncarlier/feedpushr/commit/d7480be))
+* enable pagination for feeds ([e64b6b2](https://github.com/ncarlier/feedpushr/commit/e64b6b2))
+* redirect base URL to UI ([6c26daa](https://github.com/ncarlier/feedpushr/commit/6c26daa))
+* retrieve feed link from HTML URL ([922a783](https://github.com/ncarlier/feedpushr/commit/922a783))
+* use output formatter ([b69484a](https://github.com/ncarlier/feedpushr/commit/b69484a))
+* **aggregator:** fan-out delay ([096d1a8](https://github.com/ncarlier/feedpushr/commit/096d1a8))
+* **auth:** add Basic Auth support ([3975b90](https://github.com/ncarlier/feedpushr/commit/3975b90))
+* **doc:** fan-out delay configuration ([00faee4](https://github.com/ncarlier/feedpushr/commit/00faee4))
+* **plugins:** use formatter for Twitter and Mastodon plugins ([1562b88](https://github.com/ncarlier/feedpushr/commit/1562b88))
+* **ui:** add feed HTML link ([b5a2ebe](https://github.com/ncarlier/feedpushr/commit/b5a2ebe)), closes [#21](https://github.com/ncarlier/feedpushr/issues/21)
+
+
+
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/ncarlier/feedpushr/compare/v2.0.0...v2.1.0) (2020-01-06)
 
 
 ### Bug Fixes
