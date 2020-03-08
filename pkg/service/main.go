@@ -23,6 +23,7 @@ import (
 
 // Service is the global service
 type Service struct {
+	conf       config.Config
 	db         store.DB
 	srv        *goa.Service
 	aggregator *aggregator.Manager
@@ -49,7 +50,7 @@ func (s *Service) ImportOPMLFile(filename string) error {
 // ListenAndServe starts server
 func (s *Service) ListenAndServe(ListenAddr string) error {
 	log.Debug().Msg("loading feed aggregators...")
-	if err := loadFeedAggregators(s.db, s.aggregator); err != nil {
+	if err := loadFeedAggregators(s.db, s.aggregator, s.conf.FanOutDelay); err != nil {
 		return err
 	}
 	log.Debug().Msg("starting HTTP server...")
@@ -166,6 +167,7 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	return &Service{
 		db:         db,
 		srv:        srv,
+		conf:       conf,
 		aggregator: am,
 	}, nil
 }

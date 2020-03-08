@@ -12,6 +12,7 @@ type Config struct {
 	Delay          time.Duration `flag:"delay" desc:"Delay between aggregations" default:"1m"`
 	Timeout        time.Duration `flag:"timeout" desc:"Aggregation timeout" default:"5s"`
 	CacheRetention time.Duration `flag:"cache-retention" desc:"Cache retention duration" default:"72h"`
+	FanOutDelay    time.Duration `flag:"fan-out-delay" desc:"Delay between deployment of each aggregator" default:"0s"`
 	Plugins        []string      `flag:"plugin" desc:"Plugin to load" default:""`
 	ImportFilename string        `flag:"import" desc:"Import an OPML file at service startup" default:""`
 	ClearCache     bool          `flag:"clear-cache" desc:"Clear cache at service startup" default:"false"`

@@ -39,7 +39,7 @@ func (m *Manager) GetFeedAggregator(id string) *FeedAggregator {
 }
 
 // RegisterFeedAggregator register and start a new feed aggregator
-func (m *Manager) RegisterFeedAggregator(feed *app.Feed) *FeedAggregator {
+func (m *Manager) RegisterFeedAggregator(feed *app.Feed, delay time.Duration) *FeedAggregator {
 	fa := m.GetFeedAggregator(feed.ID)
 	if fa != nil {
 		m.log.Debug().Str("source", feed.ID).Msg("feed aggregator already registered")
@@ -48,8 +48,12 @@ func (m *Manager) RegisterFeedAggregator(feed *app.Feed) *FeedAggregator {
 	fa = NewFeedAggregator(feed, m.pipeline, m.delay, m.timeout, m.callbackURL)
 	m.feedAggregators[feed.ID] = fa
 	m.shutdownWaitGroup.Add(1)
-	fa.Start()
-	m.log.Debug().Str("source", feed.ID).Msg("feed aggregator registered")
+	if delay > 0 {
+		fa.StartWithDelay(delay)
+	} else {
+		fa.Start()
+	}
+	m.log.Debug().Str("source", feed.ID).Dur("delay", delay).Msg("feed aggregator registered")
 	return fa
 }
 

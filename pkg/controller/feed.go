@@ -47,7 +47,7 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	if err != nil {
 		return goa.ErrInternal(err)
 	}
-	fa := c.aggregator.RegisterFeedAggregator(feed)
+	fa := c.aggregator.RegisterFeedAggregator(feed, 0)
 	fa.Start()
 	c.log.Info().Str("id", feed.ID).Msg("feed created and aggregation started")
 
@@ -86,7 +86,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 		// For now we are recreating the aggregator
 		c.aggregator.UnRegisterFeedAggregator(feed.ID)
 		if feed.Status != nil && *feed.Status == aggregator.RunningStatus.String() {
-			c.aggregator.RegisterFeedAggregator(feed)
+			c.aggregator.RegisterFeedAggregator(feed, 0)
 			c.log.Info().Str("id", feed.ID).Msg("feed updated and aggregation restarted")
 		} else {
 			c.log.Info().Str("id", feed.ID).Msg("feed updated and aggregation stopped")
@@ -171,7 +171,7 @@ func (c *FeedController) Start(ctx *app.StartFeedContext) error {
 	// Start feed aggregation
 	fa := c.aggregator.GetFeedAggregator(feed.ID)
 	if fa == nil {
-		fa = c.aggregator.RegisterFeedAggregator(feed)
+		fa = c.aggregator.RegisterFeedAggregator(feed, 0)
 	} else {
 		fa.StartWithDelay(0)
 	}
