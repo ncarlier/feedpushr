@@ -9,6 +9,7 @@ import (
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/format"
+	"github.com/ncarlier/feedpushr/v2/pkg/format/fn"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
@@ -38,7 +39,7 @@ var spec = model.Spec{
 		},
 		{
 			Name: "format",
-			Desc: "Tweet format (default: `{{.Title}}\\n{{.Link}}`)",
+			Desc: "Tweet format (default: `{{tweet .Title .Link}}`)",
 			Type: model.Textarea,
 		},
 	},
@@ -60,7 +61,7 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvid
 	}
 	// Default format
 	if frmt, ok := output.Props["format"]; !ok || frmt == "" {
-		output.Props["format"] = "{{.Title}}\n{{.Link}}"
+		output.Props["format"] = "{{tweet .Title .Link}}"
 	}
 	formatter, err := format.NewOutputFormatter(output)
 	if err != nil {
@@ -125,7 +126,7 @@ func (op *TwitterOutputProvider) Send(article *model.Article) error {
 		atomic.AddUint64(&op.nbError, 1)
 		return err
 	}
-	tweet := truncate(b.String(), 280)
+	tweet := fn.Truncate(270, b.String())
 	v := url.Values{}
 	_, err = op.api.PostTweet(tweet, v)
 	if err != nil {

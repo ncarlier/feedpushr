@@ -7,6 +7,7 @@ import (
 
 	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/format"
+	"github.com/ncarlier/feedpushr/v2/pkg/format/fn"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
@@ -124,7 +125,7 @@ func (op *MastodonOutputProvider) Send(article *model.Article) error {
 		return err
 	}
 	toot := Toot{
-		Status:     truncate(b.String(), 500),
+		Status:     fn.Truncate(500, b.String()),
 		Sensitive:  false,
 		Visibility: op.visibility,
 	}

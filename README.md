@@ -145,6 +145,14 @@ You can format the payload like this:
 }
 ```
 
+You can use [template functions](https://golang.org/pkg/text/template/#hdr-Functions) with some additions:
+
+- `tweet <text> <suffix>`:
+  Create a small message (text and a suffix) that don't exceed 270 characters. The `text` parameter can be truncated.
+  *Example:* `"{{ tweet .Title .Link }}"`
+- `truncate <length> <text>`: Truncate a text with a max length.
+  *Example:* `"{{ truncate 200 .Text }}"`
+  
 ## Plugins
 
 You can easily extend the application by adding plugins.

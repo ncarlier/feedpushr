@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
+	"github.com/ncarlier/feedpushr/v2/pkg/format/fn"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
@@ -15,7 +16,7 @@ type templateFormatter struct {
 
 // NewTemplateFormatter create new template formatter
 func NewTemplateFormatter(key, format string) (Formatter, error) {
-	tpl, err := template.New(key).Parse(format)
+	tpl, err := template.New(key).Funcs(fn.Functions).Parse(format)
 	if err != nil {
 		return nil, err
 	}
