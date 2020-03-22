@@ -58,7 +58,7 @@ func (p *HTTPOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates output provider instance
-func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
 	condition, err := expr.NewConditionalExpression(output.Condition)
 	if err != nil {
 		return nil, err

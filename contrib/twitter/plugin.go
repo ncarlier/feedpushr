@@ -54,7 +54,7 @@ func (p *TwitterOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates Twitter output provider instance
-func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
 	condition, err := expr.NewConditionalExpression(output.Condition)
 	if err != nil {
 		return nil, err

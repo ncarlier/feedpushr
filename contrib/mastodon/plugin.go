@@ -55,7 +55,7 @@ func (p *MastodonOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates Mastodon output provider instance
-func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
 	condition, err := expr.NewConditionalExpression(output.Condition)
 	if err != nil {
 		return nil, err

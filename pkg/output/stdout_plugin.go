@@ -30,7 +30,7 @@ func (p *StdoutOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates output provider instance
-func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
 	condition, err := expr.NewConditionalExpression(output.Condition)
 	if err != nil {
 		return nil, err

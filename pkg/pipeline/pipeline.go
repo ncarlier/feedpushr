@@ -19,7 +19,7 @@ import (
 type Pipeline struct {
 	lock           sync.RWMutex
 	plugins        map[string]model.OutputPlugin
-	outputs        []model.OutputProvider
+	outputs        []model.Output
 	db             store.DB
 	ChainFilter    *filter.Chain
 	cacheRetention time.Duration
@@ -30,7 +30,7 @@ type Pipeline struct {
 func NewPipeline(db store.DB, cacheRetention time.Duration) (*Pipeline, error) {
 	pipeline := &Pipeline{
 		plugins:        output.GetBuiltinOutputPlugins(),
-		outputs:        []model.OutputProvider{},
+		outputs:        []model.Output{},
 		db:             db,
 		cacheRetention: cacheRetention,
 		log:            log.With().Str("component", "pipeline").Logger(),
@@ -123,7 +123,7 @@ func (p *Pipeline) Process(articles []*model.Article) uint64 {
 	return nbProcessedArticles
 }
 
-func (p *Pipeline) hasAlreadySent(article *model.Article, output model.OutputProvider) (bool, error) {
+func (p *Pipeline) hasAlreadySent(article *model.Article, output model.Output) (bool, error) {
 	key := common.Hash(article.Hash(), output.GetDef().Hash())
 	item, err := p.db.GetFromCache(key)
 	if err != nil {
@@ -139,7 +139,7 @@ func (p *Pipeline) hasAlreadySent(article *model.Article, output model.OutputPro
 	return false, nil
 }
 
-func (p *Pipeline) send(article *model.Article, output model.OutputProvider) error {
+func (p *Pipeline) send(article *model.Article, output model.Output) error {
 	// Send the article
 	err := output.Send(article)
 	if err != nil {

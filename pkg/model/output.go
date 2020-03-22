@@ -17,8 +17,8 @@ func (p OutputProps) Get(key string) string {
 	return ""
 }
 
-// OutputProvider is the output provider interface
-type OutputProvider interface {
+// Output is the output interface
+type Output interface {
 	Send(article *Article) error
 	GetDef() OutputDef
 }

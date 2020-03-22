@@ -8,7 +8,7 @@ import (
 )
 
 // AddOutput add an output to the pipeline
-func (p *Pipeline) AddOutput(def *model.OutputDef) (model.OutputProvider, error) {
+func (p *Pipeline) AddOutput(def *model.OutputDef) (model.Output, error) {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
 	p.log.Debug().Str("name", def.Name).Msg("adding output...")
@@ -35,7 +35,7 @@ func (p *Pipeline) AddOutput(def *model.OutputDef) (model.OutputProvider, error)
 }
 
 // UpdateOutput update an output of the pipeline
-func (p *Pipeline) UpdateOutput(output *model.OutputDef) (model.OutputProvider, error) {
+func (p *Pipeline) UpdateOutput(output *model.OutputDef) (model.Output, error) {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
 
@@ -77,7 +77,7 @@ func (p *Pipeline) RemoveOutput(output *model.OutputDef) error {
 }
 
 // GetOutput retrieve an output of the pipeline
-func (p *Pipeline) GetOutput(id int) (model.OutputProvider, error) {
+func (p *Pipeline) GetOutput(id int) (model.Output, error) {
 	for _, provider := range p.outputs {
 		if id == provider.GetDef().ID {
 			return provider, nil

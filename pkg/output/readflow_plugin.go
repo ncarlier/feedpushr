@@ -35,7 +35,7 @@ func (p *ReadflowOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates Readflow output provider instance
-func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.OutputProvider, error) {
+func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
 	condition, err := expr.NewConditionalExpression(output.Condition)
 	if err != nil {
 		return nil, err

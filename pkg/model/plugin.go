@@ -19,7 +19,7 @@ type PluginSpec struct {
 // OutputPlugin is the interface of an output plugin
 type OutputPlugin interface {
 	// Build an output plugin
-	Build(def *OutputDef) (OutputProvider, error)
+	Build(def *OutputDef) (Output, error)
 	// Spec returns plugin specs
 	Spec() Spec
 }
