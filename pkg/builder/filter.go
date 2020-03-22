@@ -89,9 +89,12 @@ func (fb *FilterBuilder) Enable(status bool) *FilterBuilder {
 	return fb
 }
 
-// NewFilterFromDef creates new Filter from a definition
-func NewFilterFromDef(def model.FilterDef) *app.Filter {
-	return &app.Filter{
+// NewFilterResponseFromDef creates new Filter response from a definition
+func NewFilterResponseFromDef(def *model.FilterDef) *app.FilterResponse {
+	if def == nil {
+		return nil
+	}
+	return &app.FilterResponse{
 		ID:        def.ID,
 		Alias:     def.Alias,
 		Name:      def.Name,

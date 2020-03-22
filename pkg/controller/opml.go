@@ -9,6 +9,7 @@ import (
 	"github.com/goadesign/goa"
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/ncarlier/feedpushr/v2/pkg/opml"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
@@ -31,12 +32,9 @@ func NewOpmlController(service *goa.Service, db store.DB) *OpmlController {
 func (c *OpmlController) Get(ctx *app.GetOpmlContext) error {
 	result := opml.NewOPML("Feedpushr exports")
 
-	err := c.db.ForEachFeed(func(feed *app.Feed) error {
+	err := c.db.ForEachFeed(func(feed *model.FeedDef) error {
 		outline := opml.Outline{}
 		outline.Title = feed.Title
-		if feed.Text != nil {
-			outline.Text = *feed.Text
-		}
 		outline.Type = "rss"
 		outline.XMLURL = feed.XMLURL
 		if feed.HTMLURL != nil {

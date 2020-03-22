@@ -1,16 +1,16 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // FeedRepository interface to manage feeds
 type FeedRepository interface {
-	ListFeeds(page, limit int) (*app.FeedCollection, error)
+	ListFeeds(page, limit int) (*model.FeedDefCollection, error)
 	CountFeeds() (int, error)
 	ExistsFeed(url string) bool
-	GetFeed(id string) (*app.Feed, error)
-	DeleteFeed(id string) (*app.Feed, error)
-	SaveFeed(feed *app.Feed) error
-	ForEachFeed(cb func(*app.Feed) error) error
+	GetFeed(id string) (*model.FeedDef, error)
+	DeleteFeed(id string) (*model.FeedDef, error)
+	SaveFeed(feed *model.FeedDef) error
+	ForEachFeed(cb func(*model.FeedDef) error) error
 }

@@ -5,8 +5,8 @@ import (
 	. "github.com/goadesign/goa/design/apidsl"
 )
 
-// Info is the API info media type.
-var Info = MediaType("application/vnd.feedpushr.info.v1+json", func() {
+// InfoInfoResponse is the API info media type.
+var InfoResponse = MediaType("application/vnd.feedpushr.info.v1+json", func() {
 	Description("API info")
 	TypeName("Info")
 	ContentType("application/json")
@@ -56,7 +56,7 @@ var _ = Resource("index", func() {
 		)
 		Description("Get basic API information.")
 		Response(OK, func() {
-			Media(Info)
+			Media(InfoResponse)
 		})
 	})
 })

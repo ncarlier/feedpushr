@@ -3,7 +3,6 @@ package store
 import (
 	"sync"
 
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
@@ -11,7 +10,7 @@ import (
 type InMemoryStore struct {
 	cache       map[string]model.CacheItem
 	cacheLock   sync.RWMutex
-	feeds       map[string]app.Feed
+	feeds       map[string]model.FeedDef
 	feedsLock   sync.RWMutex
 	filters     map[int]model.FilterDef
 	filtersLock sync.RWMutex
@@ -24,7 +23,7 @@ func NewInMemoryStore() *InMemoryStore {
 	return &InMemoryStore{
 		cache:       make(map[string]model.CacheItem),
 		cacheLock:   sync.RWMutex{},
-		feeds:       make(map[string]app.Feed),
+		feeds:       make(map[string]model.FeedDef),
 		feedsLock:   sync.RWMutex{},
 		filters:     make(map[int]model.FilterDef),
 		filtersLock: sync.RWMutex{},

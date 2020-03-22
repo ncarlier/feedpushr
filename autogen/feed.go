@@ -41,7 +41,7 @@ func (c *FeedController) Get(ctx *app.GetFeedContext) error {
 
 	// Put your logic here
 
-	res := &app.Feed{}
+	res := &app.FeedResponse{}
 	return ctx.OK(res)
 	// FeedController_Get: end_implement
 }
@@ -52,7 +52,7 @@ func (c *FeedController) List(ctx *app.ListFeedContext) error {
 
 	// Put your logic here
 
-	res := &app.FeedsPage{}
+	res := &app.FeedsPageResponse{}
 	return ctx.OK(res)
 	// FeedController_List: end_implement
 }
@@ -83,7 +83,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 
 	// Put your logic here
 
-	res := &app.Feed{}
+	res := &app.FeedResponse{}
 	return ctx.OK(res)
 	// FeedController_Update: end_implement
 }

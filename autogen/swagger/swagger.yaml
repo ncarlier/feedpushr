@@ -65,7 +65,7 @@ definitions:
     - condition
     title: CreateOutputPayload
     type: object
-  Feed:
+  FeedResponse:
     description: A RSS feed (default view)
     example:
       cdate: "2010-10-23T13:34:07Z"
@@ -82,7 +82,6 @@ definitions:
       tags:
       - foo
       - bar
-      text: RSS Feed
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
     properties:
@@ -148,10 +147,6 @@ definitions:
           example: Occaecati necessitatibus architecto eligendi illum possimus fugit.
           type: string
         type: array
-      text:
-        description: Text attribute of the Feed
-        example: RSS Feed
-        type: string
       title:
         description: Title of the Feed
         example: Hashicorp Blog
@@ -168,8 +163,9 @@ definitions:
     - mdate
     title: 'Mediatype identifier: application/vnd.feedpushr.feed.v1+json; view=default'
     type: object
-  FeedCollection:
-    description: FeedCollection is the media type for an array of Feed (default view)
+  FeedResponseCollection:
+    description: FeedResponseCollection is the media type for an array of FeedResponse
+      (default view)
     example:
     - cdate: "2010-10-23T13:34:07Z"
       errorCount: 333691758294841896
@@ -185,15 +181,14 @@ definitions:
       tags:
       - foo
       - bar
-      text: RSS Feed
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
     items:
-      $ref: '#/definitions/Feed'
+      $ref: '#/definitions/FeedResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.feed.v1+json; type=collection;
       view=default'
     type: array
-  FeedsPage:
+  FeedsPageResponse:
     description: A pagignated list of feeds (default view)
     example:
       current: 1
@@ -212,7 +207,6 @@ definitions:
         tags:
         - foo
         - bar
-        text: RSS Feed
         title: Hashicorp Blog
         xmlUrl: http://www.hashicorp.com/feed.xml
       - cdate: "2010-10-23T13:34:07Z"
@@ -229,7 +223,6 @@ definitions:
         tags:
         - foo
         - bar
-        text: RSS Feed
         title: Hashicorp Blog
         xmlUrl: http://www.hashicorp.com/feed.xml
       - cdate: "2010-10-23T13:34:07Z"
@@ -246,7 +239,6 @@ definitions:
         tags:
         - foo
         - bar
-        text: RSS Feed
         title: Hashicorp Blog
         xmlUrl: http://www.hashicorp.com/feed.xml
       limit: 100
@@ -258,7 +250,7 @@ definitions:
         format: int64
         type: integer
       data:
-        $ref: '#/definitions/FeedCollection'
+        $ref: '#/definitions/FeedResponseCollection'
       limit:
         description: Max number of feeds by page
         example: 100
@@ -276,7 +268,7 @@ definitions:
     - data
     title: 'Mediatype identifier: application/vnd.feedpushr.feeds-page.v1+json; view=default'
     type: object
-  Filter:
+  FilterResponse:
     description: A filter (default view)
     example:
       alias: foo
@@ -326,9 +318,9 @@ definitions:
     - condition
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; view=default'
     type: object
-  FilterCollection:
-    description: FilterCollection is the media type for an array of Filter (default
-      view)
+  FilterResponseCollection:
+    description: FilterResponseCollection is the media type for an array of FilterResponse
+      (default view)
     example:
     - alias: foo
       condition: '"foo" in Tags'
@@ -352,11 +344,11 @@ definitions:
       name: fetch
       props: '-'
     items:
-      $ref: '#/definitions/Filter'
+      $ref: '#/definitions/FilterResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v1+json; type=collection;
       view=default'
     type: array
-  FilterSpec:
+  FilterSpecResponse:
     description: The filter specification (default view)
     example:
       desc: Add a prefix to the tittle...
@@ -391,8 +383,8 @@ definitions:
     - props
     title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v1+json; view=default'
     type: object
-  FilterSpecCollection:
-    description: FilterSpecCollection is the media type for an array of FilterSpec
+  FilterSpecResponseCollection:
+    description: FilterSpecResponseCollection is the media type for an array of FilterSpecResponse
       (default view)
     example:
     - desc: Add a prefix to the tittle...
@@ -426,7 +418,7 @@ definitions:
             accusantium.
         type: text
     items:
-      $ref: '#/definitions/FilterSpec'
+      $ref: '#/definitions/FilterSpecResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection;
       view=default'
     type: array
@@ -466,7 +458,7 @@ definitions:
     - _links
     title: 'Mediatype identifier: application/vnd.feedpushr.info.v1+json; view=default'
     type: object
-  Output:
+  OutputResponse:
     description: The output channel (default view)
     example:
       alias: foo
@@ -516,9 +508,9 @@ definitions:
     - condition
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; view=default'
     type: object
-  OutputCollection:
-    description: OutputCollection is the media type for an array of Output (default
-      view)
+  OutputResponseCollection:
+    description: OutputResponseCollection is the media type for an array of OutputResponse
+      (default view)
     example:
     - alias: foo
       condition: '"foo" in Tags'
@@ -535,11 +527,11 @@ definitions:
       name: fetch
       props: '-'
     items:
-      $ref: '#/definitions/Output'
+      $ref: '#/definitions/OutputResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v1+json; type=collection;
       view=default'
     type: array
-  OutputSpec:
+  OutputSpecResponse:
     description: The output channel specification (default view)
     example:
       desc: New articles are sent as JSON document to...
@@ -580,8 +572,8 @@ definitions:
     - props
     title: 'Mediatype identifier: application/vnd.feedpushr.output-spec.v1+json; view=default'
     type: object
-  OutputSpecCollection:
-    description: OutputSpecCollection is the media type for an array of OutputSpec
+  OutputSpecResponseCollection:
+    description: OutputSpecResponseCollection is the media type for an array of OutputSpecResponse
       (default view)
     example:
     - desc: New articles are sent as JSON document to...
@@ -606,7 +598,7 @@ definitions:
             accusantium.
         type: text
     items:
-      $ref: '#/definitions/OutputSpec'
+      $ref: '#/definitions/OutputSpecResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection;
       view=default'
     type: array
@@ -820,7 +812,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/FeedsPage'
+            $ref: '#/definitions/FeedsPageResponse'
         "400":
           description: Bad Request
           schema:
@@ -859,7 +851,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/Feed'
+            $ref: '#/definitions/FeedResponse'
         "400":
           description: Bad Request
           schema:
@@ -911,7 +903,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Feed'
+            $ref: '#/definitions/FeedResponse'
         "400":
           description: Bad Request
           schema:
@@ -949,7 +941,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Feed'
+            $ref: '#/definitions/FeedResponse'
         "400":
           description: Bad Request
           schema:
@@ -1021,7 +1013,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/FilterCollection'
+            $ref: '#/definitions/FilterResponseCollection'
       schemes:
       - http
       summary: list filter
@@ -1043,7 +1035,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/Filter'
+            $ref: '#/definitions/FilterResponse'
         "400":
           description: Bad Request
           schema:
@@ -1063,7 +1055,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/FilterSpecCollection'
+            $ref: '#/definitions/FilterSpecResponseCollection'
       schemes:
       - http
       summary: specs filter
@@ -1111,7 +1103,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Filter'
+            $ref: '#/definitions/FilterResponse'
         "400":
           description: Bad Request
           schema:
@@ -1144,7 +1136,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Filter'
+            $ref: '#/definitions/FilterResponse'
         "400":
           description: Bad Request
           schema:
@@ -1221,7 +1213,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/OutputCollection'
+            $ref: '#/definitions/OutputResponseCollection'
       schemes:
       - http
       summary: list output
@@ -1243,7 +1235,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/Output'
+            $ref: '#/definitions/OutputResponse'
         "400":
           description: Bad Request
           schema:
@@ -1263,7 +1255,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/OutputSpecCollection'
+            $ref: '#/definitions/OutputSpecResponseCollection'
       schemes:
       - http
       summary: specs output
@@ -1311,7 +1303,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Output'
+            $ref: '#/definitions/OutputResponse'
         "400":
           description: Bad Request
           schema:
@@ -1344,7 +1336,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Output'
+            $ref: '#/definitions/OutputResponse'
         "400":
           description: Bad Request
           schema:

@@ -1,8 +1,8 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // ExistsFeed returns true if a feed exists for this url.
@@ -13,7 +13,7 @@ func (store *InMemoryStore) ExistsFeed(url string) bool {
 }
 
 // GetFeed returns a stored Feed.
-func (store *InMemoryStore) GetFeed(id string) (*app.Feed, error) {
+func (store *InMemoryStore) GetFeed(id string) (*model.FeedDef, error) {
 	feed, exists := store.feeds[id]
 	if !exists {
 		return nil, common.ErrFeedNotFound
@@ -22,7 +22,7 @@ func (store *InMemoryStore) GetFeed(id string) (*app.Feed, error) {
 }
 
 // DeleteFeed removes a feed.
-func (store *InMemoryStore) DeleteFeed(id string) (*app.Feed, error) {
+func (store *InMemoryStore) DeleteFeed(id string) (*model.FeedDef, error) {
 	store.feedsLock.RLock()
 	defer store.feedsLock.RUnlock()
 	feed, err := store.GetFeed(id)
@@ -34,7 +34,7 @@ func (store *InMemoryStore) DeleteFeed(id string) (*app.Feed, error) {
 }
 
 // SaveFeed stores a feed.
-func (store *InMemoryStore) SaveFeed(feed *app.Feed) error {
+func (store *InMemoryStore) SaveFeed(feed *model.FeedDef) error {
 	store.feedsLock.RLock()
 	defer store.feedsLock.RUnlock()
 	store.feeds[feed.ID] = *feed
@@ -42,8 +42,8 @@ func (store *InMemoryStore) SaveFeed(feed *app.Feed) error {
 }
 
 // ListFeeds returns a paginated list of feeds.
-func (store *InMemoryStore) ListFeeds(page, limit int) (*app.FeedCollection, error) {
-	feeds := app.FeedCollection{}
+func (store *InMemoryStore) ListFeeds(page, limit int) (*model.FeedDefCollection, error) {
+	feeds := model.FeedDefCollection{}
 	if page <= 0 {
 		page = 1
 	}
@@ -61,7 +61,7 @@ func (store *InMemoryStore) ListFeeds(page, limit int) (*app.FeedCollection, err
 		default:
 			// Add value to entries
 			offset++
-			feeds = append(feeds, &feed)
+			feeds = append(feeds, feed)
 		}
 	}
 	return &feeds, nil
@@ -73,7 +73,7 @@ func (store *InMemoryStore) CountFeeds() (int, error) {
 }
 
 // ForEachFeed iterates over all feeds
-func (store *InMemoryStore) ForEachFeed(cb func(*app.Feed) error) error {
+func (store *InMemoryStore) ForEachFeed(cb func(*model.FeedDef) error) error {
 	store.feedsLock.RLock()
 	defer store.feedsLock.RUnlock()
 	for _, feed := range store.feeds {

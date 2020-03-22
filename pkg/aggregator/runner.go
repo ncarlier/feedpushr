@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/builder"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/v2/pkg/pshb"
 	"github.com/rs/zerolog"
@@ -18,7 +20,7 @@ type FeedAggregator struct {
 	shutdownChannel   chan Action
 	stopChannel       chan bool
 	log               zerolog.Logger
-	feed              *app.Feed
+	feed              *model.FeedDef
 	handler           *FeedHandler
 	pipeline          *pipeline.Pipeline
 	status            Status
@@ -30,7 +32,7 @@ type FeedAggregator struct {
 }
 
 // NewFeedAggregator creats a new feed aggregator
-func NewFeedAggregator(feed *app.Feed, pipe *pipeline.Pipeline, delay time.Duration, timeout time.Duration, callbackURL string) *FeedAggregator {
+func NewFeedAggregator(feed *model.FeedDef, pipe *pipeline.Pipeline, delay time.Duration, timeout time.Duration, callbackURL string) *FeedAggregator {
 	handler := NewFeedHandler(feed, timeout)
 	aggregator := FeedAggregator{
 		id:                feed.ID,
@@ -138,8 +140,8 @@ func (fa *FeedAggregator) StartWithDelay(delay time.Duration) {
 }
 
 // GetFeedWithAggregationStatus get a copy of the aggregator feed hydrated with aggregation status.
-func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.Feed {
-	result := *fa.feed
+func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.FeedResponse {
+	result := builder.NewFeedResponseFromDef(fa.feed)
 	status := fa.status.String()
 	result.Status = &status
 	lastCheck := fa.lastCheck
@@ -162,5 +164,5 @@ func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.Feed {
 		result.HubURL = nil
 	}
 
-	return &result
+	return result
 }

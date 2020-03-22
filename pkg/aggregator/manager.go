@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -39,7 +39,7 @@ func (m *Manager) GetFeedAggregator(id string) *FeedAggregator {
 }
 
 // RegisterFeedAggregator register and start a new feed aggregator
-func (m *Manager) RegisterFeedAggregator(feed *app.Feed, delay time.Duration) *FeedAggregator {
+func (m *Manager) RegisterFeedAggregator(feed *model.FeedDef, delay time.Duration) *FeedAggregator {
 	fa := m.GetFeedAggregator(feed.ID)
 	if fa != nil {
 		m.log.Debug().Str("source", feed.ID).Msg("feed aggregator already registered")

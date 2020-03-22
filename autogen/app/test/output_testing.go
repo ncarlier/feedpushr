@@ -107,7 +107,7 @@ func CreateOutputBadRequest(t goatest.TInterface, ctx context.Context, service *
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, payload *app.CreateOutputPayload) (http.ResponseWriter, *app.Output) {
+func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, payload *app.CreateOutputPayload) (http.ResponseWriter, *app.OutputResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -171,12 +171,12 @@ func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa
 	if rw.Code != 201 {
 		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
 	}
-	var mt *app.Output
+	var mt *app.OutputResponse
 	if resp != nil {
 		var __ok bool
-		mt, __ok = resp.(*app.Output)
+		mt, __ok = resp.(*app.OutputResponse)
 		if !__ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Output", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputResponse", resp, resp)
 		}
 		__err = mt.Validate()
 		if __err != nil {
@@ -513,7 +513,7 @@ func GetOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.S
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) (http.ResponseWriter, *app.Output) {
+func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) (http.ResponseWriter, *app.OutputResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -566,12 +566,12 @@ func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Output
+	var mt *app.OutputResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Output)
+		mt, _ok = resp.(*app.OutputResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Output", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -587,7 +587,7 @@ func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController) (http.ResponseWriter, app.OutputCollection) {
+func ListOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController) (http.ResponseWriter, app.OutputResponseCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -639,12 +639,12 @@ func ListOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt app.OutputCollection
+	var mt app.OutputResponseCollection
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(app.OutputCollection)
+		mt, _ok = resp.(app.OutputResponseCollection)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputCollection", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputResponseCollection", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -660,7 +660,7 @@ func ListOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SpecsOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController) (http.ResponseWriter, app.OutputSpecCollection) {
+func SpecsOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController) (http.ResponseWriter, app.OutputSpecResponseCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -712,12 +712,12 @@ func SpecsOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt app.OutputSpecCollection
+	var mt app.OutputSpecResponseCollection
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(app.OutputSpecCollection)
+		mt, _ok = resp.(app.OutputSpecResponseCollection)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputSpecCollection", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputSpecResponseCollection", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -865,7 +865,7 @@ func UpdateOutputNotFound(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int, payload *app.UpdateOutputPayload) (http.ResponseWriter, *app.Output) {
+func UpdateOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int, payload *app.UpdateOutputPayload) (http.ResponseWriter, *app.OutputResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -919,12 +919,12 @@ func UpdateOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Output
+	var mt *app.OutputResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Output)
+		mt, _ok = resp.(*app.OutputResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Output", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {

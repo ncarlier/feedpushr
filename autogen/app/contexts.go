@@ -60,7 +60,7 @@ func NewCreateFeedContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // Created sends a HTTP response with status code 201.
-func (ctx *CreateFeedContext) Created(r *Feed) error {
+func (ctx *CreateFeedContext) Created(r *FeedResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -68,7 +68,7 @@ func (ctx *CreateFeedContext) Created(r *Feed) error {
 }
 
 // CreatedLink sends a HTTP response with status code 201.
-func (ctx *CreateFeedContext) CreatedLink(r *FeedLink) error {
+func (ctx *CreateFeedContext) CreatedLink(r *FeedResponseLink) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -76,7 +76,7 @@ func (ctx *CreateFeedContext) CreatedLink(r *FeedLink) error {
 }
 
 // CreatedTiny sends a HTTP response with status code 201.
-func (ctx *CreateFeedContext) CreatedTiny(r *FeedTiny) error {
+func (ctx *CreateFeedContext) CreatedTiny(r *FeedResponseTiny) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -162,7 +162,7 @@ func NewGetFeedContext(ctx context.Context, r *http.Request, service *goa.Servic
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *GetFeedContext) OK(r *Feed) error {
+func (ctx *GetFeedContext) OK(r *FeedResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -170,7 +170,7 @@ func (ctx *GetFeedContext) OK(r *Feed) error {
 }
 
 // OKLink sends a HTTP response with status code 200.
-func (ctx *GetFeedContext) OKLink(r *FeedLink) error {
+func (ctx *GetFeedContext) OKLink(r *FeedResponseLink) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -178,7 +178,7 @@ func (ctx *GetFeedContext) OKLink(r *FeedLink) error {
 }
 
 // OKTiny sends a HTTP response with status code 200.
-func (ctx *GetFeedContext) OKTiny(r *FeedTiny) error {
+func (ctx *GetFeedContext) OKTiny(r *FeedResponseTiny) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -249,7 +249,7 @@ func NewListFeedContext(ctx context.Context, r *http.Request, service *goa.Servi
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ListFeedContext) OK(r *FeedsPage) error {
+func (ctx *ListFeedContext) OK(r *FeedsPageResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -398,7 +398,7 @@ func NewUpdateFeedContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *UpdateFeedContext) OK(r *Feed) error {
+func (ctx *UpdateFeedContext) OK(r *FeedResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -406,7 +406,7 @@ func (ctx *UpdateFeedContext) OK(r *Feed) error {
 }
 
 // OKLink sends a HTTP response with status code 200.
-func (ctx *UpdateFeedContext) OKLink(r *FeedLink) error {
+func (ctx *UpdateFeedContext) OKLink(r *FeedResponseLink) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -414,7 +414,7 @@ func (ctx *UpdateFeedContext) OKLink(r *FeedLink) error {
 }
 
 // OKTiny sends a HTTP response with status code 200.
-func (ctx *UpdateFeedContext) OKTiny(r *FeedTiny) error {
+func (ctx *UpdateFeedContext) OKTiny(r *FeedResponseTiny) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -526,7 +526,7 @@ func (payload *CreateFilterPayload) Validate() (err error) {
 }
 
 // Created sends a HTTP response with status code 201.
-func (ctx *CreateFilterContext) Created(r *Filter) error {
+func (ctx *CreateFilterContext) Created(r *FilterResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -620,7 +620,7 @@ func NewGetFilterContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *GetFilterContext) OK(r *Filter) error {
+func (ctx *GetFilterContext) OK(r *FilterResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -661,12 +661,12 @@ func NewListFilterContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ListFilterContext) OK(r FilterCollection) error {
+func (ctx *ListFilterContext) OK(r FilterResponseCollection) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.filter.v1+json; type=collection")
 	}
 	if r == nil {
-		r = FilterCollection{}
+		r = FilterResponseCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -691,12 +691,12 @@ func NewSpecsFilterContext(ctx context.Context, r *http.Request, service *goa.Se
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *SpecsFilterContext) OK(r FilterSpecCollection) error {
+func (ctx *SpecsFilterContext) OK(r FilterSpecResponseCollection) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.filter-spec.v1+json; type=collection")
 	}
 	if r == nil {
-		r = FilterSpecCollection{}
+		r = FilterSpecResponseCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -782,7 +782,7 @@ type UpdateFilterPayload struct {
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *UpdateFilterContext) OK(r *Filter) error {
+func (ctx *UpdateFilterContext) OK(r *FilterResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -1020,7 +1020,7 @@ func (payload *CreateOutputPayload) Validate() (err error) {
 }
 
 // Created sends a HTTP response with status code 201.
-func (ctx *CreateOutputContext) Created(r *Output) error {
+func (ctx *CreateOutputContext) Created(r *OutputResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -1114,7 +1114,7 @@ func NewGetOutputContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *GetOutputContext) OK(r *Output) error {
+func (ctx *GetOutputContext) OK(r *OutputResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}
@@ -1155,12 +1155,12 @@ func NewListOutputContext(ctx context.Context, r *http.Request, service *goa.Ser
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ListOutputContext) OK(r OutputCollection) error {
+func (ctx *ListOutputContext) OK(r OutputResponseCollection) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.output.v1+json; type=collection")
 	}
 	if r == nil {
-		r = OutputCollection{}
+		r = OutputResponseCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -1185,12 +1185,12 @@ func NewSpecsOutputContext(ctx context.Context, r *http.Request, service *goa.Se
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *SpecsOutputContext) OK(r OutputSpecCollection) error {
+func (ctx *SpecsOutputContext) OK(r OutputSpecResponseCollection) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.output-spec.v1+json; type=collection")
 	}
 	if r == nil {
-		r = OutputSpecCollection{}
+		r = OutputSpecResponseCollection{}
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -1276,7 +1276,7 @@ type UpdateOutputPayload struct {
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *UpdateOutputContext) OK(r *Output) error {
+func (ctx *UpdateOutputContext) OK(r *OutputResponse) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
 		ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	}

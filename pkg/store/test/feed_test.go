@@ -3,16 +3,16 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/assert"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 func TestFeedCRUD(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	feed := &app.Feed{
+	feed := &model.FeedDef{
 		ID: "test",
 	}
 	err := db.SaveFeed(feed)

@@ -41,7 +41,7 @@ func (c *OutputController) Get(ctx *app.GetOutputContext) error {
 
 	// Put your logic here
 
-	res := &app.Output{}
+	res := &app.OutputResponse{}
 	return ctx.OK(res)
 	// OutputController_Get: end_implement
 }
@@ -52,7 +52,7 @@ func (c *OutputController) List(ctx *app.ListOutputContext) error {
 
 	// Put your logic here
 
-	res := app.OutputCollection{}
+	res := app.OutputResponseCollection{}
 	return ctx.OK(res)
 	// OutputController_List: end_implement
 }
@@ -63,7 +63,7 @@ func (c *OutputController) Specs(ctx *app.SpecsOutputContext) error {
 
 	// Put your logic here
 
-	res := app.OutputSpecCollection{}
+	res := app.OutputSpecResponseCollection{}
 	return ctx.OK(res)
 	// OutputController_Specs: end_implement
 }
@@ -74,7 +74,7 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 
 	// Put your logic here
 
-	res := &app.Output{}
+	res := &app.OutputResponse{}
 	return ctx.OK(res)
 	// OutputController_Update: end_implement
 }

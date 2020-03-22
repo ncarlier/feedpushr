@@ -88,9 +88,12 @@ func (ob *OutputBuilder) Enable(status bool) *OutputBuilder {
 	return ob
 }
 
-// NewOutputFromDef creates new Output from a definition
-func NewOutputFromDef(def model.OutputDef) *app.Output {
-	return &app.Output{
+// NewOutputResponseFromDef creates new Output response from a definition
+func NewOutputResponseFromDef(def *model.OutputDef) *app.OutputResponse {
+	if def == nil {
+		return nil
+	}
+	return &app.OutputResponse{
 		ID:        def.ID,
 		Alias:     def.Alias,
 		Name:      def.Name,

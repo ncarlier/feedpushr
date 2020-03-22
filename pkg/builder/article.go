@@ -2,12 +2,11 @@ package builder
 
 import (
 	"github.com/mmcdole/gofeed"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // NewArticle creates a new article from a feed item
-func NewArticle(feed *app.Feed, item *gofeed.Item) *model.Article {
+func NewArticle(feed *model.FeedDef, item *gofeed.Item) *model.Article {
 	article := &model.Article{}
 	article.Content = item.Content
 	article.Text = item.Description
@@ -24,7 +23,7 @@ func NewArticle(feed *app.Feed, item *gofeed.Item) *model.Article {
 }
 
 // NewArticles creates a new array of articles from an array of feed item
-func NewArticles(feed *app.Feed, items []*gofeed.Item) []*model.Article {
+func NewArticles(feed *model.FeedDef, items []*gofeed.Item) []*model.Article {
 	result := make([]*model.Article, len(items), len(items))
 	for i := range items {
 		result[i] = NewArticle(feed, items[i])

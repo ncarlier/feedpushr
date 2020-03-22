@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 
 	bolt "github.com/coreos/bbolt"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // FEED_BUCKET bucket name
@@ -27,8 +27,8 @@ func (store *BoltStore) ExistsFeed(url string) bool {
 }
 
 // GetFeed returns a stored Feed.
-func (store *BoltStore) GetFeed(id string) (*app.Feed, error) {
-	var result app.Feed
+func (store *BoltStore) GetFeed(id string) (*model.FeedDef, error) {
+	var result model.FeedDef
 	err := store.get(FEED_BUCKET, []byte(id), &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
@@ -40,7 +40,7 @@ func (store *BoltStore) GetFeed(id string) (*app.Feed, error) {
 }
 
 // DeleteFeed removes a feed.
-func (store *BoltStore) DeleteFeed(id string) (*app.Feed, error) {
+func (store *BoltStore) DeleteFeed(id string) (*model.FeedDef, error) {
 	feed, err := store.GetFeed(id)
 	if err != nil {
 		return nil, err
@@ -54,20 +54,20 @@ func (store *BoltStore) DeleteFeed(id string) (*app.Feed, error) {
 }
 
 // SaveFeed stores a feed.
-func (store *BoltStore) SaveFeed(feed *app.Feed) error {
+func (store *BoltStore) SaveFeed(feed *model.FeedDef) error {
 	return store.save(FEED_BUCKET, []byte(feed.ID), &feed)
 }
 
 // ListFeeds returns a paginated list of feeds.
-func (store *BoltStore) ListFeeds(page, limit int) (*app.FeedCollection, error) {
+func (store *BoltStore) ListFeeds(page, limit int) (*model.FeedDefCollection, error) {
 	bufs, err := store.allAsRaw(FEED_BUCKET, page, limit)
 	if err != nil {
 		return nil, err
 	}
 
-	feeds := app.FeedCollection{}
+	feeds := model.FeedDefCollection{}
 	for _, buf := range bufs {
-		var feed *app.Feed
+		var feed model.FeedDef
 		if err := json.Unmarshal(buf, &feed); err != nil {
 			return nil, err
 		}
@@ -82,17 +82,16 @@ func (store *BoltStore) CountFeeds() (int, error) {
 }
 
 // ForEachFeed iterates over all feeds
-func (store *BoltStore) ForEachFeed(cb func(*app.Feed) error) error {
+func (store *BoltStore) ForEachFeed(cb func(*model.FeedDef) error) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket(FEED_BUCKET).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			var feed *app.Feed
-			if err := json.Unmarshal(v, &feed); err != nil {
+			var feed model.FeedDef
+			if err := json.Unmarshal(v, &feed); err == nil {
 				// Unable to parse bucket payload
-				feed = nil
-			}
-			if err := cb(feed); err != nil {
-				return err
+				if err := cb(&feed); err != nil {
+					return err
+				}
 			}
 		}
 		return nil

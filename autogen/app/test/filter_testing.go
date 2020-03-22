@@ -107,7 +107,7 @@ func CreateFilterBadRequest(t goatest.TInterface, ctx context.Context, service *
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFilterCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController, payload *app.CreateFilterPayload) (http.ResponseWriter, *app.Filter) {
+func CreateFilterCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController, payload *app.CreateFilterPayload) (http.ResponseWriter, *app.FilterResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -171,12 +171,12 @@ func CreateFilterCreated(t goatest.TInterface, ctx context.Context, service *goa
 	if rw.Code != 201 {
 		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
 	}
-	var mt *app.Filter
+	var mt *app.FilterResponse
 	if resp != nil {
 		var __ok bool
-		mt, __ok = resp.(*app.Filter)
+		mt, __ok = resp.(*app.FilterResponse)
 		if !__ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Filter", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterResponse", resp, resp)
 		}
 		__err = mt.Validate()
 		if __err != nil {
@@ -513,7 +513,7 @@ func GetFilterNotFound(t goatest.TInterface, ctx context.Context, service *goa.S
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController, id int) (http.ResponseWriter, *app.Filter) {
+func GetFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController, id int) (http.ResponseWriter, *app.FilterResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -566,12 +566,12 @@ func GetFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Filter
+	var mt *app.FilterResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Filter)
+		mt, _ok = resp.(*app.FilterResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Filter", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -587,7 +587,7 @@ func GetFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController) (http.ResponseWriter, app.FilterCollection) {
+func ListFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController) (http.ResponseWriter, app.FilterResponseCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -639,12 +639,12 @@ func ListFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt app.FilterCollection
+	var mt app.FilterResponseCollection
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(app.FilterCollection)
+		mt, _ok = resp.(app.FilterResponseCollection)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterCollection", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterResponseCollection", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -660,7 +660,7 @@ func ListFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func SpecsFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController) (http.ResponseWriter, app.FilterSpecCollection) {
+func SpecsFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController) (http.ResponseWriter, app.FilterSpecResponseCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -712,12 +712,12 @@ func SpecsFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt app.FilterSpecCollection
+	var mt app.FilterSpecResponseCollection
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(app.FilterSpecCollection)
+		mt, _ok = resp.(app.FilterSpecResponseCollection)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterSpecCollection", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterSpecResponseCollection", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -865,7 +865,7 @@ func UpdateFilterNotFound(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController, id int, payload *app.UpdateFilterPayload) (http.ResponseWriter, *app.Filter) {
+func UpdateFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FilterController, id int, payload *app.UpdateFilterPayload) (http.ResponseWriter, *app.FilterResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -919,12 +919,12 @@ func UpdateFilterOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Filter
+	var mt *app.FilterResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Filter)
+		mt, _ok = resp.(*app.FilterResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Filter", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {

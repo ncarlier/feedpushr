@@ -19,7 +19,7 @@ import (
 // A RSS feed (default view)
 //
 // Identifier: application/vnd.feedpushr.feed.v1+json; view=default
-type Feed struct {
+type FeedResponse struct {
 	// Date of creation
 	Cdate time.Time `form:"cdate" json:"cdate" yaml:"cdate" xml:"cdate"`
 	// Number of consecutive aggregation errors
@@ -44,16 +44,14 @@ type Feed struct {
 	Status *string `form:"status,omitempty" json:"status,omitempty" yaml:"status,omitempty" xml:"status,omitempty"`
 	// List of tags
 	Tags []string `form:"tags,omitempty" json:"tags,omitempty" yaml:"tags,omitempty" xml:"tags,omitempty"`
-	// Text attribute of the Feed
-	Text *string `form:"text,omitempty" json:"text,omitempty" yaml:"text,omitempty" xml:"text,omitempty"`
 	// Title of the Feed
 	Title string `form:"title" json:"title" yaml:"title" xml:"title"`
 	// URL of the XML feed
 	XMLURL string `form:"xmlUrl" json:"xmlUrl" yaml:"xmlUrl" xml:"xmlUrl"`
 }
 
-// Validate validates the Feed media type instance.
-func (mt *Feed) Validate() (err error) {
+// Validate validates the FeedResponse media type instance.
+func (mt *FeedResponse) Validate() (err error) {
 	if mt.ID == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
 	}
@@ -75,15 +73,15 @@ func (mt *Feed) Validate() (err error) {
 // A RSS feed (link view)
 //
 // Identifier: application/vnd.feedpushr.feed.v1+json; view=link
-type FeedLink struct {
+type FeedResponseLink struct {
 	// ID of feed (MD5 of the xmlUrl)
 	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
 	// URL of the XML feed
 	XMLURL string `form:"xmlUrl" json:"xmlUrl" yaml:"xmlUrl" xml:"xmlUrl"`
 }
 
-// Validate validates the FeedLink media type instance.
-func (mt *FeedLink) Validate() (err error) {
+// Validate validates the FeedResponseLink media type instance.
+func (mt *FeedResponseLink) Validate() (err error) {
 	if mt.ID == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
 	}
@@ -96,7 +94,7 @@ func (mt *FeedLink) Validate() (err error) {
 // A RSS feed (tiny view)
 //
 // Identifier: application/vnd.feedpushr.feed.v1+json; view=tiny
-type FeedTiny struct {
+type FeedResponseTiny struct {
 	// Date of creation
 	Cdate time.Time `form:"cdate" json:"cdate" yaml:"cdate" xml:"cdate"`
 	// ID of feed (MD5 of the xmlUrl)
@@ -109,8 +107,8 @@ type FeedTiny struct {
 	XMLURL string `form:"xmlUrl" json:"xmlUrl" yaml:"xmlUrl" xml:"xmlUrl"`
 }
 
-// Validate validates the FeedTiny media type instance.
-func (mt *FeedTiny) Validate() (err error) {
+// Validate validates the FeedResponseTiny media type instance.
+func (mt *FeedResponseTiny) Validate() (err error) {
 	if mt.ID == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
 	}
@@ -124,34 +122,34 @@ func (mt *FeedTiny) Validate() (err error) {
 	return
 }
 
-// DecodeFeed decodes the Feed instance encoded in resp body.
-func (c *Client) DecodeFeed(resp *http.Response) (*Feed, error) {
-	var decoded Feed
+// DecodeFeedResponse decodes the FeedResponse instance encoded in resp body.
+func (c *Client) DecodeFeedResponse(resp *http.Response) (*FeedResponse, error) {
+	var decoded FeedResponse
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// DecodeFeedLink decodes the FeedLink instance encoded in resp body.
-func (c *Client) DecodeFeedLink(resp *http.Response) (*FeedLink, error) {
-	var decoded FeedLink
+// DecodeFeedResponseLink decodes the FeedResponseLink instance encoded in resp body.
+func (c *Client) DecodeFeedResponseLink(resp *http.Response) (*FeedResponseLink, error) {
+	var decoded FeedResponseLink
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// DecodeFeedTiny decodes the FeedTiny instance encoded in resp body.
-func (c *Client) DecodeFeedTiny(resp *http.Response) (*FeedTiny, error) {
-	var decoded FeedTiny
+// DecodeFeedResponseTiny decodes the FeedResponseTiny instance encoded in resp body.
+func (c *Client) DecodeFeedResponseTiny(resp *http.Response) (*FeedResponseTiny, error) {
+	var decoded FeedResponseTiny
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// FeedCollection is the media type for an array of Feed (default view)
+// FeedResponseCollection is the media type for an array of FeedResponse (default view)
 //
 // Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=default
-type FeedCollection []*Feed
+type FeedResponseCollection []*FeedResponse
 
-// Validate validates the FeedCollection media type instance.
-func (mt FeedCollection) Validate() (err error) {
+// Validate validates the FeedResponseCollection media type instance.
+func (mt FeedResponseCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -162,13 +160,13 @@ func (mt FeedCollection) Validate() (err error) {
 	return
 }
 
-// FeedCollection is the media type for an array of Feed (link view)
+// FeedResponseCollection is the media type for an array of FeedResponse (link view)
 //
 // Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=link
-type FeedLinkCollection []*FeedLink
+type FeedResponseLinkCollection []*FeedResponseLink
 
-// Validate validates the FeedLinkCollection media type instance.
-func (mt FeedLinkCollection) Validate() (err error) {
+// Validate validates the FeedResponseLinkCollection media type instance.
+func (mt FeedResponseLinkCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -179,13 +177,13 @@ func (mt FeedLinkCollection) Validate() (err error) {
 	return
 }
 
-// FeedCollection is the media type for an array of Feed (tiny view)
+// FeedResponseCollection is the media type for an array of FeedResponse (tiny view)
 //
 // Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=tiny
-type FeedTinyCollection []*FeedTiny
+type FeedResponseTinyCollection []*FeedResponseTiny
 
-// Validate validates the FeedTinyCollection media type instance.
-func (mt FeedTinyCollection) Validate() (err error) {
+// Validate validates the FeedResponseTinyCollection media type instance.
+func (mt FeedResponseTinyCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -196,23 +194,23 @@ func (mt FeedTinyCollection) Validate() (err error) {
 	return
 }
 
-// DecodeFeedCollection decodes the FeedCollection instance encoded in resp body.
-func (c *Client) DecodeFeedCollection(resp *http.Response) (FeedCollection, error) {
-	var decoded FeedCollection
+// DecodeFeedResponseCollection decodes the FeedResponseCollection instance encoded in resp body.
+func (c *Client) DecodeFeedResponseCollection(resp *http.Response) (FeedResponseCollection, error) {
+	var decoded FeedResponseCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
 
-// DecodeFeedLinkCollection decodes the FeedLinkCollection instance encoded in resp body.
-func (c *Client) DecodeFeedLinkCollection(resp *http.Response) (FeedLinkCollection, error) {
-	var decoded FeedLinkCollection
+// DecodeFeedResponseLinkCollection decodes the FeedResponseLinkCollection instance encoded in resp body.
+func (c *Client) DecodeFeedResponseLinkCollection(resp *http.Response) (FeedResponseLinkCollection, error) {
+	var decoded FeedResponseLinkCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
 
-// DecodeFeedTinyCollection decodes the FeedTinyCollection instance encoded in resp body.
-func (c *Client) DecodeFeedTinyCollection(resp *http.Response) (FeedTinyCollection, error) {
-	var decoded FeedTinyCollection
+// DecodeFeedResponseTinyCollection decodes the FeedResponseTinyCollection instance encoded in resp body.
+func (c *Client) DecodeFeedResponseTinyCollection(resp *http.Response) (FeedResponseTinyCollection, error) {
+	var decoded FeedResponseTinyCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
@@ -220,19 +218,19 @@ func (c *Client) DecodeFeedTinyCollection(resp *http.Response) (FeedTinyCollecti
 // A pagignated list of feeds (default view)
 //
 // Identifier: application/vnd.feedpushr.feeds-page.v1+json; view=default
-type FeedsPage struct {
+type FeedsPageResponse struct {
 	// Current page number
 	Current int `form:"current" json:"current" yaml:"current" xml:"current"`
 	// List of feeds
-	Data FeedCollection `form:"data" json:"data" yaml:"data" xml:"data"`
+	Data FeedResponseCollection `form:"data" json:"data" yaml:"data" xml:"data"`
 	// Max number of feeds by page
 	Limit int `form:"limit" json:"limit" yaml:"limit" xml:"limit"`
 	// Total number of feeds
 	Total int `form:"total" json:"total" yaml:"total" xml:"total"`
 }
 
-// Validate validates the FeedsPage media type instance.
-func (mt *FeedsPage) Validate() (err error) {
+// Validate validates the FeedsPageResponse media type instance.
+func (mt *FeedsPageResponse) Validate() (err error) {
 
 	if mt.Data == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "data"))
@@ -243,9 +241,9 @@ func (mt *FeedsPage) Validate() (err error) {
 	return
 }
 
-// DecodeFeedsPage decodes the FeedsPage instance encoded in resp body.
-func (c *Client) DecodeFeedsPage(resp *http.Response) (*FeedsPage, error) {
-	var decoded FeedsPage
+// DecodeFeedsPageResponse decodes the FeedsPageResponse instance encoded in resp body.
+func (c *Client) DecodeFeedsPageResponse(resp *http.Response) (*FeedsPageResponse, error) {
+	var decoded FeedsPageResponse
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
@@ -253,7 +251,7 @@ func (c *Client) DecodeFeedsPage(resp *http.Response) (*FeedsPage, error) {
 // The filter specification (default view)
 //
 // Identifier: application/vnd.feedpushr.filter-spec.v1+json; view=default
-type FilterSpec struct {
+type FilterSpecResponse struct {
 	// Description of the filter
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Name of the filter
@@ -261,8 +259,8 @@ type FilterSpec struct {
 	Props PropSpecCollection `form:"props" json:"props" yaml:"props" xml:"props"`
 }
 
-// Validate validates the FilterSpec media type instance.
-func (mt *FilterSpec) Validate() (err error) {
+// Validate validates the FilterSpecResponse media type instance.
+func (mt *FilterSpecResponse) Validate() (err error) {
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}
@@ -278,20 +276,20 @@ func (mt *FilterSpec) Validate() (err error) {
 	return
 }
 
-// DecodeFilterSpec decodes the FilterSpec instance encoded in resp body.
-func (c *Client) DecodeFilterSpec(resp *http.Response) (*FilterSpec, error) {
-	var decoded FilterSpec
+// DecodeFilterSpecResponse decodes the FilterSpecResponse instance encoded in resp body.
+func (c *Client) DecodeFilterSpecResponse(resp *http.Response) (*FilterSpecResponse, error) {
+	var decoded FilterSpecResponse
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// FilterSpecCollection is the media type for an array of FilterSpec (default view)
+// FilterSpecResponseCollection is the media type for an array of FilterSpecResponse (default view)
 //
 // Identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection; view=default
-type FilterSpecCollection []*FilterSpec
+type FilterSpecResponseCollection []*FilterSpecResponse
 
-// Validate validates the FilterSpecCollection media type instance.
-func (mt FilterSpecCollection) Validate() (err error) {
+// Validate validates the FilterSpecResponseCollection media type instance.
+func (mt FilterSpecResponseCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -302,9 +300,9 @@ func (mt FilterSpecCollection) Validate() (err error) {
 	return
 }
 
-// DecodeFilterSpecCollection decodes the FilterSpecCollection instance encoded in resp body.
-func (c *Client) DecodeFilterSpecCollection(resp *http.Response) (FilterSpecCollection, error) {
-	var decoded FilterSpecCollection
+// DecodeFilterSpecResponseCollection decodes the FilterSpecResponseCollection instance encoded in resp body.
+func (c *Client) DecodeFilterSpecResponseCollection(resp *http.Response) (FilterSpecResponseCollection, error) {
+	var decoded FilterSpecResponseCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
@@ -312,7 +310,7 @@ func (c *Client) DecodeFilterSpecCollection(resp *http.Response) (FilterSpecColl
 // A filter (default view)
 //
 // Identifier: application/vnd.feedpushr.filter.v1+json; view=default
-type Filter struct {
+type FilterResponse struct {
 	// Alias of the filter
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Conditional expression of the filter
@@ -329,8 +327,8 @@ type Filter struct {
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 }
 
-// Validate validates the Filter media type instance.
-func (mt *Filter) Validate() (err error) {
+// Validate validates the FilterResponse media type instance.
+func (mt *FilterResponse) Validate() (err error) {
 
 	if mt.Alias == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "alias"))
@@ -347,20 +345,20 @@ func (mt *Filter) Validate() (err error) {
 	return
 }
 
-// DecodeFilter decodes the Filter instance encoded in resp body.
-func (c *Client) DecodeFilter(resp *http.Response) (*Filter, error) {
-	var decoded Filter
+// DecodeFilterResponse decodes the FilterResponse instance encoded in resp body.
+func (c *Client) DecodeFilterResponse(resp *http.Response) (*FilterResponse, error) {
+	var decoded FilterResponse
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// FilterCollection is the media type for an array of Filter (default view)
+// FilterResponseCollection is the media type for an array of FilterResponse (default view)
 //
 // Identifier: application/vnd.feedpushr.filter.v1+json; type=collection; view=default
-type FilterCollection []*Filter
+type FilterResponseCollection []*FilterResponse
 
-// Validate validates the FilterCollection media type instance.
-func (mt FilterCollection) Validate() (err error) {
+// Validate validates the FilterResponseCollection media type instance.
+func (mt FilterResponseCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -371,9 +369,9 @@ func (mt FilterCollection) Validate() (err error) {
 	return
 }
 
-// DecodeFilterCollection decodes the FilterCollection instance encoded in resp body.
-func (c *Client) DecodeFilterCollection(resp *http.Response) (FilterCollection, error) {
-	var decoded FilterCollection
+// DecodeFilterResponseCollection decodes the FilterResponseCollection instance encoded in resp body.
+func (c *Client) DecodeFilterResponseCollection(resp *http.Response) (FilterResponseCollection, error) {
+	var decoded FilterResponseCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
@@ -449,7 +447,7 @@ func (c *Client) DecodeInfo(resp *http.Response) (*Info, error) {
 // The output channel specification (default view)
 //
 // Identifier: application/vnd.feedpushr.output-spec.v1+json; view=default
-type OutputSpec struct {
+type OutputSpecResponse struct {
 	// Description of the output channel
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Name of the output channel
@@ -457,8 +455,8 @@ type OutputSpec struct {
 	Props PropSpecCollection `form:"props" json:"props" yaml:"props" xml:"props"`
 }
 
-// Validate validates the OutputSpec media type instance.
-func (mt *OutputSpec) Validate() (err error) {
+// Validate validates the OutputSpecResponse media type instance.
+func (mt *OutputSpecResponse) Validate() (err error) {
 	if mt.Name == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "name"))
 	}
@@ -474,20 +472,20 @@ func (mt *OutputSpec) Validate() (err error) {
 	return
 }
 
-// DecodeOutputSpec decodes the OutputSpec instance encoded in resp body.
-func (c *Client) DecodeOutputSpec(resp *http.Response) (*OutputSpec, error) {
-	var decoded OutputSpec
+// DecodeOutputSpecResponse decodes the OutputSpecResponse instance encoded in resp body.
+func (c *Client) DecodeOutputSpecResponse(resp *http.Response) (*OutputSpecResponse, error) {
+	var decoded OutputSpecResponse
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// OutputSpecCollection is the media type for an array of OutputSpec (default view)
+// OutputSpecResponseCollection is the media type for an array of OutputSpecResponse (default view)
 //
 // Identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection; view=default
-type OutputSpecCollection []*OutputSpec
+type OutputSpecResponseCollection []*OutputSpecResponse
 
-// Validate validates the OutputSpecCollection media type instance.
-func (mt OutputSpecCollection) Validate() (err error) {
+// Validate validates the OutputSpecResponseCollection media type instance.
+func (mt OutputSpecResponseCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -498,9 +496,9 @@ func (mt OutputSpecCollection) Validate() (err error) {
 	return
 }
 
-// DecodeOutputSpecCollection decodes the OutputSpecCollection instance encoded in resp body.
-func (c *Client) DecodeOutputSpecCollection(resp *http.Response) (OutputSpecCollection, error) {
-	var decoded OutputSpecCollection
+// DecodeOutputSpecResponseCollection decodes the OutputSpecResponseCollection instance encoded in resp body.
+func (c *Client) DecodeOutputSpecResponseCollection(resp *http.Response) (OutputSpecResponseCollection, error) {
+	var decoded OutputSpecResponseCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }
@@ -508,7 +506,7 @@ func (c *Client) DecodeOutputSpecCollection(resp *http.Response) (OutputSpecColl
 // The output channel (default view)
 //
 // Identifier: application/vnd.feedpushr.output.v1+json; view=default
-type Output struct {
+type OutputResponse struct {
 	// Alias of the output channel
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
 	// Conditional expression of the filter
@@ -525,8 +523,8 @@ type Output struct {
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 }
 
-// Validate validates the Output media type instance.
-func (mt *Output) Validate() (err error) {
+// Validate validates the OutputResponse media type instance.
+func (mt *OutputResponse) Validate() (err error) {
 
 	if mt.Alias == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "alias"))
@@ -543,20 +541,20 @@ func (mt *Output) Validate() (err error) {
 	return
 }
 
-// DecodeOutput decodes the Output instance encoded in resp body.
-func (c *Client) DecodeOutput(resp *http.Response) (*Output, error) {
-	var decoded Output
+// DecodeOutputResponse decodes the OutputResponse instance encoded in resp body.
+func (c *Client) DecodeOutputResponse(resp *http.Response) (*OutputResponse, error) {
+	var decoded OutputResponse
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }
 
-// OutputCollection is the media type for an array of Output (default view)
+// OutputResponseCollection is the media type for an array of OutputResponse (default view)
 //
 // Identifier: application/vnd.feedpushr.output.v1+json; type=collection; view=default
-type OutputCollection []*Output
+type OutputResponseCollection []*OutputResponse
 
-// Validate validates the OutputCollection media type instance.
-func (mt OutputCollection) Validate() (err error) {
+// Validate validates the OutputResponseCollection media type instance.
+func (mt OutputResponseCollection) Validate() (err error) {
 	for _, e := range mt {
 		if e != nil {
 			if err2 := e.Validate(); err2 != nil {
@@ -567,9 +565,9 @@ func (mt OutputCollection) Validate() (err error) {
 	return
 }
 
-// DecodeOutputCollection decodes the OutputCollection instance encoded in resp body.
-func (c *Client) DecodeOutputCollection(resp *http.Response) (OutputCollection, error) {
-	var decoded OutputCollection
+// DecodeOutputResponseCollection decodes the OutputResponseCollection instance encoded in resp body.
+func (c *Client) DecodeOutputResponseCollection(resp *http.Response) (OutputResponseCollection, error) {
+	var decoded OutputResponseCollection
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return decoded, err
 }

@@ -41,7 +41,7 @@ func (c *FilterController) Get(ctx *app.GetFilterContext) error {
 
 	// Put your logic here
 
-	res := &app.Filter{}
+	res := &app.FilterResponse{}
 	return ctx.OK(res)
 	// FilterController_Get: end_implement
 }
@@ -52,7 +52,7 @@ func (c *FilterController) List(ctx *app.ListFilterContext) error {
 
 	// Put your logic here
 
-	res := app.FilterCollection{}
+	res := app.FilterResponseCollection{}
 	return ctx.OK(res)
 	// FilterController_List: end_implement
 }
@@ -63,7 +63,7 @@ func (c *FilterController) Specs(ctx *app.SpecsFilterContext) error {
 
 	// Put your logic here
 
-	res := app.FilterSpecCollection{}
+	res := app.FilterSpecResponseCollection{}
 	return ctx.OK(res)
 	// FilterController_Specs: end_implement
 }
@@ -74,7 +74,7 @@ func (c *FilterController) Update(ctx *app.UpdateFilterContext) error {
 
 	// Put your logic here
 
-	res := &app.Filter{}
+	res := &app.FilterResponse{}
 	return ctx.OK(res)
 	// FilterController_Update: end_implement
 }

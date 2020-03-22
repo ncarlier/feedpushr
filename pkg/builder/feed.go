@@ -14,6 +14,7 @@ import (
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
 	"github.com/ncarlier/feedpushr/v2/pkg/html"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/ncarlier/feedpushr/v2/pkg/strcase"
 )
 
@@ -25,7 +26,7 @@ func GetFeedID(url string) string {
 }
 
 // NewFeed creates new Feed DTO
-func NewFeed(url string, tags *string) (*app.Feed, error) {
+func NewFeed(url string, tags *string) (*model.FeedDef, error) {
 	// Set timeout context
 	ctx, cancel := context.WithCancel(context.TODO())
 	timeout := time.AfterFunc(common.DefaultTimeout, func() {
@@ -84,14 +85,14 @@ func NewFeed(url string, tags *string) (*app.Feed, error) {
 		return nil, err
 	}
 
-	feed := &app.Feed{
+	feed := &model.FeedDef{
 		ID:      GetFeedID(url),
 		XMLURL:  url,
 		HTMLURL: &rawFeed.Link,
 		Title:   rawFeed.Title,
+		Tags:    GetFeedTags(tags),
 		Mdate:   time.Now(),
 		Cdate:   time.Now(),
-		Tags:    GetFeedTags(tags),
 	}
 
 	if hub, ok := rawFeed.Custom["hub"]; ok {
@@ -141,4 +142,22 @@ func deduplicate(list []string) []string {
 		}
 	}
 	return result
+}
+
+// NewFeedResponseFromDef creates new Feed response from a definition
+func NewFeedResponseFromDef(def *model.FeedDef) *app.FeedResponse {
+	if def == nil {
+		return nil
+	}
+	return &app.FeedResponse{
+		ID:      def.ID,
+		Title:   def.Title,
+		XMLURL:  def.XMLURL,
+		HTMLURL: def.HTMLURL,
+		HubURL:  def.HubURL,
+		Tags:    def.Tags,
+		Status:  def.Status,
+		Cdate:   def.Cdate,
+		Mdate:   def.Mdate,
+	}
 }

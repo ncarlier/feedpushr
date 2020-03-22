@@ -4,9 +4,9 @@ import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
-	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
@@ -14,14 +14,14 @@ import (
 type OutputController struct {
 	*goa.Controller
 	pipeline *pipeline.Pipeline
-	db store.DB
+	db       store.DB
 }
 
 // NewOutputController creates a output controller.
 func NewOutputController(service *goa.Service, db store.DB, pipe *pipeline.Pipeline) *OutputController {
 	return &OutputController{
 		Controller: service.NewController("OutputController"),
-		pipeline:        pipe,
+		pipeline:   pipe,
 		db:         db,
 	}
 }
@@ -45,8 +45,7 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 	if err != nil {
 		return err
 	}
-	res := builder.NewOutputFromDef(*def)
-	return ctx.Created(res)
+	return ctx.Created(builder.NewOutputResponseFromDef(def))
 }
 
 // Delete runs the delete action.
@@ -73,8 +72,8 @@ func (c *OutputController) Get(ctx *app.GetOutputContext) error {
 		return ctx.NotFound()
 	}
 
-	res := builder.NewOutputFromDef(out.GetDef())
-	return ctx.OK(res)
+	def := out.GetDef()
+	return ctx.OK(builder.NewOutputResponseFromDef(&def))
 }
 
 // Update runs the update action.
@@ -109,16 +108,15 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 		return err
 	}
 
-	res := builder.NewOutputFromDef(*def)
-	return ctx.OK(res)
+	return ctx.OK(builder.NewOutputResponseFromDef(def))
 }
 
 // List runs the list action.
 func (c *OutputController) List(ctx *app.ListOutputContext) error {
-	res := app.OutputCollection{}
+	res := app.OutputResponseCollection{}
 	outputs := c.pipeline.GetOutputDefs()
 	for _, def := range outputs {
-		res = append(res, builder.NewOutputFromDef(def))
+		res = append(res, builder.NewOutputResponseFromDef(&def))
 	}
 	return ctx.OK(res)
 }
@@ -127,9 +125,9 @@ func (c *OutputController) List(ctx *app.ListOutputContext) error {
 func (c *OutputController) Specs(ctx *app.SpecsOutputContext) error {
 	specs := c.pipeline.GetAvailableOutputs()
 
-	res := app.OutputSpecCollection{}
+	res := app.OutputSpecResponseCollection{}
 	for _, spec := range specs {
-		s := &app.OutputSpec{
+		s := &app.OutputSpecResponse{
 			Name:  spec.Name,
 			Desc:  spec.Desc,
 			Props: app.PropSpecCollection{},

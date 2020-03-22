@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
@@ -27,14 +26,14 @@ const (
 // FeedHandler handles feed refresh
 type FeedHandler struct {
 	log     zerolog.Logger
-	feed    *app.Feed
+	feed    *model.FeedDef
 	status  *FeedStatus
 	parser  *gofeed.Parser
 	timeout time.Duration
 }
 
 // NewFeedHandler create new feed handler
-func NewFeedHandler(feed *app.Feed, timeout time.Duration) *FeedHandler {
+func NewFeedHandler(feed *model.FeedDef, timeout time.Duration) *FeedHandler {
 	handler := FeedHandler{
 		log:     log.With().Str("handler", feed.ID).Logger(),
 		feed:    feed,

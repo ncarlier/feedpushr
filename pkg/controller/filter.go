@@ -48,8 +48,7 @@ func (c *FilterController) Create(ctx *app.CreateFilterContext) error {
 		return err
 	}
 
-	res := builder.NewFilterFromDef(*def)
-	return ctx.Created(res)
+	return ctx.Created(builder.NewFilterResponseFromDef(def))
 }
 
 // Delete runs the delete action.
@@ -77,8 +76,8 @@ func (c *FilterController) Get(ctx *app.GetFilterContext) error {
 		return ctx.NotFound()
 	}
 
-	res := builder.NewFilterFromDef(filter.GetDef())
-	return ctx.OK(res)
+	def := filter.GetDef()
+	return ctx.OK(builder.NewFilterResponseFromDef(&def))
 }
 
 // Update runs the update action.
@@ -113,16 +112,15 @@ func (c *FilterController) Update(ctx *app.UpdateFilterContext) error {
 		return err
 	}
 
-	res := builder.NewFilterFromDef(*def)
-	return ctx.OK(res)
+	return ctx.OK(builder.NewFilterResponseFromDef(def))
 }
 
 // List runs the list action.
 func (c *FilterController) List(ctx *app.ListFilterContext) error {
-	res := app.FilterCollection{}
+	res := app.FilterResponseCollection{}
 	filters := c.cf.GetFilterDefs()
 	for _, def := range filters {
-		res = append(res, builder.NewFilterFromDef(def))
+		res = append(res, builder.NewFilterResponseFromDef(&def))
 	}
 	return ctx.OK(res)
 }
@@ -131,9 +129,9 @@ func (c *FilterController) List(ctx *app.ListFilterContext) error {
 func (c *FilterController) Specs(ctx *app.SpecsFilterContext) error {
 	specs := filter.GetAvailableFilters()
 
-	res := app.FilterSpecCollection{}
+	res := app.FilterSpecResponseCollection{}
 	for _, spec := range specs {
-		s := &app.FilterSpec{
+		s := &app.FilterSpecResponse{
 			Name:  spec.Name,
 			Desc:  spec.Desc,
 			Props: app.PropSpecCollection{},

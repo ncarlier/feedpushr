@@ -123,7 +123,7 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) (http.ResponseWriter, *app.Feed) {
+func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) (http.ResponseWriter, *app.FeedResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -201,12 +201,12 @@ func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 	if rw.Code != 201 {
 		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
 	}
-	var mt *app.Feed
+	var mt *app.FeedResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Feed)
+		mt, _ok = resp.(*app.FeedResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Feed", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -222,7 +222,7 @@ func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFeedCreatedLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) (http.ResponseWriter, *app.FeedLink) {
+func CreateFeedCreatedLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) (http.ResponseWriter, *app.FeedResponseLink) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -300,12 +300,12 @@ func CreateFeedCreatedLink(t goatest.TInterface, ctx context.Context, service *g
 	if rw.Code != 201 {
 		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
 	}
-	var mt *app.FeedLink
+	var mt *app.FeedResponseLink
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.FeedLink)
+		mt, _ok = resp.(*app.FeedResponseLink)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedLink", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponseLink", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -321,7 +321,7 @@ func CreateFeedCreatedLink(t goatest.TInterface, ctx context.Context, service *g
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateFeedCreatedTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) (http.ResponseWriter, *app.FeedTiny) {
+func CreateFeedCreatedTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, tags *string, title *string, url_ string) (http.ResponseWriter, *app.FeedResponseTiny) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -399,12 +399,12 @@ func CreateFeedCreatedTiny(t goatest.TInterface, ctx context.Context, service *g
 	if rw.Code != 201 {
 		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
 	}
-	var mt *app.FeedTiny
+	var mt *app.FeedResponseTiny
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.FeedTiny)
+		mt, _ok = resp.(*app.FeedResponseTiny)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedTiny", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponseTiny", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -741,7 +741,7 @@ func GetFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Ser
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string) (http.ResponseWriter, *app.Feed) {
+func GetFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string) (http.ResponseWriter, *app.FeedResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -794,12 +794,12 @@ func GetFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Feed
+	var mt *app.FeedResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Feed)
+		mt, _ok = resp.(*app.FeedResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Feed", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -815,7 +815,7 @@ func GetFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string) (http.ResponseWriter, *app.FeedLink) {
+func GetFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string) (http.ResponseWriter, *app.FeedResponseLink) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -868,12 +868,12 @@ func GetFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.FeedLink
+	var mt *app.FeedResponseLink
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.FeedLink)
+		mt, _ok = resp.(*app.FeedResponseLink)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedLink", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponseLink", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -889,7 +889,7 @@ func GetFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Servi
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string) (http.ResponseWriter, *app.FeedTiny) {
+func GetFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string) (http.ResponseWriter, *app.FeedResponseTiny) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -942,12 +942,12 @@ func GetFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.FeedTiny
+	var mt *app.FeedResponseTiny
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.FeedTiny)
+		mt, _ok = resp.(*app.FeedResponseTiny)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedTiny", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponseTiny", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -1127,7 +1127,7 @@ func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) (http.ResponseWriter, *app.FeedsPage) {
+func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) (http.ResponseWriter, *app.FeedsPageResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1197,12 +1197,12 @@ func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.FeedsPage
+	var mt *app.FeedsPageResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.FeedsPage)
+		mt, _ok = resp.(*app.FeedsPageResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedsPage", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedsPageResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -1766,7 +1766,7 @@ func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.Feed) {
+func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.FeedResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1837,12 +1837,12 @@ func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.Feed
+	var mt *app.FeedResponse
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.Feed)
+		mt, _ok = resp.(*app.FeedResponse)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Feed", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -1858,7 +1858,7 @@ func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.FeedLink) {
+func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.FeedResponseLink) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1929,12 +1929,12 @@ func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Se
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.FeedLink
+	var mt *app.FeedResponseLink
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.FeedLink)
+		mt, _ok = resp.(*app.FeedResponseLink)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedLink", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponseLink", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {
@@ -1950,7 +1950,7 @@ func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.FeedTiny) {
+func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, id string, tags *string, title *string) (http.ResponseWriter, *app.FeedResponseTiny) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -2021,12 +2021,12 @@ func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Se
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.FeedTiny
+	var mt *app.FeedResponseTiny
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.FeedTiny)
+		mt, _ok = resp.(*app.FeedResponseTiny)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedTiny", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FeedResponseTiny", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {

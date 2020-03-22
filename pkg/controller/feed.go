@@ -51,7 +51,7 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	fa.Start()
 	c.log.Info().Str("id", feed.ID).Msg("feed created and aggregation started")
 
-	return ctx.Created(feed)
+	return ctx.Created(builder.NewFeedResponseFromDef(feed))
 }
 
 // Update updates a new feed
@@ -66,7 +66,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 	}
 
 	if ctx.Tags == nil && common.IsEmptyString(ctx.Title) {
-		return ctx.OK(feed)
+		return ctx.OK(builder.NewFeedResponseFromDef(feed))
 	}
 
 	// Update feed title
@@ -95,7 +95,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 		c.log.Info().Str("id", feed.ID).Msg("feed updated")
 	}
 
-	return ctx.OK(feed)
+	return ctx.OK(builder.NewFeedResponseFromDef(feed))
 }
 
 // Delete removes a feed
@@ -123,20 +123,22 @@ func (c *FeedController) List(ctx *app.ListFeedContext) error {
 		return goa.ErrInternal(err)
 	}
 
+	data := app.FeedResponseCollection{}
 	for i := 0; i < len(*feeds); i++ {
 		feed := (*feeds)[i]
 		// Get feed details with aggregation status
 		fa := c.aggregator.GetFeedAggregator(feed.ID)
 		if fa != nil {
-			feed = fa.GetFeedWithAggregationStatus()
+			data = append(data, fa.GetFeedWithAggregationStatus())
+		} else {
+			data = append(data, builder.NewFeedResponseFromDef(&feed))
 		}
-		(*feeds)[i] = feed
 	}
-	res := &app.FeedsPage{
+	res := &app.FeedsPageResponse{
 		Limit:   ctx.Limit,
 		Current: ctx.Page,
 		Total:   total,
-		Data:    *feeds,
+		Data:    data,
 	}
 	return ctx.OK(res)
 }
@@ -154,9 +156,9 @@ func (c *FeedController) Get(ctx *app.GetFeedContext) error {
 	// Get feed details with aggregation status
 	fa := c.aggregator.GetFeedAggregator(feed.ID)
 	if fa != nil {
-		feed = fa.GetFeedWithAggregationStatus()
+		return ctx.OK(fa.GetFeedWithAggregationStatus())
 	}
-	return ctx.OK(feed)
+	return ctx.OK(builder.NewFeedResponseFromDef(feed))
 }
 
 // Start starts feed aggregation
