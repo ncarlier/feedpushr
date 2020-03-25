@@ -48,7 +48,7 @@ func GetVarsOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/vars"),
+		Path: fmt.Sprintf("/v2/vars"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

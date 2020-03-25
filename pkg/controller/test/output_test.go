@@ -14,7 +14,7 @@ func TestOutputCRUD(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewOutputController(srv, db, pipe)
+	ctrl := controller.NewOutputController(srv, db, outputs)
 	ctx := context.Background()
 
 	// CREATE
@@ -29,7 +29,7 @@ func TestOutputCRUD(t *testing.T) {
 	assert.Equal(t, "stdout", out.Name, "")
 	assert.Equal(t, false, out.Enabled, "")
 	assert.Equal(t, "\"test\" in Tags", out.Condition, "")
-	assert.Equal(t, uint64(0), out.Props["nbSuccess"], "")
+	assert.Equal(t, 0, out.NbSuccess, "")
 	id := out.ID
 
 	// GET
@@ -68,7 +68,7 @@ func TestOutputDefs(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewOutputController(srv, db, pipe)
+	ctrl := controller.NewOutputController(srv, db, outputs)
 	ctx := context.Background()
 
 	_, specs := test.SpecsOutputOK(t, ctx, srv, ctrl)
@@ -81,4 +81,61 @@ func TestOutputDefs(t *testing.T) {
 			assert.Equal(t, "url", spec.Props[0].Type, "")
 		}
 	}
+}
+
+func TestFilterCRUD(t *testing.T) {
+	teardown := setup(t)
+	defer teardown(t)
+
+	ctrl := controller.NewOutputController(srv, db, outputs)
+	ctx := context.Background()
+
+	// CREATE OUTPUT
+	alias := "test output"
+	outputPayload := &app.CreateOutputPayload{
+		Alias:     alias,
+		Name:      "stdout",
+		Condition: "\"test\" in Tags",
+	}
+	_, out := test.CreateOutputCreated(t, ctx, srv, ctrl, outputPayload)
+	assert.Equal(t, alias, out.Alias, "")
+	assert.Equal(t, "stdout", out.Name, "")
+	assert.Equal(t, false, out.Enabled, "")
+	assert.Equal(t, "\"test\" in Tags", out.Condition, "")
+	assert.Equal(t, 0, out.NbSuccess, "")
+	id := out.ID
+
+	// CREATE
+	alias = "Add test prefix"
+	payload := &app.CreateFilterOutputPayload{
+		Alias: alias,
+		Name:  "title",
+		Props: map[string]interface{}{
+			"prefix": "[test]",
+		},
+		Condition: "\"test\" in Tags",
+	}
+	_, f := test.CreateFilterOutputCreated(t, ctx, srv, ctrl, id, payload)
+	assert.Equal(t, alias, f.Alias, "")
+	assert.Equal(t, "title", f.Name, "")
+	assert.Equal(t, false, f.Enabled, "")
+	assert.Equal(t, "\"test\" in Tags", f.Condition, "")
+	assert.Equal(t, "[test]", f.Props["prefix"], "")
+
+	// TODO verify output def
+
+	// UPDATE
+	update := &app.UpdateFilterOutputPayload{
+		Enabled: true,
+	}
+	_, f = test.UpdateFilterOutputOK(t, ctx, srv, ctrl, id, 0, update)
+	assert.Equal(t, "Add test prefix", f.Alias, "")
+	assert.Equal(t, "title", f.Name, "")
+	assert.Equal(t, "\"test\" in Tags", f.Condition, "")
+	assert.Equal(t, true, f.Enabled, "")
+
+	// DELETE
+	test.DeleteFilterOutputNoContent(t, ctx, srv, ctrl, id, 0)
+
+	// TODO verify output def
 }

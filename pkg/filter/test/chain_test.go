@@ -11,7 +11,7 @@ import (
 )
 
 func buildChainFilter(t *testing.T, URIs ...string) *filter.Chain {
-	chain := filter.NewChainFilter()
+	chain, _ := filter.NewChainFilter(model.FilterDefCollection{})
 	for _, URI := range URIs {
 		condition := ""
 		if strings.Contains(URI, "|") {
@@ -68,12 +68,11 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "Hello", _filter.Props["prefix"], "invalid filter property")
 
 	// UPDATE
-	update := builder.NewFilterBuilder().ID(_filter.ID).Spec(_filter.Name).Build()
+	update := builder.NewFilterBuilder().Spec(_filter.Name).Build()
 	update.Props["prefix"] = "Updated"
-	_, err := chain.Update(update)
+	_, err := chain.Update(0, update)
 	assert.Nil(t, err, "error should be nil")
 	_filter = chain.GetFilterDefs()[0]
-	id := _filter.ID
 	assert.Equal(t, "title", _filter.Name, "invalid filter type")
 	assert.Equal(t, "Updated", _filter.Props["prefix"], "invalid filter property")
 
@@ -87,7 +86,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "minify", _filter.Name, "invalid filter type")
 
 	// DELETE
-	err = chain.Remove(&model.FilterDef{ID: id})
+	err = chain.Remove(0)
 	assert.Nil(t, err, "error should be nil")
 	defs = chain.GetFilterDefs()
 	assert.Equal(t, 1, len(defs), "invalid filter chain specifications")

@@ -22,7 +22,7 @@ var _ = API("feedpushr", func() {
 	})
 	Host("localhost:8080")
 	Scheme("http")
-	BasePath("/v1")
+	BasePath("/v2")
 
 	Origin("*", func() {
 		Methods("GET", "POST", "PUT", "PATCH", "DELETE")

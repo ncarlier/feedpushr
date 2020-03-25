@@ -17,9 +17,9 @@ func (store *BoltStore) ClearOutputs() error {
 }
 
 // GetOutput returns a stored Output.
-func (store *BoltStore) GetOutput(ID int) (*model.OutputDef, error) {
+func (store *BoltStore) GetOutput(ID string) (*model.OutputDef, error) {
 	var result model.OutputDef
-	err := store.get(OUTPUT_BUCKET, itob(ID), &result)
+	err := store.get(OUTPUT_BUCKET, []byte(ID), &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
 			return nil, common.ErrOutputNotFound
@@ -30,13 +30,13 @@ func (store *BoltStore) GetOutput(ID int) (*model.OutputDef, error) {
 }
 
 // DeleteOutput removes a output.
-func (store *BoltStore) DeleteOutput(ID int) (*model.OutputDef, error) {
+func (store *BoltStore) DeleteOutput(ID string) (*model.OutputDef, error) {
 	output, err := store.GetOutput(ID)
 	if err != nil {
 		return nil, err
 	}
 
-	err = store.delete(OUTPUT_BUCKET, itob(output.ID))
+	err = store.delete(OUTPUT_BUCKET, []byte(output.ID))
 	if err != nil {
 		return nil, err
 	}
@@ -45,15 +45,7 @@ func (store *BoltStore) DeleteOutput(ID int) (*model.OutputDef, error) {
 
 // SaveOutput stores a output.
 func (store *BoltStore) SaveOutput(output model.OutputDef) (*model.OutputDef, error) {
-	if output.ID == 0 {
-		var err error
-		id, err := store.nextSequence(OUTPUT_BUCKET)
-		if err != nil {
-			return nil, err
-		}
-		output.ID = int(id)
-	}
-	err := store.save(OUTPUT_BUCKET, itob(output.ID), &output)
+	err := store.save(OUTPUT_BUCKET, []byte(output.ID), &output)
 	return &output, err
 }
 

@@ -20,7 +20,7 @@ import (
 // GetHealthPath computes a request path to the get action of health.
 func GetHealthPath() string {
 
-	return fmt.Sprintf("/v1/healthz")
+	return fmt.Sprintf("/v2/healthz")
 }
 
 // Perform health check.

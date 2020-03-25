@@ -59,7 +59,6 @@ func (f *MinifyFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *MinifyFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:        f.id,
 		Spec:      f.spec,
 		Condition: f.condition.String(),
 		Enabled:   f.enabled,
@@ -83,7 +82,6 @@ func newMinifyFilter(filter *model.FilterDef) (*MinifyFilter, error) {
 	minifier.AddFunc("text/html", html.Minify)
 	minifier.AddFunc("image/svg+xml", svg.Minify)
 	return &MinifyFilter{
-		id:        filter.ID,
 		spec:      minifySpec,
 		condition: condition,
 		minifier:  minifier,

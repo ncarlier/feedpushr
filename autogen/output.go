@@ -25,6 +25,16 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 	// OutputController_Create: end_implement
 }
 
+// CreateFilter runs the createFilter action.
+func (c *OutputController) CreateFilter(ctx *app.CreateFilterOutputContext) error {
+	// OutputController_CreateFilter: start_implement
+
+	// Put your logic here
+
+	return nil
+	// OutputController_CreateFilter: end_implement
+}
+
 // Delete runs the delete action.
 func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
 	// OutputController_Delete: start_implement
@@ -33,6 +43,16 @@ func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
 
 	return nil
 	// OutputController_Delete: end_implement
+}
+
+// DeleteFilter runs the deleteFilter action.
+func (c *OutputController) DeleteFilter(ctx *app.DeleteFilterOutputContext) error {
+	// OutputController_DeleteFilter: start_implement
+
+	// Put your logic here
+
+	return nil
+	// OutputController_DeleteFilter: end_implement
 }
 
 // Get runs the get action.
@@ -77,4 +97,15 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 	res := &app.OutputResponse{}
 	return ctx.OK(res)
 	// OutputController_Update: end_implement
+}
+
+// UpdateFilter runs the updateFilter action.
+func (c *OutputController) UpdateFilter(ctx *app.UpdateFilterOutputContext) error {
+	// OutputController_UpdateFilter: start_implement
+
+	// Put your logic here
+
+	res := &app.FilterResponse{}
+	return ctx.OK(res)
+	// OutputController_UpdateFilter: end_implement
 }

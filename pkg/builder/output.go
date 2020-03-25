@@ -47,7 +47,7 @@ func (ob *OutputBuilder) FromURI(URI string) *OutputBuilder {
 }
 
 // ID set ID
-func (ob *OutputBuilder) ID(ID int) *OutputBuilder {
+func (ob *OutputBuilder) ID(ID string) *OutputBuilder {
 	ob.output.ID = ID
 	return ob
 }
@@ -101,5 +101,7 @@ func NewOutputResponseFromDef(def *model.OutputDef) *app.OutputResponse {
 		Props:     def.Props,
 		Condition: def.Condition,
 		Enabled:   def.Enabled,
+		NbSuccess: int(def.NbSuccess),
+		NbError:   int(def.NbError),
 	}
 }

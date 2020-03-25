@@ -59,7 +59,7 @@ func CreateOutputBadRequest(t goatest.TInterface, ctx context.Context, service *
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs"),
+		Path: fmt.Sprintf("/v2/outputs"),
 	}
 	req, _err := http.NewRequest("POST", u.String(), nil)
 	if _err != nil {
@@ -139,7 +139,7 @@ func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs"),
+		Path: fmt.Sprintf("/v2/outputs"),
 	}
 	req, _err := http.NewRequest("POST", u.String(), nil)
 	if _err != nil {
@@ -188,11 +188,250 @@ func CreateOutputCreated(t goatest.TInterface, ctx context.Context, service *goa
 	return rw, mt
 }
 
+// CreateFilterOutputBadRequest runs the method CreateFilter of the given controller with the given parameters and payload.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func CreateFilterOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, payload *app.CreateFilterOutputPayload) (http.ResponseWriter, error) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		return nil, e
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters", id),
+	}
+	req, _err := http.NewRequest("POST", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	createFilterCtx, __err := app.NewCreateFilterOutputContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
+		}
+		return nil, _e
+	}
+	createFilterCtx.Payload = payload
+
+	// Perform action
+	__err = ctrl.CreateFilter(createFilterCtx)
+
+	// Validate response
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
+	}
+	if rw.Code != 400 {
+		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
+	}
+	var mt error
+	if resp != nil {
+		var __ok bool
+		mt, __ok = resp.(error)
+		if !__ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of error", resp, resp)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// CreateFilterOutputCreated runs the method CreateFilter of the given controller with the given parameters and payload.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func CreateFilterOutputCreated(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, payload *app.CreateFilterOutputPayload) (http.ResponseWriter, *app.FilterResponse) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		t.Errorf("unexpected payload validation error: %+v", e)
+		return nil, nil
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters", id),
+	}
+	req, _err := http.NewRequest("POST", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	createFilterCtx, __err := app.NewCreateFilterOutputContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", _e)
+		return nil, nil
+	}
+	createFilterCtx.Payload = payload
+
+	// Perform action
+	__err = ctrl.CreateFilter(createFilterCtx)
+
+	// Validate response
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
+	}
+	if rw.Code != 201 {
+		t.Errorf("invalid response status code: got %+v, expected 201", rw.Code)
+	}
+	var mt *app.FilterResponse
+	if resp != nil {
+		var __ok bool
+		mt, __ok = resp.(*app.FilterResponse)
+		if !__ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterResponse", resp, resp)
+		}
+		__err = mt.Validate()
+		if __err != nil {
+			t.Errorf("invalid response media type: %s", __err)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// CreateFilterOutputNotFound runs the method CreateFilter of the given controller with the given parameters and payload.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func CreateFilterOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, payload *app.CreateFilterOutputPayload) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		t.Errorf("unexpected payload validation error: %+v", e)
+		return nil
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters", id),
+	}
+	req, _err := http.NewRequest("POST", u.String(), nil)
+	if _err != nil {
+		panic("invalid test " + _err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	createFilterCtx, __err := app.NewCreateFilterOutputContext(goaCtx, req, service)
+	if __err != nil {
+		_e, _ok := __err.(goa.ServiceError)
+		if !_ok {
+			panic("invalid test data " + __err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", _e)
+		return nil
+	}
+	createFilterCtx.Payload = payload
+
+	// Perform action
+	__err = ctrl.CreateFilter(createFilterCtx)
+
+	// Validate response
+	if __err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", __err, logBuf.String())
+	}
+	if rw.Code != 404 {
+		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
 // DeleteOutputBadRequest runs the method Delete of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) (http.ResponseWriter, error) {
+func DeleteOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -213,7 +452,7 @@ func DeleteOutputBadRequest(t goatest.TInterface, ctx context.Context, service *
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -261,7 +500,7 @@ func DeleteOutputBadRequest(t goatest.TInterface, ctx context.Context, service *
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteOutputNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) http.ResponseWriter {
+func DeleteOutputNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -281,7 +520,7 @@ func DeleteOutputNoContent(t goatest.TInterface, ctx context.Context, service *g
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -322,7 +561,7 @@ func DeleteOutputNoContent(t goatest.TInterface, ctx context.Context, service *g
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) http.ResponseWriter {
+func DeleteOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -342,7 +581,7 @@ func DeleteOutputNotFound(t goatest.TInterface, ctx context.Context, service *go
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -379,11 +618,11 @@ func DeleteOutputNotFound(t goatest.TInterface, ctx context.Context, service *go
 	return rw
 }
 
-// GetOutputBadRequest runs the method Get of the given controller with the given parameters.
+// DeleteFilterOutputBadRequest runs the method DeleteFilter of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) (http.ResponseWriter, error) {
+func DeleteFilterOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, idx int) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -404,7 +643,201 @@ func GetOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v/filters/%v", id, idx),
+	}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["idx"] = []string{fmt.Sprintf("%v", idx)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	deleteFilterCtx, _err := app.NewDeleteFilterOutputContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		return nil, e
+	}
+
+	// Perform action
+	_err = ctrl.DeleteFilter(deleteFilterCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 400 {
+		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
+	}
+	var mt error
+	if resp != nil {
+		var _ok bool
+		mt, _ok = resp.(error)
+		if !_ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of error", resp, resp)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// DeleteFilterOutputNoContent runs the method DeleteFilter of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func DeleteFilterOutputNoContent(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, idx int) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters/%v", id, idx),
+	}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["idx"] = []string{fmt.Sprintf("%v", idx)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	deleteFilterCtx, _err := app.NewDeleteFilterOutputContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil
+	}
+
+	// Perform action
+	_err = ctrl.DeleteFilter(deleteFilterCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 204 {
+		t.Errorf("invalid response status code: got %+v, expected 204", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
+// DeleteFilterOutputNotFound runs the method DeleteFilter of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func DeleteFilterOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, idx int) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters/%v", id, idx),
+	}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["idx"] = []string{fmt.Sprintf("%v", idx)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	deleteFilterCtx, _err := app.NewDeleteFilterOutputContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil
+	}
+
+	// Perform action
+	_err = ctrl.DeleteFilter(deleteFilterCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 404 {
+		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
+// GetOutputBadRequest runs the method Get of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func GetOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string) (http.ResponseWriter, error) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -452,7 +885,7 @@ func GetOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) http.ResponseWriter {
+func GetOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -472,7 +905,7 @@ func GetOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -513,7 +946,7 @@ func GetOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.S
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int) (http.ResponseWriter, *app.OutputResponse) {
+func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string) (http.ResponseWriter, *app.OutputResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -534,7 +967,7 @@ func GetOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -608,7 +1041,7 @@ func ListOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs"),
+		Path: fmt.Sprintf("/v2/outputs"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -681,7 +1114,7 @@ func SpecsOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/_specs"),
+		Path: fmt.Sprintf("/v2/outputs/_specs"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -733,7 +1166,7 @@ func SpecsOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int, payload *app.UpdateOutputPayload) (http.ResponseWriter, error) {
+func UpdateOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, payload *app.UpdateOutputPayload) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -754,7 +1187,7 @@ func UpdateOutputBadRequest(t goatest.TInterface, ctx context.Context, service *
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
@@ -803,7 +1236,7 @@ func UpdateOutputBadRequest(t goatest.TInterface, ctx context.Context, service *
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int, payload *app.UpdateOutputPayload) http.ResponseWriter {
+func UpdateOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, payload *app.UpdateOutputPayload) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -823,7 +1256,7 @@ func UpdateOutputNotFound(t goatest.TInterface, ctx context.Context, service *go
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
@@ -865,7 +1298,7 @@ func UpdateOutputNotFound(t goatest.TInterface, ctx context.Context, service *go
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func UpdateOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id int, payload *app.UpdateOutputPayload) (http.ResponseWriter, *app.OutputResponse) {
+func UpdateOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, payload *app.UpdateOutputPayload) (http.ResponseWriter, *app.OutputResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -886,7 +1319,7 @@ func UpdateOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/outputs/%v", id),
+		Path: fmt.Sprintf("/v2/outputs/%v", id),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
 	if err != nil {
@@ -925,6 +1358,216 @@ func UpdateOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Serv
 		mt, _ok = resp.(*app.OutputResponse)
 		if !_ok {
 			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.OutputResponse", resp, resp)
+		}
+		_err = mt.Validate()
+		if _err != nil {
+			t.Errorf("invalid response media type: %s", _err)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// UpdateFilterOutputBadRequest runs the method UpdateFilter of the given controller with the given parameters and payload.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFilterOutputBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, idx int, payload *app.UpdateFilterOutputPayload) (http.ResponseWriter, error) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters/%v", id, idx),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["idx"] = []string{fmt.Sprintf("%v", idx)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	updateFilterCtx, _err := app.NewUpdateFilterOutputContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		return nil, e
+	}
+	updateFilterCtx.Payload = payload
+
+	// Perform action
+	_err = ctrl.UpdateFilter(updateFilterCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 400 {
+		t.Errorf("invalid response status code: got %+v, expected 400", rw.Code)
+	}
+	var mt error
+	if resp != nil {
+		var _ok bool
+		mt, _ok = resp.(error)
+		if !_ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of error", resp, resp)
+		}
+	}
+
+	// Return results
+	return rw, mt
+}
+
+// UpdateFilterOutputNotFound runs the method UpdateFilter of the given controller with the given parameters and payload.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFilterOutputNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, idx int, payload *app.UpdateFilterOutputPayload) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) {}
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters/%v", id, idx),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["idx"] = []string{fmt.Sprintf("%v", idx)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	updateFilterCtx, _err := app.NewUpdateFilterOutputContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil
+	}
+	updateFilterCtx.Payload = payload
+
+	// Perform action
+	_err = ctrl.UpdateFilter(updateFilterCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 404 {
+		t.Errorf("invalid response status code: got %+v, expected 404", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
+// UpdateFilterOutputOK runs the method UpdateFilter of the given controller with the given parameters and payload.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func UpdateFilterOutputOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.OutputController, id string, idx int, payload *app.UpdateFilterOutputPayload) (http.ResponseWriter, *app.FilterResponse) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/v2/outputs/%v/filters/%v", id, idx),
+	}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["id"] = []string{fmt.Sprintf("%v", id)}
+	prms["idx"] = []string{fmt.Sprintf("%v", idx)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "OutputTest"), rw, req, prms)
+	updateFilterCtx, _err := app.NewUpdateFilterOutputContext(goaCtx, req, service)
+	if _err != nil {
+		e, ok := _err.(goa.ServiceError)
+		if !ok {
+			panic("invalid test data " + _err.Error()) // bug
+		}
+		t.Errorf("unexpected parameter validation error: %+v", e)
+		return nil, nil
+	}
+	updateFilterCtx.Payload = payload
+
+	// Perform action
+	_err = ctrl.UpdateFilter(updateFilterCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 200 {
+		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
+	}
+	var mt *app.FilterResponse
+	if resp != nil {
+		var _ok bool
+		mt, _ok = resp.(*app.FilterResponse)
+		if !_ok {
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.FilterResponse", resp, resp)
 		}
 		_err = mt.Validate()
 		if _err != nil {

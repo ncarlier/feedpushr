@@ -5,26 +5,16 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
-func (store *InMemoryStore) nextOutputSequence() int {
-	max := 0
-	for _, output := range store.outputs {
-		if output.ID > max {
-			max = output.ID
-		}
-	}
-	return max + 1
-}
-
 // ClearOutputs clear all outputs
 func (store *InMemoryStore) ClearOutputs() error {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
-	store.outputs = make(map[int]model.OutputDef)
+	store.outputs = make(map[string]model.OutputDef)
 	return nil
 }
 
 // GetOutput returns a stored Output.
-func (store *InMemoryStore) GetOutput(ID int) (*model.OutputDef, error) {
+func (store *InMemoryStore) GetOutput(ID string) (*model.OutputDef, error) {
 	output, exists := store.outputs[ID]
 	if !exists {
 		return nil, common.ErrOutputNotFound
@@ -33,7 +23,7 @@ func (store *InMemoryStore) GetOutput(ID int) (*model.OutputDef, error) {
 }
 
 // DeleteOutput removes a output.
-func (store *InMemoryStore) DeleteOutput(ID int) (*model.OutputDef, error) {
+func (store *InMemoryStore) DeleteOutput(ID string) (*model.OutputDef, error) {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
 	output, err := store.GetOutput(ID)
@@ -48,9 +38,6 @@ func (store *InMemoryStore) DeleteOutput(ID int) (*model.OutputDef, error) {
 func (store *InMemoryStore) SaveOutput(output model.OutputDef) (*model.OutputDef, error) {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
-	if output.ID == 0 {
-		output.ID = store.nextOutputSequence()
-	}
 	store.outputs[output.ID] = output
 	return &output, nil
 }

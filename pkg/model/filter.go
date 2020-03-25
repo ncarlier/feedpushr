@@ -24,10 +24,11 @@ type FilterDefCollection []*FilterDef
 
 // FilterDef contains filter definition
 type FilterDef struct {
-	ID    int    `json:"id"`
 	Alias string `json:"alias"`
 	Spec
 	Condition string      `json:"condition"`
 	Props     FilterProps `json:"props:omitempty"`
 	Enabled   bool        `json:"enabled"`
+	NbSuccess uint64      `json:"nbSuccess"`
+	NbError   uint64      `json:"nbError"`
 }

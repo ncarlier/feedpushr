@@ -47,12 +47,6 @@ func (fb *FilterBuilder) FromURI(URI string) *FilterBuilder {
 	return fb
 }
 
-// ID set ID
-func (fb *FilterBuilder) ID(ID int) *FilterBuilder {
-	fb.filter.ID = ID
-	return fb
-}
-
 // Alias set alias
 func (fb *FilterBuilder) Alias(alias *string) *FilterBuilder {
 	if alias != nil {
@@ -95,12 +89,13 @@ func NewFilterResponseFromDef(def *model.FilterDef) *app.FilterResponse {
 		return nil
 	}
 	return &app.FilterResponse{
-		ID:        def.ID,
 		Alias:     def.Alias,
 		Name:      def.Name,
 		Desc:      def.Desc,
 		Props:     def.Props,
 		Condition: def.Condition,
 		Enabled:   def.Enabled,
+		NbSuccess: int(def.NbSuccess),
+		NbError:   int(def.NbError),
 	}
 }

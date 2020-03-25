@@ -45,7 +45,6 @@ func (f *TitleFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *TitleFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:        f.id,
 		Alias:     f.alias,
 		Condition: f.condition.String(),
 		Spec:      f.spec,
@@ -70,7 +69,6 @@ func newTitleFilter(filter *model.FilterDef) (*TitleFilter, error) {
 		prefix = "feedpushr:"
 	}
 	return &TitleFilter{
-		id:        filter.ID,
 		alias:     filter.Alias,
 		spec:      titleSpec,
 		condition: condition,

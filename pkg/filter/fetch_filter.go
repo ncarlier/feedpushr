@@ -64,7 +64,6 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *FetchFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:        f.id,
 		Alias:     f.alias,
 		Spec:      f.spec,
 		Condition: f.condition.String(),
@@ -84,7 +83,6 @@ func newFetchFilter(filter *model.FilterDef) (*FetchFilter, error) {
 		return nil, err
 	}
 	return &FetchFilter{
-		id:        filter.ID,
 		alias:     filter.Alias,
 		spec:      fetchSpec,
 		condition: condition,

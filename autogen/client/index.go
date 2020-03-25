@@ -20,7 +20,7 @@ import (
 // GetIndexPath computes a request path to the get action of index.
 func GetIndexPath() string {
 
-	return fmt.Sprintf("/v1/")
+	return fmt.Sprintf("/v2/")
 }
 
 // Get basic API information.

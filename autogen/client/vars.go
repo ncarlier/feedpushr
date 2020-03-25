@@ -20,7 +20,7 @@ import (
 // GetVarsPath computes a request path to the get action of vars.
 func GetVarsPath() string {
 
-	return fmt.Sprintf("/v1/vars")
+	return fmt.Sprintf("/v2/vars")
 }
 
 // Get all internals exp vars

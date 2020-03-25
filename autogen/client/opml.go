@@ -20,7 +20,7 @@ import (
 // GetOpmlPath computes a request path to the get action of opml.
 func GetOpmlPath() string {
 
-	return fmt.Sprintf("/v1/opml")
+	return fmt.Sprintf("/v2/opml")
 }
 
 // Get all feeds as an OMPL format
@@ -49,7 +49,7 @@ func (c *Client) NewGetOpmlRequest(ctx context.Context, path string) (*http.Requ
 // UploadOpmlPath computes a request path to the upload action of opml.
 func UploadOpmlPath() string {
 
-	return fmt.Sprintf("/v1/opml")
+	return fmt.Sprintf("/v2/opml")
 }
 
 // Upload an OPML file to create feeds

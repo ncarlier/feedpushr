@@ -48,7 +48,7 @@ func GetSwaggerOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/swagger.json"),
+		Path: fmt.Sprintf("/v2/swagger.json"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

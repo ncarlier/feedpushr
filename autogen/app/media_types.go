@@ -17,7 +17,7 @@ import (
 
 // A RSS feed (default view)
 //
-// Identifier: application/vnd.feedpushr.feed.v1+json; view=default
+// Identifier: application/vnd.feedpushr.feed.v2+json; view=default
 type FeedResponse struct {
 	// Date of creation
 	Cdate time.Time `form:"cdate" json:"cdate" yaml:"cdate" xml:"cdate"`
@@ -71,7 +71,7 @@ func (mt *FeedResponse) Validate() (err error) {
 
 // A RSS feed (link view)
 //
-// Identifier: application/vnd.feedpushr.feed.v1+json; view=link
+// Identifier: application/vnd.feedpushr.feed.v2+json; view=link
 type FeedResponseLink struct {
 	// ID of feed (MD5 of the xmlUrl)
 	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
@@ -92,7 +92,7 @@ func (mt *FeedResponseLink) Validate() (err error) {
 
 // A RSS feed (tiny view)
 //
-// Identifier: application/vnd.feedpushr.feed.v1+json; view=tiny
+// Identifier: application/vnd.feedpushr.feed.v2+json; view=tiny
 type FeedResponseTiny struct {
 	// Date of creation
 	Cdate time.Time `form:"cdate" json:"cdate" yaml:"cdate" xml:"cdate"`
@@ -123,7 +123,7 @@ func (mt *FeedResponseTiny) Validate() (err error) {
 
 // FeedResponseCollection is the media type for an array of FeedResponse (default view)
 //
-// Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=default
+// Identifier: application/vnd.feedpushr.feed.v2+json; type=collection; view=default
 type FeedResponseCollection []*FeedResponse
 
 // Validate validates the FeedResponseCollection media type instance.
@@ -140,7 +140,7 @@ func (mt FeedResponseCollection) Validate() (err error) {
 
 // FeedResponseCollection is the media type for an array of FeedResponse (link view)
 //
-// Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=link
+// Identifier: application/vnd.feedpushr.feed.v2+json; type=collection; view=link
 type FeedResponseLinkCollection []*FeedResponseLink
 
 // Validate validates the FeedResponseLinkCollection media type instance.
@@ -157,7 +157,7 @@ func (mt FeedResponseLinkCollection) Validate() (err error) {
 
 // FeedResponseCollection is the media type for an array of FeedResponse (tiny view)
 //
-// Identifier: application/vnd.feedpushr.feed.v1+json; type=collection; view=tiny
+// Identifier: application/vnd.feedpushr.feed.v2+json; type=collection; view=tiny
 type FeedResponseTinyCollection []*FeedResponseTiny
 
 // Validate validates the FeedResponseTinyCollection media type instance.
@@ -174,7 +174,7 @@ func (mt FeedResponseTinyCollection) Validate() (err error) {
 
 // A pagignated list of feeds (default view)
 //
-// Identifier: application/vnd.feedpushr.feeds-page.v1+json; view=default
+// Identifier: application/vnd.feedpushr.feeds-page.v2+json; view=default
 type FeedsPageResponse struct {
 	// Current page number
 	Current int `form:"current" json:"current" yaml:"current" xml:"current"`
@@ -200,7 +200,7 @@ func (mt *FeedsPageResponse) Validate() (err error) {
 
 // The filter specification (default view)
 //
-// Identifier: application/vnd.feedpushr.filter-spec.v1+json; view=default
+// Identifier: application/vnd.feedpushr.filter-spec.v2+json; view=default
 type FilterSpecResponse struct {
 	// Description of the filter
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
@@ -228,7 +228,7 @@ func (mt *FilterSpecResponse) Validate() (err error) {
 
 // FilterSpecResponseCollection is the media type for an array of FilterSpecResponse (default view)
 //
-// Identifier: application/vnd.feedpushr.filter-spec.v1+json; type=collection; view=default
+// Identifier: application/vnd.feedpushr.filter-spec.v2+json; type=collection; view=default
 type FilterSpecResponseCollection []*FilterSpecResponse
 
 // Validate validates the FilterSpecResponseCollection media type instance.
@@ -245,7 +245,7 @@ func (mt FilterSpecResponseCollection) Validate() (err error) {
 
 // A filter (default view)
 //
-// Identifier: application/vnd.feedpushr.filter.v1+json; view=default
+// Identifier: application/vnd.feedpushr.filter.v2+json; view=default
 type FilterResponse struct {
 	// Alias of the filter
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
@@ -255,17 +255,18 @@ type FilterResponse struct {
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
-	// ID of the filter
-	ID int `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the filter
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Number of error
+	NbError int `form:"nbError" json:"nbError" yaml:"nbError" xml:"nbError"`
+	// Number of success
+	NbSuccess int `form:"nbSuccess" json:"nbSuccess" yaml:"nbSuccess" xml:"nbSuccess"`
 	// Filter properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 }
 
 // Validate validates the FilterResponse media type instance.
 func (mt *FilterResponse) Validate() (err error) {
-
 	if mt.Alias == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "alias"))
 	}
@@ -281,26 +282,9 @@ func (mt *FilterResponse) Validate() (err error) {
 	return
 }
 
-// FilterResponseCollection is the media type for an array of FilterResponse (default view)
-//
-// Identifier: application/vnd.feedpushr.filter.v1+json; type=collection; view=default
-type FilterResponseCollection []*FilterResponse
-
-// Validate validates the FilterResponseCollection media type instance.
-func (mt FilterResponseCollection) Validate() (err error) {
-	for _, e := range mt {
-		if e != nil {
-			if err2 := e.Validate(); err2 != nil {
-				err = goa.MergeErrors(err, err2)
-			}
-		}
-	}
-	return
-}
-
 // HAL link (default view)
 //
-// Identifier: application/vnd.feedpushr.hal-links.v1+json; view=default
+// Identifier: application/vnd.feedpushr.hal-links.v2+json; view=default
 type HALLink struct {
 	// Link's destination
 	Href string `form:"href" json:"href" yaml:"href" xml:"href"`
@@ -316,7 +300,7 @@ func (mt *HALLink) Validate() (err error) {
 
 // API info (default view)
 //
-// Identifier: application/vnd.feedpushr.info.v1+json; view=default
+// Identifier: application/vnd.feedpushr.info.v2+json; view=default
 type Info struct {
 	// HAL links
 	Links map[string]*HALLink `form:"_links" json:"_links" yaml:"_links" xml:"_links"`
@@ -354,7 +338,7 @@ func (mt *Info) Validate() (err error) {
 
 // The output channel specification (default view)
 //
-// Identifier: application/vnd.feedpushr.output-spec.v1+json; view=default
+// Identifier: application/vnd.feedpushr.output-spec.v2+json; view=default
 type OutputSpecResponse struct {
 	// Description of the output channel
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
@@ -382,7 +366,7 @@ func (mt *OutputSpecResponse) Validate() (err error) {
 
 // OutputSpecResponseCollection is the media type for an array of OutputSpecResponse (default view)
 //
-// Identifier: application/vnd.feedpushr.output-spec.v1+json; type=collection; view=default
+// Identifier: application/vnd.feedpushr.output-spec.v2+json; type=collection; view=default
 type OutputSpecResponseCollection []*OutputSpecResponse
 
 // Validate validates the OutputSpecResponseCollection media type instance.
@@ -399,7 +383,7 @@ func (mt OutputSpecResponseCollection) Validate() (err error) {
 
 // The output channel (default view)
 //
-// Identifier: application/vnd.feedpushr.output.v1+json; view=default
+// Identifier: application/vnd.feedpushr.output.v2+json; view=default
 type OutputResponse struct {
 	// Alias of the output channel
 	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
@@ -410,16 +394,22 @@ type OutputResponse struct {
 	// Status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
 	// ID of the output
-	ID int `form:"id" json:"id" yaml:"id" xml:"id"`
+	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the output channel
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Number of error
+	NbError int `form:"nbError" json:"nbError" yaml:"nbError" xml:"nbError"`
+	// Number of success
+	NbSuccess int `form:"nbSuccess" json:"nbSuccess" yaml:"nbSuccess" xml:"nbSuccess"`
 	// Output channel properties
 	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
 }
 
 // Validate validates the OutputResponse media type instance.
 func (mt *OutputResponse) Validate() (err error) {
-
+	if mt.ID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
+	}
 	if mt.Alias == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "alias"))
 	}
@@ -437,7 +427,7 @@ func (mt *OutputResponse) Validate() (err error) {
 
 // OutputResponseCollection is the media type for an array of OutputResponse (default view)
 //
-// Identifier: application/vnd.feedpushr.output.v1+json; type=collection; view=default
+// Identifier: application/vnd.feedpushr.output.v2+json; type=collection; view=default
 type OutputResponseCollection []*OutputResponse
 
 // Validate validates the OutputResponseCollection media type instance.
@@ -454,7 +444,7 @@ func (mt OutputResponseCollection) Validate() (err error) {
 
 // The specification of a property (default view)
 //
-// Identifier: application/vnd.feedpushr.prop-spec.v1+json; view=default
+// Identifier: application/vnd.feedpushr.prop-spec.v2+json; view=default
 type PropSpec struct {
 	// Description of the output channel
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
@@ -482,7 +472,7 @@ func (mt *PropSpec) Validate() (err error) {
 
 // PropSpecCollection is the media type for an array of PropSpec (default view)
 //
-// Identifier: application/vnd.feedpushr.prop-spec.v1+json; type=collection; view=default
+// Identifier: application/vnd.feedpushr.prop-spec.v2+json; type=collection; view=default
 type PropSpecCollection []*PropSpec
 
 // Validate validates the PropSpecCollection media type instance.

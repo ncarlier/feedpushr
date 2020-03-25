@@ -21,7 +21,7 @@ import (
 // PubPshbPath computes a request path to the pub action of pshb.
 func PubPshbPath() string {
 
-	return fmt.Sprintf("/v1/pshb")
+	return fmt.Sprintf("/v2/pshb")
 }
 
 // Publication endpoint for PSHB hubs
@@ -50,7 +50,7 @@ func (c *Client) NewPubPshbRequest(ctx context.Context, path string) (*http.Requ
 // SubPshbPath computes a request path to the sub action of pshb.
 func SubPshbPath() string {
 
-	return fmt.Sprintf("/v1/pshb")
+	return fmt.Sprintf("/v2/pshb")
 }
 
 // Callback to validate the (un)subscription to the topic of a Hub
@@ -74,8 +74,8 @@ func (c *Client) NewSubPshbRequest(ctx context.Context, path string, hubChalleng
 	values.Set("hub.mode", hubMode)
 	values.Set("hub.topic", hubTopic)
 	if hubLeaseSeconds != nil {
-		tmp30 := strconv.Itoa(*hubLeaseSeconds)
-		values.Set("hub.lease_seconds", tmp30)
+		tmp28 := strconv.Itoa(*hubLeaseSeconds)
+		values.Set("hub.lease_seconds", tmp28)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)

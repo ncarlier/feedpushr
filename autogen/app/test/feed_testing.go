@@ -63,7 +63,7 @@ func CreateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 		query["url"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
+		Path:     fmt.Sprintf("/v2/feeds"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
@@ -157,7 +157,7 @@ func CreateFeedCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 		query["url"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
+		Path:     fmt.Sprintf("/v2/feeds"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
@@ -256,7 +256,7 @@ func CreateFeedCreatedLink(t goatest.TInterface, ctx context.Context, service *g
 		query["url"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
+		Path:     fmt.Sprintf("/v2/feeds"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
@@ -355,7 +355,7 @@ func CreateFeedCreatedTiny(t goatest.TInterface, ctx context.Context, service *g
 		query["url"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
+		Path:     fmt.Sprintf("/v2/feeds"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
@@ -441,7 +441,7 @@ func DeleteFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -509,7 +509,7 @@ func DeleteFeedNoContent(t goatest.TInterface, ctx context.Context, service *goa
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -570,7 +570,7 @@ func DeleteFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
@@ -632,7 +632,7 @@ func GetFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -700,7 +700,7 @@ func GetFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -762,7 +762,7 @@ func GetFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -836,7 +836,7 @@ func GetFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -910,7 +910,7 @@ func GetFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v", id),
+		Path: fmt.Sprintf("/v2/feeds/%v", id),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -993,7 +993,7 @@ func ListFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.
 		query["page"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
+		Path:     fmt.Sprintf("/v2/feeds"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
@@ -1078,7 +1078,7 @@ func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 		query["page"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
+		Path:     fmt.Sprintf("/v2/feeds"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
@@ -1157,7 +1157,7 @@ func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 		query["page"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds"),
+		Path:     fmt.Sprintf("/v2/feeds"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
@@ -1238,7 +1238,7 @@ func StartFeedAccepted(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v/start", id),
+		Path: fmt.Sprintf("/v2/feeds/%v/start", id),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -1300,7 +1300,7 @@ func StartFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v/start", id),
+		Path: fmt.Sprintf("/v2/feeds/%v/start", id),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -1368,7 +1368,7 @@ func StartFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v/start", id),
+		Path: fmt.Sprintf("/v2/feeds/%v/start", id),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -1429,7 +1429,7 @@ func StopFeedAccepted(t goatest.TInterface, ctx context.Context, service *goa.Se
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v/stop", id),
+		Path: fmt.Sprintf("/v2/feeds/%v/stop", id),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -1491,7 +1491,7 @@ func StopFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v/stop", id),
+		Path: fmt.Sprintf("/v2/feeds/%v/stop", id),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -1559,7 +1559,7 @@ func StopFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/feeds/%v/stop", id),
+		Path: fmt.Sprintf("/v2/feeds/%v/stop", id),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -1630,7 +1630,7 @@ func UpdateFeedBadRequest(t goatest.TInterface, ctx context.Context, service *go
 		query["title"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		Path:     fmt.Sprintf("/v2/feeds/%v", id),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
@@ -1716,7 +1716,7 @@ func UpdateFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.
 		query["title"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		Path:     fmt.Sprintf("/v2/feeds/%v", id),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
@@ -1796,7 +1796,7 @@ func UpdateFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Servic
 		query["title"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		Path:     fmt.Sprintf("/v2/feeds/%v", id),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
@@ -1888,7 +1888,7 @@ func UpdateFeedOKLink(t goatest.TInterface, ctx context.Context, service *goa.Se
 		query["title"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		Path:     fmt.Sprintf("/v2/feeds/%v", id),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)
@@ -1980,7 +1980,7 @@ func UpdateFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Se
 		query["title"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/feeds/%v", id),
+		Path:     fmt.Sprintf("/v2/feeds/%v", id),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("PUT", u.String(), nil)

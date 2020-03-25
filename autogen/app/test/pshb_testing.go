@@ -50,7 +50,7 @@ func PubPshbBadRequest(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/pshb"),
+		Path: fmt.Sprintf("/v2/pshb"),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -117,7 +117,7 @@ func PubPshbOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/pshb"),
+		Path: fmt.Sprintf("/v2/pshb"),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -195,7 +195,7 @@ func SubPshbBadRequest(t goatest.TInterface, ctx context.Context, service *goa.S
 		query["hub.topic"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/pshb"),
+		Path:     fmt.Sprintf("/v2/pshb"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
@@ -296,7 +296,7 @@ func SubPshbOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 		query["hub.topic"] = sliceVal
 	}
 	u := &url.URL{
-		Path:     fmt.Sprintf("/v1/pshb"),
+		Path:     fmt.Sprintf("/v2/pshb"),
 		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)

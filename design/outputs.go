@@ -39,7 +39,7 @@ var _ = Resource("output", func() {
 		)
 		Description("Retrieve output with given ID")
 		Params(func() {
-			Param("id", Integer, "Output ID")
+			Param("id", String, "Output ID")
 		})
 		Response(OK, OutputResponse)
 		Response(NotFound)
@@ -74,7 +74,7 @@ var _ = Resource("output", func() {
 		)
 		Description("Update an output")
 		Params(func() {
-			Param("id", Integer, "Output ID")
+			Param("id", String, "Output ID")
 		})
 		Payload(func() {
 			Member("alias", String, "Alias of the output", func() {
@@ -97,7 +97,71 @@ var _ = Resource("output", func() {
 		)
 		Description("Delete an output")
 		Params(func() {
-			Param("id", Integer, "Output ID")
+			Param("id", String, "Output ID")
+		})
+		Response(NoContent)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("createFilter", func() {
+		Routing(
+			POST("/:id/filters"),
+		)
+		Description("Create a new filter")
+		Params(func() {
+			Param("id", String, "Output ID")
+		})
+		Payload(func() {
+			Member("alias", String, "Alias of the filter", func() {
+				Example("foo")
+			})
+			Member("name", String, "Name of the filter", func() {
+				Example("fetch")
+			})
+			Member("props", HashOf(String, Any), "Filter properties", NoExample)
+			Member("condition", String, "Conditional expression of the output", func() {
+				Example("\"foo\" in Tags")
+			})
+			Required("alias", "name", "condition")
+		})
+		Response(Created, FilterResponse)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("updateFilter", func() {
+		Routing(
+			PUT("/:id/filters/:idx"),
+		)
+		Description("Update a filter")
+		Params(func() {
+			Param("id", String, "Output ID")
+			Param("idx", Integer, "Filter index")
+		})
+		Payload(func() {
+			Member("alias", String, "Alias of the filter", func() {
+				Example("foo")
+			})
+			Member("props", HashOf(String, Any), "Filter properties", NoExample)
+			Member("condition", String, "Conditional expression of the output", func() {
+				Example("\"foo\" in Tags")
+			})
+			Member("enabled", Boolean, "Filter status", NoExample)
+		})
+		Response(OK, FilterResponse)
+		Response(NotFound)
+		Response(BadRequest, ErrorMedia)
+	})
+
+	Action("deleteFilter", func() {
+		Routing(
+			DELETE(":id/filters/:idx"),
+		)
+		Description("Delete a filter")
+		Params(func() {
+			Param("id", String, "Filter ID")
+			Param("idx", Integer, "Filter index")
 		})
 		Response(NoContent)
 		Response(NotFound)
@@ -106,14 +170,12 @@ var _ = Resource("output", func() {
 })
 
 // OutputResponse is the output resource media type.
-var OutputResponse = MediaType("application/vnd.feedpushr.output.v1+json", func() {
+var OutputResponse = MediaType("application/vnd.feedpushr.output.v2+json", func() {
 	Description("The output channel")
 	TypeName("OutputResponse")
 	ContentType("application/json")
 	Attributes(func() {
-		Attribute("id", Integer, "ID of the output", func() {
-			Example(1)
-		})
+		Attribute("id", String, "ID of the output")
 		Attribute("alias", String, "Alias of the output channel", func() {
 			Example("foo")
 		})
@@ -130,6 +192,14 @@ var OutputResponse = MediaType("application/vnd.feedpushr.output.v1+json", func(
 		Attribute("enabled", Boolean, "Status", func() {
 			Default(false)
 		})
+		Attribute("nbSuccess", Integer, "Number of success", func() {
+			Default(0)
+			Example(10)
+		})
+		Attribute("nbError", Integer, "Number of error", func() {
+			Default(0)
+			Example(10)
+		})
 		Required("id", "alias", "name", "desc", "condition")
 	})
 
@@ -141,11 +211,13 @@ var OutputResponse = MediaType("application/vnd.feedpushr.output.v1+json", func(
 		Attribute("props")
 		Attribute("condition")
 		Attribute("enabled")
+		Attribute("nbSuccess")
+		Attribute("nbError")
 	})
 })
 
 // OutputSpecResponse is the output specification media type.
-var OutputSpecResponse = MediaType("application/vnd.feedpushr.output-spec.v1+json", func() {
+var OutputSpecResponse = MediaType("application/vnd.feedpushr.output-spec.v2+json", func() {
 	Description("The output channel specification")
 	TypeName("OutputSpecResponse")
 	ContentType("application/json")
@@ -156,7 +228,7 @@ var OutputSpecResponse = MediaType("application/vnd.feedpushr.output-spec.v1+jso
 		Attribute("desc", String, "Description of the output channel", func() {
 			Example("New articles are sent as JSON document to...")
 		})
-		Attribute("props", CollectionOf("application/vnd.feedpushr.prop-spec.v1+json"))
+		Attribute("props", CollectionOf("application/vnd.feedpushr.prop-spec.v2+json"))
 		Required("name", "desc", "props")
 	})
 
@@ -168,7 +240,7 @@ var OutputSpecResponse = MediaType("application/vnd.feedpushr.output-spec.v1+jso
 })
 
 // PropSpecResponse is the property specification media type.
-var PropSpecResponse = MediaType("application/vnd.feedpushr.prop-spec.v1+json", func() {
+var PropSpecResponse = MediaType("application/vnd.feedpushr.prop-spec.v2+json", func() {
 	Description("The specification of a property")
 	TypeName("PropSpec")
 	ContentType("application/json")
@@ -191,5 +263,50 @@ var PropSpecResponse = MediaType("application/vnd.feedpushr.prop-spec.v1+json", 
 		Attribute("desc")
 		Attribute("type")
 		Attribute("options")
+	})
+})
+
+// FilterResponse is the filter resource media type.
+var FilterResponse = MediaType("application/vnd.feedpushr.filter.v2+json", func() {
+	Description("A filter")
+	TypeName("FilterResponse")
+	ContentType("application/json")
+	Attributes(func() {
+		Attribute("alias", String, "Alias of the filter", func() {
+			Example("foo")
+		})
+		Attribute("name", String, "Name of the filter", func() {
+			Example("fetch")
+		})
+		Attribute("desc", String, "Description of the filter", func() {
+			Example("This filter will...")
+		})
+		Attribute("props", HashOf(String, Any), "Filter properties", NoExample)
+		Attribute("condition", String, "Conditional expression of the filter", func() {
+			Example("\"foo\" in Tags")
+		})
+		Attribute("enabled", Boolean, "Status", func() {
+			Default(false)
+		})
+		Attribute("nbSuccess", Integer, "Number of success", func() {
+			Default(0)
+			Example(10)
+		})
+		Attribute("nbError", Integer, "Number of error", func() {
+			Default(0)
+			Example(10)
+		})
+		Required("alias", "name", "desc", "condition")
+	})
+
+	View("default", func() {
+		Attribute("alias")
+		Attribute("name")
+		Attribute("desc")
+		Attribute("props")
+		Attribute("condition")
+		Attribute("enabled")
+		Attribute("nbSuccess")
+		Attribute("nbError")
 	})
 })

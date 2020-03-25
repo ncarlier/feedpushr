@@ -12,9 +12,7 @@ type InMemoryStore struct {
 	cacheLock   sync.RWMutex
 	feeds       map[string]model.FeedDef
 	feedsLock   sync.RWMutex
-	filters     map[int]model.FilterDef
-	filtersLock sync.RWMutex
-	outputs     map[int]model.OutputDef
+	outputs     map[string]model.OutputDef
 	outputsLock sync.RWMutex
 }
 
@@ -25,9 +23,7 @@ func NewInMemoryStore() *InMemoryStore {
 		cacheLock:   sync.RWMutex{},
 		feeds:       make(map[string]model.FeedDef),
 		feedsLock:   sync.RWMutex{},
-		filters:     make(map[int]model.FilterDef),
-		filtersLock: sync.RWMutex{},
-		outputs:     make(map[int]model.OutputDef),
+		outputs:     make(map[string]model.OutputDef),
 		outputsLock: sync.RWMutex{},
 	}
 }

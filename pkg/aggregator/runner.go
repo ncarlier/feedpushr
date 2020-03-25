@@ -7,7 +7,7 @@ import (
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
+	"github.com/ncarlier/feedpushr/v2/pkg/output"
 	"github.com/ncarlier/feedpushr/v2/pkg/pshb"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -22,7 +22,7 @@ type FeedAggregator struct {
 	log               zerolog.Logger
 	feed              *model.FeedDef
 	handler           *FeedHandler
-	pipeline          *pipeline.Pipeline
+	outputs           *output.Manager
 	status            Status
 	delay             time.Duration
 	nextCheck         time.Time
@@ -32,7 +32,7 @@ type FeedAggregator struct {
 }
 
 // NewFeedAggregator creats a new feed aggregator
-func NewFeedAggregator(feed *model.FeedDef, pipe *pipeline.Pipeline, delay time.Duration, timeout time.Duration, callbackURL string) *FeedAggregator {
+func NewFeedAggregator(feed *model.FeedDef, outputs *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *FeedAggregator {
 	handler := NewFeedHandler(feed, timeout)
 	aggregator := FeedAggregator{
 		id:                feed.ID,
@@ -41,7 +41,7 @@ func NewFeedAggregator(feed *model.FeedDef, pipe *pipeline.Pipeline, delay time.
 		stopChannel:       make(chan bool),
 		feed:              feed,
 		handler:           handler,
-		pipeline:          pipe,
+		outputs:           outputs,
 		status:            StoppedStatus,
 		delay:             delay,
 		log:               log.With().Str("aggregator", feed.ID).Logger(),
@@ -64,9 +64,9 @@ func (fa *FeedAggregator) running() {
 				// Refresh the feed
 				status, items := fa.handler.Refresh()
 				if items != nil && len(items) > 0 {
-					// Send feed's articles to the output provider
-					nb := fa.pipeline.Process(items)
-					atomic.AddUint64(&fa.nbProcessedItems, nb)
+					// Push feed's articles to all outputs
+					fa.outputs.Push(items)
+					atomic.StoreUint64(&fa.nbProcessedItems, uint64(len(items)))
 				}
 				if fa.feed.HubURL != nil && *fa.feed.HubURL != "" && fa.callbackURL != "" {
 					// Send subscription request if the feed is bound to a hub

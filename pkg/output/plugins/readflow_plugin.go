@@ -1,4 +1,4 @@
-package output
+package plugins
 
 import (
 	"fmt"
@@ -65,7 +65,7 @@ func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.Output, err
 
 // ReadflowOutputProvider output provider to send articles to Readflow
 type ReadflowOutputProvider struct {
-	id        int
+	id        string
 	alias     string
 	spec      model.Spec
 	condition *expr.ConditionalExpression
@@ -99,12 +99,12 @@ func (op *ReadflowOutputProvider) GetDef() model.OutputDef {
 		Spec:      op.spec,
 		Condition: op.condition.String(),
 		Enabled:   op.enabled,
+		NbSuccess: op.nbSuccess,
+		NbError:   op.nbError,
 	}
 	result.Props = map[string]interface{}{
-		"url":       op.targetURL,
-		"apiKey":    op.apiKey,
-		"nbError":   op.nbError,
-		"nbSuccess": op.nbSuccess,
+		"url":    op.targetURL,
+		"apiKey": op.apiKey,
 	}
 	return result
 }

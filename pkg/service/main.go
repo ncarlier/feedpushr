@@ -15,7 +15,7 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/controller"
 	"github.com/ncarlier/feedpushr/v2/pkg/logging"
 	"github.com/ncarlier/feedpushr/v2/pkg/opml"
-	"github.com/ncarlier/feedpushr/v2/pkg/pipeline"
+	"github.com/ncarlier/feedpushr/v2/pkg/output"
 	"github.com/ncarlier/feedpushr/v2/pkg/plugin"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog/log"
@@ -88,30 +88,18 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 
 	// Clear configuration if asked
 	if conf.ClearConfig {
-		if err := db.ClearFilters(); err != nil {
-			log.Error().Err(err).Msg("unable to clear filters")
-			return nil, err
-		}
 		if err := db.ClearOutputs(); err != nil {
 			log.Error().Err(err).Msg("unable to clear outputs")
 			return nil, err
 		}
 	}
 
-	// Init chain filter
-	cf, err := loadChainFilter(db)
-	if err != nil {
-		log.Error().Err(err).Msg("unable to init filter chain")
-		return nil, err
-	}
-
-	// Init the pipeline
-	om, err := pipeline.NewPipeline(db, conf.CacheRetention)
+	// Init output manager
+	om, err := output.NewManager(db, conf.CacheRetention)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init output manager")
 		return nil, err
 	}
-	om.ChainFilter = cf
 
 	// Init aggregator daemon
 	var callbackURL string
@@ -144,7 +132,7 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	// Mount "feed" controller
 	app.MountFeedController(srv, controller.NewFeedController(srv, db, am))
 	// Mount "filter" controller
-	app.MountFilterController(srv, controller.NewFilterController(srv, db, cf))
+	app.MountFilterController(srv, controller.NewFilterController(srv))
 	// Mount "output" controller
 	app.MountOutputController(srv, controller.NewOutputController(srv, db, om))
 	// Mount "health" controller

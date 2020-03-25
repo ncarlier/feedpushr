@@ -17,8 +17,15 @@ type Chain struct {
 }
 
 // NewChainFilter create new chain filter
-func NewChainFilter() *Chain {
-	return &Chain{}
+func NewChainFilter(definitions model.FilterDefCollection) (*Chain, error) {
+	chain := &Chain{}
+	for _, def := range definitions {
+		_, err := chain.Add(def)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return chain, nil
 }
 
 func newFilter(def *model.FilterDef) (model.Filter, error) {
@@ -65,58 +72,52 @@ func (chain *Chain) Add(filter *model.FilterDef) (model.Filter, error) {
 	defer chain.lock.RUnlock()
 
 	log.Debug().Str("name", filter.Name).Msg("adding filter...")
-	nextID := 0
-	for _, _filter := range chain.filters {
-		if nextID < _filter.GetDef().ID {
-			nextID = _filter.GetDef().ID
-		}
-	}
-	filter.ID = nextID + 1
 	_filter, err := newFilter(filter)
 	if err != nil {
 		return nil, err
 	}
 
 	chain.filters = append(chain.filters, _filter)
-	log.Info().Int("id", filter.ID).Str("name", filter.Name).Msg("filter added to the filter chain")
+	log.Info().Str("name", filter.Name).Msg("filter added to the filter chain")
 	return _filter, nil
 }
 
 // Update a filter of the chain
-func (chain *Chain) Update(update *model.FilterDef) (model.Filter, error) {
+func (chain *Chain) Update(idx int, update *model.FilterDef) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
-	for idx, filter := range chain.filters {
-		if update.ID == filter.GetDef().ID {
-			log.Debug().Int("id", update.ID).Msg("updating filter...")
-			update.Name = filter.GetDef().Name
-			f, err := newFilter(update)
-			if err != nil {
-				return nil, err
-			}
-			chain.filters[idx] = f
-			log.Info().Int("id", update.ID).Msg("filter updated")
-			return f, nil
-		}
+	if idx < 0 || idx >= len(chain.filters) {
+		return nil, common.ErrFilterNotFound
 	}
-	return nil, common.ErrFilterNotFound
+
+	updated := chain.filters[idx]
+	update.Name = updated.GetDef().Name
+	log.Debug().Int("index", idx).Str("name", update.Name).Msg("updating filter...")
+	f, err := newFilter(update)
+	if err != nil {
+		return nil, err
+	}
+	chain.filters[idx] = f
+	log.Info().Int("index", idx).Str("name", update.Name).Msg("filter updated in the filter chain")
+	return f, nil
 }
 
 // Remove a filter from the chain
-func (chain *Chain) Remove(filter *model.FilterDef) error {
+func (chain *Chain) Remove(idx int) error {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
-	for idx, _filter := range chain.filters {
-		if filter.ID == _filter.GetDef().ID {
-			log.Debug().Int("id", filter.ID).Msg("removing filter...")
-			chain.filters = append(chain.filters[:idx], chain.filters[idx+1:]...)
-			log.Info().Int("id", filter.ID).Msg("filter removed from the filter chain")
-			return nil
-		}
+	if idx < 0 || idx >= len(chain.filters) {
+		return common.ErrFilterNotFound
 	}
-	return common.ErrFilterNotFound
+
+	removed := chain.filters[idx]
+	log.Debug().Int("index", idx).Str("name", removed.GetDef().Name).Msg("removing filter...")
+	chain.filters = append(chain.filters[:idx], chain.filters[idx+1:]...)
+	log.Info().Int("index", idx).Str("name", removed.GetDef().Name).Msg("filter removed from filter chain")
+
+	return nil
 }
 
 // Apply applies filter chain on an article
@@ -129,21 +130,20 @@ func (chain *Chain) Apply(article *model.Article) error {
 	return nil
 }
 
-// Get a filter from the chain
-func (chain *Chain) Get(id int) (model.Filter, error) {
-	for _, _filter := range chain.filters {
-		if id == _filter.GetDef().ID {
-			return _filter, nil
-		}
+// Get returns a filter of the chain filter
+func (chain *Chain) Get(idx int) (model.Filter, error) {
+	if idx < 0 || idx >= len(chain.filters) {
+		return nil, common.ErrFilterNotFound
 	}
-	return nil, common.ErrFilterNotFound
+	return chain.filters[idx], nil
 }
 
 // GetFilterDefs return definitions of the chain filter
-func (chain *Chain) GetFilterDefs() []model.FilterDef {
-	result := make([]model.FilterDef, len(chain.filters))
+func (chain *Chain) GetFilterDefs() model.FilterDefCollection {
+	result := make(model.FilterDefCollection, len(chain.filters))
 	for idx, filter := range chain.filters {
-		result[idx] = filter.GetDef()
+		def := filter.GetDef()
+		result[idx] = &def
 	}
 	return result
 }

@@ -1,4 +1,4 @@
-package output
+package plugins
 
 import (
 	"fmt"
@@ -53,7 +53,7 @@ func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.Output, error
 
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
-	id        int
+	id        string
 	alias     string
 	spec      model.Spec
 	condition *expr.ConditionalExpression
@@ -87,11 +87,11 @@ func (op *StdOutputProvider) GetDef() model.OutputDef {
 		Spec:      op.spec,
 		Condition: op.condition.String(),
 		Enabled:   op.enabled,
+		NbSuccess: op.nbSuccess,
+		NbError:   op.nbError,
 	}
 	result.Props = map[string]interface{}{
-		"nbSuccess": op.nbSuccess,
-		"nbError":   op.nbError,
-		"format":    op.formatter.Value(),
+		"format": op.formatter.Value(),
 	}
 	return result
 }

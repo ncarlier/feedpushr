@@ -6,7 +6,7 @@ import (
 )
 
 // InfoInfoResponse is the API info media type.
-var InfoResponse = MediaType("application/vnd.feedpushr.info.v1+json", func() {
+var InfoResponse = MediaType("application/vnd.feedpushr.info.v2+json", func() {
 	Description("API info")
 	TypeName("Info")
 	ContentType("application/json")
@@ -18,7 +18,7 @@ var InfoResponse = MediaType("application/vnd.feedpushr.info.v1+json", func() {
 			Example("Feed aggregator daemon with sugar on top")
 		})
 		Attribute("version", String, "Service version", func() {
-			Example("v2.0.0")
+			Example("v3.0.0")
 		})
 		Attribute("_links", HashOf(String, HALLink), "HAL links")
 		Required("name", "desc", "version", "_links")
@@ -33,7 +33,7 @@ var InfoResponse = MediaType("application/vnd.feedpushr.info.v1+json", func() {
 })
 
 // HALLink is the HAL link media type.
-var HALLink = MediaType("application/vnd.feedpushr.hal-links.v1+json", func() {
+var HALLink = MediaType("application/vnd.feedpushr.hal-links.v2+json", func() {
 	Description("HAL link")
 	TypeName("HALLink")
 	ContentType("application/json")

@@ -28,18 +28,20 @@ type OutputDefCollection []*OutputDef
 
 // OutputDef contains output definition
 type OutputDef struct {
-	ID    int    `json:"id"`
+	ID    string `json:"id"`
 	Alias string `json:"alias"`
 	Spec
-	Condition string      `json:"condition"`
-	Props     OutputProps `json:"props:omitempty"`
-	Enabled   bool        `json:"enabled"`
+	Condition string              `json:"condition"`
+	Props     OutputProps         `json:"props:omitempty"`
+	Filters   FilterDefCollection `json:"filters"`
+	Enabled   bool                `json:"enabled"`
+	NbSuccess uint64              `json:"nbSuccess"`
+	NbError   uint64              `json:"nbError"`
 }
 
 // Hash computes spec hash
-func (spec OutputDef) Hash() string {
-	key := fmt.Sprintf("%s-%d", spec.Name, spec.ID)
+func (def OutputDef) Hash() string {
 	hasher := md5.New()
-	hasher.Write([]byte(key))
+	hasher.Write([]byte(def.ID))
 	return hex.EncodeToString(hasher.Sum(nil))
 }

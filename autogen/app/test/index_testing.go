@@ -49,7 +49,7 @@ func GetIndexOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/"),
+		Path: fmt.Sprintf("/v2/"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

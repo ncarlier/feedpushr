@@ -125,7 +125,7 @@ var _ = Resource("feed", func() {
 })
 
 // FeedResponse is the feed resource media type.
-var FeedResponse = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
+var FeedResponse = MediaType("application/vnd.feedpushr.feed.v2+json", func() {
 	Description("A RSS feed")
 	TypeName("FeedResponse")
 	ContentType("application/json")
@@ -195,7 +195,7 @@ var FeedResponse = MediaType("application/vnd.feedpushr.feed.v1+json", func() {
 })
 
 // FeedsPageResponse is the feeds page resource media type.
-var FeedsPageResponse = MediaType("application/vnd.feedpushr.feeds-page.v1+json", func() {
+var FeedsPageResponse = MediaType("application/vnd.feedpushr.feeds-page.v2+json", func() {
 	Description("A pagignated list of feeds")
 	TypeName("FeedsPageResponse")
 	ContentType("application/json")

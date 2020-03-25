@@ -20,7 +20,7 @@ import (
 // GetSwaggerPath computes a request path to the get action of swagger.
 func GetSwaggerPath() string {
 
-	return fmt.Sprintf("/v1/swagger.json")
+	return fmt.Sprintf("/v2/swagger.json")
 }
 
 // Get OpenAPI specifications

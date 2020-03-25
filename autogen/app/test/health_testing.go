@@ -48,7 +48,7 @@ func GetHealthOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/healthz"),
+		Path: fmt.Sprintf("/v2/healthz"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {

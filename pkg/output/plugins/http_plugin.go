@@ -1,4 +1,4 @@
-package output
+package plugins
 
 import (
 	"fmt"
@@ -97,7 +97,7 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.Output, error) 
 
 // HTTPOutputProvider HTTP output provider
 type HTTPOutputProvider struct {
-	id          int
+	id          string
 	alias       string
 	spec        model.Spec
 	condition   *expr.ConditionalExpression
@@ -152,10 +152,10 @@ func (op *HTTPOutputProvider) GetDef() model.OutputDef {
 		Spec:      op.spec,
 		Condition: op.condition.String(),
 		Enabled:   op.enabled,
+		NbSuccess: op.nbSuccess,
+		NbError:   op.nbError,
 	}
 	result.Props = map[string]interface{}{
-		"nbError":     op.nbError,
-		"nbSuccess":   op.nbSuccess,
 		"url":         op.targetURL,
 		"format":      op.formatter.Value(),
 		"contentType": op.contentType,

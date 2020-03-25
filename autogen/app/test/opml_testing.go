@@ -49,7 +49,7 @@ func GetOpmlBadRequest(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/opml"),
+		Path: fmt.Sprintf("/v2/opml"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -116,7 +116,7 @@ func GetOpmlOK(t goatest.TInterface, ctx context.Context, service *goa.Service, 
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/opml"),
+		Path: fmt.Sprintf("/v2/opml"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -177,7 +177,7 @@ func UploadOpmlBadRequest(t goatest.TInterface, ctx context.Context, service *go
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/opml"),
+		Path: fmt.Sprintf("/v2/opml"),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
@@ -244,7 +244,7 @@ func UploadOpmlCreated(t goatest.TInterface, ctx context.Context, service *goa.S
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/v1/opml"),
+		Path: fmt.Sprintf("/v2/opml"),
 	}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {

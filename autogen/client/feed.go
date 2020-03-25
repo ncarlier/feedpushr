@@ -21,7 +21,7 @@ import (
 // CreateFeedPath computes a request path to the create action of feed.
 func CreateFeedPath() string {
 
-	return fmt.Sprintf("/v1/feeds")
+	return fmt.Sprintf("/v2/feeds")
 }
 
 // Create a new feed
@@ -60,7 +60,7 @@ func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ str
 func DeleteFeedPath(id string) string {
 	param0 := id
 
-	return fmt.Sprintf("/v1/feeds/%s", param0)
+	return fmt.Sprintf("/v2/feeds/%s", param0)
 }
 
 // Delete a feed
@@ -90,7 +90,7 @@ func (c *Client) NewDeleteFeedRequest(ctx context.Context, path string) (*http.R
 func GetFeedPath(id string) string {
 	param0 := id
 
-	return fmt.Sprintf("/v1/feeds/%s", param0)
+	return fmt.Sprintf("/v2/feeds/%s", param0)
 }
 
 // Retrieve feed with given ID
@@ -119,7 +119,7 @@ func (c *Client) NewGetFeedRequest(ctx context.Context, path string) (*http.Requ
 // ListFeedPath computes a request path to the list action of feed.
 func ListFeedPath() string {
 
-	return fmt.Sprintf("/v1/feeds")
+	return fmt.Sprintf("/v2/feeds")
 }
 
 // Retrieve all feeds
@@ -140,12 +140,12 @@ func (c *Client) NewListFeedRequest(ctx context.Context, path string, limit *int
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	if limit != nil {
-		tmp28 := strconv.Itoa(*limit)
-		values.Set("limit", tmp28)
+		tmp26 := strconv.Itoa(*limit)
+		values.Set("limit", tmp26)
 	}
 	if page != nil {
-		tmp29 := strconv.Itoa(*page)
-		values.Set("page", tmp29)
+		tmp27 := strconv.Itoa(*page)
+		values.Set("page", tmp27)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
@@ -159,7 +159,7 @@ func (c *Client) NewListFeedRequest(ctx context.Context, path string, limit *int
 func StartFeedPath(id string) string {
 	param0 := id
 
-	return fmt.Sprintf("/v1/feeds/%s/start", param0)
+	return fmt.Sprintf("/v2/feeds/%s/start", param0)
 }
 
 // Start feed aggregation
@@ -189,7 +189,7 @@ func (c *Client) NewStartFeedRequest(ctx context.Context, path string) (*http.Re
 func StopFeedPath(id string) string {
 	param0 := id
 
-	return fmt.Sprintf("/v1/feeds/%s/stop", param0)
+	return fmt.Sprintf("/v2/feeds/%s/stop", param0)
 }
 
 // Stop feed aggregation
@@ -219,7 +219,7 @@ func (c *Client) NewStopFeedRequest(ctx context.Context, path string) (*http.Req
 func UpdateFeedPath(id string) string {
 	param0 := id
 
-	return fmt.Sprintf("/v1/feeds/%s", param0)
+	return fmt.Sprintf("/v2/feeds/%s", param0)
 }
 
 // Update a feed

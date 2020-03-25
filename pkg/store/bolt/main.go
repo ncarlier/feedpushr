@@ -17,7 +17,7 @@ func createBucketsIfNotExists(tx *bolt.Tx, buckets ...[]byte) error {
 	for _, bucket := range buckets {
 		_, err := tx.CreateBucketIfNotExists(bucket)
 		if err != nil {
-			return fmt.Errorf("could not create '%s' bucket: %v", FEED_BUCKET, err)
+			return fmt.Errorf("could not create '%s' bucket: %v", bucket, err)
 		}
 	}
 	return nil
@@ -33,7 +33,6 @@ func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
 		return createBucketsIfNotExists(
 			tx,
 			FEED_BUCKET,
-			FILTER_BUCKET,
 			OUTPUT_BUCKET,
 			CACHE_BUCKET,
 		)

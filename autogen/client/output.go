@@ -34,7 +34,7 @@ type CreateOutputPayload struct {
 // CreateOutputPath computes a request path to the create action of output.
 func CreateOutputPath() string {
 
-	return fmt.Sprintf("/v1/outputs")
+	return fmt.Sprintf("/v2/outputs")
 }
 
 // Create a new output
@@ -74,11 +74,67 @@ func (c *Client) NewCreateOutputRequest(ctx context.Context, path string, payloa
 	return req, nil
 }
 
-// DeleteOutputPath computes a request path to the delete action of output.
-func DeleteOutputPath(id int) string {
-	param0 := strconv.Itoa(id)
+// CreateFilterOutputPayload is the output createFilter action payload.
+type CreateFilterOutputPayload struct {
+	// Alias of the filter
+	Alias string `form:"alias" json:"alias" yaml:"alias" xml:"alias"`
+	// Conditional expression of the output
+	Condition string `form:"condition" json:"condition" yaml:"condition" xml:"condition"`
+	// Name of the filter
+	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+}
 
-	return fmt.Sprintf("/v1/outputs/%s", param0)
+// CreateFilterOutputPath computes a request path to the createFilter action of output.
+func CreateFilterOutputPath(id string) string {
+	param0 := id
+
+	return fmt.Sprintf("/v2/outputs/%s/filters", param0)
+}
+
+// Create a new filter
+func (c *Client) CreateFilterOutput(ctx context.Context, path string, payload *CreateFilterOutputPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewCreateFilterOutputRequest(ctx, path, payload, contentType)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewCreateFilterOutputRequest create the request corresponding to the createFilter action endpoint of the output resource.
+func (c *Client) NewCreateFilterOutputRequest(ctx context.Context, path string, payload *CreateFilterOutputPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), &body)
+	if err != nil {
+		return nil, err
+	}
+	header := req.Header
+	if contentType == "*/*" {
+		header.Set("Content-Type", "application/json")
+	} else {
+		header.Set("Content-Type", contentType)
+	}
+	return req, nil
+}
+
+// DeleteOutputPath computes a request path to the delete action of output.
+func DeleteOutputPath(id string) string {
+	param0 := id
+
+	return fmt.Sprintf("/v2/outputs/%s", param0)
 }
 
 // Delete an output
@@ -104,11 +160,42 @@ func (c *Client) NewDeleteOutputRequest(ctx context.Context, path string) (*http
 	return req, nil
 }
 
-// GetOutputPath computes a request path to the get action of output.
-func GetOutputPath(id int) string {
-	param0 := strconv.Itoa(id)
+// DeleteFilterOutputPath computes a request path to the deleteFilter action of output.
+func DeleteFilterOutputPath(id string, idx int) string {
+	param0 := id
+	param1 := strconv.Itoa(idx)
 
-	return fmt.Sprintf("/v1/outputs/%s", param0)
+	return fmt.Sprintf("/v2/outputs/%s/filters/%s", param0, param1)
+}
+
+// Delete a filter
+func (c *Client) DeleteFilterOutput(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewDeleteFilterOutputRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewDeleteFilterOutputRequest create the request corresponding to the deleteFilter action endpoint of the output resource.
+func (c *Client) NewDeleteFilterOutputRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequestWithContext(ctx, "DELETE", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// GetOutputPath computes a request path to the get action of output.
+func GetOutputPath(id string) string {
+	param0 := id
+
+	return fmt.Sprintf("/v2/outputs/%s", param0)
 }
 
 // Retrieve output with given ID
@@ -137,7 +224,7 @@ func (c *Client) NewGetOutputRequest(ctx context.Context, path string) (*http.Re
 // ListOutputPath computes a request path to the list action of output.
 func ListOutputPath() string {
 
-	return fmt.Sprintf("/v1/outputs")
+	return fmt.Sprintf("/v2/outputs")
 }
 
 // Retrieve all outputs definitions
@@ -166,7 +253,7 @@ func (c *Client) NewListOutputRequest(ctx context.Context, path string) (*http.R
 // SpecsOutputPath computes a request path to the specs action of output.
 func SpecsOutputPath() string {
 
-	return fmt.Sprintf("/v1/outputs/_specs")
+	return fmt.Sprintf("/v2/outputs/_specs")
 }
 
 // Retrieve all output types available
@@ -205,10 +292,10 @@ type UpdateOutputPayload struct {
 }
 
 // UpdateOutputPath computes a request path to the update action of output.
-func UpdateOutputPath(id int) string {
-	param0 := strconv.Itoa(id)
+func UpdateOutputPath(id string) string {
+	param0 := id
 
-	return fmt.Sprintf("/v1/outputs/%s", param0)
+	return fmt.Sprintf("/v2/outputs/%s", param0)
 }
 
 // Update an output
@@ -222,6 +309,63 @@ func (c *Client) UpdateOutput(ctx context.Context, path string, payload *UpdateO
 
 // NewUpdateOutputRequest create the request corresponding to the update action endpoint of the output resource.
 func (c *Client) NewUpdateOutputRequest(ctx context.Context, path string, payload *UpdateOutputPayload, contentType string) (*http.Request, error) {
+	var body bytes.Buffer
+	if contentType == "" {
+		contentType = "*/*" // Use default encoder
+	}
+	err := c.Encoder.Encode(payload, &body, contentType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode body: %s", err)
+	}
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequestWithContext(ctx, "PUT", u.String(), &body)
+	if err != nil {
+		return nil, err
+	}
+	header := req.Header
+	if contentType == "*/*" {
+		header.Set("Content-Type", "application/json")
+	} else {
+		header.Set("Content-Type", contentType)
+	}
+	return req, nil
+}
+
+// UpdateFilterOutputPayload is the output updateFilter action payload.
+type UpdateFilterOutputPayload struct {
+	// Alias of the filter
+	Alias *string `form:"alias,omitempty" json:"alias,omitempty" yaml:"alias,omitempty" xml:"alias,omitempty"`
+	// Conditional expression of the output
+	Condition *string `form:"condition,omitempty" json:"condition,omitempty" yaml:"condition,omitempty" xml:"condition,omitempty"`
+	// Filter status
+	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
+	// Filter properties
+	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+}
+
+// UpdateFilterOutputPath computes a request path to the updateFilter action of output.
+func UpdateFilterOutputPath(id string, idx int) string {
+	param0 := id
+	param1 := strconv.Itoa(idx)
+
+	return fmt.Sprintf("/v2/outputs/%s/filters/%s", param0, param1)
+}
+
+// Update a filter
+func (c *Client) UpdateFilterOutput(ctx context.Context, path string, payload *UpdateFilterOutputPayload, contentType string) (*http.Response, error) {
+	req, err := c.NewUpdateFilterOutputRequest(ctx, path, payload, contentType)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewUpdateFilterOutputRequest create the request corresponding to the updateFilter action endpoint of the output resource.
+func (c *Client) NewUpdateFilterOutputRequest(ctx context.Context, path string, payload *UpdateFilterOutputPayload, contentType string) (*http.Request, error) {
 	var body bytes.Buffer
 	if contentType == "" {
 		contentType = "*/*" // Use default encoder

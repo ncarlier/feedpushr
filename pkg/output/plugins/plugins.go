@@ -1,4 +1,4 @@
-package output
+package plugins
 
 import "github.com/ncarlier/feedpushr/v2/pkg/model"
 
