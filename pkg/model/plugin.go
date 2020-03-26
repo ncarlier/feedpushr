@@ -4,10 +4,10 @@ package model
 type PluginType int
 
 const (
-	// OUTPUT_PLUGIN output plugin type
-	OUTPUT_PLUGIN PluginType = iota
-	// FILTER_PLUGIN filter plugin type
-	FILTER_PLUGIN
+	// OutputPluginType output plugin type
+	OutputPluginType PluginType = iota
+	// FilterPluginType filter plugin type
+	FilterPluginType
 )
 
 // PluginSpec contains plugins specifications

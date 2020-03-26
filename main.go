@@ -29,10 +29,10 @@ import (
 
 	"github.com/ncarlier/feedpushr/v2/pkg/config"
 	configflag "github.com/ncarlier/feedpushr/v2/pkg/config/flag"
-	"github.com/ncarlier/feedpushr/v2/pkg/job"
 	"github.com/ncarlier/feedpushr/v2/pkg/logging"
 	"github.com/ncarlier/feedpushr/v2/pkg/metric"
-	"github.com/ncarlier/feedpushr/v2/pkg/service"
+	"github.com/ncarlier/feedpushr/v2/pkg/opml"
+	"github.com/ncarlier/feedpushr/v2/pkg/server"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/ncarlier/feedpushr/v2/pkg/version"
 	"github.com/rs/zerolog/log"
@@ -66,47 +66,32 @@ func main() {
 	metric.Configure(conf)
 
 	// Init the data store
-	db, err := store.Configure(conf.DB)
+	db, err := store.NewDB(conf.DB)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init data store")
-	}
-
-	// Init global service
-	srv, err := service.Configure(db, conf)
-	if err != nil {
-		db.Close()
-		log.Fatal().Err(err).Msg("unable to init main service")
-	}
-
-	// Clear cache if asked
-	if conf.ClearCache {
-		log.Debug().Msg("clearing the cache...")
-		if err := srv.ClearCache(); err != nil {
-			db.Close()
-			log.Fatal().Err(err).Msg("unable to clear the cache")
-		}
-		log.Info().Msg("cache cleared")
 	}
 
 	// Import OPML file if asked
 	if conf.ImportFilename != "" {
 		log.Debug().Str("filename", conf.ImportFilename).Msg("importing OPML file...")
-		if err := srv.ImportOPMLFile(conf.ImportFilename); err != nil {
+		if err := opml.ImportOPMLFile(conf.ImportFilename, db); err != nil {
 			db.Close()
 			log.Fatal().Err(err).Str("filename", conf.ImportFilename).Msg("unable to import OPML file")
 		}
 		log.Info().Str("filename", conf.ImportFilename).Msg("OPML file imported")
 	}
 
-	// Starts background jobs (cache-buster)
-	scheduler := job.StartNewScheduler(db, conf)
+	// Init global service
+	srv, err := server.NewServer(db, conf)
+	if err != nil {
+		db.Close()
+		log.Fatal().Err(err).Msg("unable to init server")
+	}
 
 	// Graceful shutdown handler
 	go func() {
 		<-quit
 		log.Debug().Msg("shutting down server...")
-		// Shutdown the scheduler...
-		scheduler.Shutdown()
 		// Shutdown the server...
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()

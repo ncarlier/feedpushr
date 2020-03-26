@@ -15,6 +15,19 @@ func newItemError(index int, err error) error {
 	return fmt.Errorf("line_%d:%s", index, err.Error())
 }
 
+// ImportOPMLFile imports OPML file into the database
+func ImportOPMLFile(filename string, db store.DB) error {
+	o, err := NewOPMLFromFile(filename)
+	if err != nil {
+		return err
+	}
+	err = ImportOPMLToDB(o, db)
+	if err != nil {
+		log.Error().Err(err)
+	}
+	return nil
+}
+
 // ImportOPMLToDB imports OPML object into the database.
 func ImportOPMLToDB(opml *OPML, db store.DB) error {
 	logger := log.With().Str("component", "import").Str("title", opml.Head.Title).Logger()

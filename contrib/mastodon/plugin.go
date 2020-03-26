@@ -100,7 +100,7 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.Output, err
 
 // MastodonOutputProvider output provider to send articles to Mastodon
 type MastodonOutputProvider struct {
-	id          int
+	id          string
 	alias       string
 	spec        model.Spec
 	condition   *expr.ConditionalExpression
@@ -161,7 +161,7 @@ func (op *MastodonOutputProvider) GetDef() model.OutputDef {
 func GetPluginSpec() model.PluginSpec {
 	return model.PluginSpec{
 		Spec: spec,
-		Type: model.OUTPUT_PLUGIN,
+		Type: model.OutputPluginType,
 	}
 }
 

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/google/uuid"
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
@@ -37,8 +36,7 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 		ctx.Payload.Props,
 	).Condition(
 		&ctx.Payload.Condition,
-	).Enable(false).Build()
-	def.ID = uuid.New().String()
+	).Enable(false).NewID().Build()
 	processor, err := c.outputs.AddOutputProcessor(def)
 	if err != nil {
 		return err

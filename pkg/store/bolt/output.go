@@ -8,18 +8,18 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
-// OUTPUT_BUCKET bucket name
-var OUTPUT_BUCKET = []byte("OUTPUT")
+// OutputBucketName bucket name
+var OutputBucketName = []byte("OUTPUT")
 
 // ClearOutputs clear all outputs
 func (store *BoltStore) ClearOutputs() error {
-	return store.clear(OUTPUT_BUCKET)
+	return store.clear(OutputBucketName)
 }
 
 // GetOutput returns a stored Output.
 func (store *BoltStore) GetOutput(ID string) (*model.OutputDef, error) {
 	var result model.OutputDef
-	err := store.get(OUTPUT_BUCKET, []byte(ID), &result)
+	err := store.get(OutputBucketName, []byte(ID), &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
 			return nil, common.ErrOutputNotFound
@@ -36,7 +36,7 @@ func (store *BoltStore) DeleteOutput(ID string) (*model.OutputDef, error) {
 		return nil, err
 	}
 
-	err = store.delete(OUTPUT_BUCKET, []byte(output.ID))
+	err = store.delete(OutputBucketName, []byte(output.ID))
 	if err != nil {
 		return nil, err
 	}
@@ -45,13 +45,13 @@ func (store *BoltStore) DeleteOutput(ID string) (*model.OutputDef, error) {
 
 // SaveOutput stores a output.
 func (store *BoltStore) SaveOutput(output model.OutputDef) (*model.OutputDef, error) {
-	err := store.save(OUTPUT_BUCKET, []byte(output.ID), &output)
+	err := store.save(OutputBucketName, []byte(output.ID), &output)
 	return &output, err
 }
 
 // ListOutputs returns a paginated list of outputs.
 func (store *BoltStore) ListOutputs(page, limit int) (*model.OutputDefCollection, error) {
-	bufs, err := store.allAsRaw(OUTPUT_BUCKET, page, limit)
+	bufs, err := store.allAsRaw(OutputBucketName, page, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (store *BoltStore) ListOutputs(page, limit int) (*model.OutputDefCollection
 // ForEachOutput iterates over all outputs
 func (store *BoltStore) ForEachOutput(cb func(*model.OutputDef) error) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket(OUTPUT_BUCKET).Cursor()
+		c := tx.Bucket(OutputBucketName).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			var output *model.OutputDef
 			if err := json.Unmarshal(v, &output); err != nil {

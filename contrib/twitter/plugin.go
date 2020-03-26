@@ -102,7 +102,7 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.Output, erro
 
 // TwitterOutputProvider output provider to send articles to Twitter
 type TwitterOutputProvider struct {
-	id             int
+	id             string
 	alias          string
 	spec           model.Spec
 	condition      *expr.ConditionalExpression
@@ -166,7 +166,7 @@ func (op *TwitterOutputProvider) GetDef() model.OutputDef {
 func GetPluginSpec() model.PluginSpec {
 	return model.PluginSpec{
 		Spec: spec,
-		Type: model.OUTPUT_PLUGIN,
+		Type: model.OutputPluginType,
 	}
 }
 

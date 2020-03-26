@@ -43,7 +43,7 @@ func Configure(plugins []string) error {
 		log.Debug().Str("name", spec.Name).Str("filename", filename).Msg("loading plugin...")
 
 		switch spec.Type {
-		case model.OUTPUT_PLUGIN:
+		case model.OutputPluginType:
 			getOutputPlugin, err := plug.Lookup("GetOutputPlugin")
 			if err != nil {
 				return fmt.Errorf("unsupported output plugin: %s - %v", spec.Name, err)
@@ -53,7 +53,7 @@ func Configure(plugins []string) error {
 				return fmt.Errorf("unable to load output plugin: %s - %v", spec.Name, err)
 			}
 			reg.outputPlugins[spec.Name] = outputPlugin
-		case model.FILTER_PLUGIN:
+		case model.FilterPluginType:
 			getFilter, err := plug.Lookup("GetFilterPlugin")
 			if err != nil {
 				return fmt.Errorf("unsupported filter plugin: %s - %v", spec.Name, err)

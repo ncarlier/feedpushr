@@ -64,7 +64,6 @@ func (p *RakeFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	rake := NewRake("", minCharLength, maxWordsLength, minKeywordFrequency)
 	rake.SetStopWords(stopWords)
 	return &RakeFilter{
-		id:        def.ID,
 		alias:     def.Alias,
 		spec:      spec,
 		condition: condition,
@@ -75,7 +74,6 @@ func (p *RakeFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 
 // RakeFilter filter articles by adding extracted keywords
 type RakeFilter struct {
-	id        int
 	alias     string
 	spec      model.Spec
 	condition *expr.ConditionalExpression
@@ -99,7 +97,6 @@ func (f *RakeFilter) DoFilter(article *model.Article) error {
 // GetDef return output definition
 func (f *RakeFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
-		ID:        f.id,
 		Alias:     f.alias,
 		Spec:      f.spec,
 		Condition: f.condition.String(),
@@ -119,7 +116,7 @@ func (f *RakeFilter) GetDef() model.FilterDef {
 func GetPluginSpec() model.PluginSpec {
 	return model.PluginSpec{
 		Spec: spec,
-		Type: model.FILTER_PLUGIN,
+		Type: model.FilterPluginType,
 	}
 }
 

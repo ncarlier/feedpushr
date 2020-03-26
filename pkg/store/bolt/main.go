@@ -32,9 +32,9 @@ func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
 	err = db.Update(func(tx *bolt.Tx) error {
 		return createBucketsIfNotExists(
 			tx,
-			FEED_BUCKET,
-			OUTPUT_BUCKET,
-			CACHE_BUCKET,
+			FeedBucketName,
+			OutputBucketName,
+			CacheBucketName,
 		)
 	})
 	if err != nil {

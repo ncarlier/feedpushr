@@ -10,8 +10,8 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
-// FEED_BUCKET bucket name
-var FEED_BUCKET = []byte("FEED")
+// FeedBucketName bucket name
+var FeedBucketName = []byte("FEED")
 
 // ExistsFeed returns true if a feed exists for this url.
 func (store *BoltStore) ExistsFeed(url string) bool {
@@ -19,7 +19,7 @@ func (store *BoltStore) ExistsFeed(url string) bool {
 	hasher.Write([]byte(url))
 	id := hex.EncodeToString(hasher.Sum(nil))
 
-	exists, err := store.exists(FEED_BUCKET, []byte(id))
+	exists, err := store.exists(FeedBucketName, []byte(id))
 	if err != nil {
 		return false
 	}
@@ -29,7 +29,7 @@ func (store *BoltStore) ExistsFeed(url string) bool {
 // GetFeed returns a stored Feed.
 func (store *BoltStore) GetFeed(id string) (*model.FeedDef, error) {
 	var result model.FeedDef
-	err := store.get(FEED_BUCKET, []byte(id), &result)
+	err := store.get(FeedBucketName, []byte(id), &result)
 	if err != nil {
 		if err == bolt.ErrInvalid {
 			return nil, common.ErrFeedNotFound
@@ -46,7 +46,7 @@ func (store *BoltStore) DeleteFeed(id string) (*model.FeedDef, error) {
 		return nil, err
 	}
 
-	err = store.delete(FEED_BUCKET, []byte(feed.ID))
+	err = store.delete(FeedBucketName, []byte(feed.ID))
 	if err != nil {
 		return nil, err
 	}
@@ -55,12 +55,12 @@ func (store *BoltStore) DeleteFeed(id string) (*model.FeedDef, error) {
 
 // SaveFeed stores a feed.
 func (store *BoltStore) SaveFeed(feed *model.FeedDef) error {
-	return store.save(FEED_BUCKET, []byte(feed.ID), &feed)
+	return store.save(FeedBucketName, []byte(feed.ID), &feed)
 }
 
 // ListFeeds returns a paginated list of feeds.
 func (store *BoltStore) ListFeeds(page, limit int) (*model.FeedDefCollection, error) {
-	bufs, err := store.allAsRaw(FEED_BUCKET, page, limit)
+	bufs, err := store.allAsRaw(FeedBucketName, page, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -78,13 +78,13 @@ func (store *BoltStore) ListFeeds(page, limit int) (*model.FeedDefCollection, er
 
 // CountFeeds returns total numer of feeds.
 func (store *BoltStore) CountFeeds() (int, error) {
-	return store.count(FEED_BUCKET)
+	return store.count(FeedBucketName)
 }
 
 // ForEachFeed iterates over all feeds
 func (store *BoltStore) ForEachFeed(cb func(*model.FeedDef) error) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket(FEED_BUCKET).Cursor()
+		c := tx.Bucket(FeedBucketName).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			var feed model.FeedDef
 			if err := json.Unmarshal(v, &feed); err == nil {

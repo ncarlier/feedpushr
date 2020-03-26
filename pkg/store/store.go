@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// DB is the data store
+// DB is the interface with the database
 type DB interface {
 	FeedRepository
 	OutputRepository
@@ -17,27 +17,27 @@ type DB interface {
 	Close() error
 }
 
-// Configure the data store regarding the datasource URI
-func Configure(datasource string) (DB, error) {
+// NewDB creates new database access regarding the datasource URI
+func NewDB(datasource string) (DB, error) {
 	u, err := url.ParseRequestURI(datasource)
 	if err != nil {
 		return nil, fmt.Errorf("invalid datasource URL: %s", datasource)
 	}
-	datastore := u.Scheme
+	provider := u.Scheme
 	var db DB
 
-	switch datastore {
+	switch provider {
 	case "memory":
 		db = memory.NewInMemoryStore()
-		log.Info().Str("component", "store").Str("uri", u.String()).Msg("using in memory datastore")
+		log.Info().Str("component", "db").Str("uri", u.String()).Msg("using in memory database")
 	case "boltdb":
 		db, err = bolt.NewBoltStore(u)
 		if err != nil {
 			return nil, err
 		}
-		log.Info().Str("component", "store").Str("uri", u.String()).Msg("using BoltDB datastore")
+		log.Info().Str("component", "db").Str("uri", u.String()).Msg("using BoltDB")
 	default:
-		return nil, fmt.Errorf("unsuported datastore: %s", datastore)
+		return nil, fmt.Errorf("unsupported database provider: %s", provider)
 	}
 	return db, nil
 }

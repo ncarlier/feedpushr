@@ -42,8 +42,8 @@ import (
 	"unicode"
 )
 
-var wordSep *regexp.Regexp = regexp.MustCompile("\\s+")
-var wordSplitter *regexp.Regexp = regexp.MustCompile("[^\\p{L}\\p{N}\\+\\-/]")
+var wordSep = regexp.MustCompile("\\s+")
+var wordSplitter = regexp.MustCompile("[^\\p{L}\\p{N}\\+\\-/]")
 
 func sentenceSplitter(r rune) bool {
 	// Ignore hyphens, usually they are used to join words (e.g., "ice-cream-flavored candy")
@@ -208,7 +208,7 @@ func GenerateCandidateKeywordScores(phraseList []string, wordScore map[string]fl
 			}
 		}
 		wordList := SeparateWords(phrase, 0)
-		var candiateScore float64 = 0
+		var candiateScore float64
 		for _, word := range wordList {
 			candiateScore += wordScore[word]
 		}

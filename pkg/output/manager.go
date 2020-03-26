@@ -1,36 +1,32 @@
 package output
 
 import (
-	"fmt"
 	"sync"
-	"time"
 
+	"github.com/ncarlier/feedpushr/v2/pkg/cache"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/ncarlier/feedpushr/v2/pkg/output/plugins"
 	"github.com/ncarlier/feedpushr/v2/pkg/plugin"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 // Manager is the object that manage outputs.
 type Manager struct {
-	lock           sync.RWMutex
-	plugins        map[string]model.OutputPlugin
-	processors     map[string]*Processor
-	db             store.DB
-	cacheRetention time.Duration
-	log            zerolog.Logger
+	lock       sync.RWMutex
+	plugins    map[string]model.OutputPlugin
+	processors map[string]*Processor
+	cache      *cache.Manager
+	log        zerolog.Logger
 }
 
-// NewManager creates a new output manager
-func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
+// NewOutputManager creates a new output manager
+func NewOutputManager(cache *cache.Manager) (*Manager, error) {
 	manager := &Manager{
-		plugins:        plugins.GetBuiltinOutputPlugins(),
-		processors:     make(map[string]*Processor),
-		db:             db,
-		cacheRetention: cacheRetention,
-		log:            log.With().Str("component", "pipeline").Logger(),
+		plugins:    plugins.GetBuiltinOutputPlugins(),
+		processors: make(map[string]*Processor),
+		cache:      cache,
+		log:        log.With().Str("component", "output-manager").Logger(),
 	}
 
 	// Register external output plugins...
@@ -41,15 +37,6 @@ func NewManager(db store.DB, cacheRetention time.Duration) (*Manager, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// Load output outputs from DB
-	err = db.ForEachOutput(func(o *model.OutputDef) error {
-		if o == nil {
-			return fmt.Errorf("output is null")
-		}
-		_, err := manager.AddOutputProcessor(o)
-		return err
-	})
 	return manager, err
 }
 

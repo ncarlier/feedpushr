@@ -13,7 +13,7 @@ func TestFeedCRUD(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewFeedController(srv, db, aggreg)
+	ctrl := controller.NewFeedController(srv, db, aggregators)
 	ctx := context.Background()
 
 	url := "http://rss.cnn.com/rss/edition.rss"

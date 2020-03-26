@@ -29,7 +29,7 @@ func (m *Manager) AddOutputProcessor(def *model.OutputDef) (*Processor, error) {
 		return nil, err
 	}
 
-	processor := NewProcessor(out, chain, m.db, m.cacheRetention)
+	processor := NewOutputProcessor(out, chain, m.cache)
 	m.processors[def.ID] = processor
 	m.log.Info().Str("name", def.Name).Str("id", def.ID).Msg("output processor added")
 	return processor, nil

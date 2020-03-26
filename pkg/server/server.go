@@ -1,9 +1,8 @@
-package service
+package server
 
 import (
 	"context"
 	"net/http"
-	"path/filepath"
 
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
@@ -11,44 +10,31 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/v2/pkg/assets"
 	"github.com/ncarlier/feedpushr/v2/pkg/auth"
+	"github.com/ncarlier/feedpushr/v2/pkg/cache"
 	"github.com/ncarlier/feedpushr/v2/pkg/config"
 	"github.com/ncarlier/feedpushr/v2/pkg/controller"
 	"github.com/ncarlier/feedpushr/v2/pkg/logging"
-	"github.com/ncarlier/feedpushr/v2/pkg/opml"
 	"github.com/ncarlier/feedpushr/v2/pkg/output"
-	"github.com/ncarlier/feedpushr/v2/pkg/plugin"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog/log"
 )
 
-// Service is the global service
-type Service struct {
+// Server instance
+type Server struct {
 	conf       config.Config
 	db         store.DB
 	srv        *goa.Service
 	aggregator *aggregator.Manager
-}
-
-// ClearCache clear DB cache
-func (s *Service) ClearCache() error {
-	return s.db.ClearCache()
-}
-
-// ImportOPMLFile imports OPML file
-func (s *Service) ImportOPMLFile(filename string) error {
-	o, err := opml.NewOPMLFromFile(filename)
-	if err != nil {
-		return err
-	}
-	err = opml.ImportOPMLToDB(o, s.db)
-	if err != nil {
-		log.Error().Err(err)
-	}
-	return nil
+	outputs    *output.Manager
+	cache      *cache.Manager
 }
 
 // ListenAndServe starts server
-func (s *Service) ListenAndServe(ListenAddr string) error {
+func (s *Server) ListenAndServe(ListenAddr string) error {
+	log.Debug().Msg("loading output manager...")
+	if err := loadOutputs(s.db, s.outputs); err != nil {
+		return err
+	}
 	log.Debug().Msg("loading feed aggregators...")
 	if err := loadFeedAggregators(s.db, s.aggregator, s.conf.FanOutDelay); err != nil {
 		return err
@@ -60,29 +46,19 @@ func (s *Service) ListenAndServe(ListenAddr string) error {
 	return nil
 }
 
-// Shutdown service
-func (s *Service) Shutdown(ctx context.Context) error {
+// Shutdown server and managed service
+func (s *Server) Shutdown(ctx context.Context) error {
+	s.cache.Shutdown()
 	s.aggregator.Shutdown()
 	s.srv.CancelAll()
 	s.srv.Server.SetKeepAlivesEnabled(false)
 	return s.srv.Server.Shutdown(ctx)
 }
 
-// Configure the global service
-func Configure(db store.DB, conf config.Config) (*Service, error) {
-	// Auto add plugins if not configured
-	plugins := conf.Plugins
-	if len(plugins) == 0 {
-		var err error
-		plugins, err = filepath.Glob("feedpushr-*.so")
-		if err != nil {
-			log.Error().Err(err).Msg("unable to autoload plugins")
-		}
-	}
+// NewServer creates new server instance
+func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	// Load plugins
-	err := plugin.Configure(plugins)
-	if err != nil {
-		log.Error().Err(err).Msg("unable to init plugins")
+	if err := loadPlugins(conf); err != nil {
 		return nil, err
 	}
 
@@ -94,8 +70,14 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 		}
 	}
 
+	// Init cache manager
+	cm, err := cache.NewCacheManager(db, conf)
+	if err != nil {
+		return nil, err
+	}
+
 	// Init output manager
-	om, err := output.NewManager(db, conf.CacheRetention)
+	om, err := output.NewOutputManager(cm)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to init output manager")
 		return nil, err
@@ -106,7 +88,7 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	if conf.PublicURL != "" {
 		callbackURL = conf.PublicURL + "/v1/pshb"
 	}
-	am := aggregator.NewManager(om, conf.Delay, conf.Timeout, callbackURL)
+	am := aggregator.NewAggregatorManager(om, conf.Delay, conf.Timeout, callbackURL)
 
 	// Create service
 	srv := goa.New("feedpushr")
@@ -152,10 +134,12 @@ func Configure(db store.DB, conf config.Config) (*Service, error) {
 	srv.Mux.Handle("GET", "/ui/", assets.Handler())
 	srv.Mux.Handle("GET", "/", controller.Redirect("/ui/"))
 
-	return &Service{
+	return &Server{
 		db:         db,
 		srv:        srv,
 		conf:       conf,
 		aggregator: am,
+		outputs:    om,
+		cache:      cm,
 	}, nil
 }

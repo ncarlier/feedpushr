@@ -24,4 +24,5 @@ type FeedDef struct {
 	Mdate time.Time `json:"mdate"`
 }
 
+// FeedDefCollection is a list of feed definition
 type FeedDefCollection []FeedDef

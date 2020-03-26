@@ -21,8 +21,8 @@ type Manager struct {
 	callbackURL       string
 }
 
-// NewManager creates a new aggregator manager
-func NewManager(outputs *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
+// NewAggregatorManager creates a new aggregator manager
+func NewAggregatorManager(outputs *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
 	return &Manager{
 		feedAggregators: make(map[string]*FeedAggregator),
 		outputs:         outputs,

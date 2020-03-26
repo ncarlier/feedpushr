@@ -113,7 +113,7 @@ func (op *ReadflowOutputProvider) GetDef() model.OutputDef {
 func GetPluginSpec() model.PluginSpec {
 	return model.PluginSpec{
 		Spec: spec,
-		Type: model.OUTPUT_PLUGIN,
+		Type: model.OutputPluginType,
 	}
 }
 

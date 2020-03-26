@@ -3,6 +3,7 @@ package builder
 import (
 	"net/url"
 
+	"github.com/google/uuid"
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
@@ -49,6 +50,12 @@ func (ob *OutputBuilder) FromURI(URI string) *OutputBuilder {
 // ID set ID
 func (ob *OutputBuilder) ID(ID string) *OutputBuilder {
 	ob.output.ID = ID
+	return ob
+}
+
+// NewID set new ID
+func (ob *OutputBuilder) NewID() *OutputBuilder {
+	ob.output.ID = uuid.New().String()
 	return ob
 }
 

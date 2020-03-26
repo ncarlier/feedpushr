@@ -2,12 +2,11 @@ package output
 
 import (
 	"sync/atomic"
-	"time"
 
+	"github.com/ncarlier/feedpushr/v2/pkg/cache"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
 	"github.com/ncarlier/feedpushr/v2/pkg/filter"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -16,20 +15,18 @@ import (
 type Processor struct {
 	output              model.Output
 	Filters             *filter.Chain
-	cacheRetention      time.Duration
+	cache               *cache.Manager
 	nbProcessedArticles uint64
-	db                  store.DB
 	log                 zerolog.Logger
 }
 
-// NewProcessor creates a new output processor
-func NewProcessor(out model.Output, filters *filter.Chain, db store.DB, cacheRetention time.Duration) *Processor {
+// NewOutputProcessor creates a new output processor
+func NewOutputProcessor(out model.Output, filters *filter.Chain, cm *cache.Manager) *Processor {
 	return &Processor{
-		output:         out,
-		Filters:        filters,
-		cacheRetention: cacheRetention,
-		db:             db,
-		log:            log.With().Str("component", "output-processor").Logger(),
+		output:  out,
+		Filters: filters,
+		cache:   cm,
+		log:     log.With().Str("component", "output-processor").Logger(),
 	}
 }
 
@@ -53,7 +50,7 @@ func (p *Processor) Process(articles []*model.Article) {
 		return
 	}
 
-	maxAge := time.Now().Add(-p.cacheRetention)
+	maxAge := p.cache.MaxAge()
 	p.log.Debug().Int("items", len(articles)).Str("before", maxAge.String()).Msg("processing articles")
 	for _, article := range articles {
 		logger := p.log.With().Str("GUID", article.GUID).Logger()
@@ -91,7 +88,7 @@ func (p *Processor) Process(articles []*model.Article) {
 
 func (p *Processor) hasAlreadySent(article *model.Article) (bool, error) {
 	key := common.Hash(article.Hash(), p.output.GetDef().Hash())
-	item, err := p.db.GetFromCache(key)
+	item, err := p.cache.Get(key)
 	if err != nil {
 		return false, err
 	} else if item != nil {
@@ -118,7 +115,7 @@ func (p *Processor) push(article *model.Article) error {
 		Value: article.GUID,
 		Date:  *article.RefDate(),
 	}
-	err = p.db.StoreToCache(key, item)
+	err = p.cache.Set(key, item)
 	if err != nil {
 		p.log.Error().Err(err).Str(
 			"GUID", article.GUID,
