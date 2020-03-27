@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/feedpushr/autogen
+// --out=/home/nicolas/workspace/fe/feedpushr/autogen
 // --version=v1.4.3
 
 package app
@@ -865,8 +865,8 @@ type DeleteFilterOutputContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID  string
-	Idx int
+	ID       string
+	IDFilter string
 }
 
 // NewDeleteFilterOutputContext parses the incoming request URL and body, performs validations and creates the
@@ -883,14 +883,10 @@ func NewDeleteFilterOutputContext(ctx context.Context, r *http.Request, service 
 		rawID := paramID[0]
 		rctx.ID = rawID
 	}
-	paramIdx := req.Params["idx"]
-	if len(paramIdx) > 0 {
-		rawIdx := paramIdx[0]
-		if idx, err2 := strconv.Atoi(rawIdx); err2 == nil {
-			rctx.Idx = idx
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("idx", rawIdx, "integer"))
-		}
+	paramIDFilter := req.Params["idFilter"]
+	if len(paramIDFilter) > 0 {
+		rawIDFilter := paramIDFilter[0]
+		rctx.IDFilter = rawIDFilter
 	}
 	return &rctx, err
 }
@@ -1125,9 +1121,9 @@ type UpdateFilterOutputContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	ID      string
-	Idx     int
-	Payload *UpdateFilterOutputPayload
+	ID       string
+	IDFilter string
+	Payload  *UpdateFilterOutputPayload
 }
 
 // NewUpdateFilterOutputContext parses the incoming request URL and body, performs validations and creates the
@@ -1144,14 +1140,10 @@ func NewUpdateFilterOutputContext(ctx context.Context, r *http.Request, service 
 		rawID := paramID[0]
 		rctx.ID = rawID
 	}
-	paramIdx := req.Params["idx"]
-	if len(paramIdx) > 0 {
-		rawIdx := paramIdx[0]
-		if idx, err2 := strconv.Atoi(rawIdx); err2 == nil {
-			rctx.Idx = idx
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("idx", rawIdx, "integer"))
-		}
+	paramIDFilter := req.Params["idFilter"]
+	if len(paramIDFilter) > 0 {
+		rawIDFilter := paramIDFilter[0]
+		rctx.IDFilter = rawIDFilter
 	}
 	return &rctx, err
 }
@@ -1296,9 +1288,9 @@ func NewSubPshbContext(ctx context.Context, r *http.Request, service *goa.Servic
 	if len(paramHubLeaseSeconds) > 0 {
 		rawHubLeaseSeconds := paramHubLeaseSeconds[0]
 		if hubLeaseSeconds, err2 := strconv.Atoi(rawHubLeaseSeconds); err2 == nil {
-			tmp6 := hubLeaseSeconds
-			tmp5 := &tmp6
-			rctx.HubLeaseSeconds = tmp5
+			tmp4 := hubLeaseSeconds
+			tmp3 := &tmp4
+			rctx.HubLeaseSeconds = tmp3
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("hub.lease_seconds", rawHubLeaseSeconds, "integer"))
 		}

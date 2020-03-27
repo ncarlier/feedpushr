@@ -3,6 +3,7 @@ package builder
 import (
 	"net/url"
 
+	"github.com/google/uuid"
 	"github.com/ncarlier/feedpushr/v2/autogen/app"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
@@ -44,6 +45,18 @@ func (fb *FilterBuilder) FromURI(URI string) *FilterBuilder {
 	fb.filter.Name = u.Scheme
 	fb.filter.Alias = u.Scheme
 	fb.filter.Enabled = true
+	return fb.NewID()
+}
+
+// ID set ID
+func (fb *FilterBuilder) ID(ID string) *FilterBuilder {
+	fb.filter.ID = ID
+	return fb
+}
+
+// NewID set new ID
+func (fb *FilterBuilder) NewID() *FilterBuilder {
+	fb.filter.ID = uuid.New().String()
 	return fb
 }
 
@@ -89,6 +102,7 @@ func NewFilterResponseFromDef(def *model.FilterDef) *app.FilterResponse {
 		return nil
 	}
 	return &app.FilterResponse{
+		ID:        def.ID,
 		Alias:     def.Alias,
 		Name:      def.Name,
 		Desc:      def.Desc,

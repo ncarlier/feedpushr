@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/feedpushr/autogen
+// --out=/home/nicolas/workspace/fe/feedpushr/autogen
 // --version=v1.4.3
 
 package cli
@@ -137,8 +137,8 @@ type (
 	DeleteFilterOutputCommand struct {
 		// Filter ID
 		ID string
-		// Filter index
-		Idx         int
+		// Filter ID
+		IDFilter    string
 		PrettyPrint bool
 	}
 
@@ -174,8 +174,8 @@ type (
 		ContentType string
 		// Output ID
 		ID string
-		// Filter index
-		Idx         int
+		// Filter ID
+		IDFilter    string
 		PrettyPrint bool
 	}
 
@@ -297,7 +297,7 @@ Payload example:
 	}
 	tmp6 := new(DeleteFilterOutputCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/ID/filters/IDX"]`,
+		Use:   `output ["/v2/outputs/ID/filters/IDFILTER"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
 	}
@@ -514,7 +514,7 @@ Payload example:
 	}
 	tmp24 := new(UpdateFilterOutputCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/ID/filters/IDX"]`,
+		Use:   `output ["/v2/outputs/ID/filters/IDFILTER"]`,
 		Short: ``,
 		Long: `
 
@@ -1111,7 +1111,7 @@ func (cmd *DeleteFilterOutputCommand) Run(c *client.Client, args []string) error
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/v2/outputs/%v/filters/%v", url.QueryEscape(cmd.ID), cmd.Idx)
+		path = fmt.Sprintf("/v2/outputs/%v/filters/%v", url.QueryEscape(cmd.ID), url.QueryEscape(cmd.IDFilter))
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -1129,8 +1129,8 @@ func (cmd *DeleteFilterOutputCommand) Run(c *client.Client, args []string) error
 func (cmd *DeleteFilterOutputCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
 	var id string
 	cc.Flags().StringVar(&cmd.ID, "id", id, `Filter ID`)
-	var idx int
-	cc.Flags().IntVar(&cmd.Idx, "idx", idx, `Filter index`)
+	var idFilter string
+	cc.Flags().StringVar(&cmd.IDFilter, "idFilter", idFilter, `Filter ID`)
 }
 
 // Run makes the HTTP request corresponding to the GetOutputCommand command.
@@ -1248,7 +1248,7 @@ func (cmd *UpdateFilterOutputCommand) Run(c *client.Client, args []string) error
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/v2/outputs/%v/filters/%v", url.QueryEscape(cmd.ID), cmd.Idx)
+		path = fmt.Sprintf("/v2/outputs/%v/filters/%v", url.QueryEscape(cmd.ID), url.QueryEscape(cmd.IDFilter))
 	}
 	var payload client.UpdateFilterOutputPayload
 	if cmd.Payload != "" {
@@ -1275,8 +1275,8 @@ func (cmd *UpdateFilterOutputCommand) RegisterFlags(cc *cobra.Command, c *client
 	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
 	var id string
 	cc.Flags().StringVar(&cmd.ID, "id", id, `Output ID`)
-	var idx int
-	cc.Flags().IntVar(&cmd.Idx, "idx", idx, `Filter index`)
+	var idFilter string
+	cc.Flags().StringVar(&cmd.IDFilter, "idFilter", idFilter, `Filter ID`)
 }
 
 // Run makes the HTTP request corresponding to the PubPshbCommand command.

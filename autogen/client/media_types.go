@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/feedpushr/autogen
+// --out=/home/nicolas/workspace/fe/feedpushr/autogen
 // --version=v1.4.3
 
 package client
@@ -319,6 +319,8 @@ type FilterResponse struct {
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
+	// ID of the filter
+	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the filter
 	Name string `form:"name" json:"name" yaml:"name" xml:"name"`
 	// Number of error
@@ -331,6 +333,9 @@ type FilterResponse struct {
 
 // Validate validates the FilterResponse media type instance.
 func (mt *FilterResponse) Validate() (err error) {
+	if mt.ID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
+	}
 	if mt.Alias == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "alias"))
 	}
@@ -351,6 +356,30 @@ func (c *Client) DecodeFilterResponse(resp *http.Response) (*FilterResponse, err
 	var decoded FilterResponse
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
+}
+
+// FilterResponseCollection is the media type for an array of FilterResponse (default view)
+//
+// Identifier: application/vnd.feedpushr.filter.v2+json; type=collection; view=default
+type FilterResponseCollection []*FilterResponse
+
+// Validate validates the FilterResponseCollection media type instance.
+func (mt FilterResponseCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeFilterResponseCollection decodes the FilterResponseCollection instance encoded in resp body.
+func (c *Client) DecodeFilterResponseCollection(resp *http.Response) (FilterResponseCollection, error) {
+	var decoded FilterResponseCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
 }
 
 // HAL link (default view)
@@ -492,6 +521,8 @@ type OutputResponse struct {
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Status
 	Enabled bool `form:"enabled" json:"enabled" yaml:"enabled" xml:"enabled"`
+	// Filters
+	Filters FilterResponseCollection `form:"filters,omitempty" json:"filters,omitempty" yaml:"filters,omitempty" xml:"filters,omitempty"`
 	// ID of the output
 	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
 	// Name of the output channel
@@ -520,6 +551,9 @@ func (mt *OutputResponse) Validate() (err error) {
 	}
 	if mt.Condition == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "condition"))
+	}
+	if err2 := mt.Filters.Validate(); err2 != nil {
+		err = goa.MergeErrors(err, err2)
 	}
 	return
 }

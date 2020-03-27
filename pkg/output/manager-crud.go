@@ -40,10 +40,31 @@ func (m *Manager) UpdateOutputProcessor(def *model.OutputDef) (*Processor, error
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	if err := m.RemoveOutputProcessor(def); err != nil {
+	m.log.Debug().Str("name", def.Name).Msg("updating output processor...")
+
+	processor, err := m.GetOutputProcessor(def.ID)
+	if err != nil {
 		return nil, err
 	}
-	return m.AddOutputProcessor(def)
+
+	plug, ok := m.plugins[def.Name]
+	if !ok {
+		return nil, fmt.Errorf("unsupported output provider: %s", def.Name)
+	}
+
+	out, err := plug.Build(def)
+	if err != nil {
+		return nil, err
+	}
+
+	chain, err := filter.NewChainFilter(def.Filters)
+	if err != nil {
+		return nil, err
+	}
+
+	processor.Update(out, chain)
+	m.log.Info().Str("name", def.Name).Str("id", def.ID).Msg("output processor updated")
+	return processor, nil
 }
 
 // RemoveOutputProcessor removes an output from the pipeline
@@ -51,9 +72,9 @@ func (m *Manager) RemoveOutputProcessor(def *model.OutputDef) error {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	processor, found := m.processors[def.ID]
-	if !found {
-		return common.ErrOutputNotFound
+	processor, err := m.GetOutputProcessor(def.ID)
+	if err != nil {
+		return err
 	}
 	m.log.Debug().Str("id", def.ID).Msg("removing output procesor...")
 	processor.Shutdown()
@@ -74,8 +95,8 @@ func (m *Manager) GetOutputProcessor(id string) (*Processor, error) {
 // GetOutputDefs return all output definitions of the pipeline
 func (m *Manager) GetOutputDefs() []model.OutputDef {
 	result := []model.OutputDef{}
-	for _, procesor := range m.processors {
-		result = append(result, procesor.output.GetDef())
+	for _, processor := range m.processors {
+		result = append(result, processor.GetDef())
 	}
 	return result
 }

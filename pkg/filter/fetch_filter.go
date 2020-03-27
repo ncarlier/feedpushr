@@ -24,7 +24,7 @@ If succeeded, following metadata are added to the article:
 
 // FetchFilter is a filter that try to fetch the original article content
 type FetchFilter struct {
-	id        int
+	id        string
 	alias     string
 	spec      model.Spec
 	condition *expr.ConditionalExpression
@@ -64,15 +64,13 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *FetchFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
+		ID:        f.id,
 		Alias:     f.alias,
 		Spec:      f.spec,
 		Condition: f.condition.String(),
 		Enabled:   f.enabled,
-	}
-
-	result.Props = map[string]interface{}{
-		"nbError":   f.nbError,
-		"nbSuccess": f.nbSuccess,
+		NbSuccess: f.nbSuccess,
+		NbError:   f.nbError,
 	}
 	return result
 }
@@ -83,6 +81,7 @@ func newFetchFilter(filter *model.FilterDef) (*FetchFilter, error) {
 		return nil, err
 	}
 	return &FetchFilter{
+		id:        filter.ID,
 		alias:     filter.Alias,
 		spec:      fetchSpec,
 		condition: condition,

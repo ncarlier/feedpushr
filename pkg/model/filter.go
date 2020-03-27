@@ -24,6 +24,7 @@ type FilterDefCollection []*FilterDef
 
 // FilterDef contains filter definition
 type FilterDef struct {
+	ID    string `json:"id"`
 	Alias string `json:"alias"`
 	Spec
 	Condition string      `json:"condition"`

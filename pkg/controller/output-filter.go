@@ -20,7 +20,7 @@ func (c *OutputController) CreateFilter(ctx *app.CreateFilterOutputContext) erro
 		ctx.Payload.Props,
 	).Condition(
 		&ctx.Payload.Condition,
-	).Enable(false).Build()
+	).Enable(false).NewID().Build()
 
 	f, err := processor.Filters.Add(filterDef)
 	if err != nil {
@@ -40,7 +40,7 @@ func (c *OutputController) DeleteFilter(ctx *app.DeleteFilterOutputContext) erro
 	if err != nil {
 		return ctx.NotFound()
 	}
-	if err := processor.Filters.Remove(ctx.Idx); err != nil {
+	if err := processor.Filters.Remove(ctx.IDFilter); err != nil {
 		return err
 	}
 	_, err = c.db.SaveOutput(processor.GetDef())
@@ -56,7 +56,7 @@ func (c *OutputController) UpdateFilter(ctx *app.UpdateFilterOutputContext) erro
 	if err != nil {
 		return ctx.NotFound()
 	}
-	f, err := processor.Filters.Get(ctx.Idx)
+	f, err := processor.Filters.Get(ctx.IDFilter)
 	if err != nil {
 		return ctx.NotFound()
 	}
@@ -70,8 +70,8 @@ func (c *OutputController) UpdateFilter(ctx *app.UpdateFilterOutputContext) erro
 		ctx.Payload.Condition,
 	).Enable(
 		ctx.Payload.Enabled,
-	).Build()
-	f, err = processor.Filters.Update(ctx.Idx, filterDef)
+	).ID(ctx.IDFilter).Build()
+	f, err = processor.Filters.Update(ctx.IDFilter, filterDef)
 	if err != nil {
 		return err
 	}

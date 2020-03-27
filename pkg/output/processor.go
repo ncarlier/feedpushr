@@ -30,6 +30,13 @@ func NewOutputProcessor(out model.Output, filters *filter.Chain, cm *cache.Manag
 	}
 }
 
+// Update update output and filter chain
+func (p *Processor) Update(out model.Output, filters *filter.Chain) {
+	// TODO wait innactivity to do that
+	p.output = out
+	p.Filters = filters
+}
+
 // Shutdown a processor
 func (p *Processor) Shutdown() error {
 	// TODO processor gracefull shutdown

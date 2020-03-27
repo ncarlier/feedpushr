@@ -22,7 +22,7 @@ var titleSpec = model.Spec{
 
 // TitleFilter is a foo filter
 type TitleFilter struct {
-	id        int
+	id        string
 	alias     string
 	spec      model.Spec
 	condition *expr.ConditionalExpression
@@ -45,15 +45,17 @@ func (f *TitleFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *TitleFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
+		ID:        f.id,
 		Alias:     f.alias,
 		Condition: f.condition.String(),
 		Spec:      f.spec,
 		Enabled:   f.enabled,
+		NbSuccess: f.nbSuccess,
+		NbError:   0,
 	}
 
 	result.Props = map[string]interface{}{
-		"prefix":    f.prefix,
-		"nbSuccess": f.nbSuccess,
+		"prefix": f.prefix,
 	}
 
 	return result
@@ -69,6 +71,7 @@ func newTitleFilter(filter *model.FilterDef) (*TitleFilter, error) {
 		prefix = "feedpushr:"
 	}
 	return &TitleFilter{
+		id:        filter.ID,
 		alias:     filter.Alias,
 		spec:      titleSpec,
 		condition: condition,

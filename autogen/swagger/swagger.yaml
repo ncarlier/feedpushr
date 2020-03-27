@@ -144,7 +144,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Possimus fugit suscipit ea.
+          example: Commodi soluta similique sit dolores.
           type: string
         type: array
       title:
@@ -167,38 +167,6 @@ definitions:
     description: FeedResponseCollection is the media type for an array of FeedResponse
       (default view)
     example:
-    - cdate: "2010-10-23T13:34:07Z"
-      errorCount: 333691758294841896
-      errorMsg: Est suscipit.
-      htmlUrl: http://www.hashicorp.com/blog
-      hubUrl: http://pubsubhubbub.appspot.com
-      id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: "1993-05-15T16:34:02Z"
-      mdate: "1981-09-22T23:39:59Z"
-      nbProcessedItems: 541887129200626015
-      nextCheck: "1999-10-11T23:32:13Z"
-      status: stopped
-      tags:
-      - foo
-      - bar
-      title: Hashicorp Blog
-      xmlUrl: http://www.hashicorp.com/feed.xml
-    - cdate: "2010-10-23T13:34:07Z"
-      errorCount: 333691758294841896
-      errorMsg: Est suscipit.
-      htmlUrl: http://www.hashicorp.com/blog
-      hubUrl: http://pubsubhubbub.appspot.com
-      id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: "1993-05-15T16:34:02Z"
-      mdate: "1981-09-22T23:39:59Z"
-      nbProcessedItems: 541887129200626015
-      nextCheck: "1999-10-11T23:32:13Z"
-      status: stopped
-      tags:
-      - foo
-      - bar
-      title: Hashicorp Blog
-      xmlUrl: http://www.hashicorp.com/feed.xml
     - cdate: "2010-10-23T13:34:07Z"
       errorCount: 333691758294841896
       errorMsg: Est suscipit.
@@ -307,6 +275,7 @@ definitions:
       condition: '"foo" in Tags'
       desc: This filter will...
       enabled: true
+      id: Minus et ut pariatur.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -329,6 +298,10 @@ definitions:
         description: Status
         example: true
         type: boolean
+      id:
+        description: ID of the filter
+        example: Minus et ut pariatur.
+        type: string
       name:
         description: Name of the filter
         example: fetch
@@ -351,12 +324,40 @@ definitions:
         example: '-'
         type: object
     required:
+    - id
     - alias
     - name
     - desc
     - condition
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v2+json; view=default'
     type: object
+  FilterResponseCollection:
+    description: FilterResponseCollection is the media type for an array of FilterResponse
+      (default view)
+    example:
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: Minus et ut pariatur.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: Minus et ut pariatur.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    items:
+      $ref: '#/definitions/FilterResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.filter.v2+json; type=collection;
+      view=default'
+    type: array
   FilterSpecResponse:
     description: The filter specification (default view)
     example:
@@ -411,21 +412,6 @@ definitions:
           Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
             accusantium.
         type: text
-    - desc: Add a prefix to the tittle...
-      name: title
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
-        type: text
     items:
       $ref: '#/definitions/FilterSpecResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v2+json; type=collection;
@@ -435,7 +421,7 @@ definitions:
     description: API info (default view)
     example:
       _links:
-        Et ut pariatur qui.:
+        Doloribus in culpa mollitia modi consequatur.:
           href: url
       desc: Feed aggregator daemon with sugar on top
       name: feedpushr
@@ -445,7 +431,7 @@ definitions:
         additionalProperties: true
         description: HAL links
         example:
-          Et ut pariatur qui.:
+          Doloribus in culpa mollitia modi consequatur.:
             href: url
         type: object
       desc:
@@ -474,7 +460,35 @@ definitions:
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
       enabled: true
-      id: Mollitia modi consequatur maxime occaecati.
+      filters:
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      id: Illum possimus fugit.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -497,9 +511,11 @@ definitions:
         description: Status
         example: true
         type: boolean
+      filters:
+        $ref: '#/definitions/FilterResponseCollection'
       id:
         description: ID of the output
-        example: Mollitia modi consequatur maxime occaecati.
+        example: Illum possimus fugit.
         type: string
       name:
         description: Name of the output channel
@@ -538,7 +554,109 @@ definitions:
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
       enabled: true
-      id: Mollitia modi consequatur maxime occaecati.
+      filters:
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      id: Illum possimus fugit.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: New articles are sent as JSON document to...
+      enabled: true
+      filters:
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      id: Illum possimus fugit.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: New articles are sent as JSON document to...
+      enabled: true
+      filters:
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Minus et ut pariatur.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      id: Illum possimus fugit.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -554,6 +672,12 @@ definitions:
       desc: New articles are sent as JSON document to...
       name: fetch
       props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
+        type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
@@ -602,9 +726,21 @@ definitions:
           Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
             accusantium.
         type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
+        type: text
     - desc: New articles are sent as JSON document to...
       name: fetch
       props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+            accusantium.
+        type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
@@ -661,6 +797,12 @@ definitions:
     description: PropSpecCollection is the media type for an array of PropSpec (default
       view)
     example:
+    - desc: New articles are sent as JSON document to...
+      name: url
+      options:
+        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
+          accusantium.
+      type: text
     - desc: New articles are sent as JSON document to...
       name: url
       options:
@@ -1267,7 +1409,7 @@ paths:
       summary: createFilter output
       tags:
       - output
-  /outputs/{id}/filters/{idx}:
+  /outputs/{id}/filters/{idFilter}:
     delete:
       description: Delete a filter
       operationId: output#deleteFilter
@@ -1277,11 +1419,11 @@ paths:
         name: id
         required: true
         type: string
-      - description: Filter index
+      - description: Filter ID
         in: path
-        name: idx
+        name: idFilter
         required: true
-        type: integer
+        type: string
       produces:
       - application/vnd.goa.error
       responses:
@@ -1307,11 +1449,11 @@ paths:
         name: id
         required: true
         type: string
-      - description: Filter index
+      - description: Filter ID
         in: path
-        name: idx
+        name: idFilter
         required: true
-        type: integer
+        type: string
       - in: body
         name: payload
         required: true

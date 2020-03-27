@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/feedpushr/autogen
+// --out=/home/nicolas/workspace/fe/feedpushr/autogen
 // --version=v1.4.3
 
 package client
@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 )
 
 // CreateOutputPayload is the output create action payload.
@@ -161,9 +160,9 @@ func (c *Client) NewDeleteOutputRequest(ctx context.Context, path string) (*http
 }
 
 // DeleteFilterOutputPath computes a request path to the deleteFilter action of output.
-func DeleteFilterOutputPath(id string, idx int) string {
+func DeleteFilterOutputPath(id string, idFilter string) string {
 	param0 := id
-	param1 := strconv.Itoa(idx)
+	param1 := idFilter
 
 	return fmt.Sprintf("/v2/outputs/%s/filters/%s", param0, param1)
 }
@@ -348,9 +347,9 @@ type UpdateFilterOutputPayload struct {
 }
 
 // UpdateFilterOutputPath computes a request path to the updateFilter action of output.
-func UpdateFilterOutputPath(id string, idx int) string {
+func UpdateFilterOutputPath(id string, idFilter string) string {
 	param0 := id
-	param1 := strconv.Itoa(idx)
+	param1 := idFilter
 
 	return fmt.Sprintf("/v2/outputs/%s/filters/%s", param0, param1)
 }

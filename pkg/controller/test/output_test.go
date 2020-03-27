@@ -103,6 +103,7 @@ func TestFilterCRUD(t *testing.T) {
 	assert.Equal(t, false, out.Enabled, "")
 	assert.Equal(t, "\"test\" in Tags", out.Condition, "")
 	assert.Equal(t, 0, out.NbSuccess, "")
+	assert.Equal(t, 0, len(out.Filters), "")
 	id := out.ID
 
 	// CREATE
@@ -113,29 +114,39 @@ func TestFilterCRUD(t *testing.T) {
 		Props: map[string]interface{}{
 			"prefix": "[test]",
 		},
-		Condition: "\"test\" in Tags",
+		Condition: "\"prefix\" in Tags",
 	}
 	_, f := test.CreateFilterOutputCreated(t, ctx, srv, ctrl, id, payload)
 	assert.Equal(t, alias, f.Alias, "")
 	assert.Equal(t, "title", f.Name, "")
 	assert.Equal(t, false, f.Enabled, "")
-	assert.Equal(t, "\"test\" in Tags", f.Condition, "")
+	assert.Equal(t, "\"prefix\" in Tags", f.Condition, "")
 	assert.Equal(t, "[test]", f.Props["prefix"], "")
+	assert.True(t, f.ID != "", "")
+	filterID := f.ID
 
-	// TODO verify output def
+	// Check output def
+	_, out = test.GetOutputOK(t, ctx, srv, ctrl, id)
+	assert.Equal(t, id, out.ID, "")
+	assert.Equal(t, "stdout", out.Name, "")
+	assert.Equal(t, 1, len(out.Filters), "")
+	assert.Equal(t, f.ID, out.Filters[0].ID, "")
+	assert.Equal(t, f.Name, out.Filters[0].Name, "")
+	assert.Equal(t, f.Condition, out.Filters[0].Condition, "")
 
 	// UPDATE
 	update := &app.UpdateFilterOutputPayload{
 		Enabled: true,
 	}
-	_, f = test.UpdateFilterOutputOK(t, ctx, srv, ctrl, id, 0, update)
+	_, f = test.UpdateFilterOutputOK(t, ctx, srv, ctrl, id, filterID, update)
 	assert.Equal(t, "Add test prefix", f.Alias, "")
 	assert.Equal(t, "title", f.Name, "")
-	assert.Equal(t, "\"test\" in Tags", f.Condition, "")
+	assert.Equal(t, "\"prefix\" in Tags", f.Condition, "")
 	assert.Equal(t, true, f.Enabled, "")
+	assert.Equal(t, filterID, f.ID, "")
 
 	// DELETE
-	test.DeleteFilterOutputNoContent(t, ctx, srv, ctrl, id, 0)
+	test.DeleteFilterOutputNoContent(t, ctx, srv, ctrl, id, filterID)
 
 	// TODO verify output def
 }

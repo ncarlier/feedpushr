@@ -66,11 +66,13 @@ func TestFilterChainCRUD(t *testing.T) {
 	_filter := defs[0]
 	assert.Equal(t, "title", _filter.Name, "invalid filter type")
 	assert.Equal(t, "Hello", _filter.Props["prefix"], "invalid filter property")
+	assert.True(t, _filter.ID != "", "invalid filter ID")
+	id := _filter.ID
 
 	// UPDATE
 	update := builder.NewFilterBuilder().Spec(_filter.Name).Build()
 	update.Props["prefix"] = "Updated"
-	_, err := chain.Update(0, update)
+	_, err := chain.Update(id, update)
 	assert.Nil(t, err, "error should be nil")
 	_filter = chain.GetFilterDefs()[0]
 	assert.Equal(t, "title", _filter.Name, "invalid filter type")
@@ -86,7 +88,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "minify", _filter.Name, "invalid filter type")
 
 	// DELETE
-	err = chain.Remove(0)
+	err = chain.Remove(id)
 	assert.Nil(t, err, "error should be nil")
 	defs = chain.GetFilterDefs()
 	assert.Equal(t, 1, len(defs), "invalid filter chain specifications")

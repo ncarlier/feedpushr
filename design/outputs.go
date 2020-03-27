@@ -132,12 +132,12 @@ var _ = Resource("output", func() {
 
 	Action("updateFilter", func() {
 		Routing(
-			PUT("/:id/filters/:idx"),
+			PUT("/:id/filters/:idFilter"),
 		)
 		Description("Update a filter")
 		Params(func() {
 			Param("id", String, "Output ID")
-			Param("idx", Integer, "Filter index")
+			Param("idFilter", String, "Filter ID")
 		})
 		Payload(func() {
 			Member("alias", String, "Alias of the filter", func() {
@@ -156,12 +156,12 @@ var _ = Resource("output", func() {
 
 	Action("deleteFilter", func() {
 		Routing(
-			DELETE(":id/filters/:idx"),
+			DELETE(":id/filters/:idFilter"),
 		)
 		Description("Delete a filter")
 		Params(func() {
 			Param("id", String, "Filter ID")
-			Param("idx", Integer, "Filter index")
+			Param("idFilter", String, "Filter ID")
 		})
 		Response(NoContent)
 		Response(NotFound)
@@ -189,6 +189,7 @@ var OutputResponse = MediaType("application/vnd.feedpushr.output.v2+json", func(
 		Attribute("condition", String, "Conditional expression of the filter", func() {
 			Example("\"foo\" in Tags")
 		})
+		Attribute("filters", CollectionOf(FilterResponse), "Filters", NoExample)
 		Attribute("enabled", Boolean, "Status", func() {
 			Default(false)
 		})
@@ -210,6 +211,7 @@ var OutputResponse = MediaType("application/vnd.feedpushr.output.v2+json", func(
 		Attribute("desc")
 		Attribute("props")
 		Attribute("condition")
+		Attribute("filters")
 		Attribute("enabled")
 		Attribute("nbSuccess")
 		Attribute("nbError")
@@ -272,6 +274,7 @@ var FilterResponse = MediaType("application/vnd.feedpushr.filter.v2+json", func(
 	TypeName("FilterResponse")
 	ContentType("application/json")
 	Attributes(func() {
+		Attribute("id", String, "ID of the filter")
 		Attribute("alias", String, "Alias of the filter", func() {
 			Example("foo")
 		})
@@ -296,10 +299,11 @@ var FilterResponse = MediaType("application/vnd.feedpushr.filter.v2+json", func(
 			Default(0)
 			Example(10)
 		})
-		Required("alias", "name", "desc", "condition")
+		Required("id", "alias", "name", "desc", "condition")
 	})
 
 	View("default", func() {
+		Attribute("id")
 		Attribute("alias")
 		Attribute("name")
 		Attribute("desc")

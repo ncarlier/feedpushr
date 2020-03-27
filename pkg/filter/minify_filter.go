@@ -20,7 +20,7 @@ var minifySpec = model.Spec{
 
 // MinifyFilter is a filter that minify HTML content
 type MinifyFilter struct {
-	id        int
+	id        string
 	spec      model.Spec
 	condition *expr.ConditionalExpression
 	nbSuccess uint64
@@ -59,14 +59,12 @@ func (f *MinifyFilter) DoFilter(article *model.Article) error {
 // GetDef return filter definition
 func (f *MinifyFilter) GetDef() model.FilterDef {
 	result := model.FilterDef{
+		ID:        f.id,
 		Spec:      f.spec,
 		Condition: f.condition.String(),
 		Enabled:   f.enabled,
-	}
-
-	result.Props = map[string]interface{}{
-		"nbSuccess": f.nbSuccess,
-		"nbError":   f.nbError,
+		NbSuccess: f.nbSuccess,
+		NbError:   f.nbError,
 	}
 
 	return result
@@ -82,6 +80,7 @@ func newMinifyFilter(filter *model.FilterDef) (*MinifyFilter, error) {
 	minifier.AddFunc("text/html", html.Minify)
 	minifier.AddFunc("image/svg+xml", svg.Minify)
 	return &MinifyFilter{
+		id:        filter.ID,
 		spec:      minifySpec,
 		condition: condition,
 		minifier:  minifier,

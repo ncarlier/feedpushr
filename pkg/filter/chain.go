@@ -71,53 +71,53 @@ func (chain *Chain) Add(filter *model.FilterDef) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
-	log.Debug().Str("name", filter.Name).Msg("adding filter...")
+	log.Debug().Str("id", filter.ID).Str("name", filter.Name).Msg("adding filter...")
 	_filter, err := newFilter(filter)
 	if err != nil {
 		return nil, err
 	}
 
 	chain.filters = append(chain.filters, _filter)
-	log.Info().Str("name", filter.Name).Msg("filter added to the filter chain")
+	log.Info().Str("id", filter.ID).Str("name", filter.Name).Msg("filter added to the filter chain")
 	return _filter, nil
 }
 
 // Update a filter of the chain
-func (chain *Chain) Update(idx int, update *model.FilterDef) (model.Filter, error) {
+func (chain *Chain) Update(id string, update *model.FilterDef) (model.Filter, error) {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
-	if idx < 0 || idx >= len(chain.filters) {
-		return nil, common.ErrFilterNotFound
+	for idx, f := range chain.filters {
+		if f.GetDef().ID == id {
+			update.ID = id
+			update.Name = f.GetDef().Name
+			log.Debug().Str("id", id).Str("name", update.Name).Msg("updating filter...")
+			f, err := newFilter(update)
+			if err != nil {
+				return nil, err
+			}
+			chain.filters[idx] = f
+			log.Info().Str("id", id).Str("name", update.Name).Msg("filter updated in the filter chain")
+			return f, nil
+		}
 	}
-
-	updated := chain.filters[idx]
-	update.Name = updated.GetDef().Name
-	log.Debug().Int("index", idx).Str("name", update.Name).Msg("updating filter...")
-	f, err := newFilter(update)
-	if err != nil {
-		return nil, err
-	}
-	chain.filters[idx] = f
-	log.Info().Int("index", idx).Str("name", update.Name).Msg("filter updated in the filter chain")
-	return f, nil
+	return nil, common.ErrFilterNotFound
 }
 
 // Remove a filter from the chain
-func (chain *Chain) Remove(idx int) error {
+func (chain *Chain) Remove(id string) error {
 	chain.lock.RLock()
 	defer chain.lock.RUnlock()
 
-	if idx < 0 || idx >= len(chain.filters) {
-		return common.ErrFilterNotFound
+	for idx, f := range chain.filters {
+		if f.GetDef().ID == id {
+			log.Debug().Str("id", id).Str("name", f.GetDef().Name).Msg("removing filter...")
+			chain.filters = append(chain.filters[:idx], chain.filters[idx+1:]...)
+			log.Info().Str("id", id).Str("name", f.GetDef().Name).Msg("filter removed from filter chain")
+			return nil
+		}
 	}
-
-	removed := chain.filters[idx]
-	log.Debug().Int("index", idx).Str("name", removed.GetDef().Name).Msg("removing filter...")
-	chain.filters = append(chain.filters[:idx], chain.filters[idx+1:]...)
-	log.Info().Int("index", idx).Str("name", removed.GetDef().Name).Msg("filter removed from filter chain")
-
-	return nil
+	return common.ErrFilterNotFound
 }
 
 // Apply applies filter chain on an article
@@ -131,11 +131,13 @@ func (chain *Chain) Apply(article *model.Article) error {
 }
 
 // Get returns a filter of the chain filter
-func (chain *Chain) Get(idx int) (model.Filter, error) {
-	if idx < 0 || idx >= len(chain.filters) {
-		return nil, common.ErrFilterNotFound
+func (chain *Chain) Get(id string) (model.Filter, error) {
+	for _, f := range chain.filters {
+		if f.GetDef().ID == id {
+			return f, nil
+		}
 	}
-	return chain.filters[idx], nil
+	return nil, common.ErrFilterNotFound
 }
 
 // GetFilterDefs return definitions of the chain filter

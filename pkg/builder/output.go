@@ -100,7 +100,7 @@ func NewOutputResponseFromDef(def *model.OutputDef) *app.OutputResponse {
 	if def == nil {
 		return nil
 	}
-	return &app.OutputResponse{
+	result := app.OutputResponse{
 		ID:        def.ID,
 		Alias:     def.Alias,
 		Name:      def.Name,
@@ -111,4 +111,10 @@ func NewOutputResponseFromDef(def *model.OutputDef) *app.OutputResponse {
 		NbSuccess: int(def.NbSuccess),
 		NbError:   int(def.NbError),
 	}
+
+	for _, filterDef := range def.Filters {
+		result.Filters = append(result.Filters, NewFilterResponseFromDef(filterDef))
+	}
+
+	return &result
 }

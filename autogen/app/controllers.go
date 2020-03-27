@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/feedpushr/autogen
+// --out=/home/nicolas/workspace/fe/feedpushr/autogen
 // --version=v1.4.3
 
 package app
@@ -450,7 +450,7 @@ func MountOutputController(service *goa.Service, ctrl OutputController) {
 	service.Mux.Handle("OPTIONS", "/v2/outputs", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/v2/outputs/:id/filters", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/v2/outputs/:id", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
-	service.Mux.Handle("OPTIONS", "/v2/outputs/:id/filters/:idx", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v2/outputs/:id/filters/:idFilter", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
 	service.Mux.Handle("OPTIONS", "/v2/outputs/_specs", ctrl.MuxHandler("preflight", handleOutputOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
@@ -526,8 +526,8 @@ func MountOutputController(service *goa.Service, ctrl OutputController) {
 		return ctrl.DeleteFilter(rctx)
 	}
 	h = handleOutputOrigin(h)
-	service.Mux.Handle("DELETE", "/v2/outputs/:id/filters/:idx", ctrl.MuxHandler("deleteFilter", h, nil))
-	service.LogInfo("mount", "ctrl", "Output", "action", "DeleteFilter", "route", "DELETE /v2/outputs/:id/filters/:idx")
+	service.Mux.Handle("DELETE", "/v2/outputs/:id/filters/:idFilter", ctrl.MuxHandler("deleteFilter", h, nil))
+	service.LogInfo("mount", "ctrl", "Output", "action", "DeleteFilter", "route", "DELETE /v2/outputs/:id/filters/:idFilter")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -618,8 +618,8 @@ func MountOutputController(service *goa.Service, ctrl OutputController) {
 		return ctrl.UpdateFilter(rctx)
 	}
 	h = handleOutputOrigin(h)
-	service.Mux.Handle("PUT", "/v2/outputs/:id/filters/:idx", ctrl.MuxHandler("updateFilter", h, unmarshalUpdateFilterOutputPayload))
-	service.LogInfo("mount", "ctrl", "Output", "action", "UpdateFilter", "route", "PUT /v2/outputs/:id/filters/:idx")
+	service.Mux.Handle("PUT", "/v2/outputs/:id/filters/:idFilter", ctrl.MuxHandler("updateFilter", h, unmarshalUpdateFilterOutputPayload))
+	service.LogInfo("mount", "ctrl", "Output", "action", "UpdateFilter", "route", "PUT /v2/outputs/:id/filters/:idFilter")
 }
 
 // handleOutputOrigin applies the CORS response headers corresponding to the origin.
