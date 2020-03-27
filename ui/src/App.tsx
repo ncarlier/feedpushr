@@ -10,7 +10,6 @@ import { ThemeProvider } from '@material-ui/styles'
 import About from './about/About'
 import { MessageProvider } from './context/MessageContext'
 import FeedRoutes from './feeds/Routes'
-import FilterRoutes from './filters/Routes'
 import classNames from './helpers/classNames'
 import Menu from './Menu'
 import OutputRoutes from './outputs/Routes'
@@ -73,7 +72,6 @@ export default () => {
             <Container maxWidth="lg" className={classes.container}>
               <Redirect exact from="/" to="/feeds" />
               <Route path="/feeds" component={FeedRoutes} />
-              <Route path="/filters" component={FilterRoutes} />
               <Route path="/outputs" component={OutputRoutes} />
               <Route path="/about" component={About} />
             </Container>

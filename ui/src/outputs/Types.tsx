@@ -1,18 +1,8 @@
 
-export interface OutputProps {
-    nbSuccess?: number
-    nbError?: number
-    [key: string]: any
-}
-
-export interface Output {
-  id: number
-  alias: string
+export interface Spec {
   name: string
   desc: string
-  enabled: boolean
-  condition: string
-  props: OutputProps
+  props: PropsSpec[]
 }
 
 export interface PropsSpec {
@@ -22,17 +12,46 @@ export interface PropsSpec {
   options?: Object
 }
 
-export interface OutputSpec {
-  name: string
-  desc: string
-  props: PropsSpec[]
+export interface Props {
+  [key: string]: any
 }
 
-export interface OutputForm {
-  id?: number
+interface Base {
+  id: string
+  alias: string
+  name: string
+  desc: string
+  props: Props
+  condition: string
+  enabled: boolean
+  nbSuccess: number
+  nbError: number
+}
+
+interface BaseForm {
   alias: string
   name: string
   enabled: boolean
   condition: string
-  props: OutputProps
+  props: Props
+}
+
+export type Output = Base & {
+  filters?: Filter[]
+}
+
+export type OutputForm = BaseForm & {
+  id?: string
+}
+
+export type Filter = Base
+
+export type FilterForm = BaseForm & {
+  output: string
+  idx?: number
+}
+
+export type Entity = Base & {
+  parentId?: string
+  type: 'output' | 'filter'
 }

@@ -9,15 +9,15 @@ import fetchAPI from '../helpers/fetchAPI'
 import { usePageTitle } from '../hooks'
 import OutputConfig from './OutputConfig'
 import OutputSpecsSelector from './OutputSpecsSelector'
-import { OutputForm, OutputSpec } from './Types'
+import { OutputForm, Spec, Output } from './Types'
 
 export default withRouter(({ history }: RouteComponentProps) => {
   usePageTitle('add output')
-  const [spec, setSpec] = useState<OutputSpec | null>(null)
+  const [spec, setSpec] = useState<Spec | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
 
-  function handleSelectSpec(spec: OutputSpec) {
+  function handleSelectSpec(spec: Spec) {
     setError(null)
     setSpec(spec)
   }
@@ -37,8 +37,9 @@ export default withRouter(({ history }: RouteComponentProps) => {
         const msg = await res.text()
         throw new Error(msg)
       }
-      const data = await res.json()
-      showMessage(<Message variant="success"  message={`Output ${data.name} (#${data.id}) added`} />)
+      const data = await res.json() as Output
+      const desc = data.alias ? data.alias : data.name
+      showMessage(<Message variant="success"  message={`${desc} output added`} />)
       history.push('/outputs')
     } catch (err) {
       setError(err)

@@ -5,7 +5,7 @@ import React, { useCallback } from 'react'
 import { Button, Paper, TextField, Typography, MenuItem } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import Doc from '../common/Doc'
+import Doc from '../../common/Doc'
 import { Filter, FilterForm, FilterProps, FilterSpec } from './Types'
 
 const useStyles = makeStyles((theme: Theme) =>

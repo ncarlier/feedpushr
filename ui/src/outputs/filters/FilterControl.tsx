@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react'
 
 import { Switch, Tooltip } from '@material-ui/core'
 
-import Message from '../common/Message'
-import { MessageContext } from '../context/MessageContext'
-import fetchAPI from '../helpers/fetchAPI'
+import Message from '../../common/Message'
+import { MessageContext } from '../../context/MessageContext'
+import fetchAPI from '../../helpers/fetchAPI'
 import { Filter } from './Types'
 
 interface Props {

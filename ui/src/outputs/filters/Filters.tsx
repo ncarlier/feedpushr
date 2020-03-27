@@ -1,9 +1,9 @@
 import React from 'react'
 
-import Loader from '../common/Loader'
-import Message from '../common/Message'
-import matchResponse from '../helpers/matchResponse'
-import { useAPI, usePageTitle } from '../hooks'
+import Loader from '../../common/Loader'
+import Message from '../../common/Message'
+import matchResponse from '../../helpers/matchResponse'
+import { useAPI, usePageTitle } from '../../hooks'
 import FilterList from './FilterList'
 import { Filter } from './Types'
 

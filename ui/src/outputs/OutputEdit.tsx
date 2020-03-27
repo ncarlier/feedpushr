@@ -17,7 +17,7 @@ type Props = RouteComponentProps<{id: string}>
 
 export default ({ match, history }: Props) => {
   const { id } = match.params
-  usePageTitle(`edit output #${id}`)
+  usePageTitle('edit output')
   
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
@@ -38,8 +38,9 @@ export default ({ match, history }: Props) => {
         const msg = await res.text()
         throw new Error(msg)
       }
-      const data = await res.json()
-      showMessage(<Message variant="success"  message={`Output ${data.name} (#${data.id}) configured`} />)
+      const data = await res.json() as Output
+      const desc = data.alias ? data.alias : data.name
+      showMessage(<Message variant="success"  message={`${desc} output configured`} />)
       history.push('/outputs')
     } catch (err) {
       setError(err)

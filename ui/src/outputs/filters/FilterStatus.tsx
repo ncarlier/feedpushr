@@ -3,7 +3,7 @@ import React from 'react'
 import { makeStyles, Theme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 
-import classNames from '../helpers/classNames'
+import classNames from '../../helpers/classNames'
 import { Filter } from './Types'
 
 const useStyles = makeStyles((theme: Theme) => ({

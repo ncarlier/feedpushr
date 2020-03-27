@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import excerpt from '../helpers/excerpt'
 import { OutputSpecsContext } from './OutputSpecsContext'
-import { OutputSpec } from './Types'
+import { Spec } from './Types'
 
 const useStyles = makeStyles({
   card: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 })
 
 interface Props {
-  onSelect: (spec: OutputSpec) => void
+  onSelect: (spec: Spec) => void
 }
 
 export default ({onSelect}: Props) => {

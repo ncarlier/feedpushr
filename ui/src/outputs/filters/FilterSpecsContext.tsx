@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useState } from 'react'
 
-import fetchAPI from '../helpers/fetchAPI'
+import fetchAPI from '../../helpers/fetchAPI'
 import { FilterSpec } from './Types'
 
 interface FilterSpecsContextType {

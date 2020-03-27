@@ -4,7 +4,7 @@ import { makeStyles, Theme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 
 import classNames from '../helpers/classNames'
-import { Output } from './Types'
+import { Entity } from './Types'
 
 const useStyles = makeStyles((theme: Theme) => ({
   status: {
@@ -28,18 +28,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 interface Props {
-  output: Output
+  entity: Entity
   error?: boolean
 }
 
-export default ({output, error = false}: Props) => {
+export default ({entity, error = false}: Props) => {
   const classes = useStyles()
   if (error) {
-    if (output.props.nbError && output.props.nbError > 0) {
-      return <div className={classNames(classes.status, classes.error)}>{output.props.nbError}</div>
+    if (entity.props.nbError && entity.props.nbError > 0) {
+      return <div className={classNames(classes.status, classes.error)}>{entity.props.nbError}</div>
     }
-  } else if (output.props.nbSuccess && output.props.nbSuccess > 0) {
-    return <div className={classNames(classes.status, classes.success)}>{output.props.nbSuccess}</div>
+  } else if (entity.props.nbSuccess && entity.props.nbSuccess > 0) {
+    return <div className={classNames(classes.status, classes.success)}>{entity.props.nbSuccess}</div>
   }
   return <span>-</span>
 }

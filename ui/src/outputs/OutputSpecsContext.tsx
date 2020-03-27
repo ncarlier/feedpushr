@@ -1,10 +1,10 @@
 import React, { createContext, ReactNode, useState } from 'react'
 
 import fetchAPI from '../helpers/fetchAPI'
-import { OutputSpec } from './Types'
+import { Spec } from './Types'
 
 interface OutputSpecsContextType {
-  specs: OutputSpec[]
+  specs: Spec[]
 }
 
 const OutputSpecsContext = createContext<OutputSpecsContextType>({
@@ -17,7 +17,7 @@ interface Props {
 
 const OutputSpecsProvider = ({ children }: Props) => {
   const specs = sessionStorage.getItem('outputSpecs') || '[]'
-  const [value, setValue] = useState<OutputSpec[]>(JSON.parse(specs))
+  const [value, setValue] = useState<Spec[]>(JSON.parse(specs))
 
   const initOutputSpecs = async () => {
     try {

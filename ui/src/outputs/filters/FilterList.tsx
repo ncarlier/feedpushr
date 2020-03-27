@@ -2,22 +2,22 @@ import MaterialTable from 'material-table'
 import React, { useContext, useState } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 
-import Ellipsis from '../common/Ellipsis'
-import Message from '../common/Message'
-import { MessageContext } from '../context/MessageContext'
-import fetchAPI from '../helpers/fetchAPI'
-import OutputControl from './OutputControl'
-import OutputStatus from './OutputStatus'
-import { Output } from './Types'
+import Ellipsis from '../../common/Ellipsis'
+import Message from '../../common/Message'
+import { MessageContext } from '../../context/MessageContext'
+import fetchAPI from '../../helpers/fetchAPI'
+import FilterControl from './FilterControl'
+import FilterStatus from './FilterStatus'
+import { Filter } from './Types'
 
 interface Props {
-  outputs: Output[]
+  filters: Filter[]
 }
 
 const columns = [
   { 
     title: 'Enabled',
-    render: (output: Output) => ( !!output && <OutputControl output={output} /> ),
+    render: (filter: Filter) => ( !!filter && <FilterControl filter={filter} /> ),
     sorting: false,
     searchable: false,
   },
@@ -31,34 +31,33 @@ const columns = [
   },
   { 
     title: 'Success',
-    render: (output: Output) => ( !!output && <OutputStatus output={output} /> ),
+    render: (filter: Filter) => ( !!filter && <FilterStatus filter={filter} /> ),
     searchable: false,
   },
   { 
     title: 'Error',
-    render: (output: Output) => ( !!output && <OutputStatus output={output} error /> ),
+    render: (filter: Filter) => ( !!filter && <FilterStatus filter={filter} error /> ),
     searchable: false,
   },
   { 
     title: 'Condition',
     field: 'condition',
-    render: (output: Output) => <Ellipsis value={output.condition} />
-
+    render: (filter: Filter) => <Ellipsis value={filter.condition} />
   }
 ]
 
-export default withRouter(({outputs, history}: Props & RouteComponentProps) => {
-  const [data, setData] = useState<Output[]>(outputs)
+export default withRouter(({filters, history}: Props & RouteComponentProps) => {
+  const [data, setData] = useState<Filter[]>(filters)
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
 
-  const onRowDelete = async (oldOutput: Output) => {
-    const { id, name } = oldOutput
+  const onRowDelete = async (oldFilter: Filter) => {
+    const { id, name } = oldFilter
     try {
-      const res = await fetchAPI(`/outputs/${id}`, null, {method: 'DELETE'})
+      const res = await fetchAPI(`/filters/${id}`, null, {method: 'DELETE'})
       if (res.ok) {
         setError(null)
-        showMessage(<Message variant="success"  message={`Output ${name} removed`} />)
+        showMessage(<Message variant="success"  message={`Filter ${name} removed`} />)
         return setData(data.filter(f => f.id !== id))
       }
       const _err = await res.json()
@@ -72,7 +71,7 @@ export default withRouter(({outputs, history}: Props & RouteComponentProps) => {
   return <>
     { !!error && <Message message={error.message} variant="error" />}
     <MaterialTable
-      title="Outputs"
+      title="Filters"
       columns={ columns }
       data= { data }
       editable = {{
@@ -86,13 +85,13 @@ export default withRouter(({outputs, history}: Props & RouteComponentProps) => {
         {
           icon: 'build',
           tooltip: 'Configure',
-          onClick: (event, rowData) => history.push(`/outputs/${(rowData as Output).id}`)
+          onClick: (event, rowData) => history.push(`/filters/${(rowData as Filter).id}`)
         },
         {
           icon: 'add_box',
           tooltip: 'Add',
           isFreeAction: true,
-          onClick: () => history.push('/outputs/add')
+          onClick: () => history.push('/filters/add')
         }
       ]}
     />

@@ -1,17 +1,20 @@
 import React, { useContext, useState } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { RouteComponentProps } from 'react-router'
 
 import { Typography } from '@material-ui/core'
 
-import Message from '../common/Message'
-import { MessageContext } from '../context/MessageContext'
-import fetchAPI from '../helpers/fetchAPI'
-import { usePageTitle } from '../hooks'
+import Message from '../../common/Message'
+import { MessageContext } from '../../context/MessageContext'
+import fetchAPI from '../../helpers/fetchAPI'
+import { usePageTitle } from '../../hooks'
 import FilterConfig from './FilterConfig'
 import FilterSpecsSelector from './FilterSpecsSelector'
 import { FilterForm, FilterSpec } from './Types'
 
-export default withRouter(({ history }: RouteComponentProps) => {
+type Props = RouteComponentProps<{id: string}>
+
+export default ({ match, history }: Props) => {
+  const { id } = match.params
   usePageTitle('add filter')
   const [spec, setSpec] = useState<FilterSpec | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -29,7 +32,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
   
   async function handleSave(form: FilterForm) {
     try {
-      const res = await fetchAPI('/filters', null, {
+      const res = await fetchAPI(`/outputs/${id}/filters`, null, {
         method: 'POST',
         body: JSON.stringify(form),
       })
@@ -38,8 +41,8 @@ export default withRouter(({ history }: RouteComponentProps) => {
         throw new Error(msg)
       }
       const data = await res.json()
-      showMessage(<Message variant="success"  message={`Filter ${data.name} (#${data.id}) added`} />)
-      history.push('/filters')
+      showMessage(<Message variant="success"  message={`Filter ${data.name} added`} />)
+      history.push('/outputs')
     } catch (err) {
       setError(err)
     }
@@ -61,4 +64,4 @@ export default withRouter(({ history }: RouteComponentProps) => {
       <FilterConfig onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )
-})
+}

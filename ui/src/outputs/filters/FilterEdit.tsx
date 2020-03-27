@@ -3,25 +3,28 @@ import { RouteComponentProps } from 'react-router'
 
 import { Typography } from '@material-ui/core'
 
-import Loader from '../common/Loader'
-import Message from '../common/Message'
-import { MessageContext } from '../context/MessageContext'
-import fetchAPI from '../helpers/fetchAPI'
-import matchResponse from '../helpers/matchResponse'
-import { useAPI, usePageTitle } from '../hooks'
+import Loader from '../../common/Loader'
+import Message from '../../common/Message'
+import { MessageContext } from '../../context/MessageContext'
+import fetchAPI from '../../helpers/fetchAPI'
+import matchResponse from '../../helpers/matchResponse'
+import { useAPI, usePageTitle } from '../../hooks'
 import FilterConfig from './FilterConfig'
 import { FilterSpecsContext } from './FilterSpecsContext'
 import { Filter, FilterForm } from './Types'
 
-type Props = RouteComponentProps<{id: string}>
+type Props = RouteComponentProps<{
+  id: string
+  filterId: string
+}>
 
 export default ({ match, history }: Props) => {
-  const { id } = match.params
-  usePageTitle(`edit filter #${id}`)
+  const { id, filterId } = match.params
+  usePageTitle(`edit filter #${filterId}`)
   
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
-  const [loading, filters, fetchError] = useAPI<Filter>(`/filters/${id}`)
+  const [loading, filters, fetchError] = useAPI<Filter>(`/outputs/${id}/filters/${filterId}`)
   const { specs } = useContext(FilterSpecsContext)
   
   function handleBack() {
@@ -30,7 +33,7 @@ export default ({ match, history }: Props) => {
   
   async function handleSave(form: FilterForm) {
     try {
-      const res = await fetchAPI(`/filters/${id}`, null, {
+      const res = await fetchAPI(`/outputs/${id}/filters/${filterId}`, null, {
         method: 'PUT',
         body: JSON.stringify(form),
       })
@@ -40,7 +43,7 @@ export default ({ match, history }: Props) => {
       }
       const data = await res.json()
       showMessage(<Message variant="success"  message={`Filter ${data.name} (#${data.id}) configured`} />)
-      history.push('/filters')
+      history.push('/outputs')
     } catch (err) {
       setError(err)
     }

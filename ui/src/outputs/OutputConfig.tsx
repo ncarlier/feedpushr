@@ -6,7 +6,7 @@ import { Button, MenuItem, Paper, TextField, Typography } from '@material-ui/cor
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import Doc from '../common/Doc'
-import { Output, OutputForm, OutputProps, OutputSpec } from './Types'
+import { Output, OutputForm, Props, Spec } from './Types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,17 +23,17 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-interface Props {
+interface OutputConfigProps {
   output?: Output
-  spec: OutputSpec
+  spec: Spec
   onCancel: () => void
   onSave: (output: OutputForm) => void
 }
 
-export default ({onSave, onCancel, spec, output}: Props) => {
+export default ({onSave, onCancel, spec, output}: OutputConfigProps) => {
   const classes = useStyles()
   const [alias, setAlias] = React.useState<string>(output ? output.alias : "")
-  const [props, setProps] = React.useState<OutputProps>(output ? output.props : {})
+  const [props, setProps] = React.useState<Props>(output ? output.props : {})
   const [condition, setCondition] = React.useState<string>(output ? output.condition : "")
 
   const handleChangeAlias = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +84,6 @@ export default ({onSave, onCancel, spec, output}: Props) => {
             type={['select', 'textarea'].includes(prop.type) ? undefined : prop.type}
             multiline={prop.type === 'textarea'}
             select={prop.type === 'select'}
-            defaultValue={props[prop.name]}
             onChange={handleChangeProp(prop.name)}
             fullWidth
           >
