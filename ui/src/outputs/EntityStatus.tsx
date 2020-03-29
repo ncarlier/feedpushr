@@ -35,11 +35,11 @@ interface Props {
 export default ({entity, error = false}: Props) => {
   const classes = useStyles()
   if (error) {
-    if (entity.props.nbError && entity.props.nbError > 0) {
-      return <div className={classNames(classes.status, classes.error)}>{entity.props.nbError}</div>
+    if (entity.nbError > 0) {
+      return <div className={classNames(classes.status, classes.error)}>{entity.nbError}</div>
     }
-  } else if (entity.props.nbSuccess && entity.props.nbSuccess > 0) {
-    return <div className={classNames(classes.status, classes.success)}>{entity.props.nbSuccess}</div>
+  } else if (entity.nbSuccess > 0) {
+    return <div className={classNames(classes.status, classes.success)}>{entity.nbSuccess}</div>
   }
   return <span>-</span>
 }

@@ -1,10 +1,10 @@
 import React, { createContext, ReactNode, useState } from 'react'
 
 import fetchAPI from '../../helpers/fetchAPI'
-import { FilterSpec } from './Types'
+import { Spec } from '../Types'
 
 interface FilterSpecsContextType {
-  specs: FilterSpec[]
+  specs: Spec[]
 }
 
 const FilterSpecsContext = createContext<FilterSpecsContextType>({
@@ -17,7 +17,7 @@ interface Props {
 
 const FilterSpecsProvider = ({ children }: Props) => {
   const specs = sessionStorage.getItem('filterSpecs') || '[]'
-  const [value, setValue] = useState<FilterSpec[]>(JSON.parse(specs))
+  const [value, setValue] = useState<Spec[]>(JSON.parse(specs))
 
   const initFilterSpecs = async () => {
     try {

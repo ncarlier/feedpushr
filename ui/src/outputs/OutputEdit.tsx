@@ -9,7 +9,7 @@ import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import matchResponse from '../helpers/matchResponse'
 import { useAPI, usePageTitle } from '../hooks'
-import OutputConfig from './OutputConfig'
+import ConfigForm from './ConfigForm'
 import { OutputSpecsContext } from './OutputSpecsContext'
 import { Output, OutputForm } from './Types'
 
@@ -21,7 +21,7 @@ export default ({ match, history }: Props) => {
   
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
-  const [loading, outputs, fetchError] = useAPI<Output>(`/outputs/${id}`)
+  const [loading, output, fetchError] = useAPI<Output>(`/outputs/${id}`)
   const { specs } = useContext(OutputSpecsContext)
   
   function handleBack() {
@@ -58,12 +58,12 @@ export default ({ match, history }: Props) => {
         <>
           <Typography variant="h5" gutterBottom>Configure output</Typography>
           { !!error && <Message message={error.message} variant="error" />}
-          <OutputConfig onSave={handleSave} onCancel={handleBack} spec={spec} output={data} />
+          <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} source={data} />
         </>
       )
     },
     Error: err => <Message message={`Unable to fetch output: ${err.message}`} variant="error" />
   })
 
-  return (<>{render(loading, outputs, fetchError)}</>)
+  return (<>{render(loading, output, fetchError)}</>)
 }

@@ -37,8 +37,8 @@ export default ({ match, history }: Props) => {
       const res = await fetchAPI(`/feeds/${id}`, {title, tags}, {method: 'PUT', headers})
       if (res.ok) {
         setError(null)
-        const data = await res.json()
-        showMessage(<Message variant="success"  message={`Feed ${data.name} (#${data.id}) updated`} />)
+        const data = await res.json() as Feed
+        showMessage(<Message variant="success"  message={`${data.title} feed updated`} />)
         return history.push('/feeds')
       }
       const _err = await res.json()

@@ -6,9 +6,10 @@ import React, { useContext } from 'react'
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import excerpt from '../../helpers/excerpt'
-import { FilterSpecsContext } from './FilterSpecsContext'
-import { FilterSpec } from './Types'
+import excerpt from '../helpers/excerpt'
+import { FilterSpecsContext } from './filters/FilterSpecsContext'
+import { OutputSpecsContext } from './OutputSpecsContext'
+import { Spec } from './Types'
 
 const useStyles = makeStyles({
   card: {
@@ -19,15 +20,21 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
   },
+  pos: {
+    marginBottom: 12,
+  },
 })
 
 interface Props {
-  onSelect: (spec: FilterSpec) => void
+  type: 'output' | 'filter'
+  onSelect: (spec: Spec) => void
 }
 
-export default ({onSelect}: Props) => {
+export default ({onSelect, type}: Props) => {
   const classes = useStyles()
-  const { specs } = useContext(FilterSpecsContext)
+  const outputSpecContext = useContext(OutputSpecsContext)
+  const filterSpecContext = useContext(FilterSpecsContext)
+  const { specs } = type === 'output' ? outputSpecContext : filterSpecContext
 
   return (
     <Grid spacing={2} container style={{padding: '0 1em'}}>

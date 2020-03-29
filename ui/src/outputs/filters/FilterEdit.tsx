@@ -9,9 +9,10 @@ import { MessageContext } from '../../context/MessageContext'
 import fetchAPI from '../../helpers/fetchAPI'
 import matchResponse from '../../helpers/matchResponse'
 import { useAPI, usePageTitle } from '../../hooks'
-import FilterConfig from './FilterConfig'
+import ConfigForm from '../ConfigForm'
+import { descFilter, descOutput } from '../helpers'
+import { FilterForm, Output } from '../Types'
 import { FilterSpecsContext } from './FilterSpecsContext'
-import { Filter, FilterForm } from './Types'
 
 type Props = RouteComponentProps<{
   id: string
@@ -20,15 +21,15 @@ type Props = RouteComponentProps<{
 
 export default ({ match, history }: Props) => {
   const { id, filterId } = match.params
-  usePageTitle(`edit filter #${filterId}`)
+  usePageTitle(`edit filter`)
   
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
-  const [loading, filters, fetchError] = useAPI<Filter>(`/outputs/${id}/filters/${filterId}`)
+  const [loading, output, fetchError] = useAPI<Output>(`/outputs/${id}`)
   const { specs } = useContext(FilterSpecsContext)
   
   function handleBack() {
-    history.push('/filters')
+    history.push('/outputs')
   }
   
   async function handleSave(form: FilterForm) {
@@ -42,30 +43,39 @@ export default ({ match, history }: Props) => {
         throw new Error(msg)
       }
       const data = await res.json()
-      showMessage(<Message variant="success"  message={`Filter ${data.name} (#${data.id}) configured`} />)
+      const filterDesc = descFilter(data)
+      showMessage(<Message variant="success"  message={`${filterDesc} configured`} />)
       history.push('/outputs')
     } catch (err) {
       setError(err)
     }
   }
 
-  const render = matchResponse<Filter>({
+  const render = matchResponse<Output>({
     Loading: () => <Loader />,
     Data: data => {
-      const spec = specs.find(f => f.name === data.name)
+      const outputDesc = descOutput(data)
+      if (!data.filters || data.filters.length === 0) {
+        return <Message message={`No filter found for ${outputDesc}`} variant="error" />
+      }
+      const filter = data.filters.find(f => f.id === filterId)
+      if (!filter) {
+        return <Message message={`Filter not found in ${outputDesc}`} variant="error" />
+      }
+      const spec = specs.find(f => f.name === filter.name)
       if (!spec) {
-        return <Message message={`Unable to retrieve filter specifications: ${data.name}`} variant="error" />
+        return <Message message={`Unable to retrieve filter specifications: ${filter.name}`} variant="error" />
       }
       return (
         <>
           <Typography variant="h5" gutterBottom>Configure filter</Typography>
           { !!error && <Message message={error.message} variant="error" />}
-          <FilterConfig onSave={handleSave} onCancel={handleBack} spec={spec} filter={data} />
+          <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} source={filter} />
         </>
       )
     },
     Error: err => <Message message={`Unable to fetch filter: ${err.message}`} variant="error" />
   })
 
-  return (<>{render(loading, filters, fetchError)}</>)
+  return (<>{render(loading, output, fetchError)}</>)
 }

@@ -11,13 +11,13 @@ import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import FeedControl from './FeedControl'
 import FeedDates from './FeedDates'
+import FeedHtmlLink from './FeedHtmlLink'
 import FeedHub from './FeedHub'
 import FeedStatus from './FeedStatus'
 import FeedTags from './FeedTags'
 import OPMLExportButton from './OPMLExportButton'
 import OPMLImportButton from './OPMLImportButton'
 import { Feed, FeedPage } from './Types'
-import FeedHtmlLink from './FeedHtmlLink';
 
 const useStyles = makeStyles((theme: Theme) => ({
   pagination: {
@@ -82,7 +82,7 @@ export default withRouter(({page, history}: Props & RouteComponentProps) => {
       const res = await fetchAPI(`/feeds/${id}`, null, {method: 'DELETE'})
       if (res.ok) {
         setError(null)
-        showMessage(<Message variant="success"  message={`Feed ${title} removed`} />)
+        showMessage(<Message variant="success"  message={`${title} feed removed`} />)
         return
       }
       const _err = await res.json()

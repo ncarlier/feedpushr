@@ -28,7 +28,7 @@ interface Base {
   nbError: number
 }
 
-interface BaseForm {
+export interface BaseForm {
   alias: string
   name: string
   enabled: boolean
@@ -47,8 +47,7 @@ export type OutputForm = BaseForm & {
 export type Filter = Base
 
 export type FilterForm = BaseForm & {
-  output: string
-  idx?: number
+  id?: string
 }
 
 export type Entity = Base & {

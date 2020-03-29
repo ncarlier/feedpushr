@@ -7,9 +7,9 @@ import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import { usePageTitle } from '../hooks'
-import OutputConfig from './OutputConfig'
-import OutputSpecsSelector from './OutputSpecsSelector'
-import { OutputForm, Spec, Output } from './Types'
+import ConfigForm from './ConfigForm'
+import SpecSelector from './SpecSelector'
+import { Output, OutputForm, Spec } from './Types'
 
 export default withRouter(({ history }: RouteComponentProps) => {
   usePageTitle('add output')
@@ -50,7 +50,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
     return (
       <>
         <Typography variant="h5" gutterBottom>Add output: Choose</Typography>
-        <OutputSpecsSelector onSelect={handleSelectSpec} />
+        <SpecSelector onSelect={handleSelectSpec} type="output" />
       </>
     )
   }
@@ -59,7 +59,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
     <>
       <Typography variant="h5" gutterBottom>Add output: Configure</Typography>
       { !!error && <Message message={error.message} variant="error" />}
-      <OutputConfig onSave={handleSave} onCancel={handleBack} spec={spec} />
+      <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )
 })

@@ -7,20 +7,20 @@ import Message from '../../common/Message'
 import { MessageContext } from '../../context/MessageContext'
 import fetchAPI from '../../helpers/fetchAPI'
 import { usePageTitle } from '../../hooks'
-import FilterConfig from './FilterConfig'
-import FilterSpecsSelector from './FilterSpecsSelector'
-import { FilterForm, FilterSpec } from './Types'
+import ConfigForm from '../ConfigForm'
+import SpecSelector from '../SpecSelector'
+import { FilterForm, Spec } from '../Types'
 
 type Props = RouteComponentProps<{id: string}>
 
 export default ({ match, history }: Props) => {
   const { id } = match.params
   usePageTitle('add filter')
-  const [spec, setSpec] = useState<FilterSpec | null>(null)
+  const [spec, setSpec] = useState<Spec | null>(null)
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
 
-  function handleSelectSpec(spec: FilterSpec) {
+  function handleSelectSpec(spec: Spec) {
     setError(null)
     setSpec(spec)
   }
@@ -52,7 +52,7 @@ export default ({ match, history }: Props) => {
     return (
       <>
         <Typography variant="h5" gutterBottom>Add filter: Choose</Typography>
-        <FilterSpecsSelector onSelect={handleSelectSpec} />
+        <SpecSelector onSelect={handleSelectSpec} type="filter" />
       </>
     )
   }
@@ -61,7 +61,7 @@ export default ({ match, history }: Props) => {
     <>
       <Typography variant="h5" gutterBottom>Add filter: Configure</Typography>
       { !!error && <Message message={error.message} variant="error" />}
-      <FilterConfig onSave={handleSave} onCancel={handleBack} spec={spec} />
+      <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )
 }

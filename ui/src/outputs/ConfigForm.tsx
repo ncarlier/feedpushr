@@ -6,7 +6,7 @@ import { Button, MenuItem, Paper, TextField, Typography } from '@material-ui/cor
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import Doc from '../common/Doc'
-import { Output, OutputForm, Props, Spec } from './Types'
+import { BaseForm, Filter, Output, Props, Spec } from './Types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,18 +23,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-interface OutputConfigProps {
-  output?: Output
-  spec: Spec
-  onCancel: () => void
-  onSave: (output: OutputForm) => void
+export type ConfigFormPayload = BaseForm & {
+  id?: string
 }
 
-export default ({onSave, onCancel, spec, output}: OutputConfigProps) => {
+interface ConfigFormProps {
+  source?: Output | Filter
+  spec: Spec
+  onCancel: () => void
+  onSave: (payload: ConfigFormPayload) => void
+}
+
+export default ({onSave, onCancel, spec, source}: ConfigFormProps) => {
   const classes = useStyles()
-  const [alias, setAlias] = React.useState<string>(output ? output.alias : "")
-  const [props, setProps] = React.useState<Props>(output ? output.props : {})
-  const [condition, setCondition] = React.useState<string>(output ? output.condition : "")
+  const [alias, setAlias] = React.useState<string>(source ? source.alias : "")
+  const [props, setProps] = React.useState<Props>(source ? source.props : {})
+  const [condition, setCondition] = React.useState<string>(source ? source.condition : "")
 
   const handleChangeAlias = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
     setAlias(event.target.value)
@@ -54,9 +58,9 @@ export default ({onSave, onCancel, spec, output}: OutputConfigProps) => {
       name: spec.name,
       props,
       condition,
-      enabled: output ? output.enabled : false,
+      enabled: source ? source.enabled : false,
     })
-  }, [onSave, alias, spec, props, condition, output])
+  }, [onSave, alias, spec, props, condition, source])
 
   return (
     <Paper className={classes.root}>

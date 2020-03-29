@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { Switch, Tooltip } from '@material-ui/core'
 
@@ -24,7 +24,7 @@ export default ({feed}: Props) => {
     fetchAPI(`/feeds/${feed.id}/${action}`, null, {method: 'POST'})
     .then(res => {
       setStatus(check)
-      showMessage(<Message variant="success"  message={`Feed ${feed.title} ${check ? 'running' : 'stopped'}`} />)
+      showMessage(<Message variant="success"  message={`${feed.title} feed is ${check ? 'running' : 'stopped'}`} />)
     }).catch(console.error)
   }
 

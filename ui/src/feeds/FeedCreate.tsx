@@ -8,7 +8,7 @@ import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import { usePageTitle } from '../hooks'
 import FeedConfig from './FeedConfig'
-import { FeedForm } from './Types'
+import { Feed, FeedForm } from './Types'
 
 const headers = {
   "Content-Type": "application/x-www-form-urlencoded",
@@ -30,8 +30,8 @@ export default withRouter(({ history }: RouteComponentProps) => {
       const res = await fetchAPI('/feeds', {title, url, tags}, {method: 'POST', headers})
       if (res.ok) {
         setError(null)
-        const data = await res.json()
-        showMessage(<Message variant="success"  message={`Feed ${data.title} (#${data.id}) created`} />)
+        const data = await res.json() as Feed
+        showMessage(<Message variant="success"  message={`${data.title} feed created`} />)
         return history.push('/feeds')
       }
       const _err = await res.json()
