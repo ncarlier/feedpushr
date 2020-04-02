@@ -17,6 +17,50 @@ import (
 	"strconv"
 )
 
+// GetExploreContext provides the explore get action context.
+type GetExploreContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Q *string
+}
+
+// NewGetExploreContext parses the incoming request URL and body, performs validations and creates the
+// context used by the explore controller get action.
+func NewGetExploreContext(ctx context.Context, r *http.Request, service *goa.Service) (*GetExploreContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := GetExploreContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramQ := req.Params["q"]
+	if len(paramQ) > 0 {
+		rawQ := paramQ[0]
+		rctx.Q = &rawQ
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *GetExploreContext) OK(r ExploreResponseCollection) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.feedpushr.explore.v2+json; type=collection")
+	}
+	if r == nil {
+		r = ExploreResponseCollection{}
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// BadRequest sends a HTTP response with status code 400.
+func (ctx *GetExploreContext) BadRequest(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
+}
+
 // CreateFeedContext provides the feed create action context.
 type CreateFeedContext struct {
 	context.Context

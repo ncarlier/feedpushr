@@ -140,12 +140,12 @@ func (c *Client) NewListFeedRequest(ctx context.Context, path string, limit *int
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	if limit != nil {
-		tmp26 := strconv.Itoa(*limit)
-		values.Set("limit", tmp26)
+		tmp27 := strconv.Itoa(*limit)
+		values.Set("limit", tmp27)
 	}
 	if page != nil {
-		tmp27 := strconv.Itoa(*page)
-		values.Set("page", tmp27)
+		tmp28 := strconv.Itoa(*page)
+		values.Set("page", tmp28)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)

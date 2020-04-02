@@ -16,6 +16,68 @@ import (
 	"time"
 )
 
+// The search result (default view)
+//
+// Identifier: application/vnd.feedpushr.explore.v2+json; view=default
+type ExploreResponse struct {
+	// Feed description
+	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
+	// URL of the feed website
+	HTMLURL string `form:"htmlUrl" json:"htmlUrl" yaml:"htmlUrl" xml:"htmlUrl"`
+	// Feed title
+	Title string `form:"title" json:"title" yaml:"title" xml:"title"`
+	// URL of the XML feed
+	XMLURL string `form:"xmlUrl" json:"xmlUrl" yaml:"xmlUrl" xml:"xmlUrl"`
+}
+
+// Validate validates the ExploreResponse media type instance.
+func (mt *ExploreResponse) Validate() (err error) {
+	if mt.Title == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "title"))
+	}
+	if mt.Desc == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "desc"))
+	}
+	if mt.XMLURL == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "xmlUrl"))
+	}
+	if mt.HTMLURL == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "htmlUrl"))
+	}
+	return
+}
+
+// DecodeExploreResponse decodes the ExploreResponse instance encoded in resp body.
+func (c *Client) DecodeExploreResponse(resp *http.Response) (*ExploreResponse, error) {
+	var decoded ExploreResponse
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// ExploreResponseCollection is the media type for an array of ExploreResponse (default view)
+//
+// Identifier: application/vnd.feedpushr.explore.v2+json; type=collection; view=default
+type ExploreResponseCollection []*ExploreResponse
+
+// Validate validates the ExploreResponseCollection media type instance.
+func (mt ExploreResponseCollection) Validate() (err error) {
+	for _, e := range mt {
+		if e != nil {
+			if err2 := e.Validate(); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// DecodeExploreResponseCollection decodes the ExploreResponseCollection instance encoded in resp body.
+func (c *Client) DecodeExploreResponseCollection(resp *http.Response) (ExploreResponseCollection, error) {
+	var decoded ExploreResponseCollection
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return decoded, err
+}
+
 // A RSS feed (default view)
 //
 // Identifier: application/vnd.feedpushr.feed.v2+json; view=default

@@ -28,14 +28,14 @@ export default withRouter(({ history }: RouteComponentProps) => {
     try {
       const { title, xmlUrl: url, tags } = form
       const res = await fetchAPI('/feeds', {title, url, tags}, {method: 'POST', headers})
-      if (res.ok) {
-        setError(null)
-        const data = await res.json() as Feed
-        showMessage(<Message variant="success"  message={`${data.title} feed created`} />)
-        return history.push('/feeds')
+      if (!res.ok) {
+        const _err = await res.json()
+        throw new Error(_err.detail || res.statusText)
       }
-      const _err = await res.json()
-      throw new Error(_err.detail || res.statusText)
+      setError(null)
+      const data = await res.json() as Feed
+      showMessage(<Message variant="success"  message={`${data.title} feed created`} />)
+      return history.push('/feeds')
     } catch (err) {
       setError(err)
     }

@@ -13,6 +13,7 @@ import FeedRoutes from './feeds/Routes'
 import classNames from './helpers/classNames'
 import Menu from './Menu'
 import OutputRoutes from './outputs/Routes'
+import Explore from './explore/Explore'
 
 const theme = createMuiTheme({
   palette: {
@@ -73,6 +74,7 @@ export default () => {
               <Redirect exact from="/" to="/feeds" />
               <Route path="/feeds" component={FeedRoutes} />
               <Route path="/outputs" component={OutputRoutes} />
+              <Route path="/explore" component={Explore} />
               <Route path="/about" component={About} />
             </Container>
           </main>

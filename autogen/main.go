@@ -18,33 +18,36 @@ func main() {
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
 
+	// Mount "explore" controller
+	c := NewExploreController(service)
+	app.MountExploreController(service, c)
 	// Mount "feed" controller
-	c := NewFeedController(service)
-	app.MountFeedController(service, c)
+	c2 := NewFeedController(service)
+	app.MountFeedController(service, c2)
 	// Mount "filter" controller
-	c2 := NewFilterController(service)
-	app.MountFilterController(service, c2)
+	c3 := NewFilterController(service)
+	app.MountFilterController(service, c3)
 	// Mount "health" controller
-	c3 := NewHealthController(service)
-	app.MountHealthController(service, c3)
+	c4 := NewHealthController(service)
+	app.MountHealthController(service, c4)
 	// Mount "index" controller
-	c4 := NewIndexController(service)
-	app.MountIndexController(service, c4)
+	c5 := NewIndexController(service)
+	app.MountIndexController(service, c5)
 	// Mount "opml" controller
-	c5 := NewOpmlController(service)
-	app.MountOpmlController(service, c5)
+	c6 := NewOpmlController(service)
+	app.MountOpmlController(service, c6)
 	// Mount "output" controller
-	c6 := NewOutputController(service)
-	app.MountOutputController(service, c6)
+	c7 := NewOutputController(service)
+	app.MountOutputController(service, c7)
 	// Mount "pshb" controller
-	c7 := NewPshbController(service)
-	app.MountPshbController(service, c7)
+	c8 := NewPshbController(service)
+	app.MountPshbController(service, c8)
 	// Mount "swagger" controller
-	c8 := NewSwaggerController(service)
-	app.MountSwaggerController(service, c8)
+	c9 := NewSwaggerController(service)
+	app.MountSwaggerController(service, c9)
 	// Mount "vars" controller
-	c9 := NewVarsController(service)
-	app.MountVarsController(service, c9)
+	c10 := NewVarsController(service)
+	app.MountVarsController(service, c10)
 
 	// Start service
 	if err := service.ListenAndServe(":8080"); err != nil {

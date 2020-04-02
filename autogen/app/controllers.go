@@ -32,6 +32,61 @@ func initService(service *goa.Service) {
 	service.Decoder.Register(goa.NewJSONDecoder, "*/*")
 }
 
+// ExploreController is the controller interface for the Explore actions.
+type ExploreController interface {
+	goa.Muxer
+	Get(*GetExploreContext) error
+}
+
+// MountExploreController "mounts" a Explore resource controller on the given service.
+func MountExploreController(service *goa.Service, ctrl ExploreController) {
+	initService(service)
+	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/v2/explore", ctrl.MuxHandler("preflight", handleExploreOrigin(cors.HandlePreflight()), nil))
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewGetExploreContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Get(rctx)
+	}
+	h = handleExploreOrigin(h)
+	service.Mux.Handle("GET", "/v2/explore", ctrl.MuxHandler("get", h, nil))
+	service.LogInfo("mount", "ctrl", "Explore", "action", "Get", "route", "GET /v2/explore")
+}
+
+// handleExploreOrigin applies the CORS response headers corresponding to the origin.
+func handleExploreOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
+}
+
 // FeedController is the controller interface for the Feed actions.
 type FeedController interface {
 	goa.Muxer

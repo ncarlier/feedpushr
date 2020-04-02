@@ -1,4 +1,4 @@
-package search
+package explore
 
 import (
 	"context"
@@ -13,37 +13,37 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// Result is the result of a feed search
-type Result struct {
-	Title   string
-	XMLURL  string
-	HTMLURL string
-	Text    string
+// SearchResult is the result of a feed search
+type SearchResult struct {
+	Title   string `json:"title,omitempty"`
+	Desc    string `json:"desc,omitempty"`
+	XMLURL  string `json:"xmlUrl,omitempty"`
+	HTMLURL string `json:"htmlUrl,omitempty"`
 }
 
-// Results is a list of search result
-type Results []Result
+// SearchResults is a list of search result
+type SearchResults []SearchResult
 
-// Engine is the interface of a feed search engine
-type Engine interface {
-	Search(q string) (*Results, error)
+// Explorer is the interface of a feed explorer
+type Explorer interface {
+	Search(q string) (*SearchResults, error)
 }
 
-// NewSearchEngine the search engine
-func NewSearchEngine(provider string) (Engine, error) {
-	var engine Engine
+// NewExplorer create new explorer for a given provider
+func NewExplorer(provider string) (Explorer, error) {
+	var explorer Explorer
 
 	switch provider {
 	case "rsssearchhub", "default":
-		engine = NewRSSSearchHubSearchProvider()
-		log.Info().Str("component", "search").Str("provider", provider).Msg("feed search engine configured")
+		explorer = NewRSSSearchHubExplorerProvider()
+		log.Info().Str("component", "explorer").Str("provider", provider).Msg("feed explorer configured")
 	default:
-		return nil, fmt.Errorf("unsupported search engine provider: %s", provider)
+		return nil, fmt.Errorf("unsupported explorer provider: %s", provider)
 	}
-	return engine, nil
+	return explorer, nil
 }
 
-func searchByURL(u url.URL) (*Results, error) {
+func searchByURL(u url.URL) (*SearchResults, error) {
 	// Set timeout context
 	ctx, cancel := context.WithCancel(context.TODO())
 	timeout := time.AfterFunc(common.DefaultTimeout, func() {
@@ -89,9 +89,9 @@ func searchByURL(u url.URL) (*Results, error) {
 		return nil, fmt.Errorf("no feed URL found on this page: %s", u.String())
 	}
 
-	results := Results{}
+	results := SearchResults{}
 	for _, u := range urls {
-		results = append(results, Result{
+		results = append(results, SearchResult{
 			XMLURL: u,
 		})
 	}

@@ -65,20 +65,68 @@ definitions:
     - condition
     title: CreateOutputPayload
     type: object
+  ExploreResponse:
+    description: The search result (default view)
+    example:
+      desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    properties:
+      desc:
+        description: Feed description
+        example: A short description...
+        type: string
+      htmlUrl:
+        description: URL of the feed website
+        example: http://www.hashicorp.com/blog
+        type: string
+      title:
+        description: Feed title
+        example: Blog news...
+        type: string
+      xmlUrl:
+        description: URL of the XML feed
+        example: http://www.hashicorp.com/feed.xml
+        type: string
+    required:
+    - title
+    - desc
+    - xmlUrl
+    - htmlUrl
+    title: 'Mediatype identifier: application/vnd.feedpushr.explore.v2+json; view=default'
+    type: object
+  ExploreResponseCollection:
+    description: ExploreResponseCollection is the media type for an array of ExploreResponse
+      (default view)
+    example:
+    - desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    items:
+      $ref: '#/definitions/ExploreResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.explore.v2+json; type=collection;
+      view=default'
+    type: array
   FeedResponse:
     description: A RSS feed (default view)
     example:
-      cdate: "2010-10-23T13:34:07Z"
-      errorCount: 333691758294841896
-      errorMsg: Est suscipit.
+      cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: "1993-05-15T16:34:02Z"
-      mdate: "1981-09-22T23:39:59Z"
-      nbProcessedItems: 541887129200626015
-      nextCheck: "1999-10-11T23:32:13Z"
-      status: stopped
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
       tags:
       - foo
       - bar
@@ -87,17 +135,17 @@ definitions:
     properties:
       cdate:
         description: Date of creation
-        example: "2010-10-23T13:34:07Z"
+        example: "2001-04-14T11:31:36Z"
         format: date-time
         type: string
       errorCount:
         description: Number of consecutive aggregation errors
-        example: 333691758294841896
+        example: 3744847684773844858
         format: int64
         type: integer
       errorMsg:
         description: Last aggregation error
-        example: Est suscipit.
+        example: Suscipit voluptas.
         type: string
       htmlUrl:
         description: URL of the feed website
@@ -113,22 +161,22 @@ definitions:
         type: string
       lastCheck:
         description: Last aggregation pass
-        example: "1993-05-15T16:34:02Z"
+        example: "1981-09-22T23:39:59Z"
         format: date-time
         type: string
       mdate:
         description: Date of modification
-        example: "1981-09-22T23:39:59Z"
+        example: "1975-05-22T16:26:55Z"
         format: date-time
         type: string
       nbProcessedItems:
         description: Total number of processed items
-        example: 541887129200626015
+        example: 2455384998049050733
         format: int64
         type: integer
       nextCheck:
         description: Next aggregation pass
-        example: "1999-10-11T23:32:13Z"
+        example: "1982-07-23T05:02:45Z"
         format: date-time
         type: string
       status:
@@ -136,7 +184,7 @@ definitions:
         enum:
         - running
         - stopped
-        example: stopped
+        example: running
         type: string
       tags:
         description: List of tags
@@ -144,7 +192,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Commodi soluta similique sit dolores.
+          example: Dolores minima eligendi iusto eum.
           type: string
         type: array
       title:
@@ -167,17 +215,33 @@ definitions:
     description: FeedResponseCollection is the media type for an array of FeedResponse
       (default view)
     example:
-    - cdate: "2010-10-23T13:34:07Z"
-      errorCount: 333691758294841896
-      errorMsg: Est suscipit.
+    - cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
       htmlUrl: http://www.hashicorp.com/blog
       hubUrl: http://pubsubhubbub.appspot.com
       id: 5bfb841c028281c0051828c115fd1f50
-      lastCheck: "1993-05-15T16:34:02Z"
-      mdate: "1981-09-22T23:39:59Z"
-      nbProcessedItems: 541887129200626015
-      nextCheck: "1999-10-11T23:32:13Z"
-      status: stopped
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
+      tags:
+      - foo
+      - bar
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
       tags:
       - foo
       - bar
@@ -193,49 +257,49 @@ definitions:
     example:
       current: 1
       data:
-      - cdate: "2010-10-23T13:34:07Z"
-        errorCount: 333691758294841896
-        errorMsg: Est suscipit.
+      - cdate: "2001-04-14T11:31:36Z"
+        errorCount: 3744847684773844858
+        errorMsg: Suscipit voluptas.
         htmlUrl: http://www.hashicorp.com/blog
         hubUrl: http://pubsubhubbub.appspot.com
         id: 5bfb841c028281c0051828c115fd1f50
-        lastCheck: "1993-05-15T16:34:02Z"
-        mdate: "1981-09-22T23:39:59Z"
-        nbProcessedItems: 541887129200626015
-        nextCheck: "1999-10-11T23:32:13Z"
-        status: stopped
+        lastCheck: "1981-09-22T23:39:59Z"
+        mdate: "1975-05-22T16:26:55Z"
+        nbProcessedItems: 2455384998049050733
+        nextCheck: "1982-07-23T05:02:45Z"
+        status: running
         tags:
         - foo
         - bar
         title: Hashicorp Blog
         xmlUrl: http://www.hashicorp.com/feed.xml
-      - cdate: "2010-10-23T13:34:07Z"
-        errorCount: 333691758294841896
-        errorMsg: Est suscipit.
+      - cdate: "2001-04-14T11:31:36Z"
+        errorCount: 3744847684773844858
+        errorMsg: Suscipit voluptas.
         htmlUrl: http://www.hashicorp.com/blog
         hubUrl: http://pubsubhubbub.appspot.com
         id: 5bfb841c028281c0051828c115fd1f50
-        lastCheck: "1993-05-15T16:34:02Z"
-        mdate: "1981-09-22T23:39:59Z"
-        nbProcessedItems: 541887129200626015
-        nextCheck: "1999-10-11T23:32:13Z"
-        status: stopped
+        lastCheck: "1981-09-22T23:39:59Z"
+        mdate: "1975-05-22T16:26:55Z"
+        nbProcessedItems: 2455384998049050733
+        nextCheck: "1982-07-23T05:02:45Z"
+        status: running
         tags:
         - foo
         - bar
         title: Hashicorp Blog
         xmlUrl: http://www.hashicorp.com/feed.xml
-      - cdate: "2010-10-23T13:34:07Z"
-        errorCount: 333691758294841896
-        errorMsg: Est suscipit.
+      - cdate: "2001-04-14T11:31:36Z"
+        errorCount: 3744847684773844858
+        errorMsg: Suscipit voluptas.
         htmlUrl: http://www.hashicorp.com/blog
         hubUrl: http://pubsubhubbub.appspot.com
         id: 5bfb841c028281c0051828c115fd1f50
-        lastCheck: "1993-05-15T16:34:02Z"
-        mdate: "1981-09-22T23:39:59Z"
-        nbProcessedItems: 541887129200626015
-        nextCheck: "1999-10-11T23:32:13Z"
-        status: stopped
+        lastCheck: "1981-09-22T23:39:59Z"
+        mdate: "1975-05-22T16:26:55Z"
+        nbProcessedItems: 2455384998049050733
+        nextCheck: "1982-07-23T05:02:45Z"
+        status: running
         tags:
         - foo
         - bar
@@ -275,7 +339,7 @@ definitions:
       condition: '"foo" in Tags'
       desc: This filter will...
       enabled: true
-      id: Minus et ut pariatur.
+      id: Ut pariatur qui voluptatibus.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -300,7 +364,7 @@ definitions:
         type: boolean
       id:
         description: ID of the filter
-        example: Minus et ut pariatur.
+        example: Ut pariatur qui voluptatibus.
         type: string
       name:
         description: Name of the filter
@@ -339,7 +403,7 @@ definitions:
       condition: '"foo" in Tags'
       desc: This filter will...
       enabled: true
-      id: Minus et ut pariatur.
+      id: Ut pariatur qui voluptatibus.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -348,7 +412,16 @@ definitions:
       condition: '"foo" in Tags'
       desc: This filter will...
       enabled: true
-      id: Minus et ut pariatur.
+      id: Ut pariatur qui voluptatibus.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: Ut pariatur qui voluptatibus.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -367,14 +440,14 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
     properties:
       desc:
@@ -403,14 +476,44 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+    - desc: Add a prefix to the tittle...
+      name: title
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+    - desc: Add a prefix to the tittle...
+      name: title
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
     items:
       $ref: '#/definitions/FilterSpecResponse'
@@ -421,7 +524,7 @@ definitions:
     description: API info (default view)
     example:
       _links:
-        Doloribus in culpa mollitia modi consequatur.:
+        Culpa mollitia modi consequatur maxime occaecati necessitatibus.:
           href: url
       desc: Feed aggregator daemon with sugar on top
       name: feedpushr
@@ -431,7 +534,7 @@ definitions:
         additionalProperties: true
         description: HAL links
         example:
-          Doloribus in culpa mollitia modi consequatur.:
+          Culpa mollitia modi consequatur maxime occaecati necessitatibus.:
             href: url
         type: object
       desc:
@@ -459,13 +562,13 @@ definitions:
       alias: foo
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
-      enabled: true
+      enabled: false
       filters:
       - alias: foo
         condition: '"foo" in Tags'
         desc: This filter will...
         enabled: true
-        id: Minus et ut pariatur.
+        id: Ut pariatur qui voluptatibus.
         name: fetch
         nbError: 10
         nbSuccess: 10
@@ -474,21 +577,12 @@ definitions:
         condition: '"foo" in Tags'
         desc: This filter will...
         enabled: true
-        id: Minus et ut pariatur.
+        id: Ut pariatur qui voluptatibus.
         name: fetch
         nbError: 10
         nbSuccess: 10
         props: '-'
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      id: Illum possimus fugit.
+      id: Suscipit ea accusamus.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -509,13 +603,13 @@ definitions:
       enabled:
         default: false
         description: Status
-        example: true
+        example: false
         type: boolean
       filters:
         $ref: '#/definitions/FilterResponseCollection'
       id:
         description: ID of the output
-        example: Illum possimus fugit.
+        example: Suscipit ea accusamus.
         type: string
       name:
         description: Name of the output channel
@@ -553,13 +647,13 @@ definitions:
     - alias: foo
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
-      enabled: true
+      enabled: false
       filters:
       - alias: foo
         condition: '"foo" in Tags'
         desc: This filter will...
         enabled: true
-        id: Minus et ut pariatur.
+        id: Ut pariatur qui voluptatibus.
         name: fetch
         nbError: 10
         nbSuccess: 10
@@ -568,95 +662,12 @@ definitions:
         condition: '"foo" in Tags'
         desc: This filter will...
         enabled: true
-        id: Minus et ut pariatur.
+        id: Ut pariatur qui voluptatibus.
         name: fetch
         nbError: 10
         nbSuccess: 10
         props: '-'
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      id: Illum possimus fugit.
-      name: fetch
-      nbError: 10
-      nbSuccess: 10
-      props: '-'
-    - alias: foo
-      condition: '"foo" in Tags'
-      desc: New articles are sent as JSON document to...
-      enabled: true
-      filters:
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      id: Illum possimus fugit.
-      name: fetch
-      nbError: 10
-      nbSuccess: 10
-      props: '-'
-    - alias: foo
-      condition: '"foo" in Tags'
-      desc: New articles are sent as JSON document to...
-      enabled: true
-      filters:
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      - alias: foo
-        condition: '"foo" in Tags'
-        desc: This filter will...
-        enabled: true
-        id: Minus et ut pariatur.
-        name: fetch
-        nbError: 10
-        nbSuccess: 10
-        props: '-'
-      id: Illum possimus fugit.
+      id: Suscipit ea accusamus.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -675,20 +686,14 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
     properties:
       desc:
@@ -717,20 +722,14 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
     - desc: New articles are sent as JSON document to...
       name: fetch
@@ -738,20 +737,14 @@ definitions:
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: text
     items:
       $ref: '#/definitions/OutputSpecResponse'
@@ -764,8 +757,8 @@ definitions:
       desc: New articles are sent as JSON document to...
       name: url
       options:
-        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-          accusantium.
+        Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+          quidem non.
       type: text
     properties:
       desc:
@@ -780,8 +773,8 @@ definitions:
         additionalProperties: true
         description: Property options
         example:
-          Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-            accusantium.
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
         type: object
       type:
         description: Property type ('text', 'url', ...)
@@ -800,20 +793,14 @@ definitions:
     - desc: New articles are sent as JSON document to...
       name: url
       options:
-        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-          accusantium.
+        Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+          quidem non.
       type: text
     - desc: New articles are sent as JSON document to...
       name: url
       options:
-        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-          accusantium.
-      type: text
-    - desc: New articles are sent as JSON document to...
-      name: url
-      options:
-        Ducimus veritatis laudantium autem deserunt saepe exercitationem.: Id earum
-          accusantium.
+        Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+          quidem non.
       type: text
     items:
       $ref: '#/definitions/PropSpec'
@@ -942,6 +929,33 @@ paths:
       summary: get index
       tags:
       - index
+  /explore:
+    get:
+      description: Search RSS feed using external search engine
+      operationId: explore#get
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: false
+        type: string
+      produces:
+      - application/vnd.feedpushr.explore.v2+json; type=collection
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ExploreResponseCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: get explore
+      tags:
+      - explore
   /feeds:
     get:
       description: Retrieve all feeds

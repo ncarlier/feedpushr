@@ -13,6 +13,7 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/cache"
 	"github.com/ncarlier/feedpushr/v2/pkg/config"
 	"github.com/ncarlier/feedpushr/v2/pkg/controller"
+	"github.com/ncarlier/feedpushr/v2/pkg/explore"
 	"github.com/ncarlier/feedpushr/v2/pkg/logging"
 	"github.com/ncarlier/feedpushr/v2/pkg/output"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
@@ -70,6 +71,12 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 		}
 	}
 
+	// Init feed explorer
+	explorer, err := explore.NewExplorer(conf.ExploreProvider)
+	if err != nil {
+		return nil, err
+	}
+
 	// Init cache manager
 	cm, err := cache.NewCacheManager(db, conf)
 	if err != nil {
@@ -123,6 +130,8 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	app.MountSwaggerController(srv, controller.NewSwaggerController(srv))
 	// Mount "opml" controller
 	app.MountOpmlController(srv, controller.NewOpmlController(srv, db))
+	// Mount "explore" controller
+	app.MountExploreController(srv, controller.NewExploreController(srv, explorer))
 	// Mount "vars" controller
 	app.MountVarsController(srv, controller.NewVarsController(srv))
 	// Mount "pshb" controller (only if public URL is configured)

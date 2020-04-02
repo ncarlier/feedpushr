@@ -80,13 +80,12 @@ export default withRouter(({page, history}: Props & RouteComponentProps) => {
     const { id, title } = oldFeed
     try {
       const res = await fetchAPI(`/feeds/${id}`, null, {method: 'DELETE'})
-      if (res.ok) {
-        setError(null)
-        showMessage(<Message variant="success"  message={`${title} feed removed`} />)
-        return
+      if (!res.ok) {
+        const _err = await res.json()
+        throw new Error(_err.detail || res.statusText)
       }
-      const _err = await res.json()
-      throw new Error(_err.detail || res.statusText)
+      setError(null)
+      showMessage(<Message variant="success"  message={`${title} feed removed`} />)
     } catch (err) {
       setError(err)
       throw err

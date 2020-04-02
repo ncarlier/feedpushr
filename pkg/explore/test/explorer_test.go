@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/search"
+	"github.com/ncarlier/feedpushr/v2/pkg/explore"
 )
 
 func TestSearchURL(t *testing.T) {
-	engine, err := search.NewSearchEngine("default")
+	explorer, err := explore.NewExplorer("default")
 	assert.Nil(t, err, "error should be nil")
-	results, err := engine.Search("https://keeper.nunux.org")
+	results, err := explorer.Search("https://keeper.nunux.org")
 	assert.Nil(t, err, "error should be nil")
 	res := *results
 	assert.Equal(t, 1, len(res), "Results should not be empty")
@@ -18,9 +18,9 @@ func TestSearchURL(t *testing.T) {
 }
 
 func TestSearchQuery(t *testing.T) {
-	engine, err := search.NewSearchEngine("default")
+	explorer, err := explore.NewExplorer("default")
 	assert.Nil(t, err, "error should be nil")
-	results, err := engine.Search("tech blog")
+	results, err := explorer.Search("tech blog")
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, len(*results) > 0, "Results should not be empty")
 }

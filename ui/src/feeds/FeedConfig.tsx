@@ -26,29 +26,32 @@ interface Props {
   onSave: (feed: FeedForm) => void
 }
 
+interface FeedConfigForm {
+  title: string
+  xmlUrl: string
+  tags: string[]
+}
+
 export default ({onSave, onCancel, feed}: Props) => {
   const classes = useStyles()
-  const [title, setTitle] = React.useState<string>(feed ? feed.title : "")
-  const [xmlUrl, setXmlUrl] = React.useState<string>(feed ? feed.xmlUrl : "")
-  const [tags, setTags] = React.useState<string[]>(feed && feed.tags ? feed.tags : [])
+  
+  const [values, setValues] = React.useState<FeedConfigForm>({
+    title: feed ? feed.title : "",
+    xmlUrl: feed ? feed.xmlUrl : "",
+    tags: feed && feed.tags ? feed.tags : [],
+  })
 
-  const handleChangeTitle = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value)
-  }, [])
-  const handleChangeXmlUrl = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setXmlUrl(event.target.value)
-  }, [])
-  const handleChangeTags = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTags(event.target.value.split(','))
-  }, [])
+  const handleChange = (prop: keyof FeedConfigForm) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (prop === 'tags') {
+      setValues({ ...values, [prop]: event.target.value.split(',') })
+    } else {
+      setValues({ ...values, [prop]: event.target.value })
+    }
+  }
 
   const handleSave = useCallback(() => {
-    onSave({
-      title,
-      xmlUrl,
-      tags,
-    })
-  }, [onSave, title, xmlUrl, tags])
+    onSave(values)
+  }, [onSave, values])
 
   return (
     <Paper className={classes.root}>
@@ -56,8 +59,8 @@ export default ({onSave, onCancel, feed}: Props) => {
         <TextField
           id="title"
           label="Title"
-          value={title}
-          onChange={handleChangeTitle()}
+          value={values.title}
+          onChange={handleChange('title')}
           fullWidth
         />
         { !!!feed && <TextField
@@ -65,16 +68,16 @@ export default ({onSave, onCancel, feed}: Props) => {
           label="URL"
           type="url"
           helperText="ex: http://rss.cnn.com/rss/edition.rss"
-          value={xmlUrl}
-          onChange={handleChangeXmlUrl()}
+          value={values.xmlUrl}
+          onChange={handleChange('xmlUrl')}
           fullWidth
         />}
         <TextField
           id="tags"
           label="Tags"
           helperText="Comma separated list of tags"
-          value={tags.join(',')}
-          onChange={handleChangeTags()}
+          value={values.tags.join(',')}
+          onChange={handleChange('tags')}
           fullWidth
         />
       </form>

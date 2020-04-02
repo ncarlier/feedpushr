@@ -5,11 +5,13 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Divider,
 } from '@material-ui/core'
 
 import {
   RssFeed as FeedIcon,
-  Backup as OutputIcon
+  Backup as OutputIcon,
+  Explore as ExploreIcon
 } from '@material-ui/icons'
 import { Link } from 'react-router-dom';
 
@@ -26,6 +28,13 @@ export default () => (
         <OutputIcon />
       </ListItemIcon>
       <ListItemText primary="Outputs" />
+    </ListItem>
+    <Divider />
+    <ListItem button component={Link} to="/explore">
+      <ListItemIcon>
+        <ExploreIcon />
+      </ListItemIcon>
+      <ListItemText primary="Explore" />
     </ListItem>
   </List>
 )

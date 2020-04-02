@@ -35,14 +35,14 @@ export default ({ match, history }: Props) => {
     try {
       const { title, tags } = form
       const res = await fetchAPI(`/feeds/${id}`, {title, tags}, {method: 'PUT', headers})
-      if (res.ok) {
-        setError(null)
-        const data = await res.json() as Feed
-        showMessage(<Message variant="success"  message={`${data.title} feed updated`} />)
-        return history.push('/feeds')
+      if (!res.ok) {
+        const _err = await res.json()
+        throw new Error(_err.detail || res.statusText)
       }
-      const _err = await res.json()
-      throw new Error(_err.detail || res.statusText)
+      setError(null)
+      const data = await res.json() as Feed
+      showMessage(<Message variant="success"  message={`${data.title} feed updated`} />)
+      return history.push('/feeds')
     } catch (err) {
       setError(err)
     }

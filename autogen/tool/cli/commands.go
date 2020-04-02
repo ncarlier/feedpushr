@@ -28,6 +28,13 @@ import (
 )
 
 type (
+	// GetExploreCommand is the command line data structure for the get action of explore
+	GetExploreCommand struct {
+		// Search query
+		Q           string
+		PrettyPrint bool
+	}
+
 	// CreateFeedCommand is the command line data structure for the create action of feed
 	CreateFeedCommand struct {
 		// Comma separated list of tags
@@ -309,100 +316,95 @@ Payload example:
 		Use:   "get",
 		Short: `get action`,
 	}
-	tmp7 := new(GetFeedCommand)
+	tmp7 := new(GetExploreCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v2/feeds/ID"]`,
+		Use:   `explore ["/v2/explore"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp7.Run(c, args) },
 	}
 	tmp7.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp7.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp8 := new(GetHealthCommand)
+	tmp8 := new(GetFeedCommand)
 	sub = &cobra.Command{
-		Use:   `health ["/v2/healthz"]`,
+		Use:   `feed ["/v2/feeds/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp8.Run(c, args) },
 	}
 	tmp8.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp8.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp9 := new(GetIndexCommand)
+	tmp9 := new(GetHealthCommand)
 	sub = &cobra.Command{
-		Use:   `index ["/v2/"]`,
+		Use:   `health ["/v2/healthz"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp9.Run(c, args) },
 	}
 	tmp9.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp9.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp10 := new(GetOpmlCommand)
+	tmp10 := new(GetIndexCommand)
 	sub = &cobra.Command{
-		Use:   `opml ["/v2/opml"]`,
+		Use:   `index ["/v2/"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp10.Run(c, args) },
 	}
 	tmp10.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp10.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp11 := new(GetOutputCommand)
+	tmp11 := new(GetOpmlCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/ID"]`,
+		Use:   `opml ["/v2/opml"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp11.Run(c, args) },
 	}
 	tmp11.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp11.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp12 := new(GetSwaggerCommand)
+	tmp12 := new(GetOutputCommand)
 	sub = &cobra.Command{
-		Use:   `swagger ["/v2/swagger.json"]`,
+		Use:   `output ["/v2/outputs/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp12.Run(c, args) },
 	}
 	tmp12.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp12.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp13 := new(GetVarsCommand)
+	tmp13 := new(GetSwaggerCommand)
 	sub = &cobra.Command{
-		Use:   `vars ["/v2/vars"]`,
+		Use:   `swagger ["/v2/swagger.json"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp13.Run(c, args) },
 	}
 	tmp13.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp13.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "list",
-		Short: `list action`,
-	}
-	tmp14 := new(ListFeedCommand)
+	tmp14 := new(GetVarsCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v2/feeds"]`,
+		Use:   `vars ["/v2/vars"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp14.Run(c, args) },
 	}
 	tmp14.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp14.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp15 := new(ListOutputCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "list",
+		Short: `list action`,
+	}
+	tmp15 := new(ListFeedCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs"]`,
+		Use:   `feed ["/v2/feeds"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp15.Run(c, args) },
 	}
 	tmp15.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp15.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "pub",
-		Short: `Publication endpoint for PSHB hubs`,
-	}
-	tmp16 := new(PubPshbCommand)
+	tmp16 := new(ListOutputCommand)
 	sub = &cobra.Command{
-		Use:   `pshb ["/v2/pshb"]`,
+		Use:   `output ["/v2/outputs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp16.Run(c, args) },
 	}
@@ -411,35 +413,35 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "specs",
-		Short: `specs action`,
+		Use:   "pub",
+		Short: `Publication endpoint for PSHB hubs`,
 	}
-	tmp17 := new(SpecsFilterCommand)
+	tmp17 := new(PubPshbCommand)
 	sub = &cobra.Command{
-		Use:   `filter ["/v2/filters/_specs"]`,
+		Use:   `pshb ["/v2/pshb"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp17.Run(c, args) },
 	}
 	tmp17.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp17.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp18 := new(SpecsOutputCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "specs",
+		Short: `specs action`,
+	}
+	tmp18 := new(SpecsFilterCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/_specs"]`,
+		Use:   `filter ["/v2/filters/_specs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp18.Run(c, args) },
 	}
 	tmp18.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp18.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "start",
-		Short: `Start feed aggregation`,
-	}
-	tmp19 := new(StartFeedCommand)
+	tmp19 := new(SpecsOutputCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v2/feeds/ID/start"]`,
+		Use:   `output ["/v2/outputs/_specs"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp19.Run(c, args) },
 	}
@@ -448,12 +450,12 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "stop",
-		Short: `Stop feed aggregation`,
+		Use:   "start",
+		Short: `Start feed aggregation`,
 	}
-	tmp20 := new(StopFeedCommand)
+	tmp20 := new(StartFeedCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v2/feeds/ID/stop"]`,
+		Use:   `feed ["/v2/feeds/ID/start"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp20.Run(c, args) },
 	}
@@ -462,12 +464,12 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "sub",
-		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
+		Use:   "stop",
+		Short: `Stop feed aggregation`,
 	}
-	tmp21 := new(SubPshbCommand)
+	tmp21 := new(StopFeedCommand)
 	sub = &cobra.Command{
-		Use:   `pshb ["/v2/pshb"]`,
+		Use:   `feed ["/v2/feeds/ID/stop"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp21.Run(c, args) },
 	}
@@ -476,45 +478,35 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "update",
-		Short: `update action`,
+		Use:   "sub",
+		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
 	}
-	tmp22 := new(UpdateFeedCommand)
+	tmp22 := new(SubPshbCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v2/feeds/ID"]`,
+		Use:   `pshb ["/v2/pshb"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp22.Run(c, args) },
 	}
 	tmp22.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp22.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp23 := new(UpdateOutputCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "update",
+		Short: `update action`,
+	}
+	tmp23 := new(UpdateFeedCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/ID"]`,
+		Use:   `feed ["/v2/feeds/ID"]`,
 		Short: ``,
-		Long: `
-
-Payload example:
-
-{
-   "alias": "foo",
-   "condition": "\"foo\" in Tags",
-   "enabled": "-",
-   "props": "-"
-}`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp23.Run(c, args) },
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp23.Run(c, args) },
 	}
 	tmp23.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp23.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "update-filter",
-		Short: `Update a filter`,
-	}
-	tmp24 := new(UpdateFilterOutputCommand)
+	tmp24 := new(UpdateOutputCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/ID/filters/IDFILTER"]`,
+		Use:   `output ["/v2/outputs/ID"]`,
 		Short: ``,
 		Long: `
 
@@ -533,17 +525,41 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "upload",
-		Short: `Upload an OPML file to create feeds`,
+		Use:   "update-filter",
+		Short: `Update a filter`,
 	}
-	tmp25 := new(UploadOpmlCommand)
+	tmp25 := new(UpdateFilterOutputCommand)
 	sub = &cobra.Command{
-		Use:   `opml ["/v2/opml"]`,
+		Use:   `output ["/v2/outputs/ID/filters/IDFILTER"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp25.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "alias": "foo",
+   "condition": "\"foo\" in Tags",
+   "enabled": "-",
+   "props": "-"
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp25.Run(c, args) },
 	}
 	tmp25.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp25.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "upload",
+		Short: `Upload an OPML file to create feeds`,
+	}
+	tmp26 := new(UploadOpmlCommand)
+	sub = &cobra.Command{
+		Use:   `opml ["/v2/opml"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp26.Run(c, args) },
+	}
+	tmp26.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp26.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 }
@@ -699,6 +715,32 @@ func boolArray(ins []string) ([]bool, error) {
 		vals = append(vals, *val)
 	}
 	return vals, nil
+}
+
+// Run makes the HTTP request corresponding to the GetExploreCommand command.
+func (cmd *GetExploreCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/v2/explore"
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.GetExplore(ctx, path, stringFlagVal("q", cmd.Q))
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *GetExploreCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var q string
+	cc.Flags().StringVar(&cmd.Q, "q", q, `Search query`)
 }
 
 // Run makes the HTTP request corresponding to the CreateFeedCommand command.
