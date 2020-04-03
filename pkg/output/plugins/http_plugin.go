@@ -7,7 +7,6 @@ import (
 	"sync/atomic"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
@@ -58,38 +57,34 @@ func (p *HTTPOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates output provider instance
-func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
-	condition, err := expr.NewConditionalExpression(output.Condition)
-	if err != nil {
-		return nil, err
-	}
-	u, ok := output.Props["url"]
+func (p *HTTPOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
+	u, ok := def.Props["url"]
 	if !ok {
 		return nil, fmt.Errorf("missing URL property")
 	}
-	_url, err := url.ParseRequestURI(fmt.Sprintf("%v", u))
+	targetURL, err := url.ParseRequestURI(fmt.Sprintf("%v", u))
 	if err != nil {
 		return nil, fmt.Errorf("invalid URL property: %s", err.Error())
 	}
-	formatter, err := format.NewOutputFormatter(output)
+	formatter, err := format.NewOutputFormatter(def)
 	if err != nil {
 		return nil, err
 	}
 	contentType := common.ContentTypeJSON
-	if val, ok := output.Props["contentType"]; ok {
+	if val, ok := def.Props["contentType"]; ok {
 		_contentType := fmt.Sprintf("%v", val)
 		if _, supported := supportedContentTypes[_contentType]; supported {
 			contentType = _contentType
 		}
 	}
 
+	definition := *def
+	definition.Spec = httpSpec
+	definition.Props["url"] = targetURL.String()
+
 	return &HTTPOutputProvider{
-		id:          output.ID,
-		alias:       output.Alias,
-		spec:        httpSpec,
-		condition:   condition,
-		enabled:     output.Enabled,
-		targetURL:   _url.String(),
+		definition:  definition,
+		targetURL:   targetURL.String(),
 		contentType: contentType,
 		formatter:   formatter,
 	}, nil
@@ -97,68 +92,43 @@ func (p *HTTPOutputPlugin) Build(output *model.OutputDef) (model.Output, error) 
 
 // HTTPOutputProvider HTTP output provider
 type HTTPOutputProvider struct {
-	id          string
-	alias       string
-	spec        model.Spec
-	condition   *expr.ConditionalExpression
-	nbError     uint64
-	nbSuccess   uint64
-	enabled     bool
+	definition  model.OutputDef
 	targetURL   string
 	contentType string
 	formatter   format.Formatter
 }
 
 // Send article to HTTP endpoint.
-func (op *HTTPOutputProvider) Send(article *model.Article) error {
-	if !op.enabled || !op.condition.Match(article) {
-		// Ignore if disabled or if the article doesn't match the condition
-		return nil
-	}
-
+func (op *HTTPOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
 
 	req, err := http.NewRequest("POST", op.targetURL, b)
 	if err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
 	req.Header.Set("User-Agent", common.UserAgent)
 	req.Header.Set("Content-Type", op.contentType)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode >= 300 {
-		atomic.AddUint64(&op.nbError, 1)
-		return fmt.Errorf("bad status code: %d", resp.StatusCode)
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, fmt.Errorf("bad status code: %d", resp.StatusCode)
 	}
-	atomic.AddUint64(&op.nbSuccess, 1)
-	return nil
+	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	return true, nil
 }
 
 // GetDef return output provider definition
 func (op *HTTPOutputProvider) GetDef() model.OutputDef {
-	result := model.OutputDef{
-		ID:        op.id,
-		Alias:     op.alias,
-		Spec:      op.spec,
-		Condition: op.condition.String(),
-		Enabled:   op.enabled,
-		NbSuccess: op.nbSuccess,
-		NbError:   op.nbError,
-	}
-	result.Props = map[string]interface{}{
-		"url":         op.targetURL,
-		"format":      op.formatter.Value(),
-		"contentType": op.contentType,
-	}
-	return result
+	return op.definition
 }

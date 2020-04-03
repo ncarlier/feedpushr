@@ -45,7 +45,7 @@ func NewCacheManager(repository store.CacheRepository, conf config.Config) (*Man
 	return manager, nil
 }
 
-// MaxAge comput current cache max age
+// MaxAge compute current cache max age
 func (m *Manager) MaxAge() time.Time {
 	return time.Now().Add(-m.retention)
 }

@@ -5,11 +5,10 @@ import (
 	"net/url"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
-var spec = model.Spec{
+var readflowSpec = model.Spec{
 	Name: "readflow",
 	Desc: "Send new articles a readflow instance.",
 	PropsSpec: []model.PropSpec{
@@ -31,88 +30,60 @@ type ReadflowOutputPlugin struct{}
 
 // Spec returns plugin spec
 func (p *ReadflowOutputPlugin) Spec() model.Spec {
-	return spec
+	return readflowSpec
 }
 
 // Build creates Readflow output provider instance
-func (p *ReadflowOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
-	condition, err := expr.NewConditionalExpression(output.Condition)
-	if err != nil {
-		return nil, err
-	}
-	u := output.Props.Get("url")
+func (p *ReadflowOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
+	u := def.Props.Get("url")
 	if u == "" {
 		u = "https://api.readflow.app"
 	}
-	_url, err := url.ParseRequestURI(u)
+	targetURL, err := url.ParseRequestURI(u)
 	if err != nil {
 		return nil, fmt.Errorf("invalid URL property: %s", err.Error())
 	}
-	apiKey := output.Props.Get("apiKey")
+	apiKey := def.Props.Get("apiKey")
 	if apiKey == "" {
 		return nil, fmt.Errorf("missing API key property")
 	}
+	definition := *def
+	definition.Spec = readflowSpec
+	definition.Props["url"] = targetURL.String()
 	return &ReadflowOutputProvider{
-		id:        output.ID,
-		alias:     output.Alias,
-		spec:      spec,
-		condition: condition,
-		targetURL: _url.String(),
-		apiKey:    apiKey,
-		enabled:   output.Enabled,
+		definition: definition,
+		targetURL:  targetURL.String(),
+		apiKey:     apiKey,
 	}, nil
 }
 
 // ReadflowOutputProvider output provider to send articles to Readflow
 type ReadflowOutputProvider struct {
-	id        string
-	alias     string
-	spec      model.Spec
-	condition *expr.ConditionalExpression
-	enabled   bool
-	nbError   uint64
-	nbSuccess uint64
-	targetURL string
-	apiKey    string
+	definition model.OutputDef
+	targetURL  string
+	apiKey     string
 }
 
 // Send article to a Readflow instance.
-func (op *ReadflowOutputProvider) Send(article *model.Article) error {
-	if !op.enabled || !op.condition.Match(article) {
-		// Ignore if disabled or if the article doesn't match the condition
-		return nil
-	}
+func (op *ReadflowOutputProvider) Send(article *model.Article) (bool, error) {
 	nb, err := sendToReadflow(op.targetURL, op.apiKey, article)
 	if err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
-	atomic.AddUint64(&op.nbSuccess, uint64(nb))
-	return nil
+	atomic.AddUint64(&op.definition.NbSuccess, uint64(nb))
+	return true, nil
 }
 
 // GetDef return output definition
 func (op *ReadflowOutputProvider) GetDef() model.OutputDef {
-	result := model.OutputDef{
-		ID:        op.id,
-		Alias:     op.alias,
-		Spec:      op.spec,
-		Condition: op.condition.String(),
-		Enabled:   op.enabled,
-		NbSuccess: op.nbSuccess,
-		NbError:   op.nbError,
-	}
-	result.Props = map[string]interface{}{
-		"url":    op.targetURL,
-		"apiKey": op.apiKey,
-	}
-	return result
+	return op.definition
 }
 
 // GetPluginSpec return plugin informations
 func GetPluginSpec() model.PluginSpec {
 	return model.PluginSpec{
-		Spec: spec,
+		Spec: readflowSpec,
 		Type: model.OutputPluginType,
 	}
 }

@@ -17,7 +17,7 @@ type Manager struct {
 	plugins    map[string]model.OutputPlugin
 	processors map[string]*Processor
 	cache      *cache.Manager
-	log        zerolog.Logger
+	logger     zerolog.Logger
 }
 
 // NewOutputManager creates a new output manager
@@ -26,7 +26,7 @@ func NewOutputManager(cache *cache.Manager) (*Manager, error) {
 		plugins:    plugins.GetBuiltinOutputPlugins(),
 		processors: make(map[string]*Processor),
 		cache:      cache,
-		log:        log.With().Str("component", "output-manager").Logger(),
+		logger:     log.With().Str("component", "output-manager").Logger(),
 	}
 
 	// Register external output plugins...
@@ -52,7 +52,15 @@ func (m *Manager) GetAvailableOutputs() []model.Spec {
 // Push articles to output processors
 func (m *Manager) Push(articles []*model.Article) {
 	for _, processor := range m.processors {
-		// TODO push articles to processors channels
 		processor.Process(articles)
 	}
+}
+
+// Shutdown stop the manager (aka. stop all processors)
+func (m *Manager) Shutdown() {
+	m.logger.Debug().Msg("shutting down all processors")
+	for _, processor := range m.processors {
+		processor.Shutdown()
+	}
+	m.logger.Debug().Msg("all processors stopped")
 }

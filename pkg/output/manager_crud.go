@@ -12,7 +12,7 @@ import (
 func (m *Manager) AddOutputProcessor(def *model.OutputDef) (*Processor, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	m.log.Debug().Str("name", def.Name).Msg("adding output processor...")
+	m.logger.Debug().Str("name", def.Name).Msg("adding output processor...")
 
 	plug, ok := m.plugins[def.Name]
 	if !ok {
@@ -29,9 +29,13 @@ func (m *Manager) AddOutputProcessor(def *model.OutputDef) (*Processor, error) {
 		return nil, err
 	}
 
-	processor := NewOutputProcessor(out, chain, m.cache)
+	processor, err := NewOutputProcessor(out, chain, m.cache)
+	if err != nil {
+		return nil, err
+	}
+
 	m.processors[def.ID] = processor
-	m.log.Info().Str("name", def.Name).Str("id", def.ID).Msg("output processor added")
+	m.logger.Info().Str("name", def.Name).Str("id", def.ID).Msg("output processor added")
 	return processor, nil
 }
 
@@ -40,7 +44,7 @@ func (m *Manager) UpdateOutputProcessor(def *model.OutputDef) (*Processor, error
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	m.log.Debug().Str("name", def.Name).Msg("updating output processor...")
+	m.logger.Debug().Str("name", def.Name).Msg("updating output processor...")
 
 	processor, err := m.GetOutputProcessor(def.ID)
 	if err != nil {
@@ -63,7 +67,7 @@ func (m *Manager) UpdateOutputProcessor(def *model.OutputDef) (*Processor, error
 	}
 
 	processor.Update(out, chain)
-	m.log.Info().Str("name", def.Name).Str("id", def.ID).Msg("output processor updated")
+	m.logger.Info().Str("name", def.Name).Str("id", def.ID).Msg("output processor updated")
 	return processor, nil
 }
 
@@ -76,10 +80,10 @@ func (m *Manager) RemoveOutputProcessor(def *model.OutputDef) error {
 	if err != nil {
 		return err
 	}
-	m.log.Debug().Str("id", def.ID).Msg("removing output procesor...")
+	m.logger.Debug().Str("id", def.ID).Msg("removing output procesor...")
 	processor.Shutdown()
 	delete(m.processors, def.ID)
-	m.log.Info().Str("id", def.ID).Msg("output processor removed")
+	m.logger.Info().Str("id", def.ID).Msg("output processor removed")
 	return nil
 }
 

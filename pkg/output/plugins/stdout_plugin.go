@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
@@ -30,68 +29,39 @@ func (p *StdoutOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates output provider instance
-func (p *StdoutOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
-	condition, err := expr.NewConditionalExpression(output.Condition)
+func (p *StdoutOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
+	formatter, err := format.NewOutputFormatter(def)
 	if err != nil {
 		return nil, err
 	}
-
-	formatter, err := format.NewOutputFormatter(output)
-	if err != nil {
-		return nil, err
-	}
+	definition := *def
+	definition.Spec = stdoutSpec
 
 	return &StdOutputProvider{
-		id:        output.ID,
-		alias:     output.Alias,
-		spec:      stdoutSpec,
-		condition: condition,
-		enabled:   output.Enabled,
-		formatter: formatter,
+		definition: definition,
+		formatter:  formatter,
 	}, nil
 }
 
 // StdOutputProvider STDOUT output provider
 type StdOutputProvider struct {
-	id        string
-	alias     string
-	spec      model.Spec
-	condition *expr.ConditionalExpression
-	nbSuccess uint64
-	nbError   uint64
-	enabled   bool
-	formatter format.Formatter
+	definition model.OutputDef
+	formatter  format.Formatter
 }
 
 // Send article to STDOUT.
-func (op *StdOutputProvider) Send(article *model.Article) error {
-	if !op.enabled || !op.condition.Match(article) {
-		// Ignore if disabled or if the article doesn't match the condition
-		return nil
-	}
+func (op *StdOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
 	fmt.Println(b.String())
-	atomic.AddUint64(&op.nbSuccess, 1)
-	return nil
+	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	return true, nil
 }
 
 // GetDef return output provider definition
 func (op *StdOutputProvider) GetDef() model.OutputDef {
-	result := model.OutputDef{
-		ID:        op.id,
-		Alias:     op.alias,
-		Spec:      op.spec,
-		Condition: op.condition.String(),
-		Enabled:   op.enabled,
-		NbSuccess: op.nbSuccess,
-		NbError:   op.nbError,
-	}
-	result.Props = map[string]interface{}{
-		"format": op.formatter.Value(),
-	}
-	return result
+	return op.definition
 }

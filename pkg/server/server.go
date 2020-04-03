@@ -51,6 +51,7 @@ func (s *Server) ListenAndServe(ListenAddr string) error {
 func (s *Server) Shutdown(ctx context.Context) error {
 	s.cache.Shutdown()
 	s.aggregator.Shutdown()
+	s.outputs.Shutdown()
 	s.srv.CancelAll()
 	s.srv.Server.SetKeepAlivesEnabled(false)
 	return s.srv.Server.Shutdown(ctx)
