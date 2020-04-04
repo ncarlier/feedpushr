@@ -19,7 +19,10 @@ func (p OutputProps) Get(key string) string {
 
 // Output is the output interface
 type Output interface {
+	// Send article to the output.
+	// Returns true if the article was sent
 	Send(article *Article) (bool, error)
+	// GetDef returns output definition
 	GetDef() OutputDef
 }
 

@@ -1,4 +1,4 @@
-package filter
+package plugins
 
 import (
 	"context"
@@ -22,27 +22,40 @@ If succeeded, following metadata are added to the article:
 	PropsSpec: []model.PropSpec{},
 }
 
+// FetchFilterPlugin is the fetch filter plugin
+type FetchFilterPlugin struct{}
+
+// Spec returns plugin spec
+func (p *FetchFilterPlugin) Spec() model.Spec {
+	return fetchSpec
+}
+
+// Build creates fetch filter
+func (p *FetchFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
+	condition, err := expr.NewConditionalExpression(def.Condition)
+	if err != nil {
+		return nil, err
+	}
+	definition := *def
+	definition.Spec = fetchSpec
+	return &FetchFilter{
+		definition: definition,
+		condition:  condition,
+	}, nil
+}
+
 // FetchFilter is a filter that try to fetch the original article content
 type FetchFilter struct {
-	id        string
-	alias     string
-	spec      model.Spec
-	condition *expr.ConditionalExpression
-	nbError   uint64
-	nbSuccess uint64
-	enabled   bool
+	definition model.FilterDef
+	condition  *expr.ConditionalExpression
 }
 
 // DoFilter applies filter on the article
-func (f *FetchFilter) DoFilter(article *model.Article) error {
-	if !f.enabled || !f.condition.Match(article) {
-		// Ignore if disabled or if the article doesn't match the condition
-		return nil
-	}
+func (f *FetchFilter) DoFilter(article *model.Article) (bool, error) {
 	art, err := readability.FetchArticle(context.Background(), article.Link)
 	if err != nil && art == nil {
-		atomic.AddUint64(&f.nbError, 1)
-		return err
+		atomic.AddUint64(&f.definition.NbError, 1)
+		return false, err
 	}
 	article.Title = art.Title
 	if art.HTML != nil {
@@ -57,34 +70,16 @@ func (f *FetchFilter) DoFilter(article *model.Article) error {
 	}
 	// article.Meta["length"] = art.Length
 	// article.Meta["sitename"] = art.SiteName
-	atomic.AddUint64(&f.nbSuccess, 1)
-	return nil
+	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	return true, nil
+}
+
+// Match test if article matches filter condition
+func (f *FetchFilter) Match(article *model.Article) bool {
+	return f.condition.Match(article)
 }
 
 // GetDef return filter definition
 func (f *FetchFilter) GetDef() model.FilterDef {
-	result := model.FilterDef{
-		ID:        f.id,
-		Alias:     f.alias,
-		Spec:      f.spec,
-		Condition: f.condition.String(),
-		Enabled:   f.enabled,
-		NbSuccess: f.nbSuccess,
-		NbError:   f.nbError,
-	}
-	return result
-}
-
-func newFetchFilter(filter *model.FilterDef) (*FetchFilter, error) {
-	condition, err := expr.NewConditionalExpression(filter.Condition)
-	if err != nil {
-		return nil, err
-	}
-	return &FetchFilter{
-		id:        filter.ID,
-		alias:     filter.Alias,
-		spec:      fetchSpec,
-		condition: condition,
-		enabled:   filter.Enabled,
-	}, nil
+	return f.definition
 }

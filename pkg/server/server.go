@@ -14,7 +14,9 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/config"
 	"github.com/ncarlier/feedpushr/v2/pkg/controller"
 	"github.com/ncarlier/feedpushr/v2/pkg/explore"
+	"github.com/ncarlier/feedpushr/v2/pkg/filter"
 	"github.com/ncarlier/feedpushr/v2/pkg/logging"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/ncarlier/feedpushr/v2/pkg/output"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog/log"
@@ -78,6 +80,12 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 		return nil, err
 	}
 
+	// Creat empty chain filter (for filter controller)
+	cf, err := filter.NewChainFilter(model.FilterDefCollection{})
+	if err != nil {
+		return nil, err
+	}
+
 	// Init cache manager
 	cm, err := cache.NewCacheManager(db, conf)
 	if err != nil {
@@ -122,7 +130,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	// Mount "feed" controller
 	app.MountFeedController(srv, controller.NewFeedController(srv, db, am))
 	// Mount "filter" controller
-	app.MountFilterController(srv, controller.NewFilterController(srv))
+	app.MountFilterController(srv, controller.NewFilterController(srv, cf))
 	// Mount "output" controller
 	app.MountOutputController(srv, controller.NewOutputController(srv, db, om))
 	// Mount "health" controller

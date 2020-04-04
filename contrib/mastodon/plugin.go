@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/format/fn"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
@@ -55,20 +54,16 @@ func (p *MastodonOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates Mastodon output provider instance
-func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
-	condition, err := expr.NewConditionalExpression(output.Condition)
-	if err != nil {
-		return nil, err
-	}
+func (p *MastodonOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
 	// Default format
-	if frmt, ok := output.Props["format"]; !ok || frmt == "" {
-		output.Props["format"] = "{{.Title}}\n{{.Link}}"
+	if frmt, ok := def.Props["format"]; !ok || frmt == "" {
+		def.Props["format"] = "{{.Title}}\n{{.Link}}"
 	}
-	formatter, err := format.NewOutputFormatter(output)
+	formatter, err := format.NewOutputFormatter(def)
 	if err != nil {
 		return nil, err
 	}
-	u := output.Props.Get("url")
+	u := def.Props.Get("url")
 	if u == "" {
 		return nil, fmt.Errorf("missing URL property")
 	}
@@ -77,21 +72,21 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.Output, err
 		return nil, fmt.Errorf("invalid URL property: %s", err.Error())
 	}
 	_url.Path = "/api/v1/statuses"
-	accessToken := output.Props.Get("token")
+	accessToken := def.Props.Get("token")
 	if accessToken == "" {
 		return nil, fmt.Errorf("missing access token property")
 	}
-	visibility := output.Props.Get("visibility")
+	visibility := def.Props.Get("visibility")
 	if _, exists := tootVisibilities[visibility]; !exists {
 		visibility = "public"
 	}
+
+	definition := *def
+	definition.Spec = spec
+
 	return &MastodonOutputProvider{
-		id:          output.ID,
-		alias:       output.Alias,
-		spec:        spec,
-		condition:   condition,
+		definition:  definition,
 		formatter:   formatter,
-		enabled:     output.Enabled,
 		targetURL:   _url.String(),
 		accessToken: accessToken,
 		visibility:  visibility,
@@ -100,29 +95,19 @@ func (p *MastodonOutputPlugin) Build(output *model.OutputDef) (model.Output, err
 
 // MastodonOutputProvider output provider to send articles to Mastodon
 type MastodonOutputProvider struct {
-	id          string
-	alias       string
-	spec        model.Spec
-	condition   *expr.ConditionalExpression
+	definition  model.OutputDef
 	formatter   format.Formatter
-	enabled     bool
-	nbError     uint64
-	nbSuccess   uint64
 	targetURL   string
 	accessToken string
 	visibility  string
 }
 
 // Send article to a Mastodon instance.
-func (op *MastodonOutputProvider) Send(article *model.Article) error {
-	if !op.enabled || !op.condition.Match(article) {
-		// Ignore if disabled or if the article doesn't match the condition
-		return nil
-	}
+func (op *MastodonOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
 	toot := Toot{
 		Status:     fn.Truncate(500, b.String()),
@@ -130,31 +115,16 @@ func (op *MastodonOutputProvider) Send(article *model.Article) error {
 		Visibility: op.visibility,
 	}
 	if err := sendToMastodon(toot, op.targetURL, op.accessToken); err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
-	atomic.AddUint64(&op.nbSuccess, 1)
-	return nil
+	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	return true, nil
 }
 
 // GetDef return output definition
 func (op *MastodonOutputProvider) GetDef() model.OutputDef {
-	result := model.OutputDef{
-		ID:        op.id,
-		Alias:     op.alias,
-		Spec:      op.spec,
-		Condition: op.condition.String(),
-		Enabled:   op.enabled,
-	}
-	result.Props = map[string]interface{}{
-		"url":        op.targetURL,
-		"token":      op.accessToken,
-		"visibility": op.visibility,
-		"nbError":    op.nbError,
-		"nbSuccess":  op.nbSuccess,
-		"format":     op.formatter.Value(),
-	}
-	return result
+	return op.definition
 }
 
 // GetPluginSpec return plugin informations
