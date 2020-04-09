@@ -8,6 +8,8 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/v2/pkg/cache"
 	"github.com/ncarlier/feedpushr/v2/pkg/config"
+	"github.com/ncarlier/feedpushr/v2/pkg/filter"
+	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/ncarlier/feedpushr/v2/pkg/output"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
@@ -15,6 +17,7 @@ import (
 var (
 	db          store.DB
 	srv         = goa.New("ctrl-test")
+	chain       *filter.Chain
 	outputs     *output.Manager
 	aggregators *aggregator.Manager
 )
@@ -35,6 +38,12 @@ func setup(t *testing.T) func(t *testing.T) {
 	outputs, err = output.NewOutputManager(cm)
 	if err != nil {
 		t.Fatalf("Unable to setup output manager: %v", err)
+	}
+
+	// Init empty chain filter
+	chain, err = filter.NewChainFilter(model.FilterDefCollection{})
+	if err != nil {
+		t.Fatalf("Unable to setup chain filter: %v", err)
 	}
 
 	aggregators = aggregator.NewAggregatorManager(outputs, time.Minute, time.Second*5, "")

@@ -63,53 +63,46 @@ func (p *RakeFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	minKeywordFrequency := safeAtoi(val, 4)
 	rake := NewRake("", minCharLength, maxWordsLength, minKeywordFrequency)
 	rake.SetStopWords(stopWords)
+
+	definition := *def
+	definition.Spec = spec
+	definition.Props["minCharLength"] = minCharLength
+	definition.Props["maxWordsLength"] = maxWordsLength
+	definition.Props["minKeywordFrequency"] = minKeywordFrequency
+
 	return &RakeFilter{
-		alias:     def.Alias,
-		spec:      spec,
-		condition: condition,
-		enabled:   def.Enabled,
-		rake:      rake,
+		definition: definition,
+		condition:  condition,
+		rake:       rake,
 	}, nil
 }
 
 // RakeFilter filter articles by adding extracted keywords
 type RakeFilter struct {
-	alias     string
-	spec      model.Spec
-	condition *expr.ConditionalExpression
-	enabled   bool
-	nbError   uint64
-	nbSuccess uint64
-	rake      *Rake
+	definition model.FilterDef
+	condition  *expr.ConditionalExpression
+	rake       *Rake
 }
 
 // DoFilter applies filter on the article
-func (f *RakeFilter) DoFilter(article *model.Article) error {
+func (f *RakeFilter) DoFilter(article *model.Article) (bool, error) {
 	plain := html2text.HTML2Text(article.Content)
 	if plain == "" {
 		plain = article.Text
 	}
 	article.Meta["KeywordScore"] = f.rake.Run(plain)
-	atomic.AddUint64(&f.nbSuccess, 1)
-	return nil
+	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	return true, nil
 }
 
 // GetDef return output definition
 func (f *RakeFilter) GetDef() model.FilterDef {
-	result := model.FilterDef{
-		Alias:     f.alias,
-		Spec:      f.spec,
-		Condition: f.condition.String(),
-		Enabled:   f.enabled,
-	}
-	result.Props = map[string]interface{}{
-		"minCharLength":       f.rake.minCharLength,
-		"maxWordsLength":      f.rake.maxWordsLength,
-		"minKeywordFrequency": f.rake.minKeywordFrequency,
-		"nbError":             f.nbError,
-		"nbSuccess":           f.nbSuccess,
-	}
-	return result
+	return f.definition
+}
+
+// Match test if article matches filter condition
+func (f *RakeFilter) Match(article *model.Article) bool {
+	return f.condition.Match(article)
 }
 
 // GetPluginSpec return plugin informations

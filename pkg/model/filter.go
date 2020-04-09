@@ -15,7 +15,12 @@ func (p FilterProps) Get(key string) string {
 
 // Filter is the filter interface
 type Filter interface {
-	DoFilter(article *Article) error
+	// DoFilter apply filter on the article.
+	// Returns true if the filter was applied
+	DoFilter(article *Article) (bool, error)
+	// Match test if article match with filter condition
+	Match(article *Article) bool
+	// GetDef returns filter definition
 	GetDef() FilterDef
 }
 

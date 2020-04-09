@@ -13,7 +13,7 @@ func TestFilterDefs(t *testing.T) {
 	teardown := setup(t)
 	defer teardown(t)
 
-	ctrl := controller.NewFilterController(srv)
+	ctrl := controller.NewFilterController(srv, chain)
 	ctx := context.Background()
 
 	_, specs := test.SpecsFilterOK(t, ctx, srv, ctrl)

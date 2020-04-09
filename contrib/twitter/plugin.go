@@ -7,7 +7,6 @@ import (
 	"sync/atomic"
 
 	"github.com/ChimeraCoder/anaconda"
-	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/format"
 	"github.com/ncarlier/feedpushr/v2/pkg/format/fn"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
@@ -54,32 +53,28 @@ func (p *TwitterOutputPlugin) Spec() model.Spec {
 }
 
 // Build creates Twitter output provider instance
-func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.Output, error) {
-	condition, err := expr.NewConditionalExpression(output.Condition)
-	if err != nil {
-		return nil, err
-	}
+func (p *TwitterOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
 	// Default format
-	if frmt, ok := output.Props["format"]; !ok || frmt == "" {
-		output.Props["format"] = "{{tweet .Title .Link}}"
+	if frmt, ok := def.Props["format"]; !ok || frmt == "" {
+		def.Props["format"] = "{{tweet .Title .Link}}"
 	}
-	formatter, err := format.NewOutputFormatter(output)
+	formatter, err := format.NewOutputFormatter(def)
 	if err != nil {
 		return nil, err
 	}
-	consumerKey := output.Props.Get("consumerKey")
+	consumerKey := def.Props.Get("consumerKey")
 	if consumerKey == "" {
 		return nil, fmt.Errorf("missing consumer key property")
 	}
-	consumerSecret := output.Props.Get("consumerSecret")
+	consumerSecret := def.Props.Get("consumerSecret")
 	if consumerSecret == "" {
 		return nil, fmt.Errorf("missing consumer secret property")
 	}
-	accessToken := output.Props.Get("accessToken")
+	accessToken := def.Props.Get("accessToken")
 	if accessToken == "" {
 		return nil, fmt.Errorf("missing access token property")
 	}
-	accessTokenSecret := output.Props.Get("accessTokenSecret")
+	accessTokenSecret := def.Props.Get("accessTokenSecret")
 	if accessTokenSecret == "" {
 		return nil, fmt.Errorf("missing access token secret property")
 	}
@@ -87,13 +82,12 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.Output, erro
 	anaconda.SetConsumerSecret(consumerSecret)
 	api := anaconda.NewTwitterApi(accessToken, accessTokenSecret)
 
+	definition := *def
+	definition.Spec = spec
+
 	return &TwitterOutputProvider{
-		id:             output.ID,
-		alias:          output.Alias,
-		spec:           spec,
-		condition:      condition,
+		definition:     definition,
 		formatter:      formatter,
-		enabled:        output.Enabled,
 		api:            api,
 		consumerKey:    consumerKey,
 		consumerSecret: consumerSecret,
@@ -102,29 +96,19 @@ func (p *TwitterOutputPlugin) Build(output *model.OutputDef) (model.Output, erro
 
 // TwitterOutputProvider output provider to send articles to Twitter
 type TwitterOutputProvider struct {
-	id             string
-	alias          string
-	spec           model.Spec
-	condition      *expr.ConditionalExpression
+	definition     model.OutputDef
 	formatter      format.Formatter
-	enabled        bool
-	nbError        uint64
-	nbSuccess      uint64
 	consumerKey    string
 	consumerSecret string
 	api            *anaconda.TwitterApi
 }
 
 // Send sent an article as Tweet to a Twitter timeline
-func (op *TwitterOutputProvider) Send(article *model.Article) error {
-	if !op.enabled || !op.condition.Match(article) {
-		// Ignore if disabled or if the article doesn't match the condition
-		return nil
-	}
+func (op *TwitterOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.nbError, 1)
-		return err
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, err
 	}
 	tweet := fn.Truncate(270, b.String())
 	v := url.Values{}
@@ -132,34 +116,18 @@ func (op *TwitterOutputProvider) Send(article *model.Article) error {
 	if err != nil {
 		// Ignore error due to duplicate status
 		if strings.Contains(err.Error(), "\"code\":187") {
-			return nil
+			return true, nil
 		}
-		atomic.AddUint64(&op.nbError, 1)
-	} else {
-		atomic.AddUint64(&op.nbSuccess, 1)
+		atomic.AddUint64(&op.definition.NbError, 1)
+		return false, nil
 	}
-	return err
+	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	return true, err
 }
 
 // GetDef return filter definition
 func (op *TwitterOutputProvider) GetDef() model.OutputDef {
-	result := model.OutputDef{
-		ID:        op.id,
-		Alias:     op.alias,
-		Spec:      op.spec,
-		Condition: op.condition.String(),
-		Enabled:   op.enabled,
-	}
-	result.Props = map[string]interface{}{
-		"consumerKey":       op.consumerKey,
-		"consumerSecret":    op.consumerSecret,
-		"accessToken":       op.api.Credentials.Token,
-		"accessTokenSecret": op.api.Credentials.Secret,
-		"nbError":           op.nbError,
-		"nbSuccess":         op.nbSuccess,
-		"format":            op.formatter.Value(),
-	}
-	return result
+	return op.definition
 }
 
 // GetPluginSpec returns plugin spec
