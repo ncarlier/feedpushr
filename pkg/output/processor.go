@@ -4,9 +4,9 @@ import (
 	"sync"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/cache"
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
 	"github.com/ncarlier/feedpushr/v2/pkg/expr"
 	"github.com/ncarlier/feedpushr/v2/pkg/filter"
+	"github.com/ncarlier/feedpushr/v2/pkg/helper"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -148,7 +148,7 @@ func (p *Processor) process(article *model.Article) error {
 
 	if sent {
 		// Set article as sent by updating the cache
-		key := common.Hash(article.Hash(), p.output.GetDef().Hash())
+		key := helper.Hash(article.Hash(), p.output.GetDef().Hash())
 		item := &model.CacheItem{
 			Value: article.GUID,
 			Date:  *article.RefDate(),
@@ -163,7 +163,7 @@ func (p *Processor) process(article *model.Article) error {
 }
 
 func (p *Processor) hasAlreadySent(article *model.Article) (bool, error) {
-	key := common.Hash(article.Hash(), p.output.GetDef().Hash())
+	key := helper.Hash(article.Hash(), p.output.GetDef().Hash())
 	item, err := p.cache.Get(key)
 	if err != nil {
 		return false, err

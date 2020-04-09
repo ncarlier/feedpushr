@@ -74,11 +74,17 @@ func main() {
 	// Import OPML file if asked
 	if conf.ImportFilename != "" {
 		log.Debug().Str("filename", conf.ImportFilename).Msg("importing OPML file...")
-		if err := opml.ImportOPMLFile(conf.ImportFilename, db); err != nil {
+		importer := opml.NewOPMLImporter(db)
+		job, err := importer.ImportOPMLFile(conf.ImportFilename)
+		if err != nil {
 			db.Close()
 			log.Fatal().Err(err).Str("filename", conf.ImportFilename).Msg("unable to import OPML file")
 		}
-		log.Info().Str("filename", conf.ImportFilename).Msg("OPML file imported")
+		if !job.Wait(time.Minute) {
+			log.Warn().Str("filename", conf.ImportFilename).Msg("OPML is still importing in background...")
+		} else {
+			log.Info().Str("filename", conf.ImportFilename).Msg("OPML file imported")
+		}
 	}
 
 	// Init global service

@@ -602,6 +602,53 @@ func (ctx *GetOpmlContext) BadRequest(r error) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 400, r)
 }
 
+// StatusOpmlContext provides the opml status action context.
+type StatusOpmlContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ID int
+}
+
+// NewStatusOpmlContext parses the incoming request URL and body, performs validations and creates the
+// context used by the opml controller status action.
+func NewStatusOpmlContext(ctx context.Context, r *http.Request, service *goa.Service) (*StatusOpmlContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := StatusOpmlContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramID := req.Params["id"]
+	if len(paramID) > 0 {
+		rawID := paramID[0]
+		if id, err2 := strconv.Atoi(rawID); err2 == nil {
+			rctx.ID = id
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("id", rawID, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *StatusOpmlContext) OK(resp []byte) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "text/event-stream")
+	}
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *StatusOpmlContext) NotFound(r error) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/vnd.goa.error")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 404, r)
+}
+
 // UploadOpmlContext provides the opml upload action context.
 type UploadOpmlContext struct {
 	context.Context
@@ -621,10 +668,12 @@ func NewUploadOpmlContext(ctx context.Context, r *http.Request, service *goa.Ser
 	return &rctx, err
 }
 
-// Created sends a HTTP response with status code 201.
-func (ctx *UploadOpmlContext) Created() error {
-	ctx.ResponseData.WriteHeader(201)
-	return nil
+// Accepted sends a HTTP response with status code 202.
+func (ctx *UploadOpmlContext) Accepted(r *OPMLImportJobResponse) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 202, r)
 }
 
 // BadRequest sends a HTTP response with status code 400.
@@ -1332,9 +1381,9 @@ func NewSubPshbContext(ctx context.Context, r *http.Request, service *goa.Servic
 	if len(paramHubLeaseSeconds) > 0 {
 		rawHubLeaseSeconds := paramHubLeaseSeconds[0]
 		if hubLeaseSeconds, err2 := strconv.Atoi(rawHubLeaseSeconds); err2 == nil {
-			tmp4 := hubLeaseSeconds
-			tmp3 := &tmp4
-			rctx.HubLeaseSeconds = tmp3
+			tmp5 := hubLeaseSeconds
+			tmp4 := &tmp5
+			rctx.HubLeaseSeconds = tmp4
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("hub.lease_seconds", rawHubLeaseSeconds, "integer"))
 		}

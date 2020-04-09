@@ -3,6 +3,8 @@ package common
 import "errors"
 
 var (
+	// ErrFeedAlreadyExists is returned when a feed is already exists in the DB.
+	ErrFeedAlreadyExists = errors.New("feed already exists")
 	// ErrFeedNotFound is returned when a feed is not found in the DB.
 	ErrFeedNotFound = errors.New("feed not found")
 	// ErrFilterNotFound is returned when a filter is not found in the DB.

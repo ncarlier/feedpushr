@@ -86,6 +86,10 @@ export default withRouter(({page, history}: Props & RouteComponentProps) => {
       }
       setError(null)
       showMessage(<Message variant="success"  message={`${title} feed removed`} />)
+      setTimeout(() => {
+        history.push('/')
+        history.goBack()
+      })
     } catch (err) {
       setError(err)
       throw err

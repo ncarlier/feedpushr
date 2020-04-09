@@ -11,6 +11,7 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/helper"
 	"github.com/ncarlier/feedpushr/v2/pkg/output"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog"
@@ -46,7 +47,7 @@ func NewPshbController(service *goa.Service, db store.DB, am *aggregator.Manager
 
 // Pub is the Hub callback to send topic updates.
 func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
-	body, err := common.GetNormalizedBodyFromRequest(ctx.Request)
+	body, err := helper.GetNormalizedBodyFromRequest(ctx.Request)
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}

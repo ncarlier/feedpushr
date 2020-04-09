@@ -9,6 +9,7 @@ import (
 	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/helper"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -112,7 +113,7 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	}
 
 	// Decode body content
-	body, err := common.GetNormalizedBodyFromResponse(resp)
+	body, err := helper.GetNormalizedBodyFromResponse(resp)
 	if err != nil {
 		fh.log.Error().Err(err).Msg(errParssingBody)
 		fh.status.Err(err)

@@ -112,6 +112,13 @@ type (
 		PrettyPrint bool
 	}
 
+	// StatusOpmlCommand is the command line data structure for the status action of opml
+	StatusOpmlCommand struct {
+		// Import job ID
+		ID          int
+		PrettyPrint bool
+	}
+
 	// UploadOpmlCommand is the command line data structure for the upload action of opml
 	UploadOpmlCommand struct {
 		PrettyPrint bool
@@ -464,12 +471,12 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "stop",
-		Short: `Stop feed aggregation`,
+		Use:   "status",
+		Short: `Get OPML import status`,
 	}
-	tmp21 := new(StopFeedCommand)
+	tmp21 := new(StatusOpmlCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v2/feeds/ID/stop"]`,
+		Use:   `opml ["/v2/opml/status/ID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp21.Run(c, args) },
 	}
@@ -478,12 +485,12 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "sub",
-		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
+		Use:   "stop",
+		Short: `Stop feed aggregation`,
 	}
-	tmp22 := new(SubPshbCommand)
+	tmp22 := new(StopFeedCommand)
 	sub = &cobra.Command{
-		Use:   `pshb ["/v2/pshb"]`,
+		Use:   `feed ["/v2/feeds/ID/stop"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp22.Run(c, args) },
 	}
@@ -492,45 +499,35 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "update",
-		Short: `update action`,
+		Use:   "sub",
+		Short: `Callback to validate the (un)subscription to the topic of a Hub`,
 	}
-	tmp23 := new(UpdateFeedCommand)
+	tmp23 := new(SubPshbCommand)
 	sub = &cobra.Command{
-		Use:   `feed ["/v2/feeds/ID"]`,
+		Use:   `pshb ["/v2/pshb"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp23.Run(c, args) },
 	}
 	tmp23.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp23.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	tmp24 := new(UpdateOutputCommand)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "update",
+		Short: `update action`,
+	}
+	tmp24 := new(UpdateFeedCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/ID"]`,
+		Use:   `feed ["/v2/feeds/ID"]`,
 		Short: ``,
-		Long: `
-
-Payload example:
-
-{
-   "alias": "foo",
-   "condition": "\"foo\" in Tags",
-   "enabled": "-",
-   "props": "-"
-}`,
-		RunE: func(cmd *cobra.Command, args []string) error { return tmp24.Run(c, args) },
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp24.Run(c, args) },
 	}
 	tmp24.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp24.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "update-filter",
-		Short: `Update a filter`,
-	}
-	tmp25 := new(UpdateFilterOutputCommand)
+	tmp25 := new(UpdateOutputCommand)
 	sub = &cobra.Command{
-		Use:   `output ["/v2/outputs/ID/filters/IDFILTER"]`,
+		Use:   `output ["/v2/outputs/ID"]`,
 		Short: ``,
 		Long: `
 
@@ -549,17 +546,41 @@ Payload example:
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "upload",
-		Short: `Upload an OPML file to create feeds`,
+		Use:   "update-filter",
+		Short: `Update a filter`,
 	}
-	tmp26 := new(UploadOpmlCommand)
+	tmp26 := new(UpdateFilterOutputCommand)
 	sub = &cobra.Command{
-		Use:   `opml ["/v2/opml"]`,
+		Use:   `output ["/v2/outputs/ID/filters/IDFILTER"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp26.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "alias": "foo",
+   "condition": "\"foo\" in Tags",
+   "enabled": "-",
+   "props": "-"
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp26.Run(c, args) },
 	}
 	tmp26.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp26.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "upload",
+		Short: `Upload an OPML file to create feeds`,
+	}
+	tmp27 := new(UploadOpmlCommand)
+	sub = &cobra.Command{
+		Use:   `opml ["/v2/opml"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp27.Run(c, args) },
+	}
+	tmp27.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp27.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 }
@@ -1027,6 +1048,32 @@ func (cmd *GetOpmlCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *GetOpmlCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the StatusOpmlCommand command.
+func (cmd *StatusOpmlCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/v2/opml/status/%v", cmd.ID)
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.StatusOpml(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *StatusOpmlCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var id int
+	cc.Flags().IntVar(&cmd.ID, "id", id, `Import job ID`)
 }
 
 // Run makes the HTTP request corresponding to the UploadOpmlCommand command.

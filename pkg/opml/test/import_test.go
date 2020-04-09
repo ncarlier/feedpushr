@@ -2,15 +2,19 @@ package test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/helper"
 	"github.com/ncarlier/feedpushr/v2/pkg/opml"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 )
 
 var db store.DB
+
+var importer *opml.Importer
 
 var testCases = []struct {
 	url string
@@ -27,6 +31,7 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unable to setup Database: %v", err)
 	}
+	importer = opml.NewOPMLImporter(db)
 	return func(t *testing.T) {
 		t.Log("teardown test case")
 		defer db.Close()
@@ -37,23 +42,32 @@ func TestImportSimpleOPML(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	o, err := opml.NewOPMLFromFile("./tc_simple.xml")
+	job, err := importer.ImportOPMLFile("./tc_simple.xml")
 	assert.Nil(t, err, "error should be nil")
-	err = opml.ImportOPMLToDB(o, db)
+	assert.True(t, job.ID > 0, "invalid job ID")
+	over := job.Wait(10 * time.Second)
+	assert.True(t, over, "job is not over")
+	output, err := importer.Get(job.ID)
 	assert.Nil(t, err, "error should be nil")
+	for line := range output {
+		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
+	}
 
 	assert.True(t, db.ExistsFeed("http://www.hashicorp.com/feed.xml"), "feed should be created")
 }
 
 func testImportOPML(t *testing.T, filename string) {
-	o, err := opml.NewOPMLFromFile(filename)
+	job, err := importer.ImportOPMLFile(filename)
 	assert.Nil(t, err, "error should be nil")
-	err = opml.ImportOPMLToDB(o, db)
+	assert.True(t, job.ID > 0, "invalid job ID")
+	output, err := importer.Get(job.ID)
 	assert.Nil(t, err, "error should be nil")
-
+	for line := range output {
+		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
+	}
 	for idx, tc := range testCases {
 		assert.True(t, db.ExistsFeed(tc.url), fmt.Sprintf("feed #%d should be created", idx))
-		id := common.Hash(tc.url)
+		id := helper.Hash(tc.url)
 		feed, err := db.GetFeed(id)
 		assert.Nil(t, err, fmt.Sprintf("error #%d should be nil", idx))
 		assert.NotNil(t, feed, fmt.Sprintf("feed #%d should not be nil", idx))

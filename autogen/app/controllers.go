@@ -416,6 +416,7 @@ func handleIndexOrigin(h goa.Handler) goa.Handler {
 type OpmlController interface {
 	goa.Muxer
 	Get(*GetOpmlContext) error
+	Status(*StatusOpmlContext) error
 	Upload(*UploadOpmlContext) error
 }
 
@@ -424,6 +425,7 @@ func MountOpmlController(service *goa.Service, ctrl OpmlController) {
 	initService(service)
 	var h goa.Handler
 	service.Mux.Handle("OPTIONS", "/v2/opml", ctrl.MuxHandler("preflight", handleOpmlOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/v2/opml/status/:id", ctrl.MuxHandler("preflight", handleOpmlOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -440,6 +442,22 @@ func MountOpmlController(service *goa.Service, ctrl OpmlController) {
 	h = handleOpmlOrigin(h)
 	service.Mux.Handle("GET", "/v2/opml", ctrl.MuxHandler("get", h, nil))
 	service.LogInfo("mount", "ctrl", "Opml", "action", "Get", "route", "GET /v2/opml")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewStatusOpmlContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Status(rctx)
+	}
+	h = handleOpmlOrigin(h)
+	service.Mux.Handle("GET", "/v2/opml/status/:id", ctrl.MuxHandler("status", h, nil))
+	service.LogInfo("mount", "ctrl", "Opml", "action", "Status", "route", "GET /v2/opml/status/:id")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request

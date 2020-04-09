@@ -13,6 +13,7 @@ require (
 	github.com/coreos/bbolt v1.3.3
 	github.com/dustin/go-jsonpointer v0.0.0-20160814072949-ba0abeacc3dc // indirect
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
+	github.com/fsnotify/fsnotify v1.4.7
 	github.com/garyburd/go-oauth v0.0.0-20180319155456-bca2e7f09a17 // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-shiori/dom v0.0.0-20191003095357-6867c1fcf154 // indirect
@@ -41,6 +42,7 @@ require (
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
 	golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
+	miniflux.app v0.0.0-20200401025025-454eb590cef6 // indirect
 )
 
 go 1.13

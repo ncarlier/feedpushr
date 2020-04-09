@@ -108,6 +108,10 @@ definitions:
       htmlUrl: http://www.hashicorp.com/blog
       title: Blog news...
       xmlUrl: http://www.hashicorp.com/feed.xml
+    - desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
     items:
       $ref: '#/definitions/ExploreResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.explore.v2+json; type=collection;
@@ -192,7 +196,7 @@ definitions:
         - foo
         - bar
         items:
-          example: Dolores minima eligendi iusto eum.
+          example: Et reiciendis sed vero.
           type: string
         type: array
       title:
@@ -247,6 +251,22 @@ definitions:
       - bar
       title: Hashicorp Blog
       xmlUrl: http://www.hashicorp.com/feed.xml
+    - cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
+      tags:
+      - foo
+      - bar
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
     items:
       $ref: '#/definitions/FeedResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.feed.v2+json; type=collection;
@@ -257,38 +277,6 @@ definitions:
     example:
       current: 1
       data:
-      - cdate: "2001-04-14T11:31:36Z"
-        errorCount: 3744847684773844858
-        errorMsg: Suscipit voluptas.
-        htmlUrl: http://www.hashicorp.com/blog
-        hubUrl: http://pubsubhubbub.appspot.com
-        id: 5bfb841c028281c0051828c115fd1f50
-        lastCheck: "1981-09-22T23:39:59Z"
-        mdate: "1975-05-22T16:26:55Z"
-        nbProcessedItems: 2455384998049050733
-        nextCheck: "1982-07-23T05:02:45Z"
-        status: running
-        tags:
-        - foo
-        - bar
-        title: Hashicorp Blog
-        xmlUrl: http://www.hashicorp.com/feed.xml
-      - cdate: "2001-04-14T11:31:36Z"
-        errorCount: 3744847684773844858
-        errorMsg: Suscipit voluptas.
-        htmlUrl: http://www.hashicorp.com/blog
-        hubUrl: http://pubsubhubbub.appspot.com
-        id: 5bfb841c028281c0051828c115fd1f50
-        lastCheck: "1981-09-22T23:39:59Z"
-        mdate: "1975-05-22T16:26:55Z"
-        nbProcessedItems: 2455384998049050733
-        nextCheck: "1982-07-23T05:02:45Z"
-        status: running
-        tags:
-        - foo
-        - bar
-        title: Hashicorp Blog
-        xmlUrl: http://www.hashicorp.com/feed.xml
       - cdate: "2001-04-14T11:31:36Z"
         errorCount: 3744847684773844858
         errorMsg: Suscipit voluptas.
@@ -485,36 +473,6 @@ definitions:
           Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
             quidem non.
         type: text
-    - desc: Add a prefix to the tittle...
-      name: title
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
-    - desc: Add a prefix to the tittle...
-      name: title
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
     items:
       $ref: '#/definitions/FilterSpecResponse'
     title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v2+json; type=collection;
@@ -556,13 +514,27 @@ definitions:
     - _links
     title: 'Mediatype identifier: application/vnd.feedpushr.info.v2+json; view=default'
     type: object
+  OPMLImportJobResponse:
+    description: OPMLImportJobResponse media type (default view)
+    example:
+      id: Eligendi illum.
+    properties:
+      id:
+        description: ID of the import job
+        example: Eligendi illum.
+        type: string
+    required:
+    - id
+    title: 'Mediatype identifier: application/vnd.feedpushr.ompl-import-job.v2+json;
+      view=default'
+    type: object
   OutputResponse:
     description: The output channel (default view)
     example:
       alias: foo
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
-      enabled: false
+      enabled: true
       filters:
       - alias: foo
         condition: '"foo" in Tags'
@@ -582,7 +554,7 @@ definitions:
         nbError: 10
         nbSuccess: 10
         props: '-'
-      id: Suscipit ea accusamus.
+      id: Sint tenetur commodi soluta similique.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -603,13 +575,13 @@ definitions:
       enabled:
         default: false
         description: Status
-        example: false
+        example: true
         type: boolean
       filters:
         $ref: '#/definitions/FilterResponseCollection'
       id:
         description: ID of the output
-        example: Suscipit ea accusamus.
+        example: Sint tenetur commodi soluta similique.
         type: string
       name:
         description: Name of the output channel
@@ -647,7 +619,7 @@ definitions:
     - alias: foo
       condition: '"foo" in Tags'
       desc: New articles are sent as JSON document to...
-      enabled: false
+      enabled: true
       filters:
       - alias: foo
         condition: '"foo" in Tags'
@@ -667,7 +639,7 @@ definitions:
         nbError: 10
         nbSuccess: 10
         props: '-'
-      id: Suscipit ea accusamus.
+      id: Sint tenetur commodi soluta similique.
       name: fetch
       nbError: 10
       nbSuccess: 10
@@ -683,12 +655,6 @@ definitions:
       desc: New articles are sent as JSON document to...
       name: fetch
       props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
@@ -719,27 +685,6 @@ definitions:
     - desc: New articles are sent as JSON document to...
       name: fetch
       props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
-    - desc: New articles are sent as JSON document to...
-      name: fetch
-      props:
-      - desc: New articles are sent as JSON document to...
-        name: url
-        options:
-          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
-            quidem non.
-        type: text
       - desc: New articles are sent as JSON document to...
         name: url
         options:
@@ -1205,7 +1150,7 @@ paths:
       - health
   /opml:
     get:
-      description: Get all feeds as an OMPL format
+      description: Get all feeds as an OPML format
       operationId: opml#get
       produces:
       - application/vnd.goa.error
@@ -1226,15 +1171,13 @@ paths:
       description: Upload an OPML file to create feeds
       operationId: opml#upload
       produces:
+      - application/vnd.feedpushr.ompl-import-job.v2+json
       - application/vnd.goa.error
       responses:
-        "201":
-          description: Resource created
-          headers:
-            Location:
-              description: href to created resource
-              pattern: /feeds
-              type: string
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/OPMLImportJobResponse'
         "400":
           description: Bad Request
           schema:
@@ -1242,6 +1185,31 @@ paths:
       schemes:
       - http
       summary: upload opml
+      tags:
+      - opml
+  /opml/status/{id}:
+    get:
+      description: Get OPML import status
+      operationId: opml#status
+      parameters:
+      - description: Import job ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      - text/event-stream
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: status opml
       tags:
       - opml
   /outputs:

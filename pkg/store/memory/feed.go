@@ -2,12 +2,13 @@ package store
 
 import (
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/helper"
 	"github.com/ncarlier/feedpushr/v2/pkg/model"
 )
 
 // ExistsFeed returns true if a feed exists for this url.
 func (store *InMemoryStore) ExistsFeed(url string) bool {
-	id := common.Hash(url)
+	id := helper.Hash(url)
 	_, exists := store.feeds[id]
 	return exists
 }

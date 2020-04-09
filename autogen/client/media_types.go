@@ -512,6 +512,29 @@ func (c *Client) DecodeInfo(resp *http.Response) (*Info, error) {
 	return &decoded, err
 }
 
+// OPMLImportJobResponse media type (default view)
+//
+// Identifier: application/vnd.feedpushr.ompl-import-job.v2+json; view=default
+type OPMLImportJobResponse struct {
+	// ID of the import job
+	ID string `form:"id" json:"id" yaml:"id" xml:"id"`
+}
+
+// Validate validates the OPMLImportJobResponse media type instance.
+func (mt *OPMLImportJobResponse) Validate() (err error) {
+	if mt.ID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "id"))
+	}
+	return
+}
+
+// DecodeOPMLImportJobResponse decodes the OPMLImportJobResponse instance encoded in resp body.
+func (c *Client) DecodeOPMLImportJobResponse(resp *http.Response) (*OPMLImportJobResponse, error) {
+	var decoded OPMLImportJobResponse
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
 // The output channel specification (default view)
 //
 // Identifier: application/vnd.feedpushr.output-spec.v2+json; view=default

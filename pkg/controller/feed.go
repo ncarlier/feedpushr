@@ -9,6 +9,7 @@ import (
 	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/v2/pkg/builder"
 	"github.com/ncarlier/feedpushr/v2/pkg/common"
+	"github.com/ncarlier/feedpushr/v2/pkg/helper"
 	"github.com/ncarlier/feedpushr/v2/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -38,7 +39,7 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	if err != nil {
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
-	if !common.IsEmptyString(ctx.Title) {
+	if !helper.IsEmptyString(ctx.Title) {
 		feed.Title = *ctx.Title
 	}
 	status := aggregator.RunningStatus.String()
@@ -65,12 +66,12 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 		return goa.ErrInternal(err)
 	}
 
-	if ctx.Tags == nil && common.IsEmptyString(ctx.Title) {
+	if ctx.Tags == nil && helper.IsEmptyString(ctx.Title) {
 		return ctx.OK(builder.NewFeedResponseFromDef(feed))
 	}
 
 	// Update feed title
-	if !common.IsEmptyString(ctx.Title) {
+	if !helper.IsEmptyString(ctx.Title) {
 		feed.Title = *ctx.Title
 	}
 	// Update feed tags

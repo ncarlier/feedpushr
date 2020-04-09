@@ -25,6 +25,16 @@ func (c *OpmlController) Get(ctx *app.GetOpmlContext) error {
 	// OpmlController_Get: end_implement
 }
 
+// Status runs the status action.
+func (c *OpmlController) Status(ctx *app.StatusOpmlContext) error {
+	// OpmlController_Status: start_implement
+
+	// Put your logic here
+
+	return nil
+	// OpmlController_Status: end_implement
+}
+
 // Upload runs the upload action.
 func (c *OpmlController) Upload(ctx *app.UploadOpmlContext) error {
 	// OpmlController_Upload: start_implement
