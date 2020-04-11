@@ -1,5 +1,22 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v2.2.0...v) (2020-03-09)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.1...v) (2020-04-11)
+
+
+
+<a name="3.0.0-rc.1"></a>
+# [3.0.0-rc.1](https://github.com/ncarlier/feedpushr/compare/v2.2.0...v3.0.0-rc.1) (2020-04-11)
+
+
+### Bug Fixes
+
+* **ci:** add missing package ([cc970d1](https://github.com/ncarlier/feedpushr/commit/cc970d1))
+* **format:** improve tweet function security ([4e39bf0](https://github.com/ncarlier/feedpushr/commit/4e39bf0))
+
+
+### Features
+
+* **explorer:** add feed explorer ([aca9077](https://github.com/ncarlier/feedpushr/commit/aca9077))
+* **format:** custom format functions ([bdbccd5](https://github.com/ncarlier/feedpushr/commit/bdbccd5))
 
 
 
