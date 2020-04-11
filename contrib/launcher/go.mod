@@ -1,4 +1,4 @@
-module github.com/ncarlier/feedpushr-contrib/launcher
+module github.com/ncarlier/feedpushr/v3/contrib/launcher
 
 go 1.12
 

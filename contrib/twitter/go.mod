@@ -1,4 +1,4 @@
-module github.com/ncarlier/feedpushr-contrib/twitter
+module github.com/ncarlier/feedpushr/v3/contrib/twitter
 
 require (
 	github.com/ChimeraCoder/anaconda v2.0.0+incompatible

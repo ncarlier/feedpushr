@@ -1,4 +1,4 @@
-module github.com/ncarlier/feedpushr-contrib/rake
+module github.com/ncarlier/feedpushr/v3/contrib/rake
 
 require (
 	github.com/k3a/html2text v0.0.0-20191003111652-62431c4a3ba5

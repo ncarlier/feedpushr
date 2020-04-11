@@ -1,4 +1,4 @@
-module github.com/ncarlier/feedpushr-contrib/mastodon
+module github.com/ncarlier/feedpushr/contrib/mastodon
 
 replace github.com/ncarlier/feedpushr/v3 => ../..
 
