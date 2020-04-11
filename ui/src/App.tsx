@@ -9,11 +9,11 @@ import { ThemeProvider } from '@material-ui/styles'
 
 import About from './about/About'
 import { MessageProvider } from './context/MessageContext'
+import Explore from './explore/Explore'
 import FeedRoutes from './feeds/Routes'
 import classNames from './helpers/classNames'
 import Menu from './Menu'
 import OutputRoutes from './outputs/Routes'
-import Explore from './explore/Explore'
 
 const theme = createMuiTheme({
   palette: {
@@ -45,7 +45,7 @@ export default () => {
               <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              Feedpushr UI
+              Feedpushr
             </Typography>
             <IconButton color="inherit" component={Link} to="/about" >
               <AboutIcon />

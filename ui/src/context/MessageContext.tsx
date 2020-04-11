@@ -1,4 +1,5 @@
-import React, { createContext, ReactNode, useState, SyntheticEvent } from 'react'
+import React, { createContext, ReactNode, SyntheticEvent, useState } from 'react'
+
 import { Snackbar } from '@material-ui/core'
 
 interface MessageContextType {
@@ -42,7 +43,7 @@ const MessageProvider = ({ children }: Props) => {
         autoHideDuration={5000}
         onClose={handleClose}
       >
-        { message }
+        <>{ message }</>
       </Snackbar>
     </MessageContext.Provider>
   )
