@@ -4,8 +4,8 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/fe/feedpushr/autogen
+// --design=github.com/ncarlier/feedpushr/v3/design
+// --out=/home/nicolas/workspace/feedpushr/autogen
 // --version=v1.4.3
 
 package cli
@@ -17,7 +17,7 @@ import (
 	"github.com/goadesign/goa"
 	goaclient "github.com/goadesign/goa/client"
 	uuid "github.com/goadesign/goa/uuid"
-	"github.com/ncarlier/feedpushr/v2/autogen/client"
+	"github.com/ncarlier/feedpushr/v3/autogen/client"
 	"github.com/spf13/cobra"
 	"log"
 	"net/url"

@@ -10,9 +10,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/builder"
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/pkg/builder"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

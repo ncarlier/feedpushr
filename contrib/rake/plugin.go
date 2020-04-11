@@ -5,8 +5,8 @@ import (
 	"sync/atomic"
 
 	"github.com/k3a/html2text"
-	"github.com/ncarlier/feedpushr/v2/pkg/expr"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/expr"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 //go:generate go run gen.go

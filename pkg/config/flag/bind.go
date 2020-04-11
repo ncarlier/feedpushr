@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/strcase"
+	"github.com/ncarlier/feedpushr/v3/pkg/strcase"
 )
 
 // Bind conf struct tags with flags

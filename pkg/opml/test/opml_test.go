@@ -3,8 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/opml"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/opml"
 )
 
 func TestNewOPML(t *testing.T) {

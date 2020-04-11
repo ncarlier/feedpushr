@@ -8,7 +8,7 @@ import (
 	"github.com/antonmedv/expr/vm"
 	"github.com/rs/zerolog/log"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // ConditionalExpression is a model for a conditional expression applied on an article

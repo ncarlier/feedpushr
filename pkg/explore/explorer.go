@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/html"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/html"
 	"github.com/rs/zerolog/log"
 )
 

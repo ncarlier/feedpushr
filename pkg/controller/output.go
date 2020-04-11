@@ -2,12 +2,12 @@ package controller
 
 import (
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
-	"github.com/ncarlier/feedpushr/v2/pkg/builder"
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/output"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/autogen/app"
+	"github.com/ncarlier/feedpushr/v3/pkg/builder"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/output"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 )
 
 // OutputController implements the output resource.

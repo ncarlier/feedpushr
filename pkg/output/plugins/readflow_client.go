@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // ArticleForm is a Readflow article form structure

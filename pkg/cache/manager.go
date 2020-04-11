@@ -3,9 +3,9 @@ package cache
 import (
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/config"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/pkg/config"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

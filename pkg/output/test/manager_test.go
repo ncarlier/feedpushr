@@ -4,11 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/builder"
-	"github.com/ncarlier/feedpushr/v2/pkg/filter"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/output"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/builder"
+	"github.com/ncarlier/feedpushr/v3/pkg/filter"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/output"
 )
 
 func TestNewManager(t *testing.T) {

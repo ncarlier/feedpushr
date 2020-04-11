@@ -4,8 +4,8 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/fe/feedpushr/autogen
+// --design=github.com/ncarlier/feedpushr/v3/design
+// --out=/home/nicolas/workspace/feedpushr/autogen
 // --version=v1.4.3
 
 package test
@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/goatest"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
+	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	"io"
 	"log"
 	"net/http"

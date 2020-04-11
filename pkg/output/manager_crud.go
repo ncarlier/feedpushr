@@ -3,9 +3,9 @@ package output
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/filter"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/filter"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // AddOutputProcessor add an output processor to the manager

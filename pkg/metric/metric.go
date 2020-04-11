@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/config"
+	"github.com/ncarlier/feedpushr/v3/pkg/config"
 )
 
 var startTime = time.Now().UTC()

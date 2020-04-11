@@ -19,7 +19,7 @@ A simple feed aggregator service with sugar on top.
 - Apply modifications on articles with a pluggable filter system.
 - Push new articles to a pluggable output system (STDOUT, HTTP, Twitter ...).
 - Customize the pipeline thanks to a powerful expression language.
-- Support of [PubSubHubbud][pubsubhubbud] the open, simple, web-scale and
+- Support of [WebSub][websub] the open, simple, web-scale and
   decentralized pubsub protocol.
 - REST API with complete [OpenAPI][openapi] documentation.
 - Full feature Web UI and CLI to interact with the API.
@@ -30,7 +30,7 @@ A simple feed aggregator service with sugar on top.
 Run the following command:
 
 ```bash
-$ go get -v github.com/ncarlier/feedpushr/v2
+$ go get -v github.com/ncarlier/feedpushr/v3
 ```
 
 **Or** download the binary regarding your architecture:
@@ -291,7 +291,7 @@ See [LICENSE](./LICENSE) to see the full text.
 
 [opml]: https://en.wikipedia.org/wiki/OPML
 [openapi]: https://www.openapis.org/
-[pubsubhubbud]: https://github.com/pubsubhubbub/
+[websub]: https://w3c.github.io/websub/
 [boltdb]: https://github.com/coreos/bbolt
 [logstash]: https://www.elastic.co/fr/products/logstash
 [opml-category]: http://dev.opml.org/spec2.html#otherSpecialAttributes

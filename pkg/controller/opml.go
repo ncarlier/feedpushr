@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/opml"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/autogen/app"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/opml"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 )
 
 // OpmlController implements the opml resource.

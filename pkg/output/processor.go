@@ -3,11 +3,11 @@ package output
 import (
 	"sync"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/cache"
-	"github.com/ncarlier/feedpushr/v2/pkg/expr"
-	"github.com/ncarlier/feedpushr/v2/pkg/filter"
-	"github.com/ncarlier/feedpushr/v2/pkg/helper"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/cache"
+	"github.com/ncarlier/feedpushr/v3/pkg/expr"
+	"github.com/ncarlier/feedpushr/v3/pkg/filter"
+	"github.com/ncarlier/feedpushr/v3/pkg/helper"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	configflag "github.com/ncarlier/feedpushr/v2/pkg/config/flag"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	configflag "github.com/ncarlier/feedpushr/v3/pkg/config/flag"
 )
 
 type sampleConfig struct {

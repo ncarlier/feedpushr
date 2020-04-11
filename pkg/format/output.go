@@ -3,7 +3,7 @@ package format
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // NewOutputFormatter create formatter from output plugin properties

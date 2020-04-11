@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/builder"
+	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 )
 
 func TestNewFeedHandler(t *testing.T) {

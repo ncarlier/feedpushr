@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/output"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/output"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

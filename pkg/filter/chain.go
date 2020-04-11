@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/filter/plugins"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/plugin"
+	"github.com/ncarlier/feedpushr/v3/pkg/filter/plugins"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/plugin"
 )
 
 // Chain contains filter chain

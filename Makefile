@@ -62,7 +62,7 @@ clean:
 ## Run code generation
 autogen:
 	echo ">>> Generating code ..."
-	goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/v2/design
+	goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/v3/design
 	echo ">>> Moving Swagger files to assets ..."
 	cp -f $(root_dir)/autogen/swagger/** $(root_dir)/var/assets/
 
@@ -158,6 +158,7 @@ archive:
 distribution:
 	GOARCH=amd64 make build cli launcher plugins archive
 	GOARCH=arm64 make build cli archive
+	GOARCH=arm make build cli archive
 	GOOS=windows make build cli launcher archive
 	GOOS=darwin make build cli archive
 .PHONY: distribution

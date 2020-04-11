@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/helper"
-	"github.com/ncarlier/feedpushr/v2/pkg/opml"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/helper"
+	"github.com/ncarlier/feedpushr/v3/pkg/opml"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 )
 
 var db store.DB

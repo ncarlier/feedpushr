@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/cache"
-	"github.com/ncarlier/feedpushr/v2/pkg/config"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/pkg/cache"
+	"github.com/ncarlier/feedpushr/v3/pkg/config"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 )
 
 var (

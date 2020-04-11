@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/url"
 
-	bolt "github.com/ncarlier/feedpushr/v2/pkg/store/bolt"
-	memory "github.com/ncarlier/feedpushr/v2/pkg/store/memory"
+	bolt "github.com/ncarlier/feedpushr/v3/pkg/store/bolt"
+	memory "github.com/ncarlier/feedpushr/v3/pkg/store/memory"
 	"github.com/rs/zerolog/log"
 )
 

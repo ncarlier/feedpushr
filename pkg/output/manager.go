@@ -3,10 +3,10 @@ package output
 import (
 	"sync"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/cache"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/output/plugins"
-	"github.com/ncarlier/feedpushr/v2/pkg/plugin"
+	"github.com/ncarlier/feedpushr/v3/pkg/cache"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/output/plugins"
+	"github.com/ncarlier/feedpushr/v3/pkg/plugin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

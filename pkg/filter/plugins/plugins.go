@@ -1,6 +1,6 @@
 package plugins
 
-import "github.com/ncarlier/feedpushr/v2/pkg/model"
+import "github.com/ncarlier/feedpushr/v3/pkg/model"
 
 // GetBuiltinFilterPlugins get builtin plugins list
 func GetBuiltinFilterPlugins() map[string]model.FilterPlugin {

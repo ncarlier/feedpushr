@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 )
 
 func loadFeedAggregators(db store.DB, m *aggregator.Manager, interval time.Duration) error {

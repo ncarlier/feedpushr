@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"text/template"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/format/fn"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/format/fn"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 type templateFormatter struct {

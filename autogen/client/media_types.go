@@ -4,8 +4,8 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/ncarlier/feedpushr/v2/design
-// --out=/home/nicolas/workspace/fe/feedpushr/autogen
+// --design=github.com/ncarlier/feedpushr/v3/design
+// --out=/home/nicolas/workspace/feedpushr/autogen
 // --version=v1.4.3
 
 package client

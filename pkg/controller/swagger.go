@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
-	"github.com/ncarlier/feedpushr/v2/pkg/assets"
+	"github.com/ncarlier/feedpushr/v3/autogen/app"
+	"github.com/ncarlier/feedpushr/v3/pkg/assets"
 )
 
 // SwaggerController implements the swagger resource.

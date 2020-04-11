@@ -3,8 +3,8 @@ package server
 import (
 	"path/filepath"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/config"
-	"github.com/ncarlier/feedpushr/v2/pkg/plugin"
+	"github.com/ncarlier/feedpushr/v3/pkg/config"
+	"github.com/ncarlier/feedpushr/v3/pkg/plugin"
 	"github.com/rs/zerolog/log"
 )
 

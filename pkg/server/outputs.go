@@ -3,9 +3,9 @@ package server
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/output"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/output"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 )
 
 func loadOutputs(db store.DB, om *output.Manager) error {

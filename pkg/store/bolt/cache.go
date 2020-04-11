@@ -5,7 +5,7 @@ import (
 	"time"
 
 	bolt "github.com/coreos/bbolt"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // CacheBucketName bucket name

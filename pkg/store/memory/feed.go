@@ -1,9 +1,9 @@
 package store
 
 import (
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/helper"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/helper"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // ExistsFeed returns true if a feed exists for this url.

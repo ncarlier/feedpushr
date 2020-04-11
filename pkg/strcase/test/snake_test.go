@@ -3,8 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/strcase"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/strcase"
 )
 
 func TestToSnakeCase(t *testing.T) {

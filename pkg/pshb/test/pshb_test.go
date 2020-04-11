@@ -3,8 +3,8 @@ package pshb_test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
-	"github.com/ncarlier/feedpushr/v2/pkg/pshb"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/pshb"
 )
 
 func TestGetSubscriptionDetailsURL(t *testing.T) {

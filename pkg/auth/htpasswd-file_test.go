@@ -3,7 +3,7 @@ package auth
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/assert"
 )
 
 func TestValidateCredentials(t *testing.T) {

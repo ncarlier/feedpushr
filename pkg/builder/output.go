@@ -4,8 +4,8 @@ import (
 	"net/url"
 
 	"github.com/google/uuid"
-	"github.com/ncarlier/feedpushr/v2/autogen/app"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/autogen/app"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // OutputBuilder is a builder to create an Output definition

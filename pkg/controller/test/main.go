@@ -5,13 +5,13 @@ import (
 	"time"
 
 	"github.com/goadesign/goa"
-	"github.com/ncarlier/feedpushr/v2/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/v2/pkg/cache"
-	"github.com/ncarlier/feedpushr/v2/pkg/config"
-	"github.com/ncarlier/feedpushr/v2/pkg/filter"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
-	"github.com/ncarlier/feedpushr/v2/pkg/output"
-	"github.com/ncarlier/feedpushr/v2/pkg/store"
+	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
+	"github.com/ncarlier/feedpushr/v3/pkg/cache"
+	"github.com/ncarlier/feedpushr/v3/pkg/config"
+	"github.com/ncarlier/feedpushr/v3/pkg/filter"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/output"
+	"github.com/ncarlier/feedpushr/v3/pkg/store"
 )
 
 var (

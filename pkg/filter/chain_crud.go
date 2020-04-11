@@ -3,8 +3,8 @@ package filter
 import (
 	"fmt"
 
-	"github.com/ncarlier/feedpushr/v2/pkg/common"
-	"github.com/ncarlier/feedpushr/v2/pkg/model"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/rs/zerolog/log"
 )
 
