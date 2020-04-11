@@ -36,7 +36,7 @@ PLUGIN?=twitter
 PLUGIN_SO=$(APPNAME)-$(PLUGIN).so
 
 # Extract version infos
-PKG_VERSION:=github.com/ncarlier/$(APPNAME)/v2/pkg/version
+PKG_VERSION:=github.com/ncarlier/$(APPNAME)/v3/pkg/version
 VERSION:=`git describe --tags`
 GIT_COMMIT:=`git rev-list -1 HEAD --abbrev-commit`
 BUILT:=`date`
