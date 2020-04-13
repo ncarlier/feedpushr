@@ -42,15 +42,22 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 	if !helper.IsEmptyString(ctx.Title) {
 		feed.Title = *ctx.Title
 	}
-	status := aggregator.RunningStatus.String()
+	status := aggregator.StoppedStatus.String()
+	if ctx.Enable != nil && *ctx.Enable {
+		status = aggregator.RunningStatus.String()
+	}
 	feed.Status = &status
 	err = c.db.SaveFeed(feed)
 	if err != nil {
 		return goa.ErrInternal(err)
 	}
-	fa := c.aggregator.RegisterFeedAggregator(feed, 0)
-	fa.Start()
-	c.log.Info().Str("id", feed.ID).Msg("feed created and aggregation started")
+	if feed.Status != nil && *feed.Status == aggregator.RunningStatus.String() {
+		fa := c.aggregator.RegisterFeedAggregator(feed, 0)
+		fa.Start()
+		c.log.Info().Str("id", feed.ID).Msg("feed created and registered")
+	} else {
+		c.log.Info().Str("id", feed.ID).Msg("feed created")
+	}
 
 	return ctx.Created(builder.NewFeedResponseFromDef(feed))
 }

@@ -37,6 +37,8 @@ type (
 
 	// CreateFeedCommand is the command line data structure for the create action of feed
 	CreateFeedCommand struct {
+		// Feed activation status
+		Enable string
 		// Comma separated list of tags
 		Tags string
 		// Feed title (will overide official feed title)
@@ -774,7 +776,16 @@ func (cmd *CreateFeedCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.CreateFeed(ctx, path, cmd.URL, stringFlagVal("tags", cmd.Tags), stringFlagVal("title", cmd.Title))
+	var tmp28 *bool
+	if cmd.Enable != "" {
+		var err error
+		tmp28, err = boolVal(cmd.Enable)
+		if err != nil {
+			goa.LogError(ctx, "failed to parse flag into *bool value", "flag", "--enable", "err", err)
+			return err
+		}
+	}
+	resp, err := c.CreateFeed(ctx, path, cmd.URL, tmp28, stringFlagVal("tags", cmd.Tags), stringFlagVal("title", cmd.Title))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -786,6 +797,8 @@ func (cmd *CreateFeedCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *CreateFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var enable string
+	cc.Flags().StringVar(&cmd.Enable, "enable", enable, `Feed activation status`)
 	var tags string
 	cc.Flags().StringVar(&cmd.Tags, "tags", tags, `Comma separated list of tags`)
 	var title string

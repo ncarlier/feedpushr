@@ -25,8 +25,8 @@ func CreateFeedPath() string {
 }
 
 // Create a new feed
-func (c *Client) CreateFeed(ctx context.Context, path string, url_ string, tags *string, title *string) (*http.Response, error) {
-	req, err := c.NewCreateFeedRequest(ctx, path, url_, tags, title)
+func (c *Client) CreateFeed(ctx context.Context, path string, url_ string, enable *bool, tags *string, title *string) (*http.Response, error) {
+	req, err := c.NewCreateFeedRequest(ctx, path, url_, enable, tags, title)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *Client) CreateFeed(ctx context.Context, path string, url_ string, tags 
 }
 
 // NewCreateFeedRequest create the request corresponding to the create action endpoint of the feed resource.
-func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ string, tags *string, title *string) (*http.Request, error) {
+func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ string, enable *bool, tags *string, title *string) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
@@ -42,6 +42,10 @@ func (c *Client) NewCreateFeedRequest(ctx context.Context, path string, url_ str
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	values.Set("url", url_)
+	if enable != nil {
+		tmp29 := strconv.FormatBool(*enable)
+		values.Set("enable", tmp29)
+	}
 	if tags != nil {
 		values.Set("tags", *tags)
 	}
@@ -140,12 +144,12 @@ func (c *Client) NewListFeedRequest(ctx context.Context, path string, limit *int
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
 	if limit != nil {
-		tmp28 := strconv.Itoa(*limit)
-		values.Set("limit", tmp28)
+		tmp30 := strconv.Itoa(*limit)
+		values.Set("limit", tmp30)
 	}
 	if page != nil {
-		tmp29 := strconv.Itoa(*page)
-		values.Set("page", tmp29)
+		tmp31 := strconv.Itoa(*page)
+		values.Set("page", tmp31)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)

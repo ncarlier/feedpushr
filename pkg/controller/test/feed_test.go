@@ -19,7 +19,8 @@ func TestFeedCRUD(t *testing.T) {
 	url := "http://rss.cnn.com/rss/edition.rss"
 
 	// CREATE
-	_, f := test.CreateFeedCreated(t, ctx, srv, ctrl, nil, nil, url)
+	status := true
+	_, f := test.CreateFeedCreated(t, ctx, srv, ctrl, &status, nil, nil, url)
 	assert.Equal(t, "running", *f.Status, "")
 	assert.Equal(t, url, f.XMLURL, "")
 	id := f.ID

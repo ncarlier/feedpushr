@@ -943,6 +943,11 @@ paths:
       description: Create a new feed
       operationId: feed#create
       parameters:
+      - description: Feed activation status
+        in: query
+        name: enable
+        required: false
+        type: boolean
       - description: Comma separated list of tags
         in: query
         name: tags

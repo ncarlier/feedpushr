@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Chip, Tooltip, Theme } from '@material-ui/core'
+import { Chip, Theme, Tooltip } from '@material-ui/core'
 import { Cloud as CloudIcon } from '@material-ui/icons'
-import { makeStyles, createStyles } from '@material-ui/styles'
+import { createStyles, makeStyles } from '@material-ui/styles'
 
 import { Feed } from './Types'
 
@@ -22,7 +22,7 @@ export default ({ feed }: Props) => {
   const classes = useStyles()
   if (!!feed.hubUrl) {
     return (
-      <Tooltip title="PubSubHubbud ready" className={classes.margin}>
+      <Tooltip title="WebSub ready" className={classes.margin}>
         <Chip
           variant="outlined"
           size="small"

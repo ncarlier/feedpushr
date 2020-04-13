@@ -65,6 +65,9 @@ var _ = Resource("feed", func() {
 			Param("tags", String, "Comma separated list of tags", func() {
 				Example("foo,bar")
 			})
+			Param("enable", Boolean, "Feed activation status", func() {
+				Example(true)
+			})
 			Required("url")
 		})
 		Response(Created, FeedResponse)

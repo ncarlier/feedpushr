@@ -66,9 +66,10 @@ type CreateFeedContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Tags  *string
-	Title *string
-	URL   string
+	Enable *bool
+	Tags   *string
+	Title  *string
+	URL    string
 }
 
 // NewCreateFeedContext parses the incoming request URL and body, performs validations and creates the
@@ -80,6 +81,16 @@ func NewCreateFeedContext(ctx context.Context, r *http.Request, service *goa.Ser
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := CreateFeedContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramEnable := req.Params["enable"]
+	if len(paramEnable) > 0 {
+		rawEnable := paramEnable[0]
+		if enable, err2 := strconv.ParseBool(rawEnable); err2 == nil {
+			tmp1 := &enable
+			rctx.Enable = tmp1
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("enable", rawEnable, "boolean"))
+		}
+	}
 	paramTags := req.Params["tags"]
 	if len(paramTags) > 0 {
 		rawTags := paramTags[0]
@@ -1381,9 +1392,9 @@ func NewSubPshbContext(ctx context.Context, r *http.Request, service *goa.Servic
 	if len(paramHubLeaseSeconds) > 0 {
 		rawHubLeaseSeconds := paramHubLeaseSeconds[0]
 		if hubLeaseSeconds, err2 := strconv.Atoi(rawHubLeaseSeconds); err2 == nil {
-			tmp5 := hubLeaseSeconds
-			tmp4 := &tmp5
-			rctx.HubLeaseSeconds = tmp4
+			tmp6 := hubLeaseSeconds
+			tmp5 := &tmp6
+			rctx.HubLeaseSeconds = tmp5
 		} else {
 			err = goa.MergeErrors(err, goa.InvalidParamTypeError("hub.lease_seconds", rawHubLeaseSeconds, "integer"))
 		}
