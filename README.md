@@ -37,6 +37,8 @@ $ go get -v github.com/ncarlier/feedpushr/v3
 
 ```bash
 $ curl -s https://raw.githubusercontent.com/ncarlier/feedpushr/master/install.sh | bash
+$ # Or with https://gobinaries.com/
+$ curl -sf https://gobinaries.com/ncarlier/feedpushr | sh
 ```
 
 **Or** use Docker:
@@ -66,31 +68,6 @@ For example, this OMPL attribute `<category>/test,foo,/bar/bar</category>` will 
 
 Once feeds are configured with tags, each new article will inherit these tags and be pushed out with them.
 
-## Filters
-
-Before being sent, articles can be modified through a filter chain.
-
-Currently, there are some built-in filter:
-
-| Filter | Properties | Description |
-|----------|---------|-------------|
-| `title`  | `prefix` (default: `feedpushr:`)| This filter will prefix the title of the article with a given value. |
-| `fetch`  | None       | This filter will attempt to extract the content of the article from the source URL. |
-| `minify` | None       | This filter will minify the HTML content of the article. |
-
-Filters can be extended using [plugins](#plugins).
-
-### Conditional expression
-
-Filters are activated according to a conditional expression.
-If the filter has no condition it will be activated regardless of the input article.
-Otherwise the expression will be applied to the article and its result will decide whether the filter is activated or not.
-
-For example, if we want to activate a filter only on articles tagged *news* and mentioning *Paris* in their title.
-We can use the following expression: `"news" in Tags and Title contains "Paris"`
-
-The conditional expression language is documented [here](./EXPRESSION.md).
-
 ## Outputs
 
 New articles are sent to outputs.
@@ -105,11 +82,20 @@ Currently, there are some built-in output providers:
 
 Outputs can be extended using [plugins](#plugins).
 
-Like filters, outputs are activated according to a [conditional expression](#conditional-expression).
+### Conditional expression
+
+Outputs are activated according to a conditional expression.
+If the output has no condition it will be activated regardless of the input article.
+Otherwise the expression will be applied to the article and its result will decide whether the output is used or not.
+
+For example, if we want to use an output only on articles tagged *news* and mentioning *Paris* in their title.
+We can use the following expression: `"news" in Tags and Title contains "Paris"`
+
+The conditional expression language is documented [here](./EXPRESSION.md).
 
 ### Output format
 
-The output format for `stdout` and `http` providers is configurable.
+For some outputs (`stdout`, `http` and some plugins) the output format is configurable.
 
 If the format is not specified, the output will be formatted as the following JSON document:
 
@@ -152,7 +138,24 @@ You can use [template functions](https://golang.org/pkg/text/template/#hdr-Funct
   *Example:* `"{{ tweet .Title .Link }}"`
 - `truncate <length> <text>`: Truncate a text with a max length.
   *Example:* `"{{ truncate 200 .Text }}"`
-  
+
+## Filters
+
+Before being sent, articles can be modified through a filter chain.
+
+Currently, there are some built-in filter:
+
+| Filter | Properties | Description |
+|----------|---------|-------------|
+| `title`  | `prefix` (default: `feedpushr:`)| This filter will prefix the title of the article with a given value. |
+| `fetch`  | None       | This filter will attempt to extract the content of the article from the source URL. |
+| `minify` | None       | This filter will minify the HTML content of the article. |
+
+Filters can be extended using [plugins](#plugins). 
+
+Like outputs, filters are activated according to a [conditional expression](#conditional-expression).
+Filters are attached to an output, so they inherit the conditional expression of the output.
+
 ## Plugins
 
 You can easily extend the application by adding plugins.
@@ -225,9 +228,9 @@ $ feedpushr
 $ # Add feed with the CLI
 $ feedpushr-ctl create feed --url http://www.hashicorp.com/feed.xml
 $ # Add feed with cURL
-$ curl -XPOST http://localhost:8080/v1/feeds?url=http://www.hashicorp.com/feed.xml
+$ curl -XPOST http://localhost:8080/v2/feeds?url=http://www.hashicorp.com/feed.xml
 $ # Import feeds from an OPML file
-$ curl -XPOST http://localhost:8080/v1/opml -F"file=@subscriptions.opml"
+$ curl -XPOST http://localhost:8080/v2/opml -F"file=@subscriptions.opml"
 ```
 
 ### Manage feeds
@@ -251,7 +254,7 @@ $ feedpushr-ctl start feed --id=9090dfac0ccede1cfcee186826d0cc0d
 $ # Get OpenAPI JSON
 $ curl  http://localhost:8080/swagger.json
 $ # Get runtime vars
-$ curl  http://localhost:8080/v1/vars
+$ curl  http://localhost:8080/v2/vars
 $ # Here a quick ETL shell pipeline:
 $ # Send transformed articles to HTTP endpoint using shell tools (jq and httpie)
 $ feedpushr \
