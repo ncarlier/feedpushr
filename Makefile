@@ -9,8 +9,8 @@ BASE_PACKAGE=github.com/ncarlier
 APPNAME=feedpushr
 
 # Go configuration
-GOOS?=linux
-GOARCH?=amd64
+GOOS?=$(shell go env GOHOSTOS)
+GOARCH?=$(shell go env GOHOSTARCH)
 
 # Add exe extension if windows target
 is_windows:=$(filter windows,$(GOOS))
@@ -156,9 +156,9 @@ archive:
 
 ## Create distribution binaries
 distribution:
-	GOARCH=amd64 make build cli launcher plugins archive
-	GOARCH=arm64 make build cli archive
-	GOARCH=arm make build cli archive
+	GOOS=linux GOARCH=amd64 make build cli launcher plugins archive
+	GOOS=linux GOARCH=arm64 make build cli archive
+	GOOS=linux GOARCH=arm make build cli archive
 	GOOS=windows make build cli launcher archive
 	GOOS=darwin make build cli archive
 .PHONY: distribution
