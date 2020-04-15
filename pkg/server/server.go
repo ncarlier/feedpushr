@@ -150,7 +150,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	// Mount custom handlers (aka: not generated)...
 	srv.Mux.Handle("GET", "/ui/*asset", assets.Handler())
 	srv.Mux.Handle("GET", "/ui/", assets.Handler())
-	srv.Mux.Handle("GET", "/", controller.Redirect("/ui/"))
+	srv.Mux.Handle("GET", "/", controller.Redirect(conf.PublicURL+"/ui/"))
 
 	return &Server{
 		db:         db,
