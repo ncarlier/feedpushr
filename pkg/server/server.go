@@ -102,7 +102,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	// Init aggregator daemon
 	var callbackURL string
 	if conf.PublicURL != "" {
-		callbackURL = conf.PublicURL + "/v1/pshb"
+		callbackURL = conf.PublicURL + "/v2/pshb"
 	}
 	am := aggregator.NewAggregatorManager(om, conf.Delay, conf.Timeout, callbackURL)
 
