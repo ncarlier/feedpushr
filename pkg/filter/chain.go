@@ -50,7 +50,7 @@ func (chain *Chain) GetAvailableFilters() []model.Spec {
 // Apply applies filter chain on an article
 func (chain *Chain) Apply(article *model.Article) error {
 	for idx, filter := range chain.filters {
-		if filter.Match(article) {
+		if filter.GetDef().Enabled && filter.Match(article) {
 			// TODO what to do with applied status?
 			if _, err := filter.DoFilter(article); err != nil {
 				return fmt.Errorf("error while applying filter #%d: %v", idx, err)
