@@ -1,31 +1,39 @@
 module github.com/ncarlier/feedpushr/v3
 
 require (
-	github.com/ChimeraCoder/anaconda v2.0.0+incompatible // indirect
-	github.com/ChimeraCoder/tokenbucket v0.0.0-20131201223612-c5a927568de7 // indirect
 	github.com/PuerkitoBio/goquery v1.5.1
-	github.com/antonmedv/expr v1.8.2
-	github.com/azr/backoff v0.0.0-20160115115103-53511d3c7330 // indirect
+	github.com/antonmedv/expr v1.8.4
+	github.com/armon/go-metrics v0.3.2 // indirect
 	github.com/coreos/bbolt v1.3.3
-	github.com/dustin/go-jsonpointer v0.0.0-20160814072949-ba0abeacc3dc // indirect
-	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
+	github.com/dimfeld/httppath v0.0.0-20170720192232-ee938bf73598 // indirect
+	github.com/dimfeld/httptreemux v5.0.1+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.9
-	github.com/garyburd/go-oauth v0.0.0-20180319155456-bca2e7f09a17 // indirect
-	github.com/getlantern/systray v0.0.0-20200324212034-d3ab4fd25d99 // indirect
 	github.com/getsentry/raven-go v0.2.0
 	github.com/goadesign/goa v1.4.3
+	github.com/gofrs/uuid v3.2.0+incompatible // indirect
+	github.com/google/gxui v0.0.0-20151028112939-f85e0a97b3a4 // indirect
 	github.com/google/uuid v1.1.1
-	github.com/k3a/html2text v0.0.0-20191003111652-62431c4a3ba5 // indirect
+	github.com/hashicorp/go-immutable-radix v1.1.0 // indirect
+	github.com/hashicorp/go-uuid v1.0.1 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/manveru/faker v0.0.0-20171103152722-9fbc68a78c4d // indirect
+	github.com/manveru/gobdd v0.0.0-20131210092515-f1a17fdd710b // indirect
 	github.com/mmcdole/gofeed v1.0.0-beta2
-	github.com/ncarlier/feedpushr/v2 v2.2.0 // indirect
-	github.com/ncarlier/readflow v0.0.0-20200130160020-91974bb045a5
+	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
+	github.com/ncarlier/readflow v0.0.0-20200428195339-0bcd686b73b1
+	github.com/onsi/ginkgo v1.12.0 // indirect
+	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rakyll/statik v0.1.7
-	github.com/rs/zerolog v1.17.2
+	github.com/rs/zerolog v1.18.0
+	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/cobra v0.0.6
-	github.com/tdewolff/minify/v2 v2.7.3
-	golang.org/x/crypto v0.0.0-20200204104054-c9f3fb736b72
-	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
+	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/tdewolff/minify/v2 v2.7.4
+	github.com/zach-klippenstein/goregen v0.0.0-20160303162051-795b5e3961ea // indirect
+	go.etcd.io/bbolt v1.3.3 // indirect
+	golang.org/x/crypto v0.0.0-20200427165652-729f1e841bcc
+	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0
 )
 
 go 1.13
