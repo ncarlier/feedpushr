@@ -4,6 +4,6 @@
     <title>Simple test case</title>
   </head>
   <body>
-    <outline text="RSS Feed" title="Hashicorp Blog" type="rss" xmlUrl="http://www.hashicorp.com/feed.xml" htmlUrl="http://www.hashicorp.com/blog" />
+    <outline text="RSS Feed" title="Hashicorp Blog" type="rss" xmlUrl="https://www.hashicorp.com/blog/feed.xml" htmlUrl="https://www.hashicorp.com/blog" />
   </body>
 </opml>

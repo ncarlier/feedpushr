@@ -53,7 +53,7 @@ func TestImportSimpleOPML(t *testing.T) {
 		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
 	}
 
-	assert.True(t, db.ExistsFeed("http://www.hashicorp.com/feed.xml"), "feed should be created")
+	assert.True(t, db.ExistsFeed("https://www.hashicorp.com/blog/feed.xml"), "feed should be created")
 }
 
 func testImportOPML(t *testing.T, filename string) {
