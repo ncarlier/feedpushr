@@ -18,7 +18,7 @@ var spec = model.Spec{
 	PropsSpec: []model.PropSpec{
 		{
 			Name: "brokers",
-			Desc: "Borkers (comma separated list)",
+			Desc: "Brokers (comma-separated values)",
 			Type: model.Text,
 		},
 		{
