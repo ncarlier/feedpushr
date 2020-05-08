@@ -96,9 +96,10 @@ func (p *Processor) start() {
 	if p.status == RunningStatus {
 		return
 	}
+	p.status = RunningStatus
+	p.stopWaitGroup.Add(1)
 	go func() {
-		p.status = RunningStatus
-		p.stopWaitGroup.Add(1)
+		defer p.stopWaitGroup.Done()
 		for {
 			select {
 			case article := <-p.processingChannel:
@@ -106,7 +107,6 @@ func (p *Processor) start() {
 				p.process(article)
 			case <-p.stopChannel:
 				p.status = StoppedStatus
-				p.stopWaitGroup.Done()
 				return
 			}
 		}

@@ -80,7 +80,7 @@ func (m *Manager) RemoveOutputProcessor(def *model.OutputDef) error {
 	if err != nil {
 		return err
 	}
-	m.logger.Debug().Str("id", def.ID).Msg("removing output procesor...")
+	m.logger.Debug().Str("id", def.ID).Msg("removing output processor...")
 	processor.Shutdown()
 	delete(m.processors, def.ID)
 	m.logger.Info().Str("id", def.ID).Msg("output processor removed")
