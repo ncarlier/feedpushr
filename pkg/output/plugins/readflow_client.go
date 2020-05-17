@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/format/fn"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
@@ -47,27 +48,40 @@ func sendToReadflow(url string, apiKey string, article *model.Article) (int, err
 	}
 
 	b := new(bytes.Buffer)
+	// Init form
 	articleForm := ArticleForm{
 		Title:       article.Title,
 		URL:         &article.Link,
 		PublishedAt: article.PublishedParsed,
 	}
+
+	// Set content
 	if article.Content == "" {
 		articleForm.HTML = &article.Text
 	} else {
 		articleForm.HTML = &article.Content
 	}
+
+	// Set tags
 	if len(article.Tags) > 0 {
 		tags := strings.Join(article.Tags, ",")
 		articleForm.Tags = &tags
 	}
+
+	// Set image
 	if image, ok := article.Meta["image"]; ok {
-		sImage := image.(string)
-		articleForm.Image = &sImage
+		if value := image.(string); value != "" {
+			articleForm.Image = &value
+		}
 	}
-	if text, ok := article.Meta["text"]; ok {
-		sText := text.(string)
-		articleForm.Text = &sText
+
+	// Set text
+	text := fn.Truncate(500, article.Text)
+	articleForm.Text = &text
+	if excerpt, ok := article.Meta["excerpt"]; ok {
+		if value := excerpt.(string); value != "" {
+			articleForm.Text = &value
+		}
 	}
 
 	json.NewEncoder(b).Encode([]ArticleForm{articleForm})
