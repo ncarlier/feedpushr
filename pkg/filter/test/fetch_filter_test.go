@@ -3,9 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/model"
-
 	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 func TestFetchFilter(t *testing.T) {
@@ -20,5 +19,5 @@ func TestFetchFilter(t *testing.T) {
 	assert.Nil(t, err, "error should be nil")
 	assert.Equal(t, "ncarlier/feedpushr", article.Title, "invalid article title")
 	assert.Equal(t, link, article.Link, "invalid article link")
-	assert.Equal(t, "A simple feed aggregator daemon with sugar on top. - ncarlier/feedpushr", article.Meta["text"], "invalid description")
+	assert.Equal(t, "A simple feed aggregator daemon with sugar on top. - ncarlier/feedpushr", article.Text, "invalid description")
 }

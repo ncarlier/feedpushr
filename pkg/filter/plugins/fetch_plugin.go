@@ -6,18 +6,21 @@ import (
 
 	"github.com/ncarlier/feedpushr/v3/pkg/expr"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
-	"github.com/ncarlier/readflow/pkg/readability"
+	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
 var fetchSpec = model.Spec{
 	Name: "fetch",
 	Desc: `
 This filter will attempt to extract the content of the article from the source URL.
-If succeeded, following metadata are added to the article:
+If succeeded, following metadata are added (if found) to the article:
 
 - originalContent: Initial article content (before fetching)
-- text: Article excerpt
 - image: Article main illustration
+- excerpt: Article excerpt
+- length: Article length
+- sitename: Website name
+- favicon: Website favicon
 `,
 	PropsSpec: []model.PropSpec{},
 }
@@ -36,11 +39,13 @@ func (p *FetchFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	definition := *def
 	definition.Spec = fetchSpec
 	return &FetchFilter{
 		definition: definition,
 		condition:  condition,
+		scraper:    scraper.NewInternalWebScraper(),
 	}, nil
 }
 
@@ -48,28 +53,32 @@ func (p *FetchFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 type FetchFilter struct {
 	definition model.FilterDef
 	condition  *expr.ConditionalExpression
+	scraper    scraper.WebScraper
 }
 
 // DoFilter applies filter on the article
 func (f *FetchFilter) DoFilter(article *model.Article) (bool, error) {
-	art, err := readability.FetchArticle(context.Background(), article.Link)
-	if err != nil && art == nil {
+	webpage, err := f.scraper.Scrap(context.Background(), article.Link)
+	if err != nil && webpage == nil {
 		atomic.AddUint64(&f.definition.NbError, 1)
 		return false, err
 	}
-	article.Title = art.Title
-	if art.HTML != nil {
+	article.Title = webpage.Title
+	if webpage.HTML != "" {
 		article.Meta["originalContent"] = article.Content
-		article.Content = *art.HTML
+		article.Content = webpage.HTML
 	}
-	if art.Text != nil {
-		article.Meta["text"] = *art.Text
+	if webpage.Text != "" {
+		article.Text = webpage.Text
 	}
-	if art.Image != nil {
-		article.Meta["image"] = *art.Image
-	}
-	// article.Meta["length"] = art.Length
-	// article.Meta["sitename"] = art.SiteName
+
+	// Add meta...
+	article.Meta["excerpt"] = webpage.Excerpt
+	article.Meta["image"] = webpage.Image
+	article.Meta["sitename"] = webpage.SiteName
+	article.Meta["favicon"] = webpage.Favicon
+	article.Meta["length"] = webpage.Length
+
 	atomic.AddUint64(&f.definition.NbSuccess, 1)
 	return true, nil
 }
