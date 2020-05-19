@@ -43,12 +43,16 @@ func (store *InMemoryStore) SaveFeed(feed *model.FeedDef) error {
 }
 
 // ListFeeds returns a paginated list of feeds.
-func (store *InMemoryStore) ListFeeds(page, limit int) (*model.FeedDefCollection, error) {
-	feeds := model.FeedDefCollection{}
+func (store *InMemoryStore) ListFeeds(page, size int) (*model.FeedDefPage, error) {
 	if page <= 0 {
 		page = 1
 	}
-	startOffset := (page - 1) * limit
+	result := model.FeedDefPage{
+		Page:  page,
+		Size:  size,
+		Total: len(store.feeds),
+	}
+	startOffset := (page - 1) * size
 	offset := 0
 	for _, feed := range store.feeds {
 		switch {
@@ -56,16 +60,16 @@ func (store *InMemoryStore) ListFeeds(page, limit int) (*model.FeedDefCollection
 			// Skip entries before the start offset
 			offset++
 			continue
-		case offset >= startOffset+limit:
+		case offset >= startOffset+size:
 			// End of the window
 			break
 		default:
 			// Add value to entries
 			offset++
-			feeds = append(feeds, feed)
+			result.Feeds = append(result.Feeds, feed)
 		}
 	}
-	return &feeds, nil
+	return &result, nil
 }
 
 // CountFeeds returns total numer of feeds.

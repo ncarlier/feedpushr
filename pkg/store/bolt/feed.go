@@ -50,30 +50,47 @@ func (store *BoltStore) DeleteFeed(id string) (*model.FeedDef, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = store.index.Delete(feed.ID)
+	if err != nil {
+		return nil, err
+	}
 	return feed, nil
 }
 
 // SaveFeed stores a feed.
 func (store *BoltStore) SaveFeed(feed *model.FeedDef) error {
-	return store.save(FeedBucketName, []byte(feed.ID), &feed)
+	err := store.save(FeedBucketName, []byte(feed.ID), &feed)
+	if err != nil {
+		return err
+	}
+	return store.index.Index(feed.ID, feed)
 }
 
 // ListFeeds returns a paginated list of feeds.
-func (store *BoltStore) ListFeeds(page, limit int) (*model.FeedDefCollection, error) {
-	bufs, err := store.allAsRaw(FeedBucketName, page, limit)
+func (store *BoltStore) ListFeeds(page, size int) (*model.FeedDefPage, error) {
+	bufs, err := store.allAsRaw(FeedBucketName, page, size)
 	if err != nil {
 		return nil, err
 	}
 
-	feeds := model.FeedDefCollection{}
+	total, err := store.CountFeeds()
+	if err != nil {
+		return nil, err
+	}
+
+	result := model.FeedDefPage{
+		Page:  page,
+		Size:  size,
+		Total: total,
+	}
 	for _, buf := range bufs {
 		var feed model.FeedDef
 		if err := json.Unmarshal(buf, &feed); err != nil {
 			return nil, err
 		}
-		feeds = append(feeds, feed)
+		result.Feeds = append(result.Feeds, feed)
 	}
-	return &feeds, nil
+	return &result, nil
 }
 
 // CountFeeds returns total numer of feeds.

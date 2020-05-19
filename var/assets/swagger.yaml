@@ -293,7 +293,7 @@ definitions:
         - bar
         title: Hashicorp Blog
         xmlUrl: http://www.hashicorp.com/feed.xml
-      limit: 100
+      size: 100
       total: 99
     properties:
       current:
@@ -303,7 +303,7 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/FeedResponseCollection'
-      limit:
+      size:
         description: Max number of feeds by page
         example: 100
         format: int64
@@ -316,7 +316,7 @@ definitions:
     required:
     - total
     - current
-    - limit
+    - size
     - data
     title: 'Mediatype identifier: application/vnd.feedpushr.feeds-page.v2+json; view=default'
     type: object
@@ -906,18 +906,23 @@ paths:
       description: Retrieve all feeds
       operationId: feed#list
       parameters:
-      - default: 10
-        description: Fetch limit
-        in: query
-        minimum: 1
-        name: limit
-        required: false
-        type: integer
       - default: 1
         description: Page to fetch
         in: query
         minimum: 1
         name: page
+        required: false
+        type: integer
+      - description: Search query
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 10
+        description: Page size
+        in: query
+        minimum: 1
+        name: size
         required: false
         type: integer
       produces:

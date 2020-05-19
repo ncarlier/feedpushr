@@ -16,12 +16,13 @@ var _ = Resource("feed", func() {
 		)
 		Description("Retrieve all feeds")
 		Params(func() {
+			Param("q", String, "Search query")
 			Param("page", Integer, "Page to fetch", func() {
 				Default(1)
 				Minimum(1)
 				Example(5)
 			})
-			Param("limit", Integer, "Fetch limit", func() {
+			Param("size", Integer, "Page size", func() {
 				Default(10)
 				Minimum(1)
 				Example(10)
@@ -209,17 +210,17 @@ var FeedsPageResponse = MediaType("application/vnd.feedpushr.feeds-page.v2+json"
 		Attribute("current", Integer, "Current page number", func() {
 			Example(1)
 		})
-		Attribute("limit", Integer, "Max number of feeds by page", func() {
+		Attribute("size", Integer, "Max number of feeds by page", func() {
 			Example(100)
 		})
 		Attribute("data", CollectionOf(FeedResponse), "List of feeds")
-		Required("total", "current", "limit", "data")
+		Required("total", "current", "size", "data")
 	})
 
 	View("default", func() {
 		Attribute("total")
 		Attribute("current")
-		Attribute("limit")
+		Attribute("size")
 		Attribute("data")
 	})
 })

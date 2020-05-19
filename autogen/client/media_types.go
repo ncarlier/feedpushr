@@ -286,7 +286,7 @@ type FeedsPageResponse struct {
 	// List of feeds
 	Data FeedResponseCollection `form:"data" json:"data" yaml:"data" xml:"data"`
 	// Max number of feeds by page
-	Limit int `form:"limit" json:"limit" yaml:"limit" xml:"limit"`
+	Size int `form:"size" json:"size" yaml:"size" xml:"size"`
 	// Total number of feeds
 	Total int `form:"total" json:"total" yaml:"total" xml:"total"`
 }

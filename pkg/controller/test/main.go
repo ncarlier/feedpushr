@@ -1,6 +1,8 @@
 package test
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -24,8 +26,13 @@ var (
 
 func setup(t *testing.T) func(t *testing.T) {
 	t.Log("setup test case")
-	var err error
-	db, err = store.NewDB("memory://")
+
+	workspace, err := ioutil.TempDir("", "feedpushr")
+	if err != nil {
+		t.Fatalf("unable to setup temporary workspace: %v", err)
+	}
+
+	db, err = store.NewDB("boltdb://" + workspace + "/test.db")
 	if err != nil {
 		t.Fatalf("Unable to setup database: %v", err)
 	}
@@ -54,5 +61,6 @@ func setup(t *testing.T) func(t *testing.T) {
 		outputs.Shutdown()
 		cm.Shutdown()
 		defer db.Close()
+		defer os.RemoveAll(workspace)
 	}
 }

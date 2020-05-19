@@ -259,8 +259,9 @@ type ListFeedContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	Limit int
-	Page  int
+	Page int
+	Q    *string
+	Size int
 }
 
 // NewListFeedContext parses the incoming request URL and body, performs validations and creates the
@@ -272,20 +273,6 @@ func NewListFeedContext(ctx context.Context, r *http.Request, service *goa.Servi
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := ListFeedContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramLimit := req.Params["limit"]
-	if len(paramLimit) == 0 {
-		rctx.Limit = 10
-	} else {
-		rawLimit := paramLimit[0]
-		if limit, err2 := strconv.Atoi(rawLimit); err2 == nil {
-			rctx.Limit = limit
-		} else {
-			err = goa.MergeErrors(err, goa.InvalidParamTypeError("limit", rawLimit, "integer"))
-		}
-		if rctx.Limit < 1 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError(`limit`, rctx.Limit, 1, true))
-		}
-	}
 	paramPage := req.Params["page"]
 	if len(paramPage) == 0 {
 		rctx.Page = 1
@@ -298,6 +285,25 @@ func NewListFeedContext(ctx context.Context, r *http.Request, service *goa.Servi
 		}
 		if rctx.Page < 1 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError(`page`, rctx.Page, 1, true))
+		}
+	}
+	paramQ := req.Params["q"]
+	if len(paramQ) > 0 {
+		rawQ := paramQ[0]
+		rctx.Q = &rawQ
+	}
+	paramSize := req.Params["size"]
+	if len(paramSize) == 0 {
+		rctx.Size = 10
+	} else {
+		rawSize := paramSize[0]
+		if size, err2 := strconv.Atoi(rawSize); err2 == nil {
+			rctx.Size = size
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("size", rawSize, "integer"))
+		}
+		if rctx.Size < 1 {
+			err = goa.MergeErrors(err, goa.InvalidRangeError(`size`, rctx.Size, 1, true))
 		}
 	}
 	return &rctx, err

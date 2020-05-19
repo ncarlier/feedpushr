@@ -1,10 +1,8 @@
-import MaterialTable, { MTableToolbar } from 'material-table'
+import MaterialTable, { MTableToolbar, Query, QueryResult } from 'material-table'
 import React, { useContext, useState } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
 
-import { Link as Href, makeStyles } from '@material-ui/core'
-import { Pagination, PaginationItem } from '@material-ui/lab'
+import { Link as Href } from '@material-ui/core'
 
 import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
@@ -18,26 +16,13 @@ import FeedTags from './FeedTags'
 import OPMLExportButton from './OPMLExportButton'
 import OPMLImportButton from './OPMLImportButton'
 import { Feed, FeedPage } from './Types'
-
-const useStyles = makeStyles(() => ({
-  pagination: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-}))
-
-interface Props {
-  page: FeedPage
-}
+import { usePageTitle } from '../hooks'
 
 const columns = [
   {
     title: 'Aggregation',
     render: (feed: Feed) => !!feed && <FeedControl feed={feed} />,
     field: 'id',
-    sorting: false,
-    searchable: false,
     width: 120,
   },
   {
@@ -71,12 +56,32 @@ const columns = [
   },
 ]
 
-export default withRouter(({ page, history }: Props & RouteComponentProps) => {
-  const classes = useStyles()
+export default withRouter(({ history }: RouteComponentProps) => {
+  usePageTitle('feeds')
+
   const [error, setError] = useState<Error | null>(null)
+  const [title, setTitle] = useState('feeds')
   const { showMessage } = useContext(MessageContext)
 
-  const totalPages = Math.ceil(page.total / page.size)
+  const search = async (query: Query<Feed>): Promise<QueryResult<Feed>> => {
+    const req = {
+      q: query.search.trim(),
+      page: query.page + 1,
+      size: query.pageSize,
+    }
+    const res = await fetchAPI('/feeds', req, { method: 'GET' })
+    if (!res.ok) {
+      const _err = await res.json()
+      throw new Error(_err.detail || res.statusText)
+    }
+    const page = (await res.json()) as FeedPage
+    setTitle(`${page.total} feed${page.total > 1 ? 's' : ''}`)
+    return {
+      data: page.data,
+      page: page.current - 1,
+      totalCount: page.total,
+    }
+  }
 
   const onRowDelete = async (oldFeed: Feed) => {
     const { id, title } = oldFeed
@@ -98,24 +103,24 @@ export default withRouter(({ page, history }: Props & RouteComponentProps) => {
     }
   }
 
-  const title = `${page.total} feed${page.total > 1 ? 's' : ''}`
-
   return (
     <>
       {!!error && <Message message={error.message} variant="error" />}
       <MaterialTable
         title={title}
         columns={columns}
-        data={page.data}
+        data={search}
         editable={{
           onRowDelete,
         }}
         options={{
+          debounceInterval: 1000,
           actionsColumnIndex: -1,
           paging: true,
-          pageSize: page.data.length,
+          pageSize: 20,
+          pageSizeOptions: [10, 20, 50, 100],
+          sorting: false,
         }}
-        onSearchChange={console.log}
         actions={[
           {
             icon: 'edit',
@@ -138,21 +143,6 @@ export default withRouter(({ page, history }: Props & RouteComponentProps) => {
                 <OPMLExportButton />
               </div>
             </div>
-          ),
-          Pagination: () => (
-            <td className={classes.pagination}>
-              <Pagination
-                count={totalPages}
-                defaultPage={page.current}
-                renderItem={(item: any) => (
-                  <PaginationItem
-                    component={Link}
-                    to={`/feeds${item.page === 1 ? '' : `?page=${item.page}`}`}
-                    {...item}
-                  />
-                )}
-              />
-            </td>
           ),
         }}
       />

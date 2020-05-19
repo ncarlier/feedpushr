@@ -6,7 +6,7 @@ import (
 
 // FeedRepository interface to manage feeds
 type FeedRepository interface {
-	ListFeeds(page, limit int) (*model.FeedDefCollection, error)
+	ListFeeds(page, size int) (*model.FeedDefPage, error)
 	CountFeeds() (int, error)
 	ExistsFeed(url string) bool
 	GetFeed(id string) (*model.FeedDef, error)

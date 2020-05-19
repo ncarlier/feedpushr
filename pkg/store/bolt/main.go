@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/blevesearch/bleve"
 	bolt "github.com/coreos/bbolt"
+	"github.com/pkg/errors"
 )
 
 // BoltStore is a data store backed by BoltDB
 type BoltStore struct {
-	db *bolt.DB
+	db    *bolt.DB
+	index bleve.Index
 }
 
 func createBucketsIfNotExists(tx *bolt.Tx, buckets ...[]byte) error {
@@ -25,9 +28,10 @@ func createBucketsIfNotExists(tx *bolt.Tx, buckets ...[]byte) error {
 
 // NewBoltStore creates a data store backed by BoltDB
 func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
-	db, err := bolt.Open(datasource.Host+datasource.Path, 0600, nil)
+	dbPath := datasource.Host + datasource.Path
+	db, err := bolt.Open(dbPath, 0600, nil)
 	if err != nil {
-		return nil, fmt.Errorf("could not open db, %v", err)
+		return nil, fmt.Errorf("unable to open DB, %v", err)
 	}
 	err = db.Update(func(tx *bolt.Tx) error {
 		return createBucketsIfNotExists(
@@ -38,17 +42,33 @@ func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
 		)
 	})
 	if err != nil {
-		return nil, fmt.Errorf("could not set up buckets, %v", err)
+		return nil, fmt.Errorf("unable to set up buckets, %v", err)
+	}
+
+	// Init search index
+	index, err := openSearchIndex(db.Path())
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("unable to open search index, %v", err)
 	}
 
 	return &BoltStore{
-		db: db,
+		db:    db,
+		index: index,
 	}, nil
 }
 
 // Close the DB.
 func (store *BoltStore) Close() error {
-	return store.db.Close()
+	var err error
+	if err = store.index.Close(); err != nil {
+		if err2 := store.db.Close(); err2 != nil {
+			err = errors.Wrap(err, err2.Error())
+		}
+	} else {
+		err = store.db.Close()
+	}
+	return err
 }
 
 func (store *BoltStore) clear(bucketName []byte) error {

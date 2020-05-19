@@ -26,3 +26,11 @@ type FeedDef struct {
 
 // FeedDefCollection is a list of feed definition
 type FeedDefCollection []FeedDef
+
+// FeedDefPage is a page of feed definition
+type FeedDefPage struct {
+	Total int
+	Page  int
+	Size  int
+	Feeds FeedDefCollection
+}

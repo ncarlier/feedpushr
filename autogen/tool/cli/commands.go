@@ -64,10 +64,12 @@ type (
 
 	// ListFeedCommand is the command line data structure for the list action of feed
 	ListFeedCommand struct {
-		// Fetch limit
-		Limit int
 		// Page to fetch
-		Page        int
+		Page int
+		// Search query
+		Q string
+		// Page size
+		Size        int
 		PrettyPrint bool
 	}
 
@@ -869,7 +871,7 @@ func (cmd *ListFeedCommand) Run(c *client.Client, args []string) error {
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
-	resp, err := c.ListFeed(ctx, path, intFlagVal("limit", cmd.Limit), intFlagVal("page", cmd.Page))
+	resp, err := c.ListFeed(ctx, path, intFlagVal("page", cmd.Page), stringFlagVal("q", cmd.Q), intFlagVal("size", cmd.Size))
 	if err != nil {
 		goa.LogError(ctx, "failed", "err", err)
 		return err
@@ -881,8 +883,10 @@ func (cmd *ListFeedCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ListFeedCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	cc.Flags().IntVar(&cmd.Limit, "limit", 10, `Fetch limit`)
 	cc.Flags().IntVar(&cmd.Page, "page", 1, `Page to fetch`)
+	var q string
+	cc.Flags().StringVar(&cmd.Q, "q", q, `Search query`)
+	cc.Flags().IntVar(&cmd.Size, "size", 10, `Page size`)
 }
 
 // Run makes the HTTP request corresponding to the StartFeedCommand command.

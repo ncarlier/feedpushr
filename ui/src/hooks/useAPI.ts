@@ -38,6 +38,7 @@ export default <T>(
     }
     doFetchAPI()
     return () => abortController.abort()
+    // eslint-disable-next-line
   }, [uri, stringifiedParams])
 
   return [loading, data, error]

@@ -10,6 +10,7 @@ import (
 	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/helper"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -122,18 +123,20 @@ func (c *FeedController) Delete(ctx *app.DeleteFeedContext) error {
 
 // List shows all feeds
 func (c *FeedController) List(ctx *app.ListFeedContext) error {
-	total, err := c.db.CountFeeds()
-	if err != nil {
-		return goa.ErrInternal(err)
+	var page *model.FeedDefPage
+	var err error
+	if ctx.Q != nil && *ctx.Q != "" {
+		page, err = c.db.SearchFeeds(*ctx.Q, ctx.Page, ctx.Size)
+	} else {
+		page, err = c.db.ListFeeds(ctx.Page, ctx.Size)
 	}
-	feeds, err := c.db.ListFeeds(ctx.Page, ctx.Limit)
 	if err != nil {
 		return goa.ErrInternal(err)
 	}
 
 	data := app.FeedResponseCollection{}
-	for i := 0; i < len(*feeds); i++ {
-		feed := (*feeds)[i]
+	for i := 0; i < len(page.Feeds); i++ {
+		feed := page.Feeds[i]
 		// Get feed details with aggregation status
 		fa := c.aggregator.GetFeedAggregator(feed.ID)
 		if fa != nil {
@@ -143,9 +146,9 @@ func (c *FeedController) List(ctx *app.ListFeedContext) error {
 		}
 	}
 	res := &app.FeedsPageResponse{
-		Limit:   ctx.Limit,
-		Current: ctx.Page,
-		Total:   total,
+		Size:    page.Size,
+		Current: page.Page,
+		Total:   page.Total,
 		Data:    data,
 	}
 	return ctx.OK(res)

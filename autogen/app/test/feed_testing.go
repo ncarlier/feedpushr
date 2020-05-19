@@ -995,7 +995,7 @@ func GetFeedOKTiny(t goatest.TInterface, ctx context.Context, service *goa.Servi
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) (http.ResponseWriter, error) {
+func ListFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, page int, q *string, size int) (http.ResponseWriter, error) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1017,12 +1017,16 @@ func ListFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.
 	rw := httptest.NewRecorder()
 	query := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		query["limit"] = sliceVal
-	}
-	{
 		sliceVal := []string{strconv.Itoa(page)}
 		query["page"] = sliceVal
+	}
+	if q != nil {
+		sliceVal := []string{*q}
+		query["q"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(size)}
+		query["size"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v2/feeds"),
@@ -1034,12 +1038,16 @@ func ListFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.
 	}
 	prms := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		prms["limit"] = sliceVal
-	}
-	{
 		sliceVal := []string{strconv.Itoa(page)}
 		prms["page"] = sliceVal
+	}
+	if q != nil {
+		sliceVal := []string{*q}
+		prms["q"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(size)}
+		prms["size"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -1081,7 +1089,7 @@ func ListFeedBadRequest(t goatest.TInterface, ctx context.Context, service *goa.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) http.ResponseWriter {
+func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, page int, q *string, size int) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1102,12 +1110,16 @@ func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 	rw := httptest.NewRecorder()
 	query := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		query["limit"] = sliceVal
-	}
-	{
 		sliceVal := []string{strconv.Itoa(page)}
 		query["page"] = sliceVal
+	}
+	if q != nil {
+		sliceVal := []string{*q}
+		query["q"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(size)}
+		query["size"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v2/feeds"),
@@ -1119,12 +1131,16 @@ func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 	}
 	prms := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		prms["limit"] = sliceVal
-	}
-	{
 		sliceVal := []string{strconv.Itoa(page)}
 		prms["page"] = sliceVal
+	}
+	if q != nil {
+		sliceVal := []string{*q}
+		prms["q"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(size)}
+		prms["size"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -1159,7 +1175,7 @@ func ListFeedNotFound(t goatest.TInterface, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, limit int, page int) (http.ResponseWriter, *app.FeedsPageResponse) {
+func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.FeedController, page int, q *string, size int) (http.ResponseWriter, *app.FeedsPageResponse) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1181,12 +1197,16 @@ func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 	rw := httptest.NewRecorder()
 	query := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		query["limit"] = sliceVal
-	}
-	{
 		sliceVal := []string{strconv.Itoa(page)}
 		query["page"] = sliceVal
+	}
+	if q != nil {
+		sliceVal := []string{*q}
+		query["q"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(size)}
+		query["size"] = sliceVal
 	}
 	u := &url.URL{
 		Path:     fmt.Sprintf("/v2/feeds"),
@@ -1198,12 +1218,16 @@ func ListFeedOK(t goatest.TInterface, ctx context.Context, service *goa.Service,
 	}
 	prms := url.Values{}
 	{
-		sliceVal := []string{strconv.Itoa(limit)}
-		prms["limit"] = sliceVal
-	}
-	{
 		sliceVal := []string{strconv.Itoa(page)}
 		prms["page"] = sliceVal
+	}
+	if q != nil {
+		sliceVal := []string{*q}
+		prms["q"] = sliceVal
+	}
+	{
+		sliceVal := []string{strconv.Itoa(size)}
+		prms["size"] = sliceVal
 	}
 	if ctx == nil {
 		ctx = context.Background()

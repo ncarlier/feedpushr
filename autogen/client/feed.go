@@ -127,8 +127,8 @@ func ListFeedPath() string {
 }
 
 // Retrieve all feeds
-func (c *Client) ListFeed(ctx context.Context, path string, limit *int, page *int) (*http.Response, error) {
-	req, err := c.NewListFeedRequest(ctx, path, limit, page)
+func (c *Client) ListFeed(ctx context.Context, path string, page *int, q *string, size *int) (*http.Response, error) {
+	req, err := c.NewListFeedRequest(ctx, path, page, q, size)
 	if err != nil {
 		return nil, err
 	}
@@ -136,20 +136,23 @@ func (c *Client) ListFeed(ctx context.Context, path string, limit *int, page *in
 }
 
 // NewListFeedRequest create the request corresponding to the list action endpoint of the feed resource.
-func (c *Client) NewListFeedRequest(ctx context.Context, path string, limit *int, page *int) (*http.Request, error) {
+func (c *Client) NewListFeedRequest(ctx context.Context, path string, page *int, q *string, size *int) (*http.Request, error) {
 	scheme := c.Scheme
 	if scheme == "" {
 		scheme = "http"
 	}
 	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
 	values := u.Query()
-	if limit != nil {
-		tmp30 := strconv.Itoa(*limit)
-		values.Set("limit", tmp30)
-	}
 	if page != nil {
-		tmp31 := strconv.Itoa(*page)
-		values.Set("page", tmp31)
+		tmp30 := strconv.Itoa(*page)
+		values.Set("page", tmp30)
+	}
+	if q != nil {
+		values.Set("q", *q)
+	}
+	if size != nil {
+		tmp31 := strconv.Itoa(*size)
+		values.Set("size", tmp31)
 	}
 	u.RawQuery = values.Encode()
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)

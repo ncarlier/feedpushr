@@ -14,6 +14,7 @@ type DB interface {
 	FeedRepository
 	OutputRepository
 	CacheRepository
+	SearchRepository
 	Close() error
 }
 

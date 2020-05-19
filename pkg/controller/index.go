@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"expvar"
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	"github.com/ncarlier/feedpushr/v3/pkg/version"
@@ -27,7 +26,6 @@ func init() {
 
 // Get runs the get action.
 func (c *IndexController) Get(ctx *app.GetIndexContext) error {
-	expvar.Get("version").String()
 	res := &app.Info{
 		Name:    "feedpushr",
 		Desc:    "Feed aggregator daemon with sugar on top",
