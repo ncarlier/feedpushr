@@ -12,17 +12,17 @@ interface Props {
   entity: Entity
 }
 
-export default ({entity}: Props) => {
+export default ({ entity }: Props) => {
   const [status, setStatus] = useState(entity.enabled)
   const { showMessage } = useContext(MessageContext)
 
   let url = `/outputs/${entity.id}`
-  if (entity.type === "filter") {
+  if (entity.type === 'filter') {
     url = `/outputs/${entity.parentId}/filters/${entity.id}`
   }
 
   async function switchEntityStatus(event: React.ChangeEvent, check: boolean) {
-    const update = {...entity, enabled: check}
+    const update = { ...entity, enabled: check }
     try {
       const res = await fetchAPI(url, null, {
         method: 'PUT',
@@ -34,20 +34,14 @@ export default ({entity}: Props) => {
       } else {
         throw new Error(res.statusText)
       }
-    }
-    catch (err) {
-      showMessage(<Message variant="error"  message={`Unable to update ${descEntity(entity)}: ${err.message}`} />)
+    } catch (err) {
+      showMessage(<Message variant="error" message={`Unable to update ${descEntity(entity)}: ${err.message}`} />)
     }
   }
 
   return (
     <Tooltip title="Enable/Disable">
-      <Switch
-        color="primary"
-        checked={status}
-        value={entity.enabled}
-        onChange={switchEntityStatus}
-      />
+      <Switch color="primary" checked={status} value={entity.enabled} onChange={switchEntityStatus} />
     </Tooltip>
   )
 }

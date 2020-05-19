@@ -30,23 +30,27 @@ interface Props {
   onSelect: (spec: Spec) => void
 }
 
-export default ({onSelect, type}: Props) => {
+export default ({ onSelect, type }: Props) => {
   const classes = useStyles()
   const outputSpecContext = useContext(OutputSpecsContext)
   const filterSpecContext = useContext(FilterSpecsContext)
   const { specs } = type === 'output' ? outputSpecContext : filterSpecContext
 
   return (
-    <Grid spacing={2} container style={{padding: '0 1em'}}>
-      { specs.map(spec => (
+    <Grid spacing={2} container style={{ padding: '0 1em' }}>
+      {specs.map((spec) => (
         <Grid item key={spec.name} sm={12} md={4} lg={4}>
           <Card className={classes.card}>
             <CardContent>
-              <Typography variant="h5" component="h2">{spec.name}</Typography>
-              <Typography color="textSecondary" dangerouslySetInnerHTML={{__html: marked(excerpt(spec.desc))}} />
+              <Typography variant="h5" component="h2">
+                {spec.name}
+              </Typography>
+              <Typography color="textSecondary" dangerouslySetInnerHTML={{ __html: marked(excerpt(spec.desc)) }} />
             </CardContent>
             <CardActions>
-              <Button size="small" onClick={() => onSelect(spec)}>Select</Button>
+              <Button size="small" onClick={() => onSelect(spec)}>
+                Select
+              </Button>
             </CardActions>
           </Card>
         </Grid>

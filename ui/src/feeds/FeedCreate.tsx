@@ -11,7 +11,7 @@ import FeedConfig from './FeedConfig'
 import { Feed, FeedForm } from './Types'
 
 const headers = {
-  "Content-Type": "application/x-www-form-urlencoded",
+  'Content-Type': 'application/x-www-form-urlencoded',
 }
 
 export default withRouter(({ history }: RouteComponentProps) => {
@@ -27,14 +27,14 @@ export default withRouter(({ history }: RouteComponentProps) => {
   async function handleSave(form: FeedForm) {
     try {
       const { title, xmlUrl: url, tags } = form
-      const res = await fetchAPI('/feeds', {title, url, tags}, {method: 'POST', headers})
+      const res = await fetchAPI('/feeds', { title, url, tags }, { method: 'POST', headers })
       if (!res.ok) {
         const _err = await res.json()
         throw new Error(_err.detail || res.statusText)
       }
       setError(null)
-      const data = await res.json() as Feed
-      showMessage(<Message variant="success"  message={`${data.title} feed created`} />)
+      const data = (await res.json()) as Feed
+      showMessage(<Message variant="success" message={`${data.title} feed created`} />)
       return history.push('/feeds')
     } catch (err) {
       setError(err)
@@ -43,8 +43,10 @@ export default withRouter(({ history }: RouteComponentProps) => {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>New feed</Typography>
-      { !!error && <Message message={error.message} variant="error" />}
+      <Typography variant="h5" gutterBottom>
+        New feed
+      </Typography>
+      {!!error && <Message message={error.message} variant="error" />}
       <FeedConfig onSave={handleSave} onCancel={handleBack} />
     </>
   )

@@ -22,16 +22,16 @@ type Props = RouteComponentProps<{
 export default ({ match, history }: Props) => {
   const { id, filterId } = match.params
   usePageTitle(`edit filter`)
-  
+
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
   const [loading, output, fetchError] = useAPI<Output>(`/outputs/${id}`)
   const { specs } = useContext(FilterSpecsContext)
-  
+
   function handleBack() {
     history.push('/outputs')
   }
-  
+
   async function handleSave(form: FilterForm) {
     try {
       const res = await fetchAPI(`/outputs/${id}/filters/${filterId}`, null, {
@@ -44,7 +44,7 @@ export default ({ match, history }: Props) => {
       }
       const data = await res.json()
       const filterDesc = descFilter(data)
-      showMessage(<Message variant="success"  message={`${filterDesc} configured`} />)
+      showMessage(<Message variant="success" message={`${filterDesc} configured`} />)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -53,29 +53,31 @@ export default ({ match, history }: Props) => {
 
   const render = matchResponse<Output>({
     Loading: () => <Loader />,
-    Data: data => {
+    Data: (data) => {
       const outputDesc = descOutput(data)
       if (!data.filters || data.filters.length === 0) {
         return <Message message={`No filter found for ${outputDesc}`} variant="error" />
       }
-      const filter = data.filters.find(f => f.id === filterId)
+      const filter = data.filters.find((f) => f.id === filterId)
       if (!filter) {
         return <Message message={`Filter not found in ${outputDesc}`} variant="error" />
       }
-      const spec = specs.find(f => f.name === filter.name)
+      const spec = specs.find((f) => f.name === filter.name)
       if (!spec) {
         return <Message message={`Unable to retrieve filter specifications: ${filter.name}`} variant="error" />
       }
       return (
         <>
-          <Typography variant="h5" gutterBottom>Configure filter</Typography>
-          { !!error && <Message message={error.message} variant="error" />}
+          <Typography variant="h5" gutterBottom>
+            Configure filter
+          </Typography>
+          {!!error && <Message message={error.message} variant="error" />}
           <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} source={filter} />
         </>
       )
     },
-    Error: err => <Message message={`Unable to fetch filter: ${err.message}`} variant="error" />
+    Error: (err) => <Message message={`Unable to fetch filter: ${err.message}`} variant="error" />,
   })
 
-  return (<>{render(loading, output, fetchError)}</>)
+  return <>{render(loading, output, fetchError)}</>
 }

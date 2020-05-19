@@ -6,9 +6,7 @@ export interface ResponsePattern<T> {
   Data: (data: T) => ReactNode
 }
 
-function matchResponse<T>(
-  p: ResponsePattern<T>
-): (loading: boolean, data?: T, error?: Error) => ReactNode {
+function matchResponse<T>(p: ResponsePattern<T>): (loading: boolean, data?: T, error?: Error) => ReactNode {
   return (loading: boolean, data?: T, error?: Error): ReactNode => {
     return (
       <>

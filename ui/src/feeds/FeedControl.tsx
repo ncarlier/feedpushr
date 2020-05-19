@@ -11,7 +11,7 @@ interface Props {
   feed: Feed
 }
 
-export default ({feed}: Props) => {
+export default ({ feed }: Props) => {
   const [status, setStatus] = useState(false)
   const { showMessage } = useContext(MessageContext)
 
@@ -21,21 +21,17 @@ export default ({feed}: Props) => {
 
   const switchFeedStatus = (event: React.ChangeEvent, check: boolean) => {
     const action = check ? 'start' : 'stop'
-    fetchAPI(`/feeds/${feed.id}/${action}`, null, {method: 'POST'})
-    .then(res => {
-      setStatus(check)
-      showMessage(<Message variant="success"  message={`${feed.title} feed is ${check ? 'running' : 'stopped'}`} />)
-    }).catch(console.error)
+    fetchAPI(`/feeds/${feed.id}/${action}`, null, { method: 'POST' })
+      .then((/*res*/) => {
+        setStatus(check)
+        showMessage(<Message variant="success" message={`${feed.title} feed is ${check ? 'running' : 'stopped'}`} />)
+      })
+      .catch(console.error)
   }
 
   return (
     <Tooltip title="Start/Stop">
-      <Switch
-        color="primary"
-        checked={status}
-        value={feed.status}
-        onChange={switchFeedStatus}
-      />
+      <Switch color="primary" checked={status} value={feed.status} onChange={switchFeedStatus} />
     </Tooltip>
   )
 }

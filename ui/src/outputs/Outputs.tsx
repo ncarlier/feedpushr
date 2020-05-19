@@ -12,18 +12,18 @@ type OutputsResponse = Output[]
 const buildEntitiesFromOutputs = (outputs: OutputsResponse) => {
   return outputs.reduce((acc: Entity[], output) => {
     const { filters, ...rest } = output
-    const entity: Entity = { ...rest, type: "output" }
+    const entity: Entity = { ...rest, type: 'output' }
     acc.push(entity)
     if (filters) {
-      const sub = filters.map(filter => {
-        const f: Entity = { ...filter, type: "filter" }
+      const sub = filters.map((filter) => {
+        const f: Entity = { ...filter, type: 'filter' }
         f.parentId = entity.id
         return f
       })
       acc.push(...sub)
     }
     return acc
-  }, []);
+  }, [])
 }
 
 export default () => {
@@ -31,10 +31,10 @@ export default () => {
   const [loading, outputs, error] = useAPI<OutputsResponse>('/outputs')
 
   const render = matchResponse<OutputsResponse>({
-    Loading: () => (<Loader />),
-    Data: data => (<EntityList entities={buildEntitiesFromOutputs(data)} />),
-    Error: err => (<Message message={`Unable to retrieve outputs: ${err.message}`} variant="error" />)
+    Loading: () => <Loader />,
+    Data: (data) => <EntityList entities={buildEntitiesFromOutputs(data)} />,
+    Error: (err) => <Message message={`Unable to retrieve outputs: ${err.message}`} variant="error" />,
   })
 
-  return (<>{render(loading, outputs, error)}</>)
+  return <>{render(loading, outputs, error)}</>
 }

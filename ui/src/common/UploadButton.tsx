@@ -1,13 +1,13 @@
 import React, { ChangeEventHandler, MouseEventHandler, createRef, forwardRef } from 'react'
 
-import { Button, makeStyles, Theme } from '@material-ui/core'
+import { Button, makeStyles } from '@material-ui/core'
 import { ButtonProps } from '@material-ui/core/Button'
 
 interface Props {
   onSelectFile: (file: File) => void
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((/*theme: Theme*/) => ({
   hidden: {
     opacity: 0,
     position: 'absolute',
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-export default forwardRef<HTMLButtonElement, Props & ButtonProps>(({onSelectFile, ...props}, ref) => {
+export default forwardRef<HTMLButtonElement, Props & ButtonProps>(({ onSelectFile, ...props }, ref) => {
   const classes = useStyles()
   const inputRef = createRef<HTMLInputElement>()
 
@@ -30,7 +30,7 @@ export default forwardRef<HTMLButtonElement, Props & ButtonProps>(({onSelectFile
     }
   }
 
-  const handleOnClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const handleOnClick: MouseEventHandler<HTMLButtonElement> = (/*event*/) => {
     if (inputRef.current) {
       inputRef.current.click()
     }
@@ -39,7 +39,9 @@ export default forwardRef<HTMLButtonElement, Props & ButtonProps>(({onSelectFile
   return (
     <>
       <input type="file" ref={inputRef} className={classes.hidden} onChange={handleOnChange} />
-      <Button {...props} ref={ref} onClick={handleOnClick}>{props.children}</Button>
+      <Button {...props} ref={ref} onClick={handleOnClick}>
+        {props.children}
+      </Button>
     </>
   )
 })

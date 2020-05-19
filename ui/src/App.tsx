@@ -22,71 +22,9 @@ const theme = createMuiTheme({
   },
 })
 
-export default () => {
-  const classes = useStyles()
-
-  const [open, setOpen] = React.useState(true)
-  const handleDrawerOpen = () => setOpen(true)
-  const handleDrawerClose = () => setOpen(false)
-
-  return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AppBar position="absolute" className={classNames(classes.appBar, open ? classes.appBarShift : null)}>
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={handleDrawerOpen}
-              className={classNames(classes.menuButton, open ? classes.menuButtonHidden : null)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              Feedpushr
-            </Typography>
-            <IconButton color="inherit" component={Link} to="/about" >
-              <AboutIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: classNames(classes.drawerPaper, !open ? classes.drawerPaperClose : null),
-          }}
-          open={open}
-        >
-          <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <Menu />
-        </Drawer>
-        <MessageProvider>
-          <main className={classes.content}>
-            <div className={classes.appBarSpacer} />
-            <Container maxWidth="lg" className={classes.container}>
-              <Redirect exact from="/" to="/feeds" />
-              <Route path="/feeds" component={FeedRoutes} />
-              <Route path="/outputs" component={OutputRoutes} />
-              <Route path="/explore" component={Explore} />
-              <Route path="/about" component={About} />
-            </Container>
-          </main>
-        </MessageProvider>
-      </ThemeProvider>
-    </Router>
-  );
-}
-
 const drawerWidth = 240
 
-const useStyles = makeStyles<Theme, any>(theme => ({
+const useStyles = makeStyles<Theme, any>((theme) => ({
   root: {
     display: 'flex',
   },
@@ -164,3 +102,65 @@ const useStyles = makeStyles<Theme, any>(theme => ({
     height: 240,
   },
 }))
+
+export default () => {
+  const classes = useStyles()
+
+  const [open, setOpen] = React.useState(true)
+  const handleDrawerOpen = () => setOpen(true)
+  const handleDrawerClose = () => setOpen(false)
+
+  return (
+    <Router>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppBar position="absolute" className={classNames(classes.appBar, open ? classes.appBarShift : null)}>
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={handleDrawerOpen}
+              className={classNames(classes.menuButton, open ? classes.menuButtonHidden : null)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+              Feedpushr
+            </Typography>
+            <IconButton color="inherit" component={Link} to="/about">
+              <AboutIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: classNames(classes.drawerPaper, !open ? classes.drawerPaperClose : null),
+          }}
+          open={open}
+        >
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <Menu />
+        </Drawer>
+        <MessageProvider>
+          <main className={classes.content}>
+            <div className={classes.appBarSpacer} />
+            <Container maxWidth="lg" className={classes.container}>
+              <Redirect exact from="/" to="/feeds" />
+              <Route path="/feeds" component={FeedRoutes} />
+              <Route path="/outputs" component={OutputRoutes} />
+              <Route path="/explore" component={Explore} />
+              <Route path="/about" component={About} />
+            </Container>
+          </main>
+        </MessageProvider>
+      </ThemeProvider>
+    </Router>
+  )
+}

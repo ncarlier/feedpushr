@@ -12,7 +12,6 @@ type FeedsResponse = FeedPage
 
 type Props = RouteComponentProps
 
-
 const buildReqFromQuery = (query: string) => {
   const params = new URLSearchParams(query)
   let page = 1
@@ -32,10 +31,9 @@ export default ({ location }: Props) => {
 
   const render = matchResponse<FeedsResponse>({
     Loading: () => <Loader />,
-    Data: page => <FeedList page={page} />,
-    Error: err => <Message message={`Unable to retrieve feeds: ${err.message}`} variant="error" />
+    Data: (page) => <FeedList page={page} />,
+    Error: (err) => <Message message={`Unable to retrieve feeds: ${err.message}`} variant="error" />,
   })
 
-  return (<>
-    {render(loading, data, error)}</>)
+  return <>{render(loading, data, error)}</>
 }

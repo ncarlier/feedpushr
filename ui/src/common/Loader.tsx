@@ -1,17 +1,13 @@
 import React from 'react'
 
-import { 
-  CircularProgress,
-  makeStyles,
-  Theme
-} from '@material-ui/core'
+import { CircularProgress, makeStyles } from '@material-ui/core'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((/*theme: Theme*/) => ({
   loader: {
     display: 'flex',
     padding: '20px',
     justifyContent: 'center',
-  }
+  },
 }))
 
 export default () => {

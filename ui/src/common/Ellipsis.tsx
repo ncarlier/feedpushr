@@ -6,9 +6,9 @@ interface Props {
   value: string
 }
 
-const ellips = (value: string, max: number = 10) => value.length > max ? value.slice(0, max) + '...' : value
+const ellips = (value: string, max = 10) => (value.length > max ? value.slice(0, max) + '...' : value)
 
-export default ({value}: Props) => (
+export default ({ value }: Props) => (
   <Tooltip title={value}>
     <span>{ellips(value)}</span>
   </Tooltip>

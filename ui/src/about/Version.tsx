@@ -16,9 +16,13 @@ export default () => {
 
   const render = matchResponse<InfoResponse>({
     Loading: () => <Loader />,
-    Data: data => <Typography align="right" color="textSecondary" variant="caption">{data.version}</Typography>,
-    Error: err => <Message message={`Unable to retrieve API details: ${err.message}`} variant="error" />
+    Data: (data) => (
+      <Typography align="right" color="textSecondary" variant="caption">
+        {data.version}
+      </Typography>
+    ),
+    Error: (err) => <Message message={`Unable to retrieve API details: ${err.message}`} variant="error" />,
   })
 
-  return (<>{render(loading, info, error)}</>)
+  return <>{render(loading, info, error)}</>
 }

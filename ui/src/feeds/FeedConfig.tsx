@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       marginTop: theme.spacing(2),
     },
-  }),
+  })
 )
 
 interface Props {
@@ -32,12 +32,12 @@ interface FeedConfigForm {
   tags: string[]
 }
 
-export default ({onSave, onCancel, feed}: Props) => {
+export default ({ onSave, onCancel, feed }: Props) => {
   const classes = useStyles()
-  
+
   const [values, setValues] = React.useState<FeedConfigForm>({
-    title: feed ? feed.title : "",
-    xmlUrl: feed ? feed.xmlUrl : "",
+    title: feed ? feed.title : '',
+    xmlUrl: feed ? feed.xmlUrl : '',
     tags: feed && feed.tags ? feed.tags : [],
   })
 
@@ -56,22 +56,18 @@ export default ({onSave, onCancel, feed}: Props) => {
   return (
     <Paper className={classes.root}>
       <form>
-        <TextField
-          id="title"
-          label="Title"
-          value={values.title}
-          onChange={handleChange('title')}
-          fullWidth
-        />
-        { !!!feed && <TextField
-          id="xmlurl"
-          label="URL"
-          type="url"
-          helperText="ex: http://rss.cnn.com/rss/edition.rss"
-          value={values.xmlUrl}
-          onChange={handleChange('xmlUrl')}
-          fullWidth
-        />}
+        <TextField id="title" label="Title" value={values.title} onChange={handleChange('title')} fullWidth />
+        {feed === undefined && (
+          <TextField
+            id="xmlurl"
+            label="URL"
+            type="url"
+            helperText="ex: http://rss.cnn.com/rss/edition.rss"
+            value={values.xmlUrl}
+            onChange={handleChange('xmlUrl')}
+            fullWidth
+          />
+        )}
         <TextField
           id="tags"
           label="Tags"

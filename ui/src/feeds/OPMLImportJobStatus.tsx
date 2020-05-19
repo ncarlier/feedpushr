@@ -1,16 +1,8 @@
 import React from 'react'
 
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon
-} from '@material-ui/core'
+import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core'
 
-import {
-  CheckCircle as SuccessIcon,
-  Error as ErrorIcon
-} from '@material-ui/icons'
+import { CheckCircle as SuccessIcon, Error as ErrorIcon } from '@material-ui/icons'
 import { green, red } from '@material-ui/core/colors'
 
 import Message from '../common/Message'
@@ -29,7 +21,7 @@ interface Props {
   jobID: string
 }
 
-export default ({jobID}: Props) => {
+export default ({ jobID }: Props) => {
   const [items, setItems] = React.useState<JobResultItem[]>([])
   const [status, setStatus] = React.useState<EventSourceStatus>('closed')
 
@@ -37,19 +29,19 @@ export default ({jobID}: Props) => {
     const es = new EventSource(`${API_ROOT}/v2/opml/status/${jobID}`)
     es.onerror = () => setStatus('error')
     es.onopen = () => setStatus('open')
-    es.onmessage = ev => {
+    es.onmessage = (ev) => {
       const line = ev.data as string
-      if (line === "done") {
+      if (line === 'done') {
         es.close()
         setStatus('closed')
         return
       }
       const parts = line.split('|')
-      const jobResultItem:JobResultItem = {
+      const jobResultItem: JobResultItem = {
         XMLURL: parts[0],
-        error: parts[1] === 'ok' ? undefined : parts[1]
+        error: parts[1] === 'ok' ? undefined : parts[1],
       }
-      setItems(data => [jobResultItem].concat(data))
+      setItems((data) => [jobResultItem].concat(data))
     }
 
     return () => es.close()
@@ -57,18 +49,15 @@ export default ({jobID}: Props) => {
 
   return (
     <>
-      {status === "error" && <Message message="unable to fetch import status" variant="error" />}
-      {status === "open" && <Loader />}
+      {status === 'error' && <Message message="unable to fetch import status" variant="error" />}
+      {status === 'open' && <Loader />}
       <List dense>
         {items.map((res, idx) => (
           <ListItem key={`import-result-${idx}`}>
             <ListItemIcon>
-              {res.error ? <ErrorIcon style={{ color: red[500] }}/> : <SuccessIcon style={{ color: green[500] }}/>}
+              {res.error ? <ErrorIcon style={{ color: red[500] }} /> : <SuccessIcon style={{ color: green[500] }} />}
             </ListItemIcon>
-            <ListItemText
-              primary={`[${items.length - idx}] ${res.XMLURL}`}
-              secondary={res.error}
-            />
+            <ListItemText primary={`[${items.length - idx}] ${res.XMLURL}`} secondary={res.error} />
           </ListItem>
         ))}
       </List>

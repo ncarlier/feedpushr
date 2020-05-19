@@ -1,7 +1,13 @@
 import React from 'react'
 
 import {
-    BottomNavigation, BottomNavigationAction, createStyles, Link, makeStyles, Paper, Theme
+  BottomNavigation,
+  BottomNavigationAction,
+  createStyles,
+  Link,
+  makeStyles,
+  Paper,
+  Theme,
 } from '@material-ui/core'
 import { Favorite as SupportIcon, NewReleases as FeatureIcon } from '@material-ui/icons'
 
@@ -13,17 +19,17 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(3, 2),
-      display: "flex",
-      flexDirection: "column",
+      display: 'flex',
+      flexDirection: 'column',
     },
     logo: {
-      maxWidth: "50vw",
-      alignSelf: "center",
+      maxWidth: '50vw',
+      alignSelf: 'center',
     },
     link: {
-      color: "rgba(0, 0, 0, 0.54)",
-    }
-  }),
+      color: 'rgba(0, 0, 0, 0.54)',
+    },
+  })
 )
 
 export default () => {
@@ -33,7 +39,7 @@ export default () => {
     <div>
       <Paper className={classes.root}>
         <Version />
-        <img src={logo} alt="feedpushr" className={classes.logo}/>
+        <img src={logo} alt="feedpushr" className={classes.logo} />
         <BottomNavigation showLabels>
           <BottomNavigationAction
             label="Sources"

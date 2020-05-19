@@ -18,7 +18,6 @@ const MessageProvider = ({ children }: Props) => {
   const [message, setMessage] = useState<ReactNode | null>(null)
   const [open, setOpen] = useState(false)
 
-
   const handleClose = (event?: SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') {
       return
@@ -43,7 +42,7 @@ const MessageProvider = ({ children }: Props) => {
         autoHideDuration={5000}
         onClose={handleClose}
       >
-        <>{ message }</>
+        <>{message}</>
       </Snackbar>
     </MessageContext.Provider>
   )

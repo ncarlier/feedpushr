@@ -26,7 +26,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
     setError(null)
     setSpec(null)
   }
-  
+
   async function handleSave(form: OutputForm) {
     try {
       const res = await fetchAPI('/outputs', null, {
@@ -37,9 +37,9 @@ export default withRouter(({ history }: RouteComponentProps) => {
         const msg = await res.text()
         throw new Error(msg)
       }
-      const data = await res.json() as Output
+      const data = (await res.json()) as Output
       const desc = data.alias ? data.alias : data.name
-      showMessage(<Message variant="success"  message={`${desc} output added`} />)
+      showMessage(<Message variant="success" message={`${desc} output added`} />)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -49,7 +49,9 @@ export default withRouter(({ history }: RouteComponentProps) => {
   if (spec === null) {
     return (
       <>
-        <Typography variant="h5" gutterBottom>Add output: Choose</Typography>
+        <Typography variant="h5" gutterBottom>
+          Add output: Choose
+        </Typography>
         <SpecSelector onSelect={handleSelectSpec} type="output" />
       </>
     )
@@ -57,8 +59,10 @@ export default withRouter(({ history }: RouteComponentProps) => {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>Add output: Configure</Typography>
-      { !!error && <Message message={error.message} variant="error" />}
+      <Typography variant="h5" gutterBottom>
+        Add output: Configure
+      </Typography>
+      {!!error && <Message message={error.message} variant="error" />}
       <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )

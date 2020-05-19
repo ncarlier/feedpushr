@@ -11,8 +11,8 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       marginRight: theme.spacing(1),
     },
-  }),
-);
+  })
+)
 
 interface Props {
   feed: Feed
@@ -20,7 +20,7 @@ interface Props {
 
 export default ({ feed }: Props) => {
   const classes = useStyles()
-  if (!!feed.htmlUrl) {
+  if (feed.htmlUrl) {
     return (
       <Tooltip title="Open website in a new tab" className={classes.margin}>
         <IconButton
@@ -30,10 +30,10 @@ export default ({ feed }: Props) => {
           component="a"
           href={feed.htmlUrl}
           target="_blank"
-          >
-            <PublicIcon fontSize="inherit" />
+        >
+          <PublicIcon fontSize="inherit" />
         </IconButton>
-      </Tooltip>      
+      </Tooltip>
     )
   }
   return null

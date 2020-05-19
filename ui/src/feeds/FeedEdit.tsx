@@ -12,36 +12,36 @@ import { useAPI, usePageTitle } from '../hooks'
 import FeedConfig from './FeedConfig'
 import { Feed, FeedForm } from './Types'
 
-type Props = RouteComponentProps<{id: string}>
+type Props = RouteComponentProps<{ id: string }>
 
 const headers = {
-  "Content-Type": "application/x-www-form-urlencoded",
+  'Content-Type': 'application/x-www-form-urlencoded',
 }
 
 export default ({ match, history }: Props) => {
   const { id } = match.params
   usePageTitle(`edit feed #${id}`)
-  
+
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
   const [loading, feeds, fetchError] = useAPI<Feed>(`/feeds/${id}`)
-  
+
   function handleBack() {
     setError(null)
     history.push('/feeds')
   }
-  
+
   async function handleSave(form: FeedForm) {
     try {
       const { title, tags } = form
-      const res = await fetchAPI(`/feeds/${id}`, {title, tags}, {method: 'PUT', headers})
+      const res = await fetchAPI(`/feeds/${id}`, { title, tags }, { method: 'PUT', headers })
       if (!res.ok) {
         const _err = await res.json()
         throw new Error(_err.detail || res.statusText)
       }
       setError(null)
-      const data = await res.json() as Feed
-      showMessage(<Message variant="success"  message={`${data.title} feed updated`} />)
+      const data = (await res.json()) as Feed
+      showMessage(<Message variant="success" message={`${data.title} feed updated`} />)
       return history.push('/feeds')
     } catch (err) {
       setError(err)
@@ -50,15 +50,17 @@ export default ({ match, history }: Props) => {
 
   const render = matchResponse<Feed>({
     Loading: () => <Loader />,
-    Data: data => (
+    Data: (data) => (
       <>
-        <Typography variant="h5" gutterBottom>Configure feed</Typography>
-        { !!error && <Message message={error.message} variant="error" />}
+        <Typography variant="h5" gutterBottom>
+          Configure feed
+        </Typography>
+        {!!error && <Message message={error.message} variant="error" />}
         <FeedConfig onSave={handleSave} onCancel={handleBack} feed={data} />
       </>
     ),
-    Error: err => <Message message={`Unable to fetch feed: ${err.message}`} variant="error" />
+    Error: (err) => <Message message={`Unable to fetch feed: ${err.message}`} variant="error" />,
   })
 
-  return (<>{render(loading, feeds, fetchError)}</>)
+  return <>{render(loading, feeds, fetchError)}</>
 }

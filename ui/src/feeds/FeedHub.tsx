@@ -11,8 +11,8 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       margin: theme.spacing(1),
     },
-  }),
-);
+  })
+)
 
 interface Props {
   feed: Feed
@@ -20,7 +20,7 @@ interface Props {
 
 export default ({ feed }: Props) => {
   const classes = useStyles()
-  if (!!feed.hubUrl) {
+  if (feed.hubUrl) {
     return (
       <Tooltip title="WebSub ready" className={classes.margin}>
         <Chip

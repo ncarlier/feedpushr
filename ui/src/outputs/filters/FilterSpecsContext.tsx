@@ -21,7 +21,7 @@ const FilterSpecsProvider = ({ children }: Props) => {
 
   const initFilterSpecs = async () => {
     try {
-      const res = await fetchAPI('/filters/_specs', null, {method: 'GET'})
+      const res = await fetchAPI('/filters/_specs', null, { method: 'GET' })
       if (!res.ok) {
         throw new Error(res.statusText)
       }
@@ -38,11 +38,7 @@ const FilterSpecsProvider = ({ children }: Props) => {
     initFilterSpecs()
   }
 
-  return (
-    <FilterSpecsContext.Provider value={{ specs: value }}>
-      {children}
-    </FilterSpecsContext.Provider>
-  )
+  return <FilterSpecsContext.Provider value={{ specs: value }}>{children}</FilterSpecsContext.Provider>
 }
 
 export { FilterSpecsContext, FilterSpecsProvider }

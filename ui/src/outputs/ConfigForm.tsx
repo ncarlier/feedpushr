@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       marginTop: theme.spacing(2),
     },
-  }),
+  })
 )
 
 export type ConfigFormPayload = BaseForm & {
@@ -34,23 +34,32 @@ interface ConfigFormProps {
   onSave: (payload: ConfigFormPayload) => void
 }
 
-export default ({onSave, onCancel, spec, source}: ConfigFormProps) => {
+export default ({ onSave, onCancel, spec, source }: ConfigFormProps) => {
   const classes = useStyles()
-  const [alias, setAlias] = React.useState<string>(source ? source.alias : "")
+  const [alias, setAlias] = React.useState<string>(source ? source.alias : '')
   const [props, setProps] = React.useState<Props>(source ? source.props : {})
-  const [condition, setCondition] = React.useState<string>(source ? source.condition : "")
+  const [condition, setCondition] = React.useState<string>(source ? source.condition : '')
 
-  const handleChangeAlias = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAlias(event.target.value)
-  }, [])
+  const handleChangeAlias = useCallback(
+    () => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setAlias(event.target.value)
+    },
+    []
+  )
 
-  const handleChangeProp = useCallback((name: string) => (event: React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>) => {
-    setProps({ ...props, [name]: event.target.value })
-  }, [props])
-  
-  const handleChangeCondition = useCallback(() => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCondition(event.target.value)
-  }, [])
+  const handleChangeProp = useCallback(
+    (name: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      setProps({ ...props, [name]: event.target.value })
+    },
+    [props]
+  )
+
+  const handleChangeCondition = useCallback(
+    () => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCondition(event.target.value)
+    },
+    []
+  )
 
   const handleSave = useCallback(() => {
     onSave({
@@ -67,18 +76,12 @@ export default ({onSave, onCancel, spec, source}: ConfigFormProps) => {
       <Typography variant="h4" gutterBottom>
         {spec.name}
       </Typography>
-      <Typography color="textSecondary" dangerouslySetInnerHTML={{__html: marked(spec.desc)}} />
+      <Typography color="textSecondary" dangerouslySetInnerHTML={{ __html: marked(spec.desc) }} />
       <form>
         <Typography variant="h5">Alias</Typography>
-        <TextField
-          id="alias"
-          helperText="Alias"
-          value={alias}
-          onChange={handleChangeAlias()}
-          fullWidth
-        />
+        <TextField id="alias" helperText="Alias" value={alias} onChange={handleChangeAlias()} fullWidth />
         {spec.props.length > 0 && <Typography variant="h5">Properties</Typography>}
-        {spec.props.map(prop => (
+        {spec.props.map((prop) => (
           <TextField
             id={prop.name}
             key={prop.name}
@@ -91,17 +94,24 @@ export default ({onSave, onCancel, spec, source}: ConfigFormProps) => {
             onChange={handleChangeProp(prop.name)}
             fullWidth
           >
-            {prop.options && Object.entries(prop.options).map(option => (
-              <MenuItem key={option[0]} value={option[0]}>
-                {option[1]}
-              </MenuItem>
-            ))}
+            {prop.options &&
+              Object.entries(prop.options).map((option) => (
+                <MenuItem key={option[0]} value={option[0]}>
+                  {option[1]}
+                </MenuItem>
+              ))}
           </TextField>
         ))}
-        <Typography variant="h5" className={classes.condition}>Condition</Typography>
+        <Typography variant="h5" className={classes.condition}>
+          Condition
+        </Typography>
         <TextField
           id="condition"
-          helperText={<>Conditional expression (<Doc href="EXPRESSION.md">documentation</Doc>)</>}
+          helperText={
+            <>
+              Conditional expression (<Doc href="EXPRESSION.md">documentation</Doc>)
+            </>
+          }
           value={condition}
           onChange={handleChangeCondition()}
           fullWidth

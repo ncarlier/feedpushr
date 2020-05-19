@@ -21,7 +21,7 @@ const OutputSpecsProvider = ({ children }: Props) => {
 
   const initOutputSpecs = async () => {
     try {
-      const res = await fetchAPI('/outputs/_specs', null, {method: 'GET'})
+      const res = await fetchAPI('/outputs/_specs', null, { method: 'GET' })
       if (!res.ok) {
         throw new Error(res.statusText)
       }
@@ -38,11 +38,7 @@ const OutputSpecsProvider = ({ children }: Props) => {
     initOutputSpecs()
   }
 
-  return (
-    <OutputSpecsContext.Provider value={{ specs: value }}>
-      {children}
-    </OutputSpecsContext.Provider>
-  )
+  return <OutputSpecsContext.Provider value={{ specs: value }}>{children}</OutputSpecsContext.Provider>
 }
 
 export { OutputSpecsContext, OutputSpecsProvider }

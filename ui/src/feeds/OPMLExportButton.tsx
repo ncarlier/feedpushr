@@ -1,9 +1,7 @@
 import React, { useContext } from 'react'
 
 import { Tooltip, Button } from '@material-ui/core'
-import {
-  CloudDownload as CloudDownloadIcon
-} from '@material-ui/icons'
+import { CloudDownload as CloudDownloadIcon } from '@material-ui/icons'
 
 import fetchAPI from '../helpers/fetchAPI'
 import { MessageContext } from '../context/MessageContext'
@@ -11,10 +9,10 @@ import Message from '../common/Message'
 
 export default () => {
   const { showMessage } = useContext(MessageContext)
-  
+
   const handleOnClick = async () => {
     try {
-      const res = await fetchAPI('/opml', null, {method: 'GET'})
+      const res = await fetchAPI('/opml', null, { method: 'GET' })
       if (res.ok) {
         const body = await res.text()
         const element = document.createElement('a')
@@ -29,7 +27,7 @@ export default () => {
         throw new Error(err.detail || res.statusText)
       }
     } catch (err) {
-      showMessage(<Message variant="error"  message={`Unable to export feeds to OPML file: ${err.message}`} />)
+      showMessage(<Message variant="error" message={`Unable to export feeds to OPML file: ${err.message}`} />)
     }
   }
 

@@ -16,39 +16,38 @@ interface Props {
 }
 
 const columns = [
-  { 
+  {
     title: 'Enabled',
-    render: (entity: Entity) => ( !!entity && <EntityControl entity={entity} /> ),
+    render: (entity: Entity) => !!entity && <EntityControl entity={entity} />,
     sorting: false,
     searchable: false,
   },
-  { 
+  {
     title: 'Alias',
     field: 'alias',
   },
-  { 
+  {
     title: 'Type',
     field: 'name',
   },
-  { 
+  {
     title: 'Success',
-    render: (entity: Entity) => ( !!entity && <EntityStatus entity={entity} /> ),
+    render: (entity: Entity) => !!entity && <EntityStatus entity={entity} />,
     searchable: false,
   },
-  { 
+  {
     title: 'Error',
-    render: (entity: Entity) => ( !!entity && <EntityStatus entity={entity} error /> ),
+    render: (entity: Entity) => !!entity && <EntityStatus entity={entity} error />,
     searchable: false,
   },
-  { 
+  {
     title: 'Condition',
     field: 'condition',
-    render: (entity: Entity) => <Ellipsis value={entity.condition} />
-
-  }
+    render: (entity: Entity) => <Ellipsis value={entity.condition} />,
+  },
 ]
 
-export default withRouter(({entities, history}: Props & RouteComponentProps) => {
+export default withRouter(({ entities, history }: Props & RouteComponentProps) => {
   const [data, setData] = useState<Entity[]>(entities)
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
@@ -56,15 +55,15 @@ export default withRouter(({entities, history}: Props & RouteComponentProps) => 
   const onRowDelete = async (old: Entity) => {
     const { id } = old
     let url = `/outputs/${id}`
-    if (old.type === "filter") {
+    if (old.type === 'filter') {
       url = `/outputs/${old.parentId}/filters/${id}`
     }
     try {
-      const res = await fetchAPI(url, null, {method: 'DELETE'})
+      const res = await fetchAPI(url, null, { method: 'DELETE' })
       if (res.ok) {
         setError(null)
-        showMessage(<Message variant="success"  message={`${descEntity(old)} removed`} />)
-        return setData(data.filter(f => f.id !== id && f.parentId !== id))
+        showMessage(<Message variant="success" message={`${descEntity(old)} removed`} />)
+        return setData(data.filter((f) => f.id !== id && f.parentId !== id))
       }
       const _err = await res.json()
       throw new Error(_err.detail || res.statusText)
@@ -74,46 +73,49 @@ export default withRouter(({entities, history}: Props & RouteComponentProps) => 
     }
   }
 
-  return <>
-    { !!error && <Message message={error.message} variant="error" />}
-    <MaterialTable
-      title="Outputs"
-      columns={ columns }
-      data= { data }
-      parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
-      editable = {{
-        onRowDelete
-      }}
-      options={{
-        actionsColumnIndex: -1,
-        paging: false
-      }}
-      actions={[
-        (rowData: Entity) => ({
-          icon: 'build',
-          tooltip: 'Configure',
-          onClick: (event, rowData) => history.push(`/outputs/${(rowData as Entity).id}`),
-          hidden: rowData.type !== 'output'
-        }),
-        (rowData: Entity) => ({
-          icon: 'playlist_add',
-          tooltip: 'Add filter',
-          onClick: (event, rowData) => history.push(`/outputs/${(rowData as Entity).id}/filters/add`),
-          hidden: rowData.type !== 'output'
-        }),
-        (rowData: Entity) => ({
-          icon: 'build',
-          tooltip: 'Configure',
-          onClick: (event, rowData) => history.push(`/outputs/${(rowData as Entity).parentId}/filters/${(rowData as Entity).id}`),
-          hidden: rowData.type !== 'filter'
-        }),
-        {
-          icon: 'add_box',
-          tooltip: 'Add',
-          isFreeAction: true,
-          onClick: () => history.push('/outputs/add')
-        },
-      ]}
-    />
-  </>
+  return (
+    <>
+      {!!error && <Message message={error.message} variant="error" />}
+      <MaterialTable
+        title="Outputs"
+        columns={columns}
+        data={data}
+        parentChildData={(row, rows) => rows.find((a) => a.id === row.parentId)}
+        editable={{
+          onRowDelete,
+        }}
+        options={{
+          actionsColumnIndex: -1,
+          paging: false,
+        }}
+        actions={[
+          (rowData: Entity) => ({
+            icon: 'build',
+            tooltip: 'Configure',
+            onClick: (event, rowData) => history.push(`/outputs/${(rowData as Entity).id}`),
+            hidden: rowData.type !== 'output',
+          }),
+          (rowData: Entity) => ({
+            icon: 'playlist_add',
+            tooltip: 'Add filter',
+            onClick: (event, rowData) => history.push(`/outputs/${(rowData as Entity).id}/filters/add`),
+            hidden: rowData.type !== 'output',
+          }),
+          (rowData: Entity) => ({
+            icon: 'build',
+            tooltip: 'Configure',
+            onClick: (event, rowData) =>
+              history.push(`/outputs/${(rowData as Entity).parentId}/filters/${(rowData as Entity).id}`),
+            hidden: rowData.type !== 'filter',
+          }),
+          {
+            icon: 'add_box',
+            tooltip: 'Add',
+            isFreeAction: true,
+            onClick: () => history.push('/outputs/add'),
+          },
+        ]}
+      />
+    </>
+  )
 })

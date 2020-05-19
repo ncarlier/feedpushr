@@ -1,4 +1,3 @@
-
 export interface Feed {
   id: string
   title: string
@@ -25,7 +24,6 @@ export interface FeedForm {
 export interface FeedPage {
   total: number
   current: number
-  limit: number
+  size: number
   data: Feed[]
 }
-

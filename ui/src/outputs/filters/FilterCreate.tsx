@@ -11,7 +11,7 @@ import ConfigForm from '../ConfigForm'
 import SpecSelector from '../SpecSelector'
 import { FilterForm, Spec } from '../Types'
 
-type Props = RouteComponentProps<{id: string}>
+type Props = RouteComponentProps<{ id: string }>
 
 export default ({ match, history }: Props) => {
   const { id } = match.params
@@ -29,7 +29,7 @@ export default ({ match, history }: Props) => {
     setError(null)
     setSpec(null)
   }
-  
+
   async function handleSave(form: FilterForm) {
     try {
       const res = await fetchAPI(`/outputs/${id}/filters`, null, {
@@ -41,7 +41,7 @@ export default ({ match, history }: Props) => {
         throw new Error(msg)
       }
       const data = await res.json()
-      showMessage(<Message variant="success"  message={`Filter ${data.name} added`} />)
+      showMessage(<Message variant="success" message={`Filter ${data.name} added`} />)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -51,7 +51,9 @@ export default ({ match, history }: Props) => {
   if (spec === null) {
     return (
       <>
-        <Typography variant="h5" gutterBottom>Add filter: Choose</Typography>
+        <Typography variant="h5" gutterBottom>
+          Add filter: Choose
+        </Typography>
         <SpecSelector onSelect={handleSelectSpec} type="filter" />
       </>
     )
@@ -59,8 +61,10 @@ export default ({ match, history }: Props) => {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>Add filter: Configure</Typography>
-      { !!error && <Message message={error.message} variant="error" />}
+      <Typography variant="h5" gutterBottom>
+        Add filter: Configure
+      </Typography>
+      {!!error && <Message message={error.message} variant="error" />}
       <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )

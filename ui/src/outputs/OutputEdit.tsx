@@ -13,21 +13,21 @@ import ConfigForm from './ConfigForm'
 import { OutputSpecsContext } from './OutputSpecsContext'
 import { Output, OutputForm } from './Types'
 
-type Props = RouteComponentProps<{id: string}>
+type Props = RouteComponentProps<{ id: string }>
 
 export default ({ match, history }: Props) => {
   const { id } = match.params
   usePageTitle('edit output')
-  
+
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
   const [loading, output, fetchError] = useAPI<Output>(`/outputs/${id}`)
   const { specs } = useContext(OutputSpecsContext)
-  
+
   function handleBack() {
     history.push('/outputs')
   }
-  
+
   async function handleSave(form: OutputForm) {
     try {
       const res = await fetchAPI(`/outputs/${id}`, null, {
@@ -38,9 +38,9 @@ export default ({ match, history }: Props) => {
         const msg = await res.text()
         throw new Error(msg)
       }
-      const data = await res.json() as Output
+      const data = (await res.json()) as Output
       const desc = data.alias ? data.alias : data.name
-      showMessage(<Message variant="success"  message={`${desc} output configured`} />)
+      showMessage(<Message variant="success" message={`${desc} output configured`} />)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -49,21 +49,23 @@ export default ({ match, history }: Props) => {
 
   const render = matchResponse<Output>({
     Loading: () => <Loader />,
-    Data: data => {
-      const spec = specs.find(f => f.name === data.name)
+    Data: (data) => {
+      const spec = specs.find((f) => f.name === data.name)
       if (!spec) {
         return <Message message={`Unable to retrieve output specifications: ${data.name}`} variant="error" />
       }
       return (
         <>
-          <Typography variant="h5" gutterBottom>Configure output</Typography>
-          { !!error && <Message message={error.message} variant="error" />}
+          <Typography variant="h5" gutterBottom>
+            Configure output
+          </Typography>
+          {!!error && <Message message={error.message} variant="error" />}
           <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} source={data} />
         </>
       )
     },
-    Error: err => <Message message={`Unable to fetch output: ${err.message}`} variant="error" />
+    Error: (err) => <Message message={`Unable to fetch output: ${err.message}`} variant="error" />,
   })
 
-  return (<>{render(loading, output, fetchError)}</>)
+  return <>{render(loading, output, fetchError)}</>
 }

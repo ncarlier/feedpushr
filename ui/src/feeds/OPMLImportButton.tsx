@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  DialogTitle
+  DialogTitle,
 } from '@material-ui/core'
 import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
 
@@ -27,7 +27,7 @@ interface Props {
   style?: React.CSSProperties
 }
 
-export default withRouter(({style, history} : Props & RouteComponentProps) => {
+export default withRouter(({ style, history }: Props & RouteComponentProps) => {
   const [open, setOpen] = React.useState(false)
   const [jobID, setJobID] = React.useState('')
   const theme = useTheme()
@@ -45,16 +45,16 @@ export default withRouter(({style, history} : Props & RouteComponentProps) => {
     formData.append('file', file)
 
     try {
-      const res = await fetchAPI('/opml', null, {method: 'POST', body: formData})
+      const res = await fetchAPI('/opml', null, { method: 'POST', body: formData })
       if (!res.ok) {
         const err = await res.json()
         throw new Error(err.detail || res.statusText)
       }
-      const { id } = await res.json() as ImportJobResult
+      const { id } = (await res.json()) as ImportJobResult
       setJobID(id)
       setOpen(true)
     } catch (err) {
-      showMessage(<Message variant="error"  message={`Unable to import OPML file: ${err.message}`} />)
+      showMessage(<Message variant="error" message={`Unable to import OPML file: ${err.message}`} />)
     }
   }
 
@@ -66,13 +66,8 @@ export default withRouter(({style, history} : Props & RouteComponentProps) => {
           <CloudUploadIcon />
         </UploadButton>
       </Tooltip>
-      <Dialog
-        fullScreen={fullScreen}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="import-dialog-title"
-      >
-        <DialogTitle id="import-dialog-title">{"Import OPML file"}</DialogTitle>
+      <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="import-dialog-title">
+        <DialogTitle id="import-dialog-title">{'Import OPML file'}</DialogTitle>
         <DialogContent>
           <OPMLImportJobStatus jobID={jobID} />
         </DialogContent>

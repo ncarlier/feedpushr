@@ -1,4 +1,3 @@
-
 export interface SearchResult {
   title: string
   desc: string

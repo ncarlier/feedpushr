@@ -1,4 +1,3 @@
-
 export interface Spec {
   name: string
   desc: string
@@ -9,7 +8,7 @@ export interface PropsSpec {
   name: string
   desc: string
   type: string
-  options?: Object
+  options?: Record<string, any>
 }
 
 export interface Props {

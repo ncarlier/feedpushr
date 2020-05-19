@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   success: {
     backgroundColor: green[600],
-  }
+  },
 }))
 
 interface Props {
@@ -32,7 +32,7 @@ interface Props {
   error?: boolean
 }
 
-export default ({entity, error = false}: Props) => {
+export default ({ entity, error = false }: Props) => {
   const classes = useStyles()
   if (error) {
     if (entity.nbError > 0) {

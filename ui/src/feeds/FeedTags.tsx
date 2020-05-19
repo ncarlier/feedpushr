@@ -10,16 +10,20 @@ const useStyles = makeStyles((theme: Theme) =>
     tag: {
       marginRight: theme.spacing(0.5),
     },
-  }),
+  })
 )
 
 interface Props {
   feed: Feed
 }
 
-export default ({feed: {tags = []}}: Props) => {
+export default ({ feed: { tags = [] } }: Props) => {
   const classes = useStyles()
   return (
-    <>{ tags.map(tag => <Chip key={tag} label={tag} className={classes.tag} />) }</>
+    <>
+      {tags.map((tag) => (
+        <Chip key={tag} label={tag} className={classes.tag} />
+      ))}
+    </>
   )
 }
