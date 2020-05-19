@@ -176,4 +176,5 @@ plugins:
 	GOARCH=amd64 PLUGIN=mastodon make plugin
 	GOARCH=amd64 PLUGIN=kafka make plugin
 	GOARCH=amd64 PLUGIN=rake make plugin
+	GOARCH=amd64 PLUGIN=gormdb make plugin
 .PHONY: plugins
