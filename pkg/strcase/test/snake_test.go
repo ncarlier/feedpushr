@@ -3,7 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/strcase"
 )
 
@@ -20,6 +21,6 @@ func TestToSnakeCase(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		value := strcase.ToSnake(tc.value)
-		assert.Equal(t, tc.expected, value, "")
+		assert.Equal(t, tc.expected, value)
 	}
 }

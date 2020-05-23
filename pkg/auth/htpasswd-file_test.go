@@ -3,13 +3,13 @@ package auth
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValidateCredentials(t *testing.T) {
 	htpasswdFile, err := NewHtpasswdFromFile("test.htpasswd")
-	assert.Nil(t, err, ".htpasswd file should be loaded")
-	assert.NotNil(t, htpasswdFile, ".htpasswd file should be loaded")
-	assert.Equal(t, true, htpasswdFile.validateCredentials("foo", "bar"), "credentials should be valid")
-	assert.Equal(t, false, htpasswdFile.validateCredentials("foo", "bir"), "credentials should not be valid")
+	assert.Nil(t, err)
+	assert.NotNil(t, htpasswdFile)
+	assert.True(t, htpasswdFile.validateCredentials("foo", "bar"))
+	assert.False(t, htpasswdFile.validateCredentials("foo", "bir"))
 }

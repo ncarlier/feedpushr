@@ -3,7 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/expr"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
@@ -16,7 +17,7 @@ func TesInvalidExpressionSyntax(t *testing.T) {
 func TestMatchingExpression(t *testing.T) {
 	condition, err := expr.NewConditionalExpression("\"foo\" in Tags")
 	assert.Nil(t, err, "expression should be valid")
-	assert.NotNil(t, condition, "expression should not be nil")
+	assert.NotNil(t, condition)
 
 	article := &model.Article{
 		Title: "World",
@@ -30,7 +31,7 @@ func TestMatchingExpression(t *testing.T) {
 func TestNotMatchingExpression(t *testing.T) {
 	condition, err := expr.NewConditionalExpression("len(Title) > 10")
 	assert.Nil(t, err, "expression should be valid")
-	assert.NotNil(t, condition, "expression should not be nil")
+	assert.NotNil(t, condition)
 
 	article := &model.Article{
 		Title: "World",
@@ -38,5 +39,5 @@ func TestNotMatchingExpression(t *testing.T) {
 	}
 
 	ok := condition.Match(article)
-	assert.True(t, !ok, "article should not match")
+	assert.False(t, ok, "article should not match")
 }

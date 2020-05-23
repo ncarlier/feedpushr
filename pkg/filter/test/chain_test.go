@@ -4,7 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 	"github.com/ncarlier/feedpushr/v3/pkg/filter"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
@@ -43,15 +44,15 @@ func TestNewFilterChain(t *testing.T) {
 		Tags:  []string{"test"},
 	}
 	err := chain.Apply(article)
-	assert.Nil(t, err, "error should be nil")
-	assert.Equal(t, "[test] Hello World", article.Title, "invalid article title")
+	assert.Nil(t, err)
+	assert.Equal(t, "[test] Hello World", article.Title)
 
 	article = &model.Article{
 		Title: "Other",
 	}
 	err = chain.Apply(article)
-	assert.Nil(t, err, "error should be nil")
-	assert.Equal(t, "Hello Other", article.Title, "invalid article title")
+	assert.Nil(t, err)
+	assert.Equal(t, "Hello Other", article.Title)
 }
 
 func TestFilterChainCRUD(t *testing.T) {
@@ -62,18 +63,18 @@ func TestFilterChainCRUD(t *testing.T) {
 	)
 
 	defs := chain.GetFilterDefs()
-	assert.Equal(t, 1, len(defs), "invalid filter chain definitions")
+	assert.Len(t, defs, 1, "invalid filter chain definitions")
 	_filter := defs[0]
-	assert.Equal(t, "title", _filter.Name, "invalid filter type")
+	assert.Equal(t, "title", _filter.Name, "invalid filter name")
 	assert.Equal(t, "Hello", _filter.Props["prefix"], "invalid filter property")
-	assert.True(t, _filter.ID != "", "invalid filter ID")
+	assert.NotEmpty(t, _filter.ID)
 	id := _filter.ID
 
 	// UPDATE
 	update := builder.NewFilterBuilder().Spec(_filter.Name).Build()
 	update.Props["prefix"] = "Updated"
 	_, err := chain.Update(id, update)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	_filter = chain.GetFilterDefs()[0]
 	assert.Equal(t, "title", _filter.Name, "invalid filter type")
 	assert.Equal(t, "Updated", _filter.Props["prefix"], "invalid filter property")
@@ -81,17 +82,17 @@ func TestFilterChainCRUD(t *testing.T) {
 	// ADD
 	add := builder.NewFilterBuilder().FromURI("minify://").Build()
 	_, err = chain.Add(add)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	defs = chain.GetFilterDefs()
-	assert.Equal(t, 2, len(defs), "invalid filter chain definitions")
+	assert.Len(t, defs, 2, "invalid filter chain definitions")
 	_filter = defs[1]
 	assert.Equal(t, "minify", _filter.Name, "invalid filter type")
 
 	// DELETE
 	err = chain.Remove(id)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	defs = chain.GetFilterDefs()
-	assert.Equal(t, 1, len(defs), "invalid filter chain specifications")
+	assert.Len(t, defs, 1, "invalid filter chain specifications")
 	_filter = defs[0]
 	assert.Equal(t, "minify", _filter.Name, "invalid filter type")
 }

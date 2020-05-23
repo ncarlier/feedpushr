@@ -6,7 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/helper"
 	"github.com/ncarlier/feedpushr/v3/pkg/opml"
 	"github.com/ncarlier/feedpushr/v3/pkg/store"
@@ -43,12 +44,12 @@ func TestImportSimpleOPML(t *testing.T) {
 	defer teardownTestCase(t)
 
 	job, err := importer.ImportOPMLFile("./tc_simple.xml")
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	assert.True(t, job.ID > 0, "invalid job ID")
 	over := job.Wait(10 * time.Second)
 	assert.True(t, over, "job is not over")
 	output, err := importer.Get(job.ID)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	for line := range output {
 		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
 	}
@@ -58,10 +59,10 @@ func TestImportSimpleOPML(t *testing.T) {
 
 func testImportOPML(t *testing.T, filename string) {
 	job, err := importer.ImportOPMLFile(filename)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	assert.True(t, job.ID > 0, "invalid job ID")
 	output, err := importer.Get(job.ID)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	for line := range output {
 		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
 	}
@@ -71,7 +72,7 @@ func testImportOPML(t *testing.T, filename string) {
 		feed, err := db.GetFeed(id)
 		assert.Nil(t, err, fmt.Sprintf("error #%d should be nil", idx))
 		assert.NotNil(t, feed, fmt.Sprintf("feed #%d should not be nil", idx))
-		assert.ContainsStr(t, tc.tag, feed.Tags, fmt.Sprintf("invalid tags for feed #%d", idx))
+		assert.Contains(t, feed.Tags, tc.tag, fmt.Sprintf("invalid tags for feed #%d", idx))
 	}
 }
 

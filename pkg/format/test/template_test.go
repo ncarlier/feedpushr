@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/format"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
@@ -24,8 +25,8 @@ func TestTemplateFormater(t *testing.T) {
 	}
 	for idx, tc := range testCases {
 		formatter, err := format.NewTemplateFormatter(fmt.Sprintf("test-%d", idx), tc.value)
-		assert.Nil(t, err, "")
+		assert.Nil(t, err)
 		buf, err := formatter.Format(art)
-		assert.Equal(t, tc.expected, buf.String(), "")
+		assert.Equal(t, tc.expected, buf.String())
 	}
 }

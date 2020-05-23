@@ -3,9 +3,9 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/stretchr/testify/assert"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 func TestMinifyFilter(t *testing.T) {
@@ -21,6 +21,6 @@ func TestMinifyFilter(t *testing.T) {
 	}
 	expected := "<ul><li><p>Hello World</p><img></ul>"
 	err := chain.Apply(article)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	assert.Equal(t, expected, article.Content, "invalid article content")
 }

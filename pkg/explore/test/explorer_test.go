@@ -3,24 +3,25 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/explore"
 )
 
 func TestSearchURL(t *testing.T) {
 	explorer, err := explore.NewExplorer("default")
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	results, err := explorer.Search("https://keeper.nunux.org")
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	res := *results
-	assert.Equal(t, 1, len(res), "Results should not be empty")
-	assert.Equal(t, "https://keeper.nunux.org/index.xml", res[0].XMLURL, "Results should not be empty")
+	assert.NotEmpty(t, res)
+	assert.Equal(t, "https://keeper.nunux.org/index.xml", res[0].XMLURL)
 }
 
 func TestSearchQuery(t *testing.T) {
 	explorer, err := explore.NewExplorer("default")
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 	results, err := explorer.Search("tech blog")
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, len(*results) > 0, "Results should not be empty")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, *results)
 }
