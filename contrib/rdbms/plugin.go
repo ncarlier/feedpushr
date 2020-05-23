@@ -52,7 +52,7 @@ var outputList = map[string]string{
 
 var spec = model.Spec{
 	Name: "rdbms",
-	Desc: "Send new articles to a relational database managed by gorm.io.",
+	Desc: "Send new articles to a Relational Database Management System.",
 	PropsSpec: []model.PropSpec{
 		{
 			Name:    "driver",
@@ -94,16 +94,16 @@ var spec = model.Spec{
 	},
 }
 
-// GormOutputPlugin is the Twitter output plugin
-type GormOutputPlugin struct{}
+// RDBMSOutputPlugin is the RDBMS output plugin
+type RDBMSOutputPlugin struct{}
 
 // Spec returns plugin spec
-func (p *GormOutputPlugin) Spec() model.Spec {
+func (p *RDBMSOutputPlugin) Spec() model.Spec {
 	return spec
 }
 
-// Build creates Twitter output provider instance
-func (p *GormOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
+// Build creates RDBMS output provider instance
+func (p *RDBMSOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
 	driver := def.Props.Get("driver")
 	if _, exists := driverList[driver]; !exists {
 		driver = "sqlite3"
@@ -168,21 +168,21 @@ func (p *GormOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
 	definition := *def
 	definition.Spec = spec
 
-	return &GormOutputProvider{
+	return &RDBMSOutputProvider{
 		definition: definition,
 		db:         db,
 	}, nil
 }
 
-// GormOutputProvider output provider to send articles to Twitter
-type GormOutputProvider struct {
+// RDBMSOutputProvider output provider to send articles to Twitter
+type RDBMSOutputProvider struct {
 	definition model.OutputDef
 	formatter  format.Formatter
 	db         *gorm.DB
 }
 
 // Send sent an article as Tweet to a Twitter timeline
-func (op *GormOutputProvider) Send(article *model.Article) (bool, error) {
+func (op *RDBMSOutputProvider) Send(article *model.Article) (bool, error) {
 
 	l := whatlanggo.Detect(article.Title + " " + article.Text + " " + article.Content)
 
@@ -231,7 +231,7 @@ func (op *GormOutputProvider) Send(article *model.Article) (bool, error) {
 }
 
 // GetDef return filter definition
-func (op *GormOutputProvider) GetDef() model.OutputDef {
+func (op *RDBMSOutputProvider) GetDef() model.OutputDef {
 	return op.definition
 }
 
@@ -245,7 +245,7 @@ func GetPluginSpec() model.PluginSpec {
 
 // GetOutputPlugin returns output plugin
 func GetOutputPlugin() (op model.OutputPlugin, err error) {
-	return &GormOutputPlugin{}, nil
+	return &RDBMSOutputPlugin{}, nil
 }
 
 func createOrUpdateTag(db *gorm.DB, tag *Tag) (*Tag, error) {
@@ -258,4 +258,3 @@ func createOrUpdateTag(db *gorm.DB, tag *Tag) (*Tag, error) {
 	tag.CreatedAt = existingTag.CreatedAt
 	return tag, nil
 }
-

@@ -8,6 +8,8 @@ Some plugins and tools for [Feedpushr][feedpushr].
 
 - [Twitter](./twitter/README.md)
 - [Mastodon](./mastodon/README.md)
+- [Kafka](./kafka/README.md)
+- [RDBMS](./rdbms/README.md)
 
 ### Filter
 

@@ -1,4 +1,4 @@
-# Gorm-DB plugin for Feedpushr
+# RDBMS plugin for Feedpushr
 
 Send new articles to a RDBMS (Mysql, PostgreSQL or sqlite3).
 
