@@ -76,11 +76,10 @@ func sendToReadflow(url string, apiKey string, article *model.Article) (int, err
 	}
 
 	// Set text
-	text := fn.Truncate(500, article.Text)
-	articleForm.Text = &text
 	if excerpt, ok := article.Meta["excerpt"]; ok {
 		if value := excerpt.(string); value != "" {
-			articleForm.Text = &value
+			text := fn.Truncate(500, value)
+			articleForm.Text = &text
 		}
 	}
 
