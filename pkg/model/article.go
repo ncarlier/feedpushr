@@ -28,6 +28,28 @@ func (a *Article) String() string {
 	return string(result)
 }
 
+// Merge an article with an other
+func (a *Article) Merge(other Article) {
+	if other.Link != "" {
+		a.Link = other.Link
+	}
+	if other.Title != "" {
+		a.Title = other.Title
+	}
+	if other.Content != "" {
+		a.Content = other.Content
+	}
+	if other.Text != "" {
+		a.Text = other.Text
+	}
+	if len(other.Tags) > 0 {
+		a.Tags = other.Tags
+	}
+	for k, v := range other.Meta {
+		a.Meta[k] = v
+	}
+}
+
 // RefDate get article reference date (published or updated date)
 func (a *Article) RefDate() *time.Time {
 	var date *time.Time
