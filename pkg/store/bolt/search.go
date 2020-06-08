@@ -8,6 +8,7 @@ import (
 	bolt "github.com/coreos/bbolt"
 	"github.com/getlantern/errors"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	"github.com/rs/zerolog/log"
 )
 
 func openSearchIndex(dbPath string) (bleve.Index, error) {
@@ -39,6 +40,7 @@ func (store *BoltStore) BuildInitialIndex() error {
 		return fmt.Errorf("unable to initialize index: %w", err)
 	}
 	if nb == 0 {
+		log.Debug().Msg("initializing search index...")
 		return store.ForEachFeed(func(f *model.FeedDef) error {
 			if f == nil {
 				return errors.New("unable to index feed: feed is null")

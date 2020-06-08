@@ -71,6 +71,11 @@ func main() {
 		log.Fatal().Err(err).Msg("unable to init data store")
 	}
 
+	// Init search index
+	if err := db.BuildInitialIndex(); err != nil {
+		log.Fatal().Err(err).Msg("unable to init search index")
+	}
+
 	// Import OPML file if asked
 	if conf.ImportFilename != "" {
 		log.Debug().Str("filename", conf.ImportFilename).Msg("importing OPML file...")
