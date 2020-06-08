@@ -88,6 +88,7 @@ export default () => {
           paging: false,
           pageSize: 10,
           actionsColumnIndex: -1,
+          searchAutoFocus: true,
         }}
         actions={[
           () => ({

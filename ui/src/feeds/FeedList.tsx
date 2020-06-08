@@ -120,6 +120,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
           pageSize: 20,
           pageSizeOptions: [10, 20, 50, 100],
           sorting: false,
+          searchAutoFocus: true,
         }}
         actions={[
           {

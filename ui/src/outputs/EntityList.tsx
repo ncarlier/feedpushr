@@ -87,6 +87,7 @@ export default withRouter(({ entities, history }: Props & RouteComponentProps) =
         options={{
           actionsColumnIndex: -1,
           paging: false,
+          searchAutoFocus: true,
         }}
         actions={[
           (rowData: Entity) => ({
