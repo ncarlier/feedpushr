@@ -381,6 +381,7 @@ definitions:
     - name
     - desc
     - condition
+    - props
     title: 'Mediatype identifier: application/vnd.feedpushr.filter.v2+json; view=default'
     type: object
   FilterResponseCollection:
@@ -610,6 +611,7 @@ definitions:
     - name
     - desc
     - condition
+    - props
     title: 'Mediatype identifier: application/vnd.feedpushr.output.v2+json; view=default'
     type: object
   OutputResponseCollection:

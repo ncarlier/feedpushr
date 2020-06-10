@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v3/design
-// --out=/home/nicolas/workspace/feedpushr/autogen
+// --out=/home/nicolas/workspace/fe/feedpushr/autogen
 // --version=v1.4.3
 
 package app
@@ -312,7 +312,7 @@ type FilterResponse struct {
 	// Number of success
 	NbSuccess int `form:"nbSuccess" json:"nbSuccess" yaml:"nbSuccess" xml:"nbSuccess"`
 	// Filter properties
-	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	Props map[string]interface{} `form:"props" json:"props" yaml:"props" xml:"props"`
 }
 
 // Validate validates the FilterResponse media type instance.
@@ -331,6 +331,9 @@ func (mt *FilterResponse) Validate() (err error) {
 	}
 	if mt.Condition == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "condition"))
+	}
+	if mt.Props == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "props"))
 	}
 	return
 }
@@ -490,7 +493,7 @@ type OutputResponse struct {
 	// Number of success
 	NbSuccess int `form:"nbSuccess" json:"nbSuccess" yaml:"nbSuccess" xml:"nbSuccess"`
 	// Output channel properties
-	Props map[string]interface{} `form:"props,omitempty" json:"props,omitempty" yaml:"props,omitempty" xml:"props,omitempty"`
+	Props map[string]interface{} `form:"props" json:"props" yaml:"props" xml:"props"`
 }
 
 // Validate validates the OutputResponse media type instance.
@@ -509,6 +512,9 @@ func (mt *OutputResponse) Validate() (err error) {
 	}
 	if mt.Condition == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "condition"))
+	}
+	if mt.Props == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "props"))
 	}
 	if err2 := mt.Filters.Validate(); err2 != nil {
 		err = goa.MergeErrors(err, err2)

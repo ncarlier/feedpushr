@@ -201,7 +201,7 @@ var OutputResponse = MediaType("application/vnd.feedpushr.output.v2+json", func(
 			Default(0)
 			Example(10)
 		})
-		Required("id", "alias", "name", "desc", "condition")
+		Required("id", "alias", "name", "desc", "condition", "props")
 	})
 
 	View("default", func() {
@@ -299,7 +299,7 @@ var FilterResponse = MediaType("application/vnd.feedpushr.filter.v2+json", func(
 			Default(0)
 			Example(10)
 		})
-		Required("id", "alias", "name", "desc", "condition")
+		Required("id", "alias", "name", "desc", "condition", "props")
 	})
 
 	View("default", func() {
