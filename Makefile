@@ -172,9 +172,10 @@ plugin:
 
 ## Build all plugins
 plugins:
-	GOARCH=amd64 PLUGIN=twitter make plugin
-	GOARCH=amd64 PLUGIN=mastodon make plugin
-	GOARCH=amd64 PLUGIN=kafka make plugin
-	GOARCH=amd64 PLUGIN=rdbms make plugin
-	GOARCH=amd64 PLUGIN=rake make plugin
+	GOARCH=amd64 PLUGIN=twitter-selenium make plugin	
+	#GOARCH=amd64 PLUGIN=twitter make plugin
+	#GOARCH=amd64 PLUGIN=mastodon make plugin
+	#GOARCH=amd64 PLUGIN=kafka make plugin
+	#GOARCH=amd64 PLUGIN=rdbms make plugin
+	#GOARCH=amd64 PLUGIN=rake make plugin
 .PHONY: plugins
