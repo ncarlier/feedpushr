@@ -78,7 +78,6 @@ func (op *TwitterSeleniumOutputProvider) Login() error {
 	if err != nil {
 		return err
 	}
-	// if err := passwordInput.SendKeys("aado33ve79T!"); err != nil {
 	if err := passwordInput.SendKeys(op.password); err != nil {
 		return err
 	}
