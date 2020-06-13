@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -15,7 +16,7 @@ const (
 	urlTwitterCompose = "https://twitter.com/compose/tweet"
 )
 
-func initWebDriver(browser string, args []string) (selenium.WebDriver, error) {
+func initWebDriver(browser string, args []string, seleniumAddr string) (selenium.WebDriver, error) {
 	caps := selenium.Capabilities{"browserName": browser}
 
 	switch browser {
@@ -51,7 +52,7 @@ func initWebDriver(browser string, args []string) (selenium.WebDriver, error) {
 		caps.AddChrome(chromeCaps)
 	}
 
-	wd, err := selenium.NewRemote(caps, "")
+	wd, err := selenium.NewRemote(caps, fmt.Sprintf("http://%s/wd/hub", seleniumAddr))
 	if err != nil {
 		return nil, err
 	}

@@ -32,6 +32,11 @@ var spec = model.Spec{
 			Type: model.Text,
 		},
 		{
+			Name: "seleniumAddr",
+			Desc: "selenium address (default: 127.0.0.1:4444)",
+			Type: model.Text,
+		},
+		{
 			Name: "username",
 			Desc: "Username",
 			Type: model.Text,
@@ -73,6 +78,10 @@ func (p *TwitterSeleniumOutputPlugin) Build(def *model.OutputDef) (model.Output,
 	}
 	arguments := def.Props.Get("arguments")
 	args := strings.Split(arguments, " ")
+	seleniumAddr := def.Props.Get("seleniumAddr")
+	if seleniumAddr == "" {
+		seleniumAddr = "127.0.0.1:4444"
+	}
 	username := def.Props.Get("username")
 	if username == "" {
 		return nil, fmt.Errorf("missing username key property")
@@ -82,7 +91,7 @@ func (p *TwitterSeleniumOutputPlugin) Build(def *model.OutputDef) (model.Output,
 		return nil, fmt.Errorf("missing password property")
 	}
 
-	wd, err := initWebDriver(browser, args)
+	wd, err := initWebDriver(browser, args, seleniumAddr)
 	if err != nil {
 		return nil, fmt.Errorf("could not init selenium web driver, msg=%s", err)
 	}
