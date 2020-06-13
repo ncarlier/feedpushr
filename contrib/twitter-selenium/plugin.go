@@ -84,20 +84,27 @@ func (p *TwitterSeleniumOutputPlugin) Build(def *model.OutputDef) (model.Output,
 
 	wd, err := initWebDriver(browser, args)
 	if err != nil {
-		return nil, fmt.Errorf("could not init selenium web driver")
+		return nil, fmt.Errorf("could not init selenium web driver, msg=%s", err)
 	}
 
 	definition := *def
 	definition.Spec = spec
 
-	return &TwitterSeleniumOutputProvider{
+	t := &TwitterSeleniumOutputProvider{
 		definition: definition,
 		formatter:  formatter,
 		browser:    browser,
 		wd:         wd,
 		username:   username,
 		password:   password,
-	}, nil
+	}
+
+	err = t.Login()
+	if err != nil {
+		return nil, fmt.Errorf("could not init login to twitter")
+	}
+
+	return t, nil
 }
 
 // TwitterSeleniumOutputProvider output provider to send articles to TwitterSelenium
