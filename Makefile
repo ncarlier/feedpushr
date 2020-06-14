@@ -172,6 +172,7 @@ plugin:
 
 ## Build all plugins
 plugins:
+	GOARCH=amd64 PLUGIN=twitter-selenium make plugin	
 	GOARCH=amd64 PLUGIN=twitter make plugin
 	GOARCH=amd64 PLUGIN=mastodon make plugin
 	GOARCH=amd64 PLUGIN=kafka make plugin
