@@ -13,7 +13,6 @@ import {
 } from '@material-ui/core'
 import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
 
-import Message from '../common/Message'
 import UploadButton from '../common/UploadButton'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
@@ -54,7 +53,7 @@ export default withRouter(({ style, history }: Props & RouteComponentProps) => {
       setJobID(id)
       setOpen(true)
     } catch (err) {
-      showMessage(<Message variant="error" message={`Unable to import OPML file: ${err.message}`} />)
+      showMessage(`Unable to import OPML file: ${err.message}`, 'error')
     }
   }
 

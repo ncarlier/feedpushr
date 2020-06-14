@@ -60,7 +60,6 @@ export default withRouter(({ history }: RouteComponentProps) => {
   usePageTitle('feeds')
 
   const [error, setError] = useState<Error | null>(null)
-  const [title, setTitle] = useState('feeds')
   const { showMessage } = useContext(MessageContext)
 
   const search = async (query: Query<Feed>): Promise<QueryResult<Feed>> => {
@@ -75,7 +74,6 @@ export default withRouter(({ history }: RouteComponentProps) => {
       throw new Error(_err.detail || res.statusText)
     }
     const page = (await res.json()) as FeedPage
-    setTitle(`${page.total} feed${page.total > 1 ? 's' : ''}`)
     return {
       data: page.data,
       page: page.current - 1,
@@ -92,7 +90,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
         throw new Error(_err.detail || res.statusText)
       }
       setError(null)
-      showMessage(<Message variant="success" message={`${title} feed removed`} />)
+      showMessage(`${title} feed removed`)
       setTimeout(() => {
         history.push('/')
         history.goBack()
@@ -105,9 +103,9 @@ export default withRouter(({ history }: RouteComponentProps) => {
 
   return (
     <>
-      {!!error && <Message message={error.message} variant="error" />}
+      {!!error && <Message text={error.message} variant="error" />}
       <MaterialTable
-        title={title}
+        title="Feeds"
         columns={columns}
         data={search}
         editable={{
@@ -120,7 +118,6 @@ export default withRouter(({ history }: RouteComponentProps) => {
           pageSize: 20,
           pageSizeOptions: [10, 20, 50, 100],
           sorting: false,
-          searchAutoFocus: true,
         }}
         actions={[
           {

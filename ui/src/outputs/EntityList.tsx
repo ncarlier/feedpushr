@@ -62,7 +62,7 @@ export default withRouter(({ entities, history }: Props & RouteComponentProps) =
       const res = await fetchAPI(url, null, { method: 'DELETE' })
       if (res.ok) {
         setError(null)
-        showMessage(<Message variant="success" message={`${descEntity(old)} removed`} />)
+        showMessage(`${descEntity(old)} removed`)
         return setData(data.filter((f) => f.id !== id && f.parentId !== id))
       }
       const _err = await res.json()
@@ -75,7 +75,7 @@ export default withRouter(({ entities, history }: Props & RouteComponentProps) =
 
   return (
     <>
-      {!!error && <Message message={error.message} variant="error" />}
+      {!!error && <Message text={error.message} variant="error" />}
       <MaterialTable
         title="Outputs"
         columns={columns}

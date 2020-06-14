@@ -40,7 +40,7 @@ export default ({ match, history }: Props) => {
       }
       const data = (await res.json()) as Output
       const desc = data.alias ? data.alias : data.name
-      showMessage(<Message variant="success" message={`${desc} output configured`} />)
+      showMessage(`${desc} output configured`)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -52,19 +52,19 @@ export default ({ match, history }: Props) => {
     Data: (data) => {
       const spec = specs.find((f) => f.name === data.name)
       if (!spec) {
-        return <Message message={`Unable to retrieve output specifications: ${data.name}`} variant="error" />
+        return <Message text={`Unable to retrieve output specifications: ${data.name}`} variant="error" />
       }
       return (
         <>
           <Typography variant="h5" gutterBottom>
             Configure output
           </Typography>
-          {!!error && <Message message={error.message} variant="error" />}
+          {!!error && <Message text={error.message} variant="error" />}
           <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} source={data} />
         </>
       )
     },
-    Error: (err) => <Message message={`Unable to fetch output: ${err.message}`} variant="error" />,
+    Error: (err) => <Message text={`Unable to fetch output: ${err.message}`} variant="error" />,
   })
 
   return <>{render(loading, output, fetchError)}</>

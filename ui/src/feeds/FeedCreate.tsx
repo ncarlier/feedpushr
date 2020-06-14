@@ -34,7 +34,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       }
       setError(null)
       const data = (await res.json()) as Feed
-      showMessage(<Message variant="success" message={`${data.title} feed created`} />)
+      showMessage(`${data.title} feed created`)
       return history.push('/feeds')
     } catch (err) {
       setError(err)
@@ -46,7 +46,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       <Typography variant="h5" gutterBottom>
         New feed
       </Typography>
-      {!!error && <Message message={error.message} variant="error" />}
+      {!!error && <Message text={error.message} variant="error" />}
       <FeedConfig onSave={handleSave} onCancel={handleBack} />
     </>
   )

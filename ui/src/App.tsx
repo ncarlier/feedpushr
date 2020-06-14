@@ -1,5 +1,5 @@
 import React from 'react'
-import { HashRouter as Router, Link, Redirect, Route } from 'react-router-dom'
+import { HashRouter as Router, Link } from 'react-router-dom'
 
 import { AppBar, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core'
 import { blue, pink } from '@material-ui/core/colors'
@@ -7,13 +7,11 @@ import { createMuiTheme, makeStyles, Theme } from '@material-ui/core/styles'
 import { ChevronLeft as ChevronLeftIcon, Info as AboutIcon, Menu as MenuIcon } from '@material-ui/icons'
 import { ThemeProvider } from '@material-ui/styles'
 
-import About from './about/About'
 import { MessageProvider } from './context/MessageContext'
-import Explore from './explore/Explore'
-import FeedRoutes from './feeds/Routes'
 import classNames from './helpers/classNames'
 import Menu from './Menu'
-import OutputRoutes from './outputs/Routes'
+import Snackbar from './common/Snackbar'
+import Routes from './Routes'
 
 const theme = createMuiTheme({
   palette: {
@@ -152,13 +150,10 @@ export default () => {
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
-              <Redirect exact from="/" to="/feeds" />
-              <Route path="/feeds" component={FeedRoutes} />
-              <Route path="/outputs" component={OutputRoutes} />
-              <Route path="/explore" component={Explore} />
-              <Route path="/about" component={About} />
+              <Routes />
             </Container>
           </main>
+          <Snackbar />
         </MessageProvider>
       </ThemeProvider>
     </Router>

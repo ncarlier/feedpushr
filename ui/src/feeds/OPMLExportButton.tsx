@@ -5,7 +5,6 @@ import { CloudDownload as CloudDownloadIcon } from '@material-ui/icons'
 
 import fetchAPI from '../helpers/fetchAPI'
 import { MessageContext } from '../context/MessageContext'
-import Message from '../common/Message'
 
 export default () => {
   const { showMessage } = useContext(MessageContext)
@@ -27,7 +26,7 @@ export default () => {
         throw new Error(err.detail || res.statusText)
       }
     } catch (err) {
-      showMessage(<Message variant="error" message={`Unable to export feeds to OPML file: ${err.message}`} />)
+      showMessage(`Unable to export feeds to OPML file: ${err.message}`, 'error')
     }
   }
 

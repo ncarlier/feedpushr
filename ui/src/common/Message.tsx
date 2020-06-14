@@ -50,14 +50,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface Props {
   className?: string
-  message?: string
+  text: string
   onClose?: () => void
   variant: keyof typeof variantIcon
 }
 
 export default (props: Props) => {
   const classes = useStyles()
-  const { className, message, onClose, variant, ...other } = props
+  const { className, text, onClose, variant, ...other } = props
   const Icon = variantIcon[variant]
 
   return (
@@ -67,7 +67,7 @@ export default (props: Props) => {
       message={
         <span id="client-snackbar" className={classes.message}>
           <Icon className={classNames(classes.icon, classes.iconVariant)} />
-          {message}
+          {text}
         </span>
       }
       action={[

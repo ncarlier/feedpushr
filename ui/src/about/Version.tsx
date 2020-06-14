@@ -21,7 +21,7 @@ export default () => {
         {data.version}
       </Typography>
     ),
-    Error: (err) => <Message message={`Unable to retrieve API details: ${err.message}`} variant="error" />,
+    Error: (err) => <Message text={`Unable to retrieve API details: ${err.message}`} variant="error" />,
   })
 
   return <>{render(loading, info, error)}</>

@@ -41,7 +41,7 @@ export default ({ match, history }: Props) => {
         throw new Error(msg)
       }
       const data = await res.json()
-      showMessage(<Message variant="success" message={`Filter ${data.name} added`} />)
+      showMessage(`Filter ${data.name} added`)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -64,7 +64,7 @@ export default ({ match, history }: Props) => {
       <Typography variant="h5" gutterBottom>
         Add filter: Configure
       </Typography>
-      {!!error && <Message message={error.message} variant="error" />}
+      {!!error && <Message text={error.message} variant="error" />}
       <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )

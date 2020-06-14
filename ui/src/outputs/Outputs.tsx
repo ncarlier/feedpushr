@@ -33,7 +33,7 @@ export default () => {
   const render = matchResponse<OutputsResponse>({
     Loading: () => <Loader />,
     Data: (data) => <EntityList entities={buildEntitiesFromOutputs(data)} />,
-    Error: (err) => <Message message={`Unable to retrieve outputs: ${err.message}`} variant="error" />,
+    Error: (err) => <Message text={`Unable to retrieve outputs: ${err.message}`} variant="error" />,
   })
 
   return <>{render(loading, outputs, error)}</>

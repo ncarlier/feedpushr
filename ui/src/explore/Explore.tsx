@@ -46,7 +46,7 @@ export default () => {
       }
       setError(null)
       const data = (await res.json()) as Feed
-      showMessage(<Message variant="success" message={`${data.title} feed created`} />)
+      showMessage(`${data.title} feed created`)
     } catch (err) {
       setError(err)
     } finally {
@@ -77,7 +77,7 @@ export default () => {
 
   return (
     <>
-      {!!error && <Message message={error.message} variant="error" />}
+      {!!error && <Message text={error.message} variant="error" />}
       <MaterialTable
         title="Search"
         columns={columns}

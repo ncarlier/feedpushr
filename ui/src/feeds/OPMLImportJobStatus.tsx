@@ -49,7 +49,7 @@ export default ({ jobID }: Props) => {
 
   return (
     <>
-      {status === 'error' && <Message message="unable to fetch import status" variant="error" />}
+      {status === 'error' && <Message text="unable to fetch import status" variant="error" />}
       {status === 'open' && <Loader />}
       <List dense>
         {items.map((res, idx) => (

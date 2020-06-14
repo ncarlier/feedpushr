@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'
 
 import { Switch, Tooltip } from '@material-ui/core'
 
-import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
 import { Entity } from './Types'
@@ -30,12 +29,12 @@ export default ({ entity }: Props) => {
       })
       if (res.ok) {
         setStatus(check)
-        showMessage(<Message variant="success" message={`${descEntity(entity)} ${check ? 'enabled' : 'disabled'}`} />)
+        showMessage(`${descEntity(entity)} ${check ? 'enabled' : 'disabled'}`)
       } else {
         throw new Error(res.statusText)
       }
     } catch (err) {
-      showMessage(<Message variant="error" message={`Unable to update ${descEntity(entity)}: ${err.message}`} />)
+      showMessage(`Unable to update ${descEntity(entity)}: ${err.message}`, 'error')
     }
   }
 

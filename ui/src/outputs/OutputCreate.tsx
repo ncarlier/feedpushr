@@ -39,7 +39,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       }
       const data = (await res.json()) as Output
       const desc = data.alias ? data.alias : data.name
-      showMessage(<Message variant="success" message={`${desc} output added`} />)
+      showMessage(`${desc} output added`)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -62,7 +62,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       <Typography variant="h5" gutterBottom>
         Add output: Configure
       </Typography>
-      {!!error && <Message message={error.message} variant="error" />}
+      {!!error && <Message text={error.message} variant="error" />}
       <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )

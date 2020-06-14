@@ -41,7 +41,7 @@ export default ({ match, history }: Props) => {
       }
       setError(null)
       const data = (await res.json()) as Feed
-      showMessage(<Message variant="success" message={`${data.title} feed updated`} />)
+      showMessage(`${data.title} feed updated`)
       return history.push('/feeds')
     } catch (err) {
       setError(err)
@@ -55,11 +55,11 @@ export default ({ match, history }: Props) => {
         <Typography variant="h5" gutterBottom>
           Configure feed
         </Typography>
-        {!!error && <Message message={error.message} variant="error" />}
+        {!!error && <Message text={error.message} variant="error" />}
         <FeedConfig onSave={handleSave} onCancel={handleBack} feed={data} />
       </>
     ),
-    Error: (err) => <Message message={`Unable to fetch feed: ${err.message}`} variant="error" />,
+    Error: (err) => <Message text={`Unable to fetch feed: ${err.message}`} variant="error" />,
   })
 
   return <>{render(loading, feeds, fetchError)}</>

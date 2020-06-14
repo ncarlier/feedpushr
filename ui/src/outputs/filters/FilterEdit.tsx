@@ -44,7 +44,7 @@ export default ({ match, history }: Props) => {
       }
       const data = await res.json()
       const filterDesc = descFilter(data)
-      showMessage(<Message variant="success" message={`${filterDesc} configured`} />)
+      showMessage(`${filterDesc} configured`)
       history.push('/outputs')
     } catch (err) {
       setError(err)
@@ -56,27 +56,27 @@ export default ({ match, history }: Props) => {
     Data: (data) => {
       const outputDesc = descOutput(data)
       if (!data.filters || data.filters.length === 0) {
-        return <Message message={`No filter found for ${outputDesc}`} variant="error" />
+        return <Message text={`No filter found for ${outputDesc}`} variant="error" />
       }
       const filter = data.filters.find((f) => f.id === filterId)
       if (!filter) {
-        return <Message message={`Filter not found in ${outputDesc}`} variant="error" />
+        return <Message text={`Filter not found in ${outputDesc}`} variant="error" />
       }
       const spec = specs.find((f) => f.name === filter.name)
       if (!spec) {
-        return <Message message={`Unable to retrieve filter specifications: ${filter.name}`} variant="error" />
+        return <Message text={`Unable to retrieve filter specifications: ${filter.name}`} variant="error" />
       }
       return (
         <>
           <Typography variant="h5" gutterBottom>
             Configure filter
           </Typography>
-          {!!error && <Message message={error.message} variant="error" />}
+          {!!error && <Message text={error.message} variant="error" />}
           <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} source={filter} />
         </>
       )
     },
-    Error: (err) => <Message message={`Unable to fetch filter: ${err.message}`} variant="error" />,
+    Error: (err) => <Message text={`Unable to fetch filter: ${err.message}`} variant="error" />,
   })
 
   return <>{render(loading, output, fetchError)}</>

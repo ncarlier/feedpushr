@@ -1,12 +1,19 @@
-import React, { createContext, ReactNode, SyntheticEvent, useState } from 'react'
+import React, { createContext, ReactNode, useState } from 'react'
 
-import { Snackbar } from '@material-ui/core'
+type MessageVariant = 'success' | 'warning' | 'error' | 'info'
+
+interface Message {
+  text: string
+  variant: MessageVariant
+}
 
 interface MessageContextType {
-  showMessage: (message: ReactNode | null) => void
+  message: Message
+  showMessage: (text: string, variant?: MessageVariant) => void
 }
 
 const MessageContext = createContext<MessageContextType>({
+  message: { text: '', variant: 'info' },
   showMessage: () => true,
 })
 
@@ -15,37 +22,13 @@ interface Props {
 }
 
 const MessageProvider = ({ children }: Props) => {
-  const [message, setMessage] = useState<ReactNode | null>(null)
-  const [open, setOpen] = useState(false)
+  const [message, setMessage] = useState<Message>({ text: '', variant: 'info' })
 
-  const handleClose = (event?: SyntheticEvent, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    setOpen(false)
+  const showMessage = (text: string, variant: MessageVariant = 'success') => {
+    setMessage({ text, variant })
   }
 
-  const showMessage = (msg: ReactNode | null) => {
-    setMessage(msg)
-    setOpen(true)
-  }
-
-  return (
-    <MessageContext.Provider value={{ showMessage }}>
-      {children}
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={open}
-        autoHideDuration={5000}
-        onClose={handleClose}
-      >
-        <>{message}</>
-      </Snackbar>
-    </MessageContext.Provider>
-  )
+  return <MessageContext.Provider value={{ message, showMessage }}>{children}</MessageContext.Provider>
 }
 
 export { MessageContext, MessageProvider }
