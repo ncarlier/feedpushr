@@ -73,8 +73,12 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	req.Header.Set("User-Agent", common.UserAgent)
 
 	// Add cache headers
-	req.Header.Add("If-Modified-Since", fh.status.LastModifiedHeader)
-	req.Header.Add("If-None-Match", fh.status.EtagHeader)
+	if fh.status.LastModifiedHeader != "" {
+		req.Header.Add("If-Modified-Since", fh.status.LastModifiedHeader)
+	}
+	if fh.status.EtagHeader != "" {
+		req.Header.Add("If-None-Match", fh.status.EtagHeader)
+	}
 
 	// Do HTTP call
 	resp, err := http.DefaultClient.Do(req)
