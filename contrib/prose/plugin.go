@@ -14,8 +14,9 @@ import (
 )
 
 var filterList = map[string]string{
-	"person": "PERSON",
-	"gpe":    "GPE",
+	"all":    "All",
+	"gpe":    "Geo-Political Entity",
+	"person": "Person",
 }
 
 var formatList = map[string]string{
@@ -36,6 +37,12 @@ var spec = model.Spec{
 	Name: "prose",
 	Desc: "Extract named entity from text.",
 	PropsSpec: []model.PropSpec{
+		{
+			Name:    "filter",
+			Desc:    "Label entity to include",
+			Type:    model.Select,
+			Options: filterList,
+		},
 		{
 			Name: "minCharLength",
 			Desc: "Entity's minimum character length (default: 1)",
@@ -114,6 +121,10 @@ func (p *ProseFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	minCharLength := safeAtoi(val, 1)
 	val = def.Props.Get("maxCharLength")
 	maxCharLength := safeAtoi(val, 15)
+	filter := def.Props.Get("filter")
+	if _, exists := filterList[filter]; !exists {
+		filter = "all"
+	}
 	format := def.Props.Get("format")
 	if _, exists := formatList[format]; !exists {
 		format = "hashtag"
@@ -129,6 +140,7 @@ func (p *ProseFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	definition.Props["maxCharLength"] = maxCharLength
 	definition.Props["format"] = format
 	definition.Props["separator"] = separator
+	definition.Props["filter"] = filter
 
 	return &ProseFilter{
 		definition:    definition,
@@ -137,6 +149,7 @@ func (p *ProseFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 		maxCharLength: maxCharLength,
 		format:        format,
 		separator:     separator,
+		filter:        filter,
 	}, nil
 }
 
@@ -146,6 +159,7 @@ type ProseFilter struct {
 	condition     *expr.ConditionalExpression
 	minCharLength int
 	maxCharLength int
+	filter        string
 	format        string
 	separator     string
 }
@@ -166,6 +180,16 @@ func (f *ProseFilter) DoFilter(article *model.Article) (bool, error) {
 	var entities []string
 	for _, ent := range doc.Entities() {
 		entity := ent.Text
+		switch f.filter {
+		case "gpe":
+			if strings.ToLower(ent.Label) != "gpe" {
+				continue
+			}
+		case "person":
+			if strings.ToLower(ent.Label) != "person" {
+				continue
+			}
+		}
 		if len(entity) > f.maxCharLength {
 			continue
 		}
