@@ -2,6 +2,7 @@ package plugins
 
 import (
 	"context"
+	"fmt"
 	"sync/atomic"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/expr"
@@ -9,11 +10,19 @@ import (
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
+var scrapers = map[string]string{
+	"builtin":  "built-in",
+	"external": "external",
+}
+
 var fetchSpec = model.Spec{
 	Name: "fetch",
 	Desc: `
 This filter will attempt to extract the content of the article from the source URL.
-If succeeded, following metadata are added (if found) to the article:
+
+You can use the built-in scraper or use an external one.
+
+If succeeded, some metadata can be added to the article:
 
 - originalContent: Initial article content (before fetching)
 - image: Article main illustration
@@ -22,7 +31,19 @@ If succeeded, following metadata are added (if found) to the article:
 - sitename: Website name
 - favicon: Website favicon
 `,
-	PropsSpec: []model.PropSpec{},
+	PropsSpec: []model.PropSpec{
+		{
+			Name:    "scraper",
+			Desc:    "Used scraper",
+			Type:    model.Select,
+			Options: scrapers,
+		},
+		{
+			Name: "url",
+			Desc: "External scraper URL (if selected)",
+			Type: model.URL,
+		},
+	},
 }
 
 // FetchFilterPlugin is the fetch filter plugin
@@ -40,12 +61,29 @@ func (p *FetchFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 		return nil, err
 	}
 
+	scraperProvider := scraper.NewInternalWebScraper()
+	if val, ok := def.Props["scraper"]; ok {
+		selectedScraper := fmt.Sprintf("%v", val)
+		if selectedScraper == "external" {
+			val, ok = def.Props["url"]
+			if !ok {
+				return nil, fmt.Errorf("missing URL property")
+			}
+			uri := fmt.Sprintf("%v", val)
+			scraperProvider, err = scraper.NewExternalWebScraper(uri)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	definition := *def
 	definition.Spec = fetchSpec
+
 	return &FetchFilter{
 		definition: definition,
 		condition:  condition,
-		scraper:    scraper.NewInternalWebScraper(),
+		scraper:    scraperProvider,
 	}, nil
 }
 
