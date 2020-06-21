@@ -1,4 +1,3 @@
-/*global marked*/
 /*eslint no-undef: "error"*/
 import React, { useCallback } from 'react'
 
@@ -7,6 +6,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import Doc from '../common/Doc'
 import { BaseForm, Filter, Output, Props, Spec } from './Types'
+import SpecDesc from './SpecDesc'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,7 +76,7 @@ export default ({ onSave, onCancel, spec, source }: ConfigFormProps) => {
       <Typography variant="h4" gutterBottom>
         {spec.name}
       </Typography>
-      <Typography color="textSecondary" dangerouslySetInnerHTML={{ __html: marked(spec.desc) }} />
+      <SpecDesc spec={spec} />
       <form>
         <Typography variant="h5">Alias</Typography>
         <TextField id="alias" helperText="Alias" value={alias} onChange={handleChangeAlias()} fullWidth />

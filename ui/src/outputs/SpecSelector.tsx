@@ -6,10 +6,10 @@ import React, { useContext } from 'react'
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import excerpt from '../helpers/excerpt'
 import { FilterSpecsContext } from './filters/FilterSpecsContext'
 import { OutputSpecsContext } from './OutputSpecsContext'
 import { Spec } from './Types'
+import { headline } from '../helpers/text'
 
 const useStyles = makeStyles({
   card: {
@@ -45,7 +45,7 @@ export default ({ onSelect, type }: Props) => {
               <Typography variant="h5" component="h2">
                 {spec.name}
               </Typography>
-              <Typography color="textSecondary" dangerouslySetInnerHTML={{ __html: marked(excerpt(spec.desc)) }} />
+              <Typography color="textSecondary" dangerouslySetInnerHTML={{ __html: marked(headline(spec.desc)) }} />
             </CardContent>
             <CardActions>
               <Button size="small" onClick={() => onSelect(spec)}>

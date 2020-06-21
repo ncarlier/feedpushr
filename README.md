@@ -60,7 +60,7 @@ All configuration variables are described in [etc/default/feedpushr.env](./etc/d
 You can define tags on feeds using the Web UI or the API:
 
 ```bash
-$ curl -XPOST http://localhost:8080/v1/feeds?url=http://www.hashicorp.com/feed.xml&tags=foo,bar
+$ curl -XPOST http://localhost:8080/v2/feeds?url=http://www.hashicorp.com/feed.xml&tags=foo,bar
 ```
 
 Tags can also be imported/exported in OPML format. When using OMPL, tags are stored into the [category attribute][opml-category]. OPML category is a string of comma-separated slash-delimited category strings.
