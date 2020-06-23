@@ -1,5 +1,39 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.1...v) (2020-05-23)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.3...v) (2020-06-23)
+
+
+### Bug Fixes
+
+* **aggregator:** omit empty headers from the request ([e83c177](https://github.com/ncarlier/feedpushr/commit/e83c177))
+* **api:** make props attribute response mandatory ([177614e](https://github.com/ncarlier/feedpushr/commit/177614e))
+
+
+### Features
+
+* **filter:** use external scraper for fetch filter ([d862502](https://github.com/ncarlier/feedpushr/commit/d862502))
+* **ui:** foldable spec description ([c9a3c02](https://github.com/ncarlier/feedpushr/commit/c9a3c02))
+
+
+
+<a name="3.0.0-rc.3"></a>
+# [3.0.0-rc.3](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.2...v3.0.0-rc.3) (2020-06-08)
+
+
+### Bug Fixes
+
+* init search index at startup ([83aca10](https://github.com/ncarlier/feedpushr/commit/83aca10))
+* **output:** fix readflow text attribute ([96ef893](https://github.com/ncarlier/feedpushr/commit/96ef893))
+
+
+### Features
+
+* **filter:** add HTTP filter plugin ([3afb377](https://github.com/ncarlier/feedpushr/commit/3afb377))
+* **ui:** autofocus on search box ([e7e746a](https://github.com/ncarlier/feedpushr/commit/e7e746a))
+
+
+
+<a name="3.0.0-rc.2"></a>
+# [3.0.0-rc.2](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.1...v3.0.0-rc.2) (2020-05-23)
 
 
 ### Bug Fixes
