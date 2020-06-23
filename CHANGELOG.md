@@ -1,45 +1,22 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.3...v) (2020-06-23)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.0.0...v) (2020-06-23)
+
+
+
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/ncarlier/feedpushr/compare/v2.2.0...v3.0.0) (2020-06-23)
 
 
 ### Bug Fixes
 
 * **aggregator:** omit empty headers from the request ([e83c177](https://github.com/ncarlier/feedpushr/commit/e83c177))
 * **api:** make props attribute response mandatory ([177614e](https://github.com/ncarlier/feedpushr/commit/177614e))
-
-
-### Features
-
-* **filter:** use external scraper for fetch filter ([d862502](https://github.com/ncarlier/feedpushr/commit/d862502))
-* **ui:** foldable spec description ([c9a3c02](https://github.com/ncarlier/feedpushr/commit/c9a3c02))
-
-
-
-<a name="3.0.0-rc.3"></a>
-# [3.0.0-rc.3](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.2...v3.0.0-rc.3) (2020-06-08)
-
-
-### Bug Fixes
-
 * init search index at startup ([83aca10](https://github.com/ncarlier/feedpushr/commit/83aca10))
-* **output:** fix readflow text attribute ([96ef893](https://github.com/ncarlier/feedpushr/commit/96ef893))
-
-
-### Features
-
-* **filter:** add HTTP filter plugin ([3afb377](https://github.com/ncarlier/feedpushr/commit/3afb377))
-* **ui:** autofocus on search box ([e7e746a](https://github.com/ncarlier/feedpushr/commit/e7e746a))
-
-
-
-<a name="3.0.0-rc.2"></a>
-# [3.0.0-rc.2](https://github.com/ncarlier/feedpushr/compare/v3.0.0-rc.1...v3.0.0-rc.2) (2020-05-23)
-
-
-### Bug Fixes
-
+* **ci:** add missing package ([cc970d1](https://github.com/ncarlier/feedpushr/commit/cc970d1))
 * **filter:** add missing prop definition ([5a3c575](https://github.com/ncarlier/feedpushr/commit/5a3c575))
 * **filter:** only apply enabled filters ([e8a45c6](https://github.com/ncarlier/feedpushr/commit/e8a45c6))
+* **format:** improve tweet function security ([4e39bf0](https://github.com/ncarlier/feedpushr/commit/4e39bf0))
+* **output:** fix readflow text attribute ([96ef893](https://github.com/ncarlier/feedpushr/commit/96ef893))
 * **output:** improve goroutine stop ([0c0179e](https://github.com/ncarlier/feedpushr/commit/0c0179e))
 * **version:** fix version display ([07e46bf](https://github.com/ncarlier/feedpushr/commit/07e46bf))
 * **websub:** fix callback URL ([1f33fcd](https://github.com/ncarlier/feedpushr/commit/1f33fcd))
@@ -48,27 +25,16 @@
 ### Features
 
 * **contrib:** add Kafka plugin ([886f878](https://github.com/ncarlier/feedpushr/commit/886f878))
+* **explorer:** add feed explorer ([aca9077](https://github.com/ncarlier/feedpushr/commit/aca9077))
 * **feed:** deactivated by default ([e234dda](https://github.com/ncarlier/feedpushr/commit/e234dda))
 * **feeds:** full-text search engine ([7b2cc08](https://github.com/ncarlier/feedpushr/commit/7b2cc08))
-* **output:** improve readflow output ([6177e3b](https://github.com/ncarlier/feedpushr/commit/6177e3b))
-* **ui:** improve base path support ([ddc4a75](https://github.com/ncarlier/feedpushr/commit/ddc4a75))
-
-
-
-<a name="3.0.0-rc.1"></a>
-# [3.0.0-rc.1](https://github.com/ncarlier/feedpushr/compare/v2.2.0...v3.0.0-rc.1) (2020-04-11)
-
-
-### Bug Fixes
-
-* **ci:** add missing package ([cc970d1](https://github.com/ncarlier/feedpushr/commit/cc970d1))
-* **format:** improve tweet function security ([4e39bf0](https://github.com/ncarlier/feedpushr/commit/4e39bf0))
-
-
-### Features
-
-* **explorer:** add feed explorer ([aca9077](https://github.com/ncarlier/feedpushr/commit/aca9077))
+* **filter:** add HTTP filter plugin ([3afb377](https://github.com/ncarlier/feedpushr/commit/3afb377))
+* **filter:** use external scraper for fetch filter ([d862502](https://github.com/ncarlier/feedpushr/commit/d862502))
 * **format:** custom format functions ([bdbccd5](https://github.com/ncarlier/feedpushr/commit/bdbccd5))
+* **output:** improve readflow output ([6177e3b](https://github.com/ncarlier/feedpushr/commit/6177e3b))
+* **ui:** autofocus on search box ([e7e746a](https://github.com/ncarlier/feedpushr/commit/e7e746a))
+* **ui:** foldable spec description ([c9a3c02](https://github.com/ncarlier/feedpushr/commit/c9a3c02))
+* **ui:** improve base path support ([ddc4a75](https://github.com/ncarlier/feedpushr/commit/ddc4a75))
 
 
 
@@ -124,7 +90,7 @@
 
 
 <a name="2.0.0"></a>
-# [2.0.0](https://github.com/ncarlier/feedpushr/compare/v2.0.0-rc.2...v2.0.0) (2019-09-19)
+# [2.0.0](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v2.0.0) (2019-09-19)
 
 
 ### Bug Fixes
@@ -134,6 +100,7 @@
 * **contrib:** fix readflow plugin ([61f8c0d](https://github.com/ncarlier/feedpushr/commit/61f8c0d))
 * **contrib:** fix twitter plugin configuration ([dfed7af](https://github.com/ncarlier/feedpushr/commit/dfed7af))
 * **pshb:** try to get feed link from other attribute ([b6ef0db](https://github.com/ncarlier/feedpushr/commit/b6ef0db))
+* fix unit tests ([e228d47](https://github.com/ncarlier/feedpushr/commit/e228d47))
 
 
 ### Features
@@ -144,48 +111,25 @@
 * **output:** make readflow plugin as builtin ([e42c9fb](https://github.com/ncarlier/feedpushr/commit/e42c9fb))
 * **ui:** improve date rendering ([0ede79f](https://github.com/ncarlier/feedpushr/commit/0ede79f))
 * add agent ([212d399](https://github.com/ncarlier/feedpushr/commit/212d399))
+* **ui:** add about page ([ce341c8](https://github.com/ncarlier/feedpushr/commit/ce341c8))
 * **ui:** show total nb of feeds ([7ab8109](https://github.com/ncarlier/feedpushr/commit/7ab8109))
 * add alias for filters and outputs ([f76e3e6](https://github.com/ncarlier/feedpushr/commit/f76e3e6))
 * add CLI attribute to clear configuration ([401390f](https://github.com/ncarlier/feedpushr/commit/401390f))
+* auto create all buckets ([779e897](https://github.com/ncarlier/feedpushr/commit/779e897))
 * backport contrib repository inside the project ([238390b](https://github.com/ncarlier/feedpushr/commit/238390b))
-
-
-
-<a name="2.0.0-rc.2"></a>
-# [2.0.0-rc.2](https://github.com/ncarlier/feedpushr/compare/v2.0.0-rc.1...v2.0.0-rc.2) (2019-09-04)
-
-
-### Bug Fixes
-
-* fix unit tests ([e228d47](https://github.com/ncarlier/feedpushr/commit/e228d47))
-
-
-### Features
-
 * map attribute types on HTML input types ([1c60d74](https://github.com/ncarlier/feedpushr/commit/1c60d74))
-
-
-
-<a name="2.0.0-rc.1"></a>
-# [2.0.0-rc.1](https://github.com/ncarlier/feedpushr/compare/v1.2.0...v2.0.0-rc.1) (2019-09-01)
-
-
-### Features
-
-* **ui:** add about page ([ce341c8](https://github.com/ncarlier/feedpushr/commit/ce341c8))
 * **ui:** add output pages ([f0e1e63](https://github.com/ncarlier/feedpushr/commit/f0e1e63))
 * **ui:** configure main theme ([464f049](https://github.com/ncarlier/feedpushr/commit/464f049))
-* **ui:** new filter pages ([85eb0f6](https://github.com/ncarlier/feedpushr/commit/85eb0f6))
 * **ui:** switch to new UI ([495e410](https://github.com/ncarlier/feedpushr/commit/495e410))
-* auto create all buckets ([779e897](https://github.com/ncarlier/feedpushr/commit/779e897))
-* new UI foundation ([7307580](https://github.com/ncarlier/feedpushr/commit/7307580))
 * persist filter and output configuration ([c7bc4b3](https://github.com/ncarlier/feedpushr/commit/c7bc4b3))
 * persist output configuration ([2ff1d20](https://github.com/ncarlier/feedpushr/commit/2ff1d20))
 * **api:** WIP add CRUD API for filters and outputs ([a421877](https://github.com/ncarlier/feedpushr/commit/a421877))
 * **api:** WIP add CRUD API for filters and outputs ([fbbbd78](https://github.com/ncarlier/feedpushr/commit/fbbbd78))
 * **api:** WIP add Spec API for filters and outputs ([7c00d24](https://github.com/ncarlier/feedpushr/commit/7c00d24))
 * **store:** add filter repository ([f28665e](https://github.com/ncarlier/feedpushr/commit/f28665e))
+* **ui:** new filter pages ([85eb0f6](https://github.com/ncarlier/feedpushr/commit/85eb0f6))
 * **ui:** WIP filter pages ([209add6](https://github.com/ncarlier/feedpushr/commit/209add6))
+* new UI foundation ([7307580](https://github.com/ncarlier/feedpushr/commit/7307580))
 
 
 
@@ -269,7 +213,7 @@
 
 
 <a name="1.0.0"></a>
-# [1.0.0](https://github.com/ncarlier/feedpushr/compare/1.0.0...v1.0.0) (2019-04-09)
+# [1.0.0](https://github.com/ncarlier/feedpushr/compare/4a64395...v1.0.0) (2019-04-09)
 
 
 ### Bug Fixes
