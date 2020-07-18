@@ -7,12 +7,14 @@ Some plugins and tools for [Feedpushr][feedpushr].
 ### Output
 
 - [Twitter](./twitter/README.md)
+- [Twitter Selenium](./twitter-selenium/README.md)
 - [Mastodon](./mastodon/README.md)
 - [Kafka](./kafka/README.md)
 - [RDBMS](./rdbms/README.md)
 
 ### Filter
 
+- [Prose](./prose/README.md)
 - [RAKE](./rake/README.md)
 
 ## Tools
