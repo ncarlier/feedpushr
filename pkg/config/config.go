@@ -23,4 +23,5 @@ type Config struct {
 	PasswdFile      string        `flag:"passwd-file" desc:"Password file for basic HTTP authentication" default:".htpasswd"`
 	SentryDSN       string        `flag:"sentry-dsn" desc:"Sentry DSN URL" default:""`
 	ExploreProvider string        `flag:"explore-provider" desc:"Provider used to find RSS feeds" default:"default"`
+	ServiceName     string        `flag:"service-name" desc:"Service name used by the service registry" default:"feedpushr"`
 }

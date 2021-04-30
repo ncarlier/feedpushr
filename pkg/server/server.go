@@ -2,10 +2,12 @@ package server
 
 import (
 	"context"
+	"net"
 	"net/http"
 
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
+	consul "github.com/hashicorp/consul/api"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
 	"github.com/ncarlier/feedpushr/v3/pkg/assets"
@@ -30,6 +32,8 @@ type Server struct {
 	aggregator *aggregator.Manager
 	outputs    *output.Manager
 	cache      *cache.Manager
+	listener   net.Listener
+	agent      *consul.Agent
 }
 
 // ListenAndServe starts server
@@ -42,8 +46,17 @@ func (s *Server) ListenAndServe(ListenAddr string) error {
 	if err := loadFeedAggregators(s.db, s.aggregator, s.conf.FanOutDelay); err != nil {
 		return err
 	}
+	listener, err := net.Listen("tcp", ListenAddr)
+	if err != nil {
+		return err
+	}
+	s.listener = listener
+	if err := s.register(); err != nil {
+		log.Debug().Err(err).Msg("unable to register service")
+	}
+
 	log.Debug().Msg("starting HTTP server...")
-	if err := s.srv.ListenAndServe(ListenAddr); err != nil && err != http.ErrServerClosed {
+	if err := s.srv.Serve(s.listener); err != nil && err != http.ErrServerClosed {
 		return err
 	}
 	return nil
@@ -54,6 +67,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	s.cache.Shutdown()
 	s.aggregator.Shutdown()
 	s.outputs.Shutdown()
+	s.deregister()
 	s.srv.CancelAll()
 	s.srv.Server.SetKeepAlivesEnabled(false)
 	return s.srv.Server.Shutdown(ctx)
