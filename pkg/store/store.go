@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	bolt "github.com/ncarlier/feedpushr/v3/pkg/store/bolt"
 	memory "github.com/ncarlier/feedpushr/v3/pkg/store/memory"
 	"github.com/rs/zerolog/log"
@@ -19,7 +20,7 @@ type DB interface {
 }
 
 // NewDB creates new database access regarding the datasource URI
-func NewDB(datasource string) (DB, error) {
+func NewDB(datasource string, quota model.Quota) (DB, error) {
 	u, err := url.ParseRequestURI(datasource)
 	if err != nil {
 		return nil, fmt.Errorf("invalid datasource URL: %s", datasource)
@@ -32,7 +33,7 @@ func NewDB(datasource string) (DB, error) {
 		db = memory.NewInMemoryStore()
 		log.Info().Str("component", "db").Str("uri", u.String()).Msg("using in memory database")
 	case "boltdb":
-		db, err = bolt.NewBoltStore(u)
+		db, err = bolt.NewBoltStore(u, quota)
 		if err != nil {
 			return nil, err
 		}

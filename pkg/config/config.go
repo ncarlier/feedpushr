@@ -25,4 +25,6 @@ type Config struct {
 	SentryDSN          string        `flag:"sentry-dsn" desc:"Sentry DSN URL" default:""`
 	ExploreProvider    string        `flag:"explore-provider" desc:"Provider used to find RSS feeds" default:"default"`
 	ServiceName        string        `flag:"service-name" desc:"Service name used by the service registry" default:"feedpushr"`
+	MaxNbFeeds         int           `flag:"max-nb-feeds" desc:"Maximum number of feeds allowed (unlimited by default)" default:"0"`
+	MaxNbOutputs       int           `flag:"max-nb-outputs" desc:"Maximum number of outputs allowed (unlimited by default)" default:"0"`
 }

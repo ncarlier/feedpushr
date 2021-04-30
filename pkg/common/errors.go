@@ -11,4 +11,8 @@ var (
 	ErrFilterNotFound = errors.New("filter not found")
 	// ErrOutputNotFound is returned when a output is not found in the DB.
 	ErrOutputNotFound = errors.New("output not found")
+	// ErrFeedQuotaExceeded is returned when feed quota is exceeded.
+	ErrFeedQuotaExceeded = errors.New("feed quota exceeded")
+	// ErrOutputQuotaExceeded is returned when output quota is exceeded.
+	ErrOutputQuotaExceeded = errors.New("output quota exceeded")
 )

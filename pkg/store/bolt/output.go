@@ -43,8 +43,28 @@ func (store *BoltStore) DeleteOutput(ID string) (*model.OutputDef, error) {
 	return output, nil
 }
 
+func (store *BoltStore) assertOutputQuota(output *model.OutputDef) error {
+	if store.quota.MaxNbOutputs > 0 {
+		if exists, err := store.exists(OutputBucketName, []byte(output.ID)); err != nil {
+			return err
+		} else if !exists {
+			total, err := store.count(OutputBucketName)
+			if err != nil {
+				return err
+			}
+			if total >= store.quota.MaxNbOutputs {
+				return common.ErrOutputQuotaExceeded
+			}
+		}
+	}
+	return nil
+}
+
 // SaveOutput stores a output.
 func (store *BoltStore) SaveOutput(output model.OutputDef) (*model.OutputDef, error) {
+	if err := store.assertOutputQuota(&output); err != nil {
+		return nil, err
+	}
 	err := store.save(OutputBucketName, []byte(output.ID), &output)
 	return &output, err
 }

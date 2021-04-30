@@ -32,7 +32,7 @@ func setup(t *testing.T) func(t *testing.T) {
 		t.Fatalf("unable to setup temporary workspace: %v", err)
 	}
 
-	db, err = store.NewDB("boltdb://" + workspace + "/test.db")
+	db, err = store.NewDB("boltdb://"+workspace+"/test.db", model.Quota{})
 	if err != nil {
 		t.Fatalf("Unable to setup database: %v", err)
 	}

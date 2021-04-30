@@ -2,6 +2,7 @@ package config
 
 import (
 	"expvar"
+	"strconv"
 )
 
 var configMap = expvar.NewMap("config")
@@ -19,4 +20,6 @@ func ExportVars(conf Config) {
 	exportConfigVar("delay", conf.Delay.String())
 	exportConfigVar("timeout", conf.Timeout.String())
 	exportConfigVar("cache-retention", conf.CacheRetention.String())
+	exportConfigVar("max-nb-feed", strconv.Itoa(conf.MaxNbFeeds))
+	exportConfigVar("max-nb-output", strconv.Itoa(conf.MaxNbOutputs))
 }

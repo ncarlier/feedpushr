@@ -43,6 +43,9 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 	}
 	def, err = c.db.SaveOutput(processor.GetDef())
 	if err != nil {
+		// cleanup previous created processor
+		_def := processor.GetDef()
+		c.outputs.RemoveOutputProcessor(&_def)
 		return err
 	}
 	return ctx.Created(builder.NewOutputResponseFromDef(def))

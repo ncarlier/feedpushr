@@ -7,6 +7,7 @@ import (
 
 	"github.com/blevesearch/bleve"
 	bolt "github.com/coreos/bbolt"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/pkg/errors"
 )
 
@@ -14,6 +15,7 @@ import (
 type BoltStore struct {
 	db    *bolt.DB
 	index bleve.Index
+	quota model.Quota
 }
 
 func createBucketsIfNotExists(tx *bolt.Tx, buckets ...[]byte) error {
@@ -27,7 +29,7 @@ func createBucketsIfNotExists(tx *bolt.Tx, buckets ...[]byte) error {
 }
 
 // NewBoltStore creates a data store backed by BoltDB
-func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
+func NewBoltStore(datasource *url.URL, quota model.Quota) (*BoltStore, error) {
 	dbPath := datasource.Host + datasource.Path
 	db, err := bolt.Open(dbPath, 0600, nil)
 	if err != nil {
@@ -55,6 +57,7 @@ func NewBoltStore(datasource *url.URL) (*BoltStore, error) {
 	return &BoltStore{
 		db:    db,
 		index: index,
+		quota: quota,
 	}, nil
 }
 
@@ -200,18 +203,4 @@ func (store *BoltStore) allAsRaw(bucket []byte, page, size int) ([][]byte, error
 		return nil
 	})
 	return entries, err
-}
-
-func (store *BoltStore) nextSequence(bucketName []byte) (uint64, error) {
-	var result uint64
-	err := store.db.Update(func(tx *bolt.Tx) error {
-		bucket, e := tx.CreateBucketIfNotExists(bucketName)
-		if e != nil {
-			return e
-		}
-		result, e = bucket.NextSequence()
-		return e
-	})
-	return result, err
-
 }

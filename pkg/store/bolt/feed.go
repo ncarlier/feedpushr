@@ -57,8 +57,28 @@ func (store *BoltStore) DeleteFeed(id string) (*model.FeedDef, error) {
 	return feed, nil
 }
 
+func (store *BoltStore) assertFeedQuota(feed *model.FeedDef) error {
+	if store.quota.MaxNbFeeds > 0 {
+		if exists, err := store.exists(FeedBucketName, []byte(feed.ID)); err != nil {
+			return err
+		} else if !exists {
+			total, err := store.CountFeeds()
+			if err != nil {
+				return err
+			}
+			if total >= store.quota.MaxNbFeeds {
+				return common.ErrFeedQuotaExceeded
+			}
+		}
+	}
+	return nil
+}
+
 // SaveFeed stores a feed.
 func (store *BoltStore) SaveFeed(feed *model.FeedDef) error {
+	if err := store.assertFeedQuota(feed); err != nil {
+		return err
+	}
 	err := store.save(FeedBucketName, []byte(feed.ID), &feed)
 	if err != nil {
 		return err

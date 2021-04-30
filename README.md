@@ -22,8 +22,10 @@ A simple feed aggregator service with sugar on top.
 - Support of [WebSub][websub] the open, simple, web-scale and
   decentralized pubsub protocol.
 - REST API with complete [OpenAPI][openapi] documentation.
+- Authentication mechanisms such as OpenID Connect.
 - Full feature Web UI and CLI to interact with the API.
 - Metrics production for monitoring.
+- Quota.
 
 ## Installation
 

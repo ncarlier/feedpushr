@@ -31,6 +31,7 @@ import (
 	configflag "github.com/ncarlier/feedpushr/v3/pkg/config/flag"
 	"github.com/ncarlier/feedpushr/v3/pkg/logging"
 	"github.com/ncarlier/feedpushr/v3/pkg/metric"
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/opml"
 	"github.com/ncarlier/feedpushr/v3/pkg/server"
 	"github.com/ncarlier/feedpushr/v3/pkg/store"
@@ -66,7 +67,10 @@ func main() {
 	metric.Configure(conf)
 
 	// Init the data store
-	db, err := store.NewDB(conf.DB)
+	db, err := store.NewDB(conf.DB, model.Quota{
+		MaxNbFeeds:   conf.MaxNbFeeds,
+		MaxNbOutputs: conf.MaxNbOutputs,
+	})
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to init data store")
 	}

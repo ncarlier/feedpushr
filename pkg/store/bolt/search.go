@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/blevesearch/bleve"
-	bolt "github.com/coreos/bbolt"
 	"github.com/getlantern/errors"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/rs/zerolog/log"
@@ -20,15 +19,6 @@ func openSearchIndex(dbPath string) (bleve.Index, error) {
 		return bleve.New(idxPath, mapping)
 	} else if err != nil {
 		return nil, err
-	}
-	return index, nil
-}
-
-func initSearchIndex(db *bolt.DB) (bleve.Index, error) {
-	// Open search index
-	index, err := openSearchIndex(db.Path())
-	if err != nil {
-		return nil, fmt.Errorf("unable to open search index, %v", err)
 	}
 	return index, nil
 }

@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strings"
+
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	"github.com/ncarlier/feedpushr/v3/pkg/version"
@@ -30,7 +32,7 @@ func init() {
 
 // Get runs the get action.
 func (c *IndexController) Get(ctx *app.GetIndexContext) error {
-	if _, ok := links["issuer"]; !ok && c.issuer != "basic" {
+	if _, ok := links["issuer"]; !ok && strings.HasPrefix(c.issuer, "http") {
 		links["issuer"] = &app.HALLink{
 			Href: c.issuer,
 		}
