@@ -1,6 +1,6 @@
 language: go
 go:
-- "1.13"
+- "1.15"
 before_install:
 - sudo apt-get install -y libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev
 addons:

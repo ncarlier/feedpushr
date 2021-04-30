@@ -7,4 +7,4 @@ require (
 
 replace github.com/ncarlier/feedpushr/v3 => ../..
 
-go 1.13
+go 1.15
