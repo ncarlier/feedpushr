@@ -31,6 +31,6 @@ func TestNewOPMLWithInlineCategories(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, o, "OPML object shouldn't be nil")
 	assert.Equal(t, "Test case with categories", o.Head.Title)
-	assert.Len(t, o.Body.Outlines, 4)
+	assert.Len(t, o.Body.Outlines, 3)
 	assert.Equal(t, "/Computer Science", o.Body.Outlines[0].Category, "Outline title don't match")
 }

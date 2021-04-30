@@ -8,6 +8,5 @@
         <outline text="" type="rss" category="/Computer Science" xmlUrl="http://martinfowler.com/feed.atom" title="Martin Fowler"></outline>
         <outline type="rss" text="NoFrag" category="/Games" title="NoFrag" xmlUrl="http://www.nofrag.com/nofrag.rss" htmlUrl="https://nofrag.com"/>
         <outline text="" type="rss" category="/Computer Science" xmlUrl="http://www.howtoforge.com/feed.rss" title="Howtoforge Linux Howtos und Tutorials"></outline>
-        <outline text="" type="rss" category="/Computer Science" xmlUrl="http://putaindecode.fr/feed.xml" title="putaindecode.io"></outline>
     </body>
 </opml>
