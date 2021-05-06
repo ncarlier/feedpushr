@@ -136,7 +136,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	if err != nil {
 		log.Debug().Err(err).Msg("unable to load htpasswd file: authentication deactivated")
 	} else {
-		srv.Use(auth.NewMiddleware(htpasswd, "/pshb"))
+		srv.Use(auth.NewMiddleware(htpasswd, "/v2/pshb"))
 	}
 
 	// Mount "index" controller
