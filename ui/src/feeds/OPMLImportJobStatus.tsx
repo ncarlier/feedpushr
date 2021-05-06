@@ -7,8 +7,7 @@ import { green, red } from '@material-ui/core/colors'
 
 import Message from '../common/Message'
 import Loader from '../common/Loader'
-
-const API_ROOT = process.env.REACT_APP_API_ROOT || window.location.origin
+import { API_ROOT } from '../helpers/fetchAPI'
 
 type EventSourceStatus = 'open' | 'closed' | 'error'
 
