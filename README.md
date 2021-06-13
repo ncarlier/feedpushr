@@ -188,7 +188,9 @@ You can access Web UI on http://localhost:8080/ui
 
 ## Authentication
 
-You can restrict access to Feedpushr using HTTP basic authentication.
+You can restrict access to Feedpushr using HTTP basic authentication or OpenID Connect.
+
+### Basic authentication
 
 To activate basic authentication, you have to create a `htpasswd` file:
 
@@ -203,9 +205,27 @@ Please note that by default, Feedpushr will try to load the `.htpasswd` file.
 But you can override this behavior by specifying the location of the file:
 
 ```bash
-$ export FP_PASSWD_FILE=/etc/feedpushr.htpasswd
+$ export FP_AUTHN=/etc/feedpushr.htpasswd
 $ # or
-$ feedpushr --passwd-file /etc/webhookd/users.htpasswd
+$ feedpushr --authn /etc/webhookd/users.htpasswd
+```
+
+### OpenID Connect
+
+To activate OIDC authentication, you have to specify OIDC issuer URL:
+
+```bash
+$ export FP_AUTHN=https://accounts.google.com
+$ # or
+$ feedpushr --authn https://accounts.google.com
+```
+
+Note that you can restrict access for a specific user (or subject) like this:
+
+```bash
+$ export FP_GRANTED_SUBJECT=xxx
+$ # or
+$ feedpushr --granted-subject xxx
 ```
 
 ## Use cases
