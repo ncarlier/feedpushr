@@ -2,7 +2,7 @@ module github.com/ncarlier/feedpushr/v3/contrib/twitter-selenium
 
 replace github.com/ncarlier/feedpushr/v3 => ../..
 
-go 1.15
+go 1.16
 
 require (
 	github.com/corpix/uarand v0.1.1

@@ -1,6 +1,6 @@
 module github.com/ncarlier/feedpushr/v3/contrib/launcher
 
-go 1.15
+go 1.16
 
 require (
 	github.com/getlantern/systray v0.0.0-20200324212034-d3ab4fd25d99
