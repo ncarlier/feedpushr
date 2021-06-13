@@ -26,7 +26,7 @@ var _ = API("feedpushr", func() {
 
 	Origin("*", func() {
 		Methods("GET", "POST", "PUT", "PATCH", "DELETE")
-		Headers("content-type")
+		Headers("Content-Type", "Authorization")
 		MaxAge(600)
 		Credentials()
 	})

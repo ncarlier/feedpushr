@@ -20,7 +20,8 @@ type Config struct {
 	LogPretty       bool          `flag:"log-pretty" desc:"Writes log using plain text format" default:"false"`
 	LogLevel        string        `flag:"log-level" desc:"Logging level (debug, info, warn or error)" default:"info"`
 	LogOutput       string        `flag:"log-output" desc:"Log output (STDOUT if empty)" default:""`
-	PasswdFile      string        `flag:"passwd-file" desc:"Password file for basic HTTP authentication" default:".htpasswd"`
+	Authn           string        `flag:"authn" desc:"Authentication method (Basic HTTP with password file, OIDC issuer URL or none)" default:".htpasswd"`
+	GrantedSubject  string        `flag:"granted-subject" desc:"Authorized subject or username" default:"*"`
 	SentryDSN       string        `flag:"sentry-dsn" desc:"Sentry DSN URL" default:""`
 	ExploreProvider string        `flag:"explore-provider" desc:"Provider used to find RSS feeds" default:"default"`
 	ServiceName     string        `flag:"service-name" desc:"Service name used by the service registry" default:"feedpushr"`

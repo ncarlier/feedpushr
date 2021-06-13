@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v3/design
-// --out=/home/nicolas/workspace/fe/feedpushr/autogen
+// --out=/home/nicolas/workspace/feedpushr/autogen
 // --version=v1.4.3
 
 package app
@@ -78,7 +78,7 @@ func handleExploreOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -238,7 +238,7 @@ func handleFeedOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -293,7 +293,7 @@ func handleFilterOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -348,7 +348,7 @@ func handleHealthOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -403,7 +403,7 @@ func handleIndexOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -493,7 +493,7 @@ func handleOpmlOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -712,7 +712,7 @@ func handleOutputOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -836,7 +836,7 @@ func handlePshbOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}
@@ -944,7 +944,7 @@ func handleVarsOrigin(h goa.Handler) goa.Handler {
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "content-type")
+				rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 			}
 			return h(ctx, rw, req)
 		}

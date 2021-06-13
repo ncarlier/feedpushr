@@ -4,7 +4,6 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/csv"
-	"net/http"
 	"os"
 	"regexp"
 
@@ -18,12 +17,13 @@ var (
 
 // HtpasswdFile is a map for usernames to passwords.
 type HtpasswdFile struct {
-	path  string
-	users map[string]string
+	path    string
+	subject string
+	users   map[string]string
 }
 
 // NewHtpasswdFromFile reads the users and passwords from a htpasswd file and returns them.
-func NewHtpasswdFromFile(path string) (*HtpasswdFile, error) {
+func NewHtpasswdFromFile(path, subject string) (*HtpasswdFile, error) {
 	r, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -42,22 +42,15 @@ func NewHtpasswdFromFile(path string) (*HtpasswdFile, error) {
 
 	users := make(map[string]string)
 	for _, record := range records {
-		users[record[0]] = record[1]
+		if subject == "*" || subject == record[0] {
+			users[record[0]] = record[1]
+		}
 	}
 
 	return &HtpasswdFile{
 		path:  path,
 		users: users,
 	}, nil
-}
-
-// Validate HTTP request credentials
-func (h *HtpasswdFile) Validate(r *http.Request) bool {
-	user, passwd, ok := r.BasicAuth()
-	if !ok {
-		return false
-	}
-	return h.validateCredentials(user, passwd)
 }
 
 func (h *HtpasswdFile) validateCredentials(user string, password string) bool {

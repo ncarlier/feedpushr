@@ -9,11 +9,15 @@ import (
 // IndexController implements the index resource.
 type IndexController struct {
 	*goa.Controller
+	issuer string
 }
 
 // NewIndexController creates a index controller.
-func NewIndexController(service *goa.Service) *IndexController {
-	return &IndexController{Controller: service.NewController("IndexController")}
+func NewIndexController(service *goa.Service, issuer string) *IndexController {
+	return &IndexController{
+		Controller: service.NewController("IndexController"),
+		issuer:     issuer,
+	}
 }
 
 var links = make(map[string]*app.HALLink)
@@ -26,6 +30,11 @@ func init() {
 
 // Get runs the get action.
 func (c *IndexController) Get(ctx *app.GetIndexContext) error {
+	if _, ok := links["issuer"]; !ok && c.issuer != "basic" {
+		links["issuer"] = &app.HALLink{
+			Href: c.issuer,
+		}
+	}
 	res := &app.Info{
 		Name:    "feedpushr",
 		Desc:    "Feed aggregator daemon with sugar on top",

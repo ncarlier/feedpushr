@@ -132,15 +132,18 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	srv.Use(middleware.LogRequest(false))
 	srv.Use(middleware.ErrorHandler(srv, true))
 	srv.Use(middleware.Recover())
-	htpasswd, err := auth.NewHtpasswdFromFile(conf.PasswdFile)
+	issuer := ""
+	authenticator, err := auth.NewAuthenticator(conf.Authn, conf.GrantedSubject)
 	if err != nil {
-		log.Debug().Err(err).Msg("unable to load htpasswd file: authentication deactivated")
-	} else {
-		srv.Use(auth.NewMiddleware(htpasswd, "/v2/pshb"))
+		logger.Info().Err(err).Str("authn", conf.Authn).Msg("unable to load authenticator")
+	} else if authenticator != nil {
+		issuer = authenticator.Issuer()
+		logger.Info().Str("authn", conf.Authn).Msg("using authenticator")
+		srv.Use(auth.NewMiddleware(authenticator, "/v2/", "/v2/healthz", "/v2/pshb"))
 	}
 
 	// Mount "index" controller
-	app.MountIndexController(srv, controller.NewIndexController(srv))
+	app.MountIndexController(srv, controller.NewIndexController(srv, issuer))
 	// Mount "feed" controller
 	app.MountFeedController(srv, controller.NewFeedController(srv, db, am))
 	// Mount "filter" controller
