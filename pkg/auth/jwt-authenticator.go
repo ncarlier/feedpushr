@@ -11,6 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// JWTAuthenticator authenticator use to handle OIDC jWT
 type JWTAuthenticator struct {
 	issuer   string
 	subject  string
@@ -18,6 +19,7 @@ type JWTAuthenticator struct {
 	logger   zerolog.Logger
 }
 
+// NewJWTAuthenticator create new JWT authenticator
 func NewJWTAuthenticator(issuer, subject string) (*JWTAuthenticator, error) {
 	cfg, err := oidc.GetOIDCConfiguration(issuer)
 	if err != nil {
@@ -53,6 +55,7 @@ func (j *JWTAuthenticator) Validate(req *http.Request, res http.ResponseWriter) 
 	return false
 }
 
+// Issuer of the authenticator
 func (j *JWTAuthenticator) Issuer() string {
 	return j.issuer
 }

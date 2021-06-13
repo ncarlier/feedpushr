@@ -12,6 +12,7 @@ func (h *HtpasswdFile) Validate(req *http.Request, res http.ResponseWriter) bool
 	return true
 }
 
+// Issuer of the authenticator
 func (h *HtpasswdFile) Issuer() string {
 	return "basic"
 }

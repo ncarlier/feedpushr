@@ -31,6 +31,7 @@ func NewMiddleware(authn Authenticator, whitelist ...string) goa.Middleware {
 	}
 }
 
+// NewAuthenticator create new authenticator
 func NewAuthenticator(uri, subject string) (Authenticator, error) {
 	if uri == "none" {
 		return nil, nil
