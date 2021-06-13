@@ -1,5 +1,18 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v3.0.0...v) (2020-06-23)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.0.0...v) (2021-06-13)
+
+
+### Bug Fixes
+
+* **api:** fix PSHB public access ([69c4921](https://github.com/ncarlier/feedpushr/commit/69c4921))
+* **ui:** fix SSE API location ([1fbf422](https://github.com/ncarlier/feedpushr/commit/1fbf422))
+
+
+### Features
+
+* **authn:** JWT OIDC authentication support ([d01d3e9](https://github.com/ncarlier/feedpushr/commit/d01d3e9))
+* **ui:** OIDC authentication ([59f9384](https://github.com/ncarlier/feedpushr/commit/59f9384))
+* service registry support with Consul ([1cfbaf9](https://github.com/ncarlier/feedpushr/commit/1cfbaf9))
 
 
 
