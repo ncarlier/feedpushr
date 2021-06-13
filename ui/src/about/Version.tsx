@@ -1,28 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { Typography } from '@material-ui/core'
 
-import Loader from '../common/Loader'
-import Message from '../common/Message'
-import matchResponse from '../helpers/matchResponse'
-import { useAPI } from '../hooks'
-
-interface InfoResponse {
-  version: string
-}
+import { ConfigContext } from '../context/ConfigContext'
 
 export default () => {
-  const [loading, info, error] = useAPI<InfoResponse>('/')
-
-  const render = matchResponse<InfoResponse>({
-    Loading: () => <Loader />,
-    Data: (data) => (
-      <Typography align="right" color="textSecondary" variant="caption">
-        {data.version}
-      </Typography>
-    ),
-    Error: (err) => <Message text={`Unable to retrieve API details: ${err.message}`} variant="error" />,
-  })
-
-  return <>{render(loading, info, error)}</>
+  const { version } = useContext(ConfigContext)
+  return (
+    <Typography align="right" color="textSecondary" variant="caption">
+      {version}
+    </Typography>
+  )
 }

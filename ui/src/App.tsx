@@ -7,6 +7,8 @@ import { createMuiTheme, makeStyles, Theme } from '@material-ui/core/styles'
 import { ChevronLeft as ChevronLeftIcon, Info as AboutIcon, Menu as MenuIcon } from '@material-ui/icons'
 import { ThemeProvider } from '@material-ui/styles'
 
+import { AuthNProvider } from './context/AuthenticationContext'
+import { ConfigProvider } from './context/ConfigContext'
 import { MessageProvider } from './context/MessageContext'
 import classNames from './helpers/classNames'
 import Menu from './Menu'
@@ -102,60 +104,64 @@ const useStyles = makeStyles<Theme, any>((theme) => ({
 }))
 
 export default () => {
-  const classes = useStyles()
+  const classes = useStyles({})
 
   const [open, setOpen] = React.useState(true)
   const handleDrawerOpen = () => setOpen(true)
   const handleDrawerClose = () => setOpen(false)
 
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AppBar position="absolute" className={classNames(classes.appBar, open ? classes.appBarShift : null)}>
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={handleDrawerOpen}
-              className={classNames(classes.menuButton, open ? classes.menuButtonHidden : null)}
+    <ConfigProvider>
+      <AuthNProvider>
+        <Router>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <AppBar position="absolute" className={classNames(classes.appBar, open ? classes.appBarShift : null)}>
+              <Toolbar className={classes.toolbar}>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={handleDrawerOpen}
+                  className={classNames(classes.menuButton, open ? classes.menuButtonHidden : null)}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                  Feedpushr
+                </Typography>
+                <IconButton color="inherit" component={Link} to="/about">
+                  <AboutIcon />
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+            <Drawer
+              variant="permanent"
+              classes={{
+                paper: classNames(classes.drawerPaper, !open ? classes.drawerPaperClose : null),
+              }}
+              open={open}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              Feedpushr
-            </Typography>
-            <IconButton color="inherit" component={Link} to="/about">
-              <AboutIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: classNames(classes.drawerPaper, !open ? classes.drawerPaperClose : null),
-          }}
-          open={open}
-        >
-          <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <Menu />
-        </Drawer>
-        <MessageProvider>
-          <main className={classes.content}>
-            <div className={classes.appBarSpacer} />
-            <Container maxWidth="lg" className={classes.container}>
-              <Routes />
-            </Container>
-          </main>
-          <Snackbar />
-        </MessageProvider>
-      </ThemeProvider>
-    </Router>
+              <div className={classes.toolbarIcon}>
+                <IconButton onClick={handleDrawerClose}>
+                  <ChevronLeftIcon />
+                </IconButton>
+              </div>
+              <Divider />
+              <Menu />
+            </Drawer>
+            <MessageProvider>
+              <main className={classes.content}>
+                <div className={classes.appBarSpacer} />
+                <Container maxWidth="lg" className={classes.container}>
+                  <Routes />
+                </Container>
+              </main>
+              <Snackbar />
+            </MessageProvider>
+          </ThemeProvider>
+        </Router>
+      </AuthNProvider>
+    </ConfigProvider>
   )
 }
