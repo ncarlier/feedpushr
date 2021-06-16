@@ -32,13 +32,13 @@ func NewMiddleware(authn Authenticator, whitelist ...string) goa.Middleware {
 }
 
 // NewAuthenticator create new authenticator
-func NewAuthenticator(uri, subject string) (Authenticator, error) {
+func NewAuthenticator(uri, username string) (Authenticator, error) {
 	if uri == "none" {
 		return nil, nil
 	}
 	_, err := url.ParseRequestURI(uri)
 	if err == nil {
-		return NewJWTAuthenticator(uri, subject)
+		return NewJWTAuthenticator(uri, username)
 	}
-	return NewHtpasswdFromFile(uri, subject)
+	return NewHtpasswdFromFile(uri, username)
 }

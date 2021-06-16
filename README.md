@@ -220,12 +220,12 @@ $ # or
 $ feedpushr --authn https://accounts.google.com
 ```
 
-Note that you can restrict access for a specific user (or subject) like this:
+Note that you can restrict access for a specific username like this:
 
 ```bash
-$ export FP_GRANTED_SUBJECT=xxx
+$ export FP_AUTHORIZED_USERNAME=xxx
 $ # or
-$ feedpushr --granted-subject xxx
+$ feedpushr --authorized-username xxx
 ```
 
 ## Use cases

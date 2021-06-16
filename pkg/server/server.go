@@ -133,7 +133,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	srv.Use(middleware.ErrorHandler(srv, true))
 	srv.Use(middleware.Recover())
 	issuer := ""
-	authenticator, err := auth.NewAuthenticator(conf.Authn, conf.GrantedSubject)
+	authenticator, err := auth.NewAuthenticator(conf.Authn, conf.AuthorizedUsername)
 	if err != nil {
 		logger.Info().Err(err).Str("authn", conf.Authn).Msg("unable to load authenticator")
 	} else if authenticator != nil {

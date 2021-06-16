@@ -23,7 +23,7 @@ type HtpasswdFile struct {
 }
 
 // NewHtpasswdFromFile reads the users and passwords from a htpasswd file and returns them.
-func NewHtpasswdFromFile(path, subject string) (*HtpasswdFile, error) {
+func NewHtpasswdFromFile(path, username string) (*HtpasswdFile, error) {
 	r, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func NewHtpasswdFromFile(path, subject string) (*HtpasswdFile, error) {
 
 	users := make(map[string]string)
 	for _, record := range records {
-		if subject == "*" || subject == record[0] {
+		if username == "*" || username == record[0] {
 			users[record[0]] = record[1]
 		}
 	}

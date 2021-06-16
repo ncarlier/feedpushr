@@ -14,20 +14,20 @@ import (
 // JWTAuthenticator authenticator use to handle OIDC jWT
 type JWTAuthenticator struct {
 	issuer   string
-	subject  string
+	username string
 	keystore *oidc.Keystore
 	logger   zerolog.Logger
 }
 
 // NewJWTAuthenticator create new JWT authenticator
-func NewJWTAuthenticator(issuer, subject string) (*JWTAuthenticator, error) {
+func NewJWTAuthenticator(issuer, username string) (*JWTAuthenticator, error) {
 	cfg, err := oidc.GetOIDCConfiguration(issuer)
 	if err != nil {
 		return nil, err
 	}
 	return &JWTAuthenticator{
 		issuer:   issuer,
-		subject:  subject,
+		username: username,
 		keystore: oidc.NewOIDCKeystore(cfg),
 		logger:   log.With().Str("component", "jwt-autenticator").Logger(),
 	}, nil
@@ -49,8 +49,7 @@ func (j *JWTAuthenticator) Validate(req *http.Request, res http.ResponseWriter) 
 		return false
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		sub, ok := claims["sub"]
-		return ok && (j.subject == "*" || sub == j.subject)
+		return j.username == "*" || j.username == getFirstClaimValueFor(claims, "preferred_username", "sub")
 	}
 	return false
 }
@@ -58,4 +57,13 @@ func (j *JWTAuthenticator) Validate(req *http.Request, res http.ResponseWriter) 
 // Issuer of the authenticator
 func (j *JWTAuthenticator) Issuer() string {
 	return j.issuer
+}
+
+func getFirstClaimValueFor(claims jwt.MapClaims, names ...string) string {
+	for _, name := range names {
+		if value, found := claims[name]; found {
+			return value.(string)
+		}
+	}
+	return ""
 }
