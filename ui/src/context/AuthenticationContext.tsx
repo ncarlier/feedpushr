@@ -24,6 +24,7 @@ const AuthNProvider = ({ children }: Props) => {
       const { issuer } = _links
       if (!issuer) {
         // no delegated authentication
+        setLoading(false)
         return
       }
       const client = new OIDCClient({

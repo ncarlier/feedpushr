@@ -1,4 +1,4 @@
-import MaterialTable, { MTableToolbar, Query, QueryResult } from 'material-table'
+import MaterialTable, { MTableToolbar, Query, QueryResult } from '@material-table/core'
 import React, { useContext, useState } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 
