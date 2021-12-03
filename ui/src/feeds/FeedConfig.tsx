@@ -62,7 +62,7 @@ export default ({ onSave, onCancel, feed }: Props) => {
             id="xmlurl"
             label="URL"
             type="url"
-            helperText="ex: http://rss.cnn.com/rss/edition.rss"
+            helperText="ex: http://rss.cnn.com/rss/edition"
             value={values.xmlUrl}
             onChange={handleChange('xmlUrl')}
             fullWidth
