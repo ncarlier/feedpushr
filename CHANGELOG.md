@@ -1,4 +1,8 @@
-# [](https://github.com/ncarlier/feedpushr/compare/v3.1.0...v) (2021-12-03)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.1.1...v) (2021-12-03)
+
+
+
+## [3.1.1](https://github.com/ncarlier/feedpushr/compare/v3.1.0...v3.1.1) (2021-12-03)
 
 
 ### Bug Fixes
