@@ -1,3 +1,4 @@
+//go:build amd64
 // +build amd64
 
 package main
@@ -24,11 +25,11 @@ type Agent struct {
 
 // NewAgent creates a new service agent
 func NewAgent(onStart, onStop fn, url string) (*Agent, error) {
-	iconPath := "/ui/logo.png"
+	iconPath := "content/ui/logo.png"
 	if runtime.GOOS == "windows" {
-		iconPath = "/ui/favicon.ico"
+		iconPath = "content/ui/favicon.ico"
 	}
-	file, err := assets.GetFS().Open(iconPath)
+	file, err := assets.Content.Open(iconPath)
 	if err != nil {
 		return nil, fmt.Errorf("unable to load agent icon: %v", err)
 	}
