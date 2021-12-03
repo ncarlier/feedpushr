@@ -23,7 +23,7 @@ var testCases = []struct {
 	tag string
 }{
 	{"http://www.nofrag.com/nofrag.rss", "games"},
-	{"http://www.howtoforge.com/feed.rss", "computer_science"},
+	{"https://www.hashicorp.com/blog/feed.xml", "computer_science"},
 }
 
 func setupTestCase(t *testing.T) func(t *testing.T) {

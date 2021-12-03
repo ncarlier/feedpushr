@@ -7,7 +7,7 @@
     <body>
         <outline text="Computer Science" title="Computer Science">
             <outline text="" type="rss" xmlUrl="http://martinfowler.com/feed.atom" title="Martin Fowler"></outline>
-            <outline text="" type="rss" xmlUrl="http://www.howtoforge.com/feed.rss" title="Howtoforge Linux Howtos und Tutorials"></outline>
+            <outline text="" type="rss" xmlUrl="https://www.hashicorp.com/blog/feed.xml" title="Hashicorp Blog"></outline>
         </outline>
         <outline text="games" title="Games">
             <outline type="rss" text="NoFrag" title="NoFrag" xmlUrl="http://www.nofrag.com/nofrag.rss" htmlUrl="https://nofrag.com"/>

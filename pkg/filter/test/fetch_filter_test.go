@@ -18,7 +18,7 @@ func TestFetchFilter(t *testing.T) {
 	}
 	err := chain.Apply(article)
 	assert.Nil(t, err)
-	assert.Equal(t, "ncarlier/feedpushr", article.Title)
+	assert.Equal(t, "GitHub - ncarlier/feedpushr: A simple feed aggregator daemon with sugar on top.", article.Title)
 	assert.Equal(t, link, article.Link)
-	assert.Equal(t, "A simple feed aggregator daemon with sugar on top. - ncarlier/feedpushr", article.Text)
+	assert.Equal(t, "A simple feed aggregator daemon with sugar on top. - GitHub - ncarlier/feedpushr: A simple feed aggregator daemon with sugar on top.", article.Text)
 }
