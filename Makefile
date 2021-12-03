@@ -56,7 +56,7 @@ include $(makefiles)/help.Makefile
 ## Clean built files
 clean:
 	echo ">>> Removing generated files ..."
-	-rm -rf release autogen var/assets/ui pkg/assets/statik.go
+	-rm -rf release autogen pkg/assets/content/*
 .PHONY: clean
 
 ## Run code generation
@@ -64,12 +64,12 @@ autogen:
 	echo ">>> Generating code ..."
 	goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/v3/design
 	echo ">>> Moving Swagger files to assets ..."
-	cp -f $(root_dir)/autogen/swagger/** $(root_dir)/var/assets/
+	cp -f $(root_dir)/autogen/swagger/** $(root_dir)/pkg/assets/content
 
 ## Build web UI
 ui:
-	-rm -rf pkg/assets/statik.go var/assets/ui
-	make pkg/assets/statik.go
+	-rm -rf pkg/assets/content/ui
+	make pkg/assets/content/ui
 .PHONY: ui
 
 ## Start web UI dev server
@@ -78,25 +78,18 @@ ui-dev-server:
 .PHONY: ui-dev-server
 
 # Build web UI
-var/assets/ui:
+pkg/assets/content/ui:
 	echo ">>> Building web UI ..."
 	cd ui && npm install && npm run-script build
-	mv ui/build var/assets/ui
-
-# Build assets as Go file
-pkg/assets/statik.go:
-	make var/assets/ui
-	echo ">>> Generating \"pkg/assets/statik.go\" ..."
-	go get -u github.com/rakyll/statik
-	statik -p assets -src var/assets -dest pkg -f
+	mv ui/build pkg/assets/content/ui
 
 # Build SYSO Windows file
 contrib/launcher/main.syso:
 	# go get github.com/akavel/rsrc
-	rsrc -arch="amd64" -ico var/assets/ui/favicon.ico -o contrib/launcher/main.syso
+	rsrc -arch="amd64" -ico ui/public/favicon.ico -o contrib/launcher/main.syso
 
 ## Build executable
-build: autogen pkg/assets/statik.go
+build: autogen pkg/assets/content/ui
 	-mkdir -p release
 	echo ">>> Building: $(MAIN_EXE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -o release/$(MAIN_EXE)

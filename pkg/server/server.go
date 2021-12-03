@@ -10,7 +10,6 @@ import (
 	consul "github.com/hashicorp/consul/api"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/v3/pkg/assets"
 	"github.com/ncarlier/feedpushr/v3/pkg/auth"
 	"github.com/ncarlier/feedpushr/v3/pkg/cache"
 	"github.com/ncarlier/feedpushr/v3/pkg/config"
@@ -165,8 +164,8 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 		app.MountPshbController(srv, controller.NewPshbController(srv, db, am, om))
 	}
 	// Mount custom handlers (aka: not generated)...
-	srv.Mux.Handle("GET", "/ui/*asset", assets.Handler())
-	srv.Mux.Handle("GET", "/ui/", assets.Handler())
+	srv.Mux.Handle("GET", "/ui/*", controller.UIHandler())
+	srv.Mux.Handle("GET", "/ui/", controller.UIHandler())
 	srv.Mux.Handle("GET", "/", controller.Redirect(conf.PublicURL+"/ui/"))
 
 	return &Server{

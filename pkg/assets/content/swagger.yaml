@@ -1,0 +1,1578 @@
+basePath: /v2
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  CreateFilterOutputPayload:
+    example:
+      alias: foo
+      condition: '"foo" in Tags'
+      name: fetch
+      props: '-'
+    properties:
+      alias:
+        description: Alias of the filter
+        example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
+        type: string
+      name:
+        description: Name of the filter
+        example: fetch
+        type: string
+      props:
+        additionalProperties: true
+        description: Filter properties
+        example: '-'
+        type: object
+    required:
+    - alias
+    - name
+    - condition
+    title: CreateFilterOutputPayload
+    type: object
+  CreateOutputPayload:
+    example:
+      alias: foo
+      condition: '"foo" in Tags'
+      name: http
+      props: '-'
+    properties:
+      alias:
+        description: Alias of the output
+        example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
+        type: string
+      name:
+        description: Name of the output
+        example: http
+        type: string
+      props:
+        additionalProperties: true
+        description: Output properties
+        example: '-'
+        type: object
+    required:
+    - alias
+    - name
+    - condition
+    title: CreateOutputPayload
+    type: object
+  ExploreResponse:
+    description: The search result (default view)
+    example:
+      desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    properties:
+      desc:
+        description: Feed description
+        example: A short description...
+        type: string
+      htmlUrl:
+        description: URL of the feed website
+        example: http://www.hashicorp.com/blog
+        type: string
+      title:
+        description: Feed title
+        example: Blog news...
+        type: string
+      xmlUrl:
+        description: URL of the XML feed
+        example: http://www.hashicorp.com/feed.xml
+        type: string
+    required:
+    - title
+    - desc
+    - xmlUrl
+    - htmlUrl
+    title: 'Mediatype identifier: application/vnd.feedpushr.explore.v2+json; view=default'
+    type: object
+  ExploreResponseCollection:
+    description: ExploreResponseCollection is the media type for an array of ExploreResponse
+      (default view)
+    example:
+    - desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - desc: A short description...
+      htmlUrl: http://www.hashicorp.com/blog
+      title: Blog news...
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    items:
+      $ref: '#/definitions/ExploreResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.explore.v2+json; type=collection;
+      view=default'
+    type: array
+  FeedResponse:
+    description: A RSS feed (default view)
+    example:
+      cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
+      tags:
+      - foo
+      - bar
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    properties:
+      cdate:
+        description: Date of creation
+        example: "2001-04-14T11:31:36Z"
+        format: date-time
+        type: string
+      errorCount:
+        description: Number of consecutive aggregation errors
+        example: 3744847684773844858
+        format: int64
+        type: integer
+      errorMsg:
+        description: Last aggregation error
+        example: Suscipit voluptas.
+        type: string
+      htmlUrl:
+        description: URL of the feed website
+        example: http://www.hashicorp.com/blog
+        type: string
+      hubUrl:
+        description: URL of the PubSubHubbud hub
+        example: http://pubsubhubbub.appspot.com
+        type: string
+      id:
+        description: ID of feed (MD5 of the xmlUrl)
+        example: 5bfb841c028281c0051828c115fd1f50
+        type: string
+      lastCheck:
+        description: Last aggregation pass
+        example: "1981-09-22T23:39:59Z"
+        format: date-time
+        type: string
+      mdate:
+        description: Date of modification
+        example: "1975-05-22T16:26:55Z"
+        format: date-time
+        type: string
+      nbProcessedItems:
+        description: Total number of processed items
+        example: 2455384998049050733
+        format: int64
+        type: integer
+      nextCheck:
+        description: Next aggregation pass
+        example: "1982-07-23T05:02:45Z"
+        format: date-time
+        type: string
+      status:
+        description: Aggregation status
+        enum:
+        - running
+        - stopped
+        example: running
+        type: string
+      tags:
+        description: List of tags
+        example:
+        - foo
+        - bar
+        items:
+          example: Et reiciendis sed vero.
+          type: string
+        type: array
+      title:
+        description: Title of the Feed
+        example: Hashicorp Blog
+        type: string
+      xmlUrl:
+        description: URL of the XML feed
+        example: http://www.hashicorp.com/feed.xml
+        type: string
+    required:
+    - id
+    - xmlUrl
+    - title
+    - cdate
+    - mdate
+    title: 'Mediatype identifier: application/vnd.feedpushr.feed.v2+json; view=default'
+    type: object
+  FeedResponseCollection:
+    description: FeedResponseCollection is the media type for an array of FeedResponse
+      (default view)
+    example:
+    - cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
+      tags:
+      - foo
+      - bar
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
+      tags:
+      - foo
+      - bar
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    - cdate: "2001-04-14T11:31:36Z"
+      errorCount: 3744847684773844858
+      errorMsg: Suscipit voluptas.
+      htmlUrl: http://www.hashicorp.com/blog
+      hubUrl: http://pubsubhubbub.appspot.com
+      id: 5bfb841c028281c0051828c115fd1f50
+      lastCheck: "1981-09-22T23:39:59Z"
+      mdate: "1975-05-22T16:26:55Z"
+      nbProcessedItems: 2455384998049050733
+      nextCheck: "1982-07-23T05:02:45Z"
+      status: running
+      tags:
+      - foo
+      - bar
+      title: Hashicorp Blog
+      xmlUrl: http://www.hashicorp.com/feed.xml
+    items:
+      $ref: '#/definitions/FeedResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.feed.v2+json; type=collection;
+      view=default'
+    type: array
+  FeedsPageResponse:
+    description: A pagignated list of feeds (default view)
+    example:
+      current: 1
+      data:
+      - cdate: "2001-04-14T11:31:36Z"
+        errorCount: 3744847684773844858
+        errorMsg: Suscipit voluptas.
+        htmlUrl: http://www.hashicorp.com/blog
+        hubUrl: http://pubsubhubbub.appspot.com
+        id: 5bfb841c028281c0051828c115fd1f50
+        lastCheck: "1981-09-22T23:39:59Z"
+        mdate: "1975-05-22T16:26:55Z"
+        nbProcessedItems: 2455384998049050733
+        nextCheck: "1982-07-23T05:02:45Z"
+        status: running
+        tags:
+        - foo
+        - bar
+        title: Hashicorp Blog
+        xmlUrl: http://www.hashicorp.com/feed.xml
+      size: 100
+      total: 99
+    properties:
+      current:
+        description: Current page number
+        example: 1
+        format: int64
+        type: integer
+      data:
+        $ref: '#/definitions/FeedResponseCollection'
+      size:
+        description: Max number of feeds by page
+        example: 100
+        format: int64
+        type: integer
+      total:
+        description: Total number of feeds
+        example: 99
+        format: int64
+        type: integer
+    required:
+    - total
+    - current
+    - size
+    - data
+    title: 'Mediatype identifier: application/vnd.feedpushr.feeds-page.v2+json; view=default'
+    type: object
+  FilterResponse:
+    description: A filter (default view)
+    example:
+      alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: Ut pariatur qui voluptatibus.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    properties:
+      alias:
+        description: Alias of the filter
+        example: foo
+        type: string
+      condition:
+        description: Conditional expression of the filter
+        example: '"foo" in Tags'
+        type: string
+      desc:
+        description: Description of the filter
+        example: This filter will...
+        type: string
+      enabled:
+        default: false
+        description: Status
+        example: true
+        type: boolean
+      id:
+        description: ID of the filter
+        example: Ut pariatur qui voluptatibus.
+        type: string
+      name:
+        description: Name of the filter
+        example: fetch
+        type: string
+      nbError:
+        default: 0
+        description: Number of error
+        example: 10
+        format: int64
+        type: integer
+      nbSuccess:
+        default: 0
+        description: Number of success
+        example: 10
+        format: int64
+        type: integer
+      props:
+        additionalProperties: true
+        description: Filter properties
+        example: '-'
+        type: object
+    required:
+    - id
+    - alias
+    - name
+    - desc
+    - condition
+    - props
+    title: 'Mediatype identifier: application/vnd.feedpushr.filter.v2+json; view=default'
+    type: object
+  FilterResponseCollection:
+    description: FilterResponseCollection is the media type for an array of FilterResponse
+      (default view)
+    example:
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: Ut pariatur qui voluptatibus.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: Ut pariatur qui voluptatibus.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: This filter will...
+      enabled: true
+      id: Ut pariatur qui voluptatibus.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    items:
+      $ref: '#/definitions/FilterResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.filter.v2+json; type=collection;
+      view=default'
+    type: array
+  FilterSpecResponse:
+    description: The filter specification (default view)
+    example:
+      desc: Add a prefix to the tittle...
+      name: title
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+    properties:
+      desc:
+        description: Description of the filter
+        example: Add a prefix to the tittle...
+        type: string
+      name:
+        description: Name of the filter
+        example: title
+        type: string
+      props:
+        $ref: '#/definitions/PropSpecCollection'
+    required:
+    - name
+    - desc
+    - props
+    title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v2+json; view=default'
+    type: object
+  FilterSpecResponseCollection:
+    description: FilterSpecResponseCollection is the media type for an array of FilterSpecResponse
+      (default view)
+    example:
+    - desc: Add a prefix to the tittle...
+      name: title
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+    items:
+      $ref: '#/definitions/FilterSpecResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.filter-spec.v2+json; type=collection;
+      view=default'
+    type: array
+  Info:
+    description: API info (default view)
+    example:
+      _links:
+        Culpa mollitia modi consequatur maxime occaecati necessitatibus.:
+          href: url
+      desc: Feed aggregator daemon with sugar on top
+      name: feedpushr
+      version: v3.0.0
+    properties:
+      _links:
+        additionalProperties: true
+        description: HAL links
+        example:
+          Culpa mollitia modi consequatur maxime occaecati necessitatibus.:
+            href: url
+        type: object
+      desc:
+        description: Service description
+        example: Feed aggregator daemon with sugar on top
+        type: string
+      name:
+        description: Service name
+        example: feedpushr
+        type: string
+      version:
+        description: Service version
+        example: v3.0.0
+        type: string
+    required:
+    - name
+    - desc
+    - version
+    - _links
+    title: 'Mediatype identifier: application/vnd.feedpushr.info.v2+json; view=default'
+    type: object
+  OPMLImportJobResponse:
+    description: OPMLImportJobResponse media type (default view)
+    example:
+      id: Eligendi illum.
+    properties:
+      id:
+        description: ID of the import job
+        example: Eligendi illum.
+        type: string
+    required:
+    - id
+    title: 'Mediatype identifier: application/vnd.feedpushr.ompl-import-job.v2+json;
+      view=default'
+    type: object
+  OutputResponse:
+    description: The output channel (default view)
+    example:
+      alias: foo
+      condition: '"foo" in Tags'
+      desc: New articles are sent as JSON document to...
+      enabled: true
+      filters:
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Ut pariatur qui voluptatibus.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Ut pariatur qui voluptatibus.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      id: Sint tenetur commodi soluta similique.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    properties:
+      alias:
+        description: Alias of the output channel
+        example: foo
+        type: string
+      condition:
+        description: Conditional expression of the filter
+        example: '"foo" in Tags'
+        type: string
+      desc:
+        description: Description of the output channel
+        example: New articles are sent as JSON document to...
+        type: string
+      enabled:
+        default: false
+        description: Status
+        example: true
+        type: boolean
+      filters:
+        $ref: '#/definitions/FilterResponseCollection'
+      id:
+        description: ID of the output
+        example: Sint tenetur commodi soluta similique.
+        type: string
+      name:
+        description: Name of the output channel
+        example: fetch
+        type: string
+      nbError:
+        default: 0
+        description: Number of error
+        example: 10
+        format: int64
+        type: integer
+      nbSuccess:
+        default: 0
+        description: Number of success
+        example: 10
+        format: int64
+        type: integer
+      props:
+        additionalProperties: true
+        description: Output channel properties
+        example: '-'
+        type: object
+    required:
+    - id
+    - alias
+    - name
+    - desc
+    - condition
+    - props
+    title: 'Mediatype identifier: application/vnd.feedpushr.output.v2+json; view=default'
+    type: object
+  OutputResponseCollection:
+    description: OutputResponseCollection is the media type for an array of OutputResponse
+      (default view)
+    example:
+    - alias: foo
+      condition: '"foo" in Tags'
+      desc: New articles are sent as JSON document to...
+      enabled: true
+      filters:
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Ut pariatur qui voluptatibus.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      - alias: foo
+        condition: '"foo" in Tags'
+        desc: This filter will...
+        enabled: true
+        id: Ut pariatur qui voluptatibus.
+        name: fetch
+        nbError: 10
+        nbSuccess: 10
+        props: '-'
+      id: Sint tenetur commodi soluta similique.
+      name: fetch
+      nbError: 10
+      nbSuccess: 10
+      props: '-'
+    items:
+      $ref: '#/definitions/OutputResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.output.v2+json; type=collection;
+      view=default'
+    type: array
+  OutputSpecResponse:
+    description: The output channel specification (default view)
+    example:
+      desc: New articles are sent as JSON document to...
+      name: fetch
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+    properties:
+      desc:
+        description: Description of the output channel
+        example: New articles are sent as JSON document to...
+        type: string
+      name:
+        description: Name of the output channel
+        example: fetch
+        type: string
+      props:
+        $ref: '#/definitions/PropSpecCollection'
+    required:
+    - name
+    - desc
+    - props
+    title: 'Mediatype identifier: application/vnd.feedpushr.output-spec.v2+json; view=default'
+    type: object
+  OutputSpecResponseCollection:
+    description: OutputSpecResponseCollection is the media type for an array of OutputSpecResponse
+      (default view)
+    example:
+    - desc: New articles are sent as JSON document to...
+      name: fetch
+      props:
+      - desc: New articles are sent as JSON document to...
+        name: url
+        options:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: text
+    items:
+      $ref: '#/definitions/OutputSpecResponse'
+    title: 'Mediatype identifier: application/vnd.feedpushr.output-spec.v2+json; type=collection;
+      view=default'
+    type: array
+  PropSpec:
+    description: The specification of a property (default view)
+    example:
+      desc: New articles are sent as JSON document to...
+      name: url
+      options:
+        Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+          quidem non.
+      type: text
+    properties:
+      desc:
+        description: Description of the output channel
+        example: New articles are sent as JSON document to...
+        type: string
+      name:
+        description: Name of the property
+        example: url
+        type: string
+      options:
+        additionalProperties: true
+        description: Property options
+        example:
+          Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+            quidem non.
+        type: object
+      type:
+        description: Property type ('text', 'url', ...)
+        example: text
+        type: string
+    required:
+    - name
+    - desc
+    - type
+    title: 'Mediatype identifier: application/vnd.feedpushr.prop-spec.v2+json; view=default'
+    type: object
+  PropSpecCollection:
+    description: PropSpecCollection is the media type for an array of PropSpec (default
+      view)
+    example:
+    - desc: New articles are sent as JSON document to...
+      name: url
+      options:
+        Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+          quidem non.
+      type: text
+    - desc: New articles are sent as JSON document to...
+      name: url
+      options:
+        Veritatis laudantium autem deserunt saepe.: Consequuntur id earum accusantium
+          quidem non.
+      type: text
+    items:
+      $ref: '#/definitions/PropSpec'
+    title: 'Mediatype identifier: application/vnd.feedpushr.prop-spec.v2+json; type=collection;
+      view=default'
+    type: array
+  UpdateFilterOutputPayload:
+    example:
+      alias: foo
+      condition: '"foo" in Tags'
+      enabled: '-'
+      props: '-'
+    properties:
+      alias:
+        description: Alias of the filter
+        example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
+        type: string
+      enabled:
+        default: false
+        description: Filter status
+        example: '-'
+        type: boolean
+      props:
+        additionalProperties: true
+        description: Filter properties
+        example: '-'
+        type: object
+    title: UpdateFilterOutputPayload
+    type: object
+  UpdateOutputPayload:
+    example:
+      alias: foo
+      condition: '"foo" in Tags'
+      enabled: '-'
+      props: '-'
+    properties:
+      alias:
+        description: Alias of the output
+        example: foo
+        type: string
+      condition:
+        description: Conditional expression of the output
+        example: '"foo" in Tags'
+        type: string
+      enabled:
+        default: false
+        description: Output status
+        example: '-'
+        type: boolean
+      props:
+        additionalProperties: true
+        description: Output properties
+        example: '-'
+        type: object
+    title: UpdateOutputPayload
+    type: object
+  error:
+    description: Error response media type (default view)
+    example:
+      code: invalid_value
+      detail: Value of ID must be an integer
+      id: 3F1FKVRR
+      meta:
+        timestamp: 1458609066
+      status: "400"
+    properties:
+      code:
+        description: an application-specific error code, expressed as a string value.
+        example: invalid_value
+        type: string
+      detail:
+        description: a human-readable explanation specific to this occurrence of the
+          problem.
+        example: Value of ID must be an integer
+        type: string
+      id:
+        description: a unique identifier for this particular occurrence of the problem.
+        example: 3F1FKVRR
+        type: string
+      meta:
+        additionalProperties: true
+        description: a meta object containing non-standard meta-information about
+          the error.
+        example:
+          timestamp: 1458609066
+        type: object
+      status:
+        description: the HTTP status code applicable to this problem, expressed as
+          a string value.
+        example: "400"
+        type: string
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+externalDocs:
+  description: feedpushr guide
+  url: https://github.com/ncarlier/feedpusher/README.md
+host: localhost:8080
+info:
+  contact:
+    name: Nicolas Carlier
+    url: https://github.com/ncarlier
+  description: A simple feed aggregator daemon with sugar on top.
+  license:
+    name: MIT
+    url: https://github.com/ncarlier/feedpushr/blob/master/LICENSE
+  title: The feedpushr API
+  version: ""
+paths:
+  /:
+    get:
+      description: Get basic API information.
+      operationId: index#get
+      produces:
+      - application/vnd.feedpushr.info.v2+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Info'
+      schemes:
+      - http
+      summary: get index
+      tags:
+      - index
+  /explore:
+    get:
+      description: Search RSS feed using external search engine
+      operationId: explore#get
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: false
+        type: string
+      produces:
+      - application/vnd.feedpushr.explore.v2+json; type=collection
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ExploreResponseCollection'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: get explore
+      tags:
+      - explore
+  /feeds:
+    get:
+      description: Retrieve all feeds
+      operationId: feed#list
+      parameters:
+      - default: 1
+        description: Page to fetch
+        in: query
+        minimum: 1
+        name: page
+        required: false
+        type: integer
+      - description: Search query
+        in: query
+        name: q
+        required: false
+        type: string
+      - default: 10
+        description: Page size
+        in: query
+        minimum: 1
+        name: size
+        required: false
+        type: integer
+      produces:
+      - application/vnd.feedpushr.feeds-page.v2+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FeedsPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: list feed
+      tags:
+      - feed
+    post:
+      description: Create a new feed
+      operationId: feed#create
+      parameters:
+      - description: Feed activation status
+        in: query
+        name: enable
+        required: false
+        type: boolean
+      - description: Comma separated list of tags
+        in: query
+        name: tags
+        required: false
+        type: string
+      - description: Feed title (will overide official feed title)
+        in: query
+        name: title
+        required: false
+        type: string
+      - description: Feed URL
+        format: uri
+        in: query
+        name: url
+        required: true
+        type: string
+      produces:
+      - application/vnd.feedpushr.feed.v2+json
+      - application/vnd.goa.error
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/FeedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: create feed
+      tags:
+      - feed
+  /feeds/{id}:
+    delete:
+      description: Delete a feed
+      operationId: feed#delete
+      parameters:
+      - description: Feed ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: delete feed
+      tags:
+      - feed
+    get:
+      description: Retrieve feed with given ID
+      operationId: feed#get
+      parameters:
+      - description: Feed ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.feedpushr.feed.v2+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FeedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: get feed
+      tags:
+      - feed
+    put:
+      description: Update a feed
+      operationId: feed#update
+      parameters:
+      - description: Feed ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Comma separated list of tags
+        in: query
+        name: tags
+        required: false
+        type: string
+      - description: Feed title
+        in: query
+        name: title
+        required: false
+        type: string
+      produces:
+      - application/vnd.feedpushr.feed.v2+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FeedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: update feed
+      tags:
+      - feed
+  /feeds/{id}/start:
+    post:
+      description: Start feed aggregation
+      operationId: feed#start
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: start feed
+      tags:
+      - feed
+  /feeds/{id}/stop:
+    post:
+      description: Stop feed aggregation
+      operationId: feed#stop
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: stop feed
+      tags:
+      - feed
+  /filters/_specs:
+    get:
+      description: Retrieve all filter types available
+      operationId: filter#specs
+      produces:
+      - application/vnd.feedpushr.filter-spec.v2+json; type=collection
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FilterSpecResponseCollection'
+      schemes:
+      - http
+      summary: specs filter
+      tags:
+      - filter
+  /healthz:
+    get:
+      description: Perform health check.
+      operationId: health#get
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+      schemes:
+      - http
+      summary: get health
+      tags:
+      - health
+  /opml:
+    get:
+      description: Get all feeds as an OPML format
+      operationId: opml#get
+      produces:
+      - application/vnd.goa.error
+      - application/xml
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: get opml
+      tags:
+      - opml
+    post:
+      description: Upload an OPML file to create feeds
+      operationId: opml#upload
+      produces:
+      - application/vnd.feedpushr.ompl-import-job.v2+json
+      - application/vnd.goa.error
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/OPMLImportJobResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: upload opml
+      tags:
+      - opml
+  /opml/status/{id}:
+    get:
+      description: Get OPML import status
+      operationId: opml#status
+      parameters:
+      - description: Import job ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/vnd.goa.error
+      - text/event-stream
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: status opml
+      tags:
+      - opml
+  /outputs:
+    get:
+      description: Retrieve all outputs definitions
+      operationId: output#list
+      produces:
+      - application/vnd.feedpushr.output.v2+json; type=collection
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OutputResponseCollection'
+      schemes:
+      - http
+      summary: list output
+      tags:
+      - output
+    post:
+      description: Create a new output
+      operationId: output#create
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/CreateOutputPayload'
+      produces:
+      - application/vnd.feedpushr.output.v2+json
+      - application/vnd.goa.error
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/OutputResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: create output
+      tags:
+      - output
+  /outputs/_specs:
+    get:
+      description: Retrieve all output types available
+      operationId: output#specs
+      produces:
+      - application/vnd.feedpushr.output-spec.v2+json; type=collection
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OutputSpecResponseCollection'
+      schemes:
+      - http
+      summary: specs output
+      tags:
+      - output
+  /outputs/{id}:
+    delete:
+      description: Delete an output
+      operationId: output#delete
+      parameters:
+      - description: Output ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: delete output
+      tags:
+      - output
+    get:
+      description: Retrieve output with given ID
+      operationId: output#get
+      parameters:
+      - description: Output ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/vnd.feedpushr.output.v2+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OutputResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: get output
+      tags:
+      - output
+    put:
+      description: Update an output
+      operationId: output#update
+      parameters:
+      - description: Output ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateOutputPayload'
+      produces:
+      - application/vnd.feedpushr.output.v2+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OutputResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: update output
+      tags:
+      - output
+  /outputs/{id}/filters:
+    post:
+      description: Create a new filter
+      operationId: output#createFilter
+      parameters:
+      - description: Output ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/CreateFilterOutputPayload'
+      produces:
+      - application/vnd.feedpushr.filter.v2+json
+      - application/vnd.goa.error
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/FilterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: createFilter output
+      tags:
+      - output
+  /outputs/{id}/filters/{idFilter}:
+    delete:
+      description: Delete a filter
+      operationId: output#deleteFilter
+      parameters:
+      - description: Filter ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Filter ID
+        in: path
+        name: idFilter
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: deleteFilter output
+      tags:
+      - output
+    put:
+      description: Update a filter
+      operationId: output#updateFilter
+      parameters:
+      - description: Output ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Filter ID
+        in: path
+        name: idFilter
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateFilterOutputPayload'
+      produces:
+      - application/vnd.feedpushr.filter.v2+json
+      - application/vnd.goa.error
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FilterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: updateFilter output
+      tags:
+      - output
+  /pshb:
+    get:
+      description: Callback to validate the (un)subscription to the topic of a Hub
+      operationId: pshb#sub
+      parameters:
+      - description: A hub-generated random string
+        in: query
+        name: hub.challenge
+        required: true
+        type: string
+      - description: The hub-determined number of seconds that the subscription will
+          stay active before expiring
+        in: query
+        name: hub.lease_seconds
+        required: false
+        type: integer
+      - description: The literal string "subscribe" or "unsubscribe"
+        enum:
+        - subscribe
+        - unsubscribe
+        in: query
+        name: hub.mode
+        required: true
+        type: string
+      - description: The topic URL given in the corresponding subscription request
+        format: uri
+        in: query
+        name: hub.topic
+        required: true
+        type: string
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: sub pshb
+      tags:
+      - pshb
+    post:
+      description: Publication endpoint for PSHB hubs
+      operationId: pshb#pub
+      produces:
+      - application/vnd.goa.error
+      - text/plain
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: pub pshb
+      tags:
+      - pshb
+  /swagger.json:
+    get:
+      description: Get OpenAPI specifications
+      operationId: swagger#get
+      responses:
+        "200":
+          description: OK
+      schemes:
+      - http
+      summary: get swagger
+      tags:
+      - swagger
+  /vars:
+    get:
+      description: Get all internals exp vars
+      operationId: vars#get
+      responses:
+        "200":
+          description: OK
+      schemes:
+      - http
+      summary: get vars
+      tags:
+      - vars
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  Accepted:
+    description: Accepted
+  NoContent:
+    description: No Content
+  NotFound:
+    description: Not Found
+  OK:
+    description: OK
+schemes:
+- http
+swagger: "2.0"

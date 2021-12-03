@@ -20,7 +20,7 @@ func NewSwaggerController(service *goa.Service) *SwaggerController {
 
 // Get runs the get action.
 func (c *SwaggerController) Get(ctx *app.GetSwaggerContext) error {
-	file, err := assets.GetFS().Open("/swagger.json")
+	file, err := assets.Content.Open("content/swagger.json")
 	if err != nil {
 		return goa.ErrInternal(err)
 	}
