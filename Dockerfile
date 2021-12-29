@@ -21,7 +21,7 @@ RUN make build plugins
 #########################################
 # Distribution stage
 #########################################
-FROM gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/base-debian11
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier

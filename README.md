@@ -17,7 +17,7 @@ A simple feed aggregator service with sugar on top.
 - Aggressive and tunable aggregation process.
 - Manage feed aggregation individually.
 - Apply modifications on articles with a pluggable filter system.
-- Push new articles to a pluggable output system (STDOUT, HTTP, Twitter ...).
+- Push new articles to a pluggable output system (STDOUT, HTTP, EMAIL, [readflow][readflow], Twitter ...).
 - Customize the pipeline thanks to a powerful expression language.
 - Support of [WebSub][websub] the open, simple, web-scale and
   decentralized pubsub protocol.
@@ -80,6 +80,7 @@ Currently, there are some built-in output providers:
 |----------|----------|-------------|
 | `stdout` | `format` | New articles are sent to the standard output of the process. This can be useful if you want to pipe the command to another shell command. *ex: Store the output into a file. Forward the stream via `Netcat`. Use an ETL tool such as [Logstash][logstash], etc.* |
 | `http` | `url`<br>`contentType`<br>`format` | New articles are sent to an HTTP endpoint (POST). |
+| `email` | `host`<br>`username`<br>`password`<br>`format`<br>... | New articles are sent by email to a SMTP host. |
 | `readflow` | `url` (default: [official API][readflow-api] <br>`apiKey` | New articles are sent to [readflow][readflow] instance. |
 
 Outputs can be extended using [plugins](#plugins).
