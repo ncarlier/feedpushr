@@ -14,7 +14,7 @@ var stdoutSpec = model.Spec{
 	PropsSpec: []model.PropSpec{
 		{
 			Name: "format",
-			Desc: "Payload format (internal JSON format if not provided)",
+			Desc: "Payload format (internal JSON format by default)",
 			Type: model.Textarea,
 		},
 	},

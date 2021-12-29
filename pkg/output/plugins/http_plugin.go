@@ -16,15 +16,6 @@ var supportedContentTypes = map[string]string{
 	common.ContentTypeText: "Text",
 }
 
-func contains(arr []string, str string) bool {
-	for _, a := range arr {
-		if a == str {
-			return true
-		}
-	}
-	return false
-}
-
 var httpSpec = model.Spec{
 	Name: "http",
 	Desc: "New articles are sent to a HTTP endpoint (POST).\n\nYou can customize the payload using the [template engine](https://github.com/ncarlier/feedpushr#output-format).",
@@ -42,7 +33,7 @@ var httpSpec = model.Spec{
 		},
 		{
 			Name: "format",
-			Desc: "Payload format (internal JSON format if not provided)",
+			Desc: "Payload format (internal JSON format by defaut)",
 			Type: model.Textarea,
 		},
 	},
