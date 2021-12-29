@@ -172,4 +172,5 @@ plugins:
 	GOARCH=amd64 PLUGIN=rdbms make plugin
 	GOARCH=amd64 PLUGIN=rake make plugin
 	GOARCH=amd64 PLUGIN=prose make plugin
+	GOARCH=amd64 PLUGIN=wallabag make plugin
 .PHONY: plugins
