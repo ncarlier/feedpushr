@@ -24,7 +24,7 @@ func NewArticle(feed *model.FeedDef, item *gofeed.Item) *model.Article {
 
 // NewArticles creates a new array of articles from an array of feed item
 func NewArticles(feed *model.FeedDef, items []*gofeed.Item) []*model.Article {
-	result := make([]*model.Article, len(items), len(items))
+	result := make([]*model.Article, len(items))
 	for i := range items {
 		result[i] = NewArticle(feed, items[i])
 	}

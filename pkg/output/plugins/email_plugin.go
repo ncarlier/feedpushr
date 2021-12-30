@@ -190,12 +190,12 @@ func (op *EmailOutputProvider) buildEmailPayload(subject, body string) string {
 func (op *EmailOutputProvider) Send(article *model.Article) (bool, error) {
 	t, err := op.titleFormatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 
@@ -259,7 +259,7 @@ func (op *EmailOutputProvider) Send(article *model.Article) (bool, error) {
 		return false, err
 	}
 
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, nil
 }
 

@@ -53,11 +53,11 @@ type StdOutputProvider struct {
 func (op *StdOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	fmt.Println(b.String())
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, nil
 }
 

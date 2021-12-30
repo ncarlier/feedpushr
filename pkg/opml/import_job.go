@@ -17,7 +17,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var jobID uint64
+var jobID uint32
 
 // ImportJobItemResult is the OPML outline import result
 type ImportJobItemResult struct {
@@ -27,7 +27,7 @@ type ImportJobItemResult struct {
 
 // ImportJob is a job that import OPML
 type ImportJob struct {
-	ID          uint64
+	ID          uint32
 	opml        *OPML
 	outputFile  *os.File
 	wOutputFile *bufio.Writer
@@ -37,7 +37,7 @@ type ImportJob struct {
 }
 
 func newOPMLImportJob(db store.DB, _opml *OPML) (*ImportJob, error) {
-	id := atomic.AddUint64(&jobID, 1)
+	id := atomic.AddUint32(&jobID, 1)
 	outputFilename := path.Join(os.TempDir(), fmt.Sprintf("feedpushr_import_%d_%d.txt", id, time.Now().Unix()))
 	outputFile, err := os.Create(outputFilename)
 	if err != nil {
@@ -50,7 +50,7 @@ func newOPMLImportJob(db store.DB, _opml *OPML) (*ImportJob, error) {
 		outputFile:  outputFile,
 		wOutputFile: bufio.NewWriter(outputFile),
 		db:          db,
-		logger:      log.With().Uint64("import-job", id).Logger(),
+		logger:      log.With().Uint32("import-job", id).Logger(),
 	}, nil
 }
 

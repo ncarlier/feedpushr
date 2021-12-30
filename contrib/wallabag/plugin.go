@@ -139,12 +139,12 @@ func (op *WallabagOutputProvider) Send(article *model.Article) (bool, error) {
 
 	resp, err := client.PostForm(op.baseURL+"/api/entries.json", values)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	defer resp.Body.Close()
 
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, err
 }
 

@@ -49,7 +49,7 @@ func TestImportSimpleOPML(t *testing.T) {
 	assert.True(t, job.ID > 0, "invalid job ID")
 	over := job.Wait(10 * time.Second)
 	assert.True(t, over, "job is not over")
-	output, err := importer.Get(job.ID)
+	output, err := importer.Get(uint(job.ID))
 	assert.Nil(t, err)
 	for line := range output {
 		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
@@ -62,7 +62,7 @@ func testImportOPML(t *testing.T, filename string) {
 	job, err := importer.ImportOPMLFile(filename)
 	assert.Nil(t, err)
 	assert.True(t, job.ID > 0, "invalid job ID")
-	output, err := importer.Get(job.ID)
+	output, err := importer.Get(uint(job.ID))
 	assert.Nil(t, err)
 	for line := range output {
 		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")

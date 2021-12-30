@@ -91,7 +91,7 @@ func (f *RakeFilter) DoFilter(article *model.Article) (bool, error) {
 		plain = article.Text
 	}
 	article.Meta["KeywordScore"] = f.rake.Run(plain)
-	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	atomic.AddUint32(&f.definition.NbSuccess, 1)
 	return true, nil
 }
 

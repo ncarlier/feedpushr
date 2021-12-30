@@ -93,13 +93,13 @@ type HTTPOutputProvider struct {
 func (op *HTTPOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 
 	req, err := http.NewRequest("POST", op.targetURL, b)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	req.Header.Set("User-Agent", common.UserAgent)
@@ -107,15 +107,15 @@ func (op *HTTPOutputProvider) Send(article *model.Article) (bool, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode >= 300 {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, fmt.Errorf("bad status code: %d", resp.StatusCode)
 	}
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, nil
 }
 

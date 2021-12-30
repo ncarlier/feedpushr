@@ -25,7 +25,6 @@ require (
 
 require (
 	github.com/RoaringBitmap/roaring v0.4.23 // indirect
-	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/armon/go-metrics v0.3.10 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect

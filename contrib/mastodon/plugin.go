@@ -106,7 +106,7 @@ type MastodonOutputProvider struct {
 func (op *MastodonOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	toot := Toot{
@@ -115,10 +115,10 @@ func (op *MastodonOutputProvider) Send(article *model.Article) (bool, error) {
 		Visibility: op.visibility,
 	}
 	if err := sendToMastodon(toot, op.targetURL, op.accessToken); err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, nil
 }
 

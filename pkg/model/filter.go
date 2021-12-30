@@ -35,6 +35,6 @@ type FilterDef struct {
 	Condition string      `json:"condition"`
 	Props     FilterProps `json:"props:omitempty"`
 	Enabled   bool        `json:"enabled"`
-	NbSuccess uint64      `json:"nbSuccess"`
-	NbError   uint64      `json:"nbError"`
+	NbSuccess uint32      `json:"nbSuccess"`
+	NbError   uint32      `json:"nbError"`
 }

@@ -38,8 +38,8 @@ type OutputDef struct {
 	Props     OutputProps         `json:"props:omitempty"`
 	Filters   FilterDefCollection `json:"filters"`
 	Enabled   bool                `json:"enabled"`
-	NbSuccess uint64              `json:"nbSuccess"`
-	NbError   uint64              `json:"nbError"`
+	NbSuccess uint32              `json:"nbSuccess"`
+	NbError   uint32              `json:"nbError"`
 }
 
 // Hash computes spec hash

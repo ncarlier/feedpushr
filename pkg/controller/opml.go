@@ -107,7 +107,7 @@ func (c *OpmlController) Status(ctx *app.StatusOpmlContext) error {
 
 	// close := ctx.Request.Context().Done()
 
-	out, err := c.importer.Get(uint64(ctx.ID))
+	out, err := c.importer.Get(uint(ctx.ID))
 	if err != nil {
 		return ctx.NotFound(goa.ErrNotFound(err))
 	}

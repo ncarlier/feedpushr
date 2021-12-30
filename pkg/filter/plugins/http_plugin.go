@@ -78,13 +78,13 @@ type HTTPFilter struct {
 func (f *HTTPFilter) DoFilter(article *model.Article) (bool, error) {
 	b, err := f.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&f.definition.NbError, 1)
+		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, err
 	}
 
 	req, err := http.NewRequest("POST", f.targetURL, b)
 	if err != nil {
-		atomic.AddUint64(&f.definition.NbError, 1)
+		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, err
 	}
 	req.Header.Set("User-Agent", common.UserAgent)
@@ -92,25 +92,25 @@ func (f *HTTPFilter) DoFilter(article *model.Article) (bool, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		atomic.AddUint64(&f.definition.NbError, 1)
+		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode >= 300 {
-		atomic.AddUint64(&f.definition.NbError, 1)
+		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, fmt.Errorf("bad status code: %d", resp.StatusCode)
 	}
 
 	var returnedArticle model.Article
 	if err := json.NewDecoder(resp.Body).Decode(&returnedArticle); err != nil {
-		atomic.AddUint64(&f.definition.NbError, 1)
+		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, fmt.Errorf("invalid JSON payload: %s", err.Error())
 	}
 
 	// Merge article with the response
 	article.Merge(returnedArticle)
 
-	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	atomic.AddUint32(&f.definition.NbSuccess, 1)
 	return true, nil
 }
 

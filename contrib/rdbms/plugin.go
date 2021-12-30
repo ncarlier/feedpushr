@@ -207,7 +207,7 @@ func (op *RDBMSOutputProvider) Send(article *model.Article) (bool, error) {
 		}
 		tt, err := createOrUpdateTag(op.db, &Tag{Name: tag})
 		if err != nil {
-			atomic.AddUint64(&op.definition.NbError, 1)
+			atomic.AddUint32(&op.definition.NbError, 1)
 			return false, err
 		}
 		if tt.Name != "" {
@@ -222,11 +222,11 @@ func (op *RDBMSOutputProvider) Send(article *model.Article) (bool, error) {
 	err := op.db.Create(a).Error
 	// create article
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, err
 }
 

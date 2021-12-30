@@ -107,7 +107,7 @@ type TwitterOutputProvider struct {
 func (op *TwitterOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	tweet := fn.Truncate(270, b.String())
@@ -118,10 +118,10 @@ func (op *TwitterOutputProvider) Send(article *model.Article) (bool, error) {
 		if strings.Contains(err.Error(), "\"code\":187") {
 			return true, nil
 		}
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, nil
 	}
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, err
 }
 

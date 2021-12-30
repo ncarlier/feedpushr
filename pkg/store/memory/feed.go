@@ -62,7 +62,6 @@ func (store *InMemoryStore) ListFeeds(page, size int) (*model.FeedDefPage, error
 			continue
 		case offset >= startOffset+size:
 			// End of the window
-			break
 		default:
 			// Add value to entries
 			offset++

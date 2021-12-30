@@ -57,7 +57,7 @@ func (f *MinifyFilter) DoFilter(article *model.Article) (bool, error) {
 	if article.Content != "" {
 		content, err := f.minifier.String("text/html", article.Content)
 		if err != nil {
-			atomic.AddUint64(&f.definition.NbError, 1)
+			atomic.AddUint32(&f.definition.NbError, 1)
 			return false, err
 		}
 		article.Content = content
@@ -65,13 +65,13 @@ func (f *MinifyFilter) DoFilter(article *model.Article) (bool, error) {
 	if article.Text != "" {
 		desc, err := f.minifier.String("text/html", article.Text)
 		if err != nil {
-			atomic.AddUint64(&f.definition.NbError, 1)
+			atomic.AddUint32(&f.definition.NbError, 1)
 			return false, err
 		}
 		article.Text = desc
 	}
 
-	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	atomic.AddUint32(&f.definition.NbSuccess, 1)
 	return true, nil
 }
 

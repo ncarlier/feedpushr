@@ -27,6 +27,7 @@ func TestTemplateFormater(t *testing.T) {
 		formatter, err := format.NewTemplateFormatter(fmt.Sprintf("test-%d", idx), tc.value)
 		assert.Nil(t, err)
 		buf, err := formatter.Format(art)
+		assert.Nil(t, err)
 		assert.Equal(t, tc.expected, buf.String())
 	}
 }

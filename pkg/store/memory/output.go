@@ -55,7 +55,6 @@ func (store *InMemoryStore) ListOutputs(page, limit int) (*model.OutputDefCollec
 			continue
 		case offset >= startOffset+limit:
 			// End of the window
-			break
 		default:
 			// Add value to entries
 			offset++

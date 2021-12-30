@@ -173,7 +173,7 @@ func (f *ProseFilter) DoFilter(article *model.Article) (bool, error) {
 
 	doc, err := prose.NewDocument(plain)
 	if err != nil {
-		atomic.AddUint64(&f.definition.NbError, 1)
+		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, err
 	}
 
@@ -218,7 +218,7 @@ func (f *ProseFilter) DoFilter(article *model.Article) (bool, error) {
 	}
 
 	article.Meta["Entities"] = strings.Join(entities, sep)
-	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	atomic.AddUint32(&f.definition.NbSuccess, 1)
 	return true, nil
 }
 

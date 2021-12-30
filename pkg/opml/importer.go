@@ -48,7 +48,7 @@ func (importer *Importer) ImportOPML(opml *OPML) (*ImportJob, error) {
 }
 
 // Get import job
-func (importer *Importer) Get(jobID uint64) (chan string, error) {
+func (importer *Importer) Get(jobID uint) (chan string, error) {
 	logPattern := path.Join(os.TempDir(), fmt.Sprintf("feedpushr_import_%d_*.txt", jobID))
 	files, err := filepath.Glob(logPattern)
 	if err != nil {

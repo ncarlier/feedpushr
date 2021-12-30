@@ -88,7 +88,7 @@ type KafkaOutputProvider struct {
 func (op *KafkaOutputProvider) Send(article *model.Article) (bool, error) {
 	b, err := op.formatter.Format(article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
 	err = op.kafkaWriter.WriteMessages(
@@ -98,10 +98,10 @@ func (op *KafkaOutputProvider) Send(article *model.Article) (bool, error) {
 		},
 	)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, nil
 	}
-	atomic.AddUint64(&op.definition.NbSuccess, 1)
+	atomic.AddUint32(&op.definition.NbSuccess, 1)
 	return true, err
 }
 

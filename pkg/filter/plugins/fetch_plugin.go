@@ -98,7 +98,7 @@ type FetchFilter struct {
 func (f *FetchFilter) DoFilter(article *model.Article) (bool, error) {
 	webpage, err := f.scraper.Scrap(context.Background(), article.Link)
 	if err != nil && webpage == nil {
-		atomic.AddUint64(&f.definition.NbError, 1)
+		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, err
 	}
 	article.Title = webpage.Title
@@ -117,7 +117,7 @@ func (f *FetchFilter) DoFilter(article *model.Article) (bool, error) {
 	article.Meta["favicon"] = webpage.Favicon
 	article.Meta["length"] = webpage.Length
 
-	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	atomic.AddUint32(&f.definition.NbSuccess, 1)
 	return true, nil
 }
 

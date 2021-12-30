@@ -58,7 +58,7 @@ type TitleFilter struct {
 // DoFilter applies filter on the article
 func (f *TitleFilter) DoFilter(article *model.Article) (bool, error) {
 	article.Title = f.prefix + " " + article.Title
-	atomic.AddUint64(&f.definition.NbSuccess, 1)
+	atomic.AddUint32(&f.definition.NbSuccess, 1)
 	return true, nil
 }
 

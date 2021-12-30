@@ -27,7 +27,7 @@ type FeedAggregator struct {
 	delay             time.Duration
 	nextCheck         time.Time
 	lastCheck         time.Time
-	nbProcessedItems  uint64
+	nbProcessedItems  uint32
 	callbackURL       string
 }
 
@@ -63,10 +63,10 @@ func (fa *FeedAggregator) running() {
 				fa.log.Debug().Str("status", fa.status.String()).Msg("fetching feed")
 				// Refresh the feed
 				status, items := fa.handler.Refresh()
-				if items != nil && len(items) > 0 {
+				if len(items) > 0 {
 					// Push feed's articles to all outputs
 					fa.outputs.Push(items)
-					atomic.StoreUint64(&fa.nbProcessedItems, uint64(len(items)))
+					atomic.StoreUint32(&fa.nbProcessedItems, uint32(len(items)))
 				}
 				if fa.feed.HubURL != nil && *fa.feed.HubURL != "" && fa.callbackURL != "" {
 					// Send subscription request if the feed is bound to a hub

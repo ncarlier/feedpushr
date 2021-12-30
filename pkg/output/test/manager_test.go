@@ -33,8 +33,8 @@ func TestNewManager(t *testing.T) {
 	// Add output definition to the manager
 	processor, err := manager.AddOutputProcessor(def)
 	assert.Nil(t, err)
-	assert.Equal(t, uint64(0), processor.GetDef().NbSuccess)
-	assert.Equal(t, uint64(0), processor.GetDef().NbError)
+	assert.Equal(t, uint32(0), processor.GetDef().NbSuccess)
+	assert.Equal(t, uint32(0), processor.GetDef().NbError)
 
 	// Send articles to the manager
 	now := time.Now()
@@ -46,6 +46,6 @@ func TestNewManager(t *testing.T) {
 	manager.Push([]*model.Article{article})
 	time.Sleep(100 * time.Millisecond)
 	manager.Shutdown()
-	assert.Equal(t, uint64(1), processor.GetDef().NbSuccess)
-	assert.Equal(t, uint64(0), processor.GetDef().NbError)
+	assert.Equal(t, uint32(1), processor.GetDef().NbSuccess)
+	assert.Equal(t, uint32(0), processor.GetDef().NbError)
 }

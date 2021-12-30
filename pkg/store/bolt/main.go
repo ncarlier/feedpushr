@@ -193,7 +193,6 @@ func (store *BoltStore) allAsRaw(bucket []byte, page, size int) ([][]byte, error
 				continue
 			case offset >= startOffset+size:
 				// End of the window
-				break
 			default:
 				// Add value to entries
 				offset++

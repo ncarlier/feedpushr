@@ -68,10 +68,10 @@ type ReadflowOutputProvider struct {
 func (op *ReadflowOutputProvider) Send(article *model.Article) (bool, error) {
 	nb, err := sendToReadflow(op.targetURL, op.apiKey, article)
 	if err != nil {
-		atomic.AddUint64(&op.definition.NbError, 1)
+		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
-	atomic.AddUint64(&op.definition.NbSuccess, uint64(nb))
+	atomic.AddUint32(&op.definition.NbSuccess, uint32(nb))
 	return true, nil
 }
 
