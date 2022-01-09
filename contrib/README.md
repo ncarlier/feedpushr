@@ -11,6 +11,7 @@ Some plugins and tools for [Feedpushr][feedpushr].
 - [Mastodon](./mastodon/README.md)
 - [Kafka](./kafka/README.md)
 - [RDBMS](./rdbms/README.md)
+- [Wallabag](./wallabag/README.md)
 
 ### Filter
 
