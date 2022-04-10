@@ -8,6 +8,7 @@ import (
 // NewArticle creates a new article from a feed item
 func NewArticle(feed *model.FeedDef, item *gofeed.Item) *model.Article {
 	article := &model.Article{}
+	article.FeedTitle = feed.Title
 	article.Content = item.Content
 	article.Text = item.Description
 	article.GUID = item.GUID

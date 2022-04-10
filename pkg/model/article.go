@@ -10,6 +10,7 @@ import (
 
 // Article model structure.
 type Article struct {
+	FeedTitle       string                 `json:"feedTitle,omitempty"`
 	Title           string                 `json:"title,omitempty"`
 	Text            string                 `json:"text,omitempty"`
 	Content         string                 `json:"content,omitempty"`

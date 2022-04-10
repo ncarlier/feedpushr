@@ -113,6 +113,7 @@ If the format is not specified, the output will be formatted as the following JS
 	"published": "Article publication date (String format)",
 	"publishedParsed": "Article publication date (Date format)",
 	"guid": "Article feed GUID",
+  "feedTitle": "Feed title",
 	"meta": {
 		"key": "Metadata keys and values added by filters"
 	},
