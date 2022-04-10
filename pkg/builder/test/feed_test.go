@@ -8,25 +8,27 @@ import (
 	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 )
 
+const feedTitle = "Le Monde.fr - Actualités et Infos en France et dans le monde"
+
 func TestNewDirectFeed(t *testing.T) {
-	url := "https://keeper.nunux.org/index.xml"
+	url := "https://www.lemonde.fr/rss/une.xml"
 	feed, err := builder.NewFeed(url, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, feed)
 	assert.NotEmpty(t, feed.ID)
 	assert.Empty(t, feed.Tags)
 	assert.Equal(t, url, feed.XMLURL)
-	assert.Equal(t, "Nunux Keeper", feed.Title)
+	assert.Equal(t, feedTitle, feed.Title)
 }
 
 func TestNewIndirectFeed(t *testing.T) {
-	url := "https://keeper.nunux.org"
+	url := "https://www.lemonde.fr"
 	feed, err := builder.NewFeed(url, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, feed)
 	assert.NotEmpty(t, feed.ID)
 	assert.Empty(t, feed.Tags)
-	assert.Equal(t, "Nunux Keeper", feed.Title)
+	assert.Equal(t, feedTitle, feed.Title)
 }
 
 func TestBadNewFeed(t *testing.T) {

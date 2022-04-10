@@ -11,11 +11,11 @@ import (
 func TestSearchURL(t *testing.T) {
 	explorer, err := explore.NewExplorer("default")
 	assert.Nil(t, err)
-	results, err := explorer.Search("https://keeper.nunux.org")
+	results, err := explorer.Search("https://www.lemonde.fr")
 	assert.Nil(t, err)
 	res := *results
 	assert.NotEmpty(t, res)
-	assert.Equal(t, "https://keeper.nunux.org/index.xml", res[0].XMLURL)
+	assert.Equal(t, "https://www.lemonde.fr/rss/une.xml", res[0].XMLURL)
 }
 
 func TestSearchQuery(t *testing.T) {
