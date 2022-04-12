@@ -112,6 +112,8 @@ export default ({ onSave, onCancel, spec, source }: ConfigFormProps) => {
               Conditional expression (<Doc href="EXPRESSION.md">documentation</Doc>)
             </>
           }
+          type="textarea"
+          multiline
           value={condition}
           onChange={handleChangeCondition()}
           fullWidth
