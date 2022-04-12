@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/cache"
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/expr"
 	"github.com/ncarlier/feedpushr/v3/pkg/filter"
 	"github.com/ncarlier/feedpushr/v3/pkg/helper"
@@ -135,6 +136,10 @@ func (p *Processor) process(article *model.Article) error {
 
 	// Apply filters on article
 	if err := p.Filters.Apply(article); err != nil {
+		if err == common.ErrArticleShouldBeIgnored {
+			logger.Debug().Msg("article is ignored")
+			return nil
+		}
 		logger.Error().Err(err).Msg("unable to apply filters on article")
 		return err
 	}

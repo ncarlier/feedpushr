@@ -9,10 +9,12 @@ func GetBuiltinFilterPlugins() map[string]model.FilterPlugin {
 	minifyFilterPlugin := &MinifyFilterPlugin{}
 	fetchFilterPlugin := &FetchFilterPlugin{}
 	httpFilterPlugin := &HTTPFilterPlugin{}
+	interestFilterPlugin := &InterestFilterPlugin{}
 
 	plugins[titleFilterPlugin.Spec().Name] = titleFilterPlugin
 	plugins[minifyFilterPlugin.Spec().Name] = minifyFilterPlugin
 	plugins[fetchFilterPlugin.Spec().Name] = fetchFilterPlugin
 	plugins[httpFilterPlugin.Spec().Name] = httpFilterPlugin
+	plugins[interestFilterPlugin.Spec().Name] = interestFilterPlugin
 	return plugins
 }

@@ -104,20 +104,20 @@ If the format is not specified, the output will be formatted as the following JS
 
 ```json
 {
-	"title": "Article title",
-	"text": "Article text description",
-	"content": "Article HTML content",
-	"link": "Article URL",
-	"updated": "Article update date (String format)",
-	"updatedParsed": "Article update date (Date format)",
-	"published": "Article publication date (String format)",
-	"publishedParsed": "Article publication date (Date format)",
-	"guid": "Article feed GUID",
+  "title": "Article title",
+  "text": "Article text description",
+  "content": "Article HTML content",
+  "link": "Article URL",
+  "updated": "Article update date (String format)",
+  "updatedParsed": "Article update date (Date format)",
+  "published": "Article publication date (String format)",
+  "publishedParsed": "Article publication date (Date format)",
+  "guid": "Article feed GUID",
   "feedTitle": "Feed title",
-	"meta": {
-		"key": "Metadata keys and values added by filters"
-	},
-	"tags": ["list", "of", "tags"]
+  "meta": {
+    "key": "Metadata keys and values added by filters"
+  },
+  "tags": ["list", "of", "tags"]
 }
 ```
 
@@ -131,7 +131,7 @@ You can format the payload like this:
 
 ```json
 {
-	"text": ":tada: {{.Title}} (<{{.Link}}|more>) cc @all",
+  "text": ":tada: {{.Title}} (<{{.Link}}|more>) cc @all",
 }
 ```
 
@@ -149,11 +149,12 @@ Before being sent, articles can be modified through a filter chain.
 
 Currently, there are some built-in filter:
 
-| Filter | Properties | Description |
-|----------|---------|-------------|
-| `title`  | `prefix` (default: `feedpushr:`)| This filter will prefix the title of the article with a given value. |
-| `fetch`  | None       | This filter will attempt to extract the content of the article from the source URL. |
-| `minify` | None       | This filter will minify the HTML content of the article. |
+| Filter     | Properties | Description |
+|------------|---------|-------------|
+| `title`    | `prefix` (default: `feedpushr:`)| This filter will prefix the title of the article with a given value. |
+| `fetch`    | None       | This filter will attempt to extract the content of the article from the source URL. |
+| `interest` | `wordlist` (default: `news`)| This filter will keep articles that match a (comma-separated) list of words of interest. |
+| `minify`   | None       | This filter will minify the HTML content of the article. |
 
 Filters can be extended using [plugins](#plugins). 
 

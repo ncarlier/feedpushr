@@ -20,7 +20,7 @@ var titleSpec = model.Spec{
 	},
 }
 
-// TitleFilterPlugin is the RAKE filter plugin
+// TitleFilterPlugin is the title filter plugin
 type TitleFilterPlugin struct{}
 
 // Spec returns plugin spec
@@ -28,7 +28,7 @@ func (p *TitleFilterPlugin) Spec() model.Spec {
 	return titleSpec
 }
 
-// Build creates RAKE filter
+// Build creates title filter
 func (p *TitleFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 	condition, err := expr.NewConditionalExpression(def.Condition)
 	if err != nil {

@@ -15,4 +15,6 @@ var (
 	ErrFeedQuotaExceeded = errors.New("feed quota exceeded")
 	// ErrOutputQuotaExceeded is returned when output quota is exceeded.
 	ErrOutputQuotaExceeded = errors.New("output quota exceeded")
+	// ErrArticleShouldBeIgnored is returned by a filter when a article should not be send
+	ErrArticleShouldBeIgnored = errors.New("article should be ignored")
 )

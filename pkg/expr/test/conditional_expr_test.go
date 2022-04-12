@@ -15,7 +15,7 @@ func TesInvalidExpressionSyntax(t *testing.T) {
 }
 
 func TestMatchingExpression(t *testing.T) {
-	condition, err := expr.NewConditionalExpression("\"foo\" in Tags")
+	condition, err := expr.NewConditionalExpression("\"foo\" in Tags and \"baz\" not in Tags")
 	assert.Nil(t, err, "expression should be valid")
 	assert.NotNil(t, condition)
 
@@ -40,4 +40,20 @@ func TestNotMatchingExpression(t *testing.T) {
 
 	ok := condition.Match(article)
 	assert.False(t, ok, "article should not match")
+}
+
+func TestMultilineExpression(t *testing.T) {
+	condition, err := expr.NewConditionalExpression(`"foo" in Tags
+and (Title == "test"
+or Title == "World")`)
+	assert.Nil(t, err, "expression should be valid")
+	assert.NotNil(t, condition)
+
+	article := &model.Article{
+		Title: "World",
+		Tags:  []string{"bar", "foo"},
+	}
+
+	ok := condition.Match(article)
+	assert.True(t, ok, "article should match")
 }

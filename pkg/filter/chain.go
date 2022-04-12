@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/filter/plugins"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/plugin"
@@ -53,7 +54,10 @@ func (chain *Chain) Apply(article *model.Article) error {
 		if filter.GetDef().Enabled && filter.Match(article) {
 			// TODO what to do with applied status?
 			if _, err := filter.DoFilter(article); err != nil {
-				return fmt.Errorf("error while applying filter #%d: %v", idx, err)
+				if err != common.ErrArticleShouldBeIgnored {
+					return fmt.Errorf("error while applying filter #%d: %v", idx, err)
+				}
+				return err
 			}
 		}
 	}
