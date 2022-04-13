@@ -1,5 +1,22 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v3.1.1...v) (2022-01-09)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.2.0...v) (2022-04-13)
+
+
+### Bug Fixes
+
+* **test:** update test case ([1efd7e5](https://github.com/ncarlier/feedpushr/commit/1efd7e5))
+
+
+### Features
+
+* **filter:** add interest filter ([32a58ce](https://github.com/ncarlier/feedpushr/commit/32a58ce))
+* **ui:** use textarea for conditional expression ([5540de6](https://github.com/ncarlier/feedpushr/commit/5540de6))
+* add feed title to the article ([cb0595e](https://github.com/ncarlier/feedpushr/commit/cb0595e))
+
+
+
+<a name="3.2.0"></a>
+# [3.2.0](https://github.com/ncarlier/feedpushr/compare/v3.1.1...v3.2.0) (2022-01-09)
 
 
 ### Bug Fixes
