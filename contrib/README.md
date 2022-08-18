@@ -1,6 +1,6 @@
 # feedpushr contrib
 
-Some plugins and tools for [Feedpushr][feedpushr].
+Some plugins and tooling for [Feedpushr][feedpushr].
 
 ## Plugins
 
@@ -18,12 +18,12 @@ Some plugins and tools for [Feedpushr][feedpushr].
 - [Prose](./prose/README.md)
 - [RAKE](./rake/README.md)
 
-## Tools
+## Misc
 
 - [Desktop launcher](https://github.com/ncarlier/feedpushr#launcher)
 - [Ruby API client](https://github.com/bluengreen/feedpushr_client)
+- [Ansible installation](https://github.com/slundi/ansible_feedpushr)
 
 ---
 
 [feedpushr]: https://github.com/ncarlier/feedpushr
-
