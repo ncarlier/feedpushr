@@ -1,5 +1,10 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v3.3.0...v) (2022-10-01)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.3.1...v) (2022-10-01)
+
+
+
+<a name="3.3.1"></a>
+## [3.3.1](https://github.com/ncarlier/feedpushr/compare/v3.3.0...v3.3.1) (2022-10-01)
 
 
 ### Bug Fixes
