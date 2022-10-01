@@ -1,5 +1,10 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v3.3.0...v) (2022-04-13)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.3.0...v) (2022-10-01)
+
+
+### Bug Fixes
+
+* **extractor:** support relative feed URL ([393252d](https://github.com/ncarlier/feedpushr/commit/393252d))
 
 
 
