@@ -61,7 +61,7 @@ func NewFeed(url string, tags *string) (*model.FeedDef, error) {
 	}
 
 	if contentType == "text/html" {
-		urls, err := html.ExtractFeedLinks(res.Body)
+		urls, err := html.ExtractFeedLinks(res.Body, url)
 		if err != nil {
 			return nil, err
 		}

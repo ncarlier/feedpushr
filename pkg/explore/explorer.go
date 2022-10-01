@@ -81,7 +81,7 @@ func searchByURL(u url.URL) (*SearchResults, error) {
 		return nil, fmt.Errorf("not a valid HTML page: %s", u.String())
 	}
 
-	urls, err := html.ExtractFeedLinks(res.Body)
+	urls, err := html.ExtractFeedLinks(res.Body, u.String())
 	if err != nil {
 		return nil, err
 	}

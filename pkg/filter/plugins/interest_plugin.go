@@ -76,7 +76,7 @@ func (f *InterestFilter) DoFilter(article *model.Article) (bool, error) {
 	return true, common.ErrArticleShouldBeIgnored
 }
 
-// Interest test if article matches filter condition
+// Match test if article matches filter condition
 func (f *InterestFilter) Match(article *model.Article) bool {
 	return f.condition.Match(article)
 }

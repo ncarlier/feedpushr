@@ -3,6 +3,8 @@ package html
 import (
 	"fmt"
 	"io"
+	"net/url"
+	"strings"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"golang.org/x/net/html"
@@ -18,8 +20,24 @@ func extractProperty(token html.Token, prop string) (value string, ok bool) {
 	return
 }
 
+func absoluteURL(base, path string) (string, error) {
+	if strings.HasPrefix(path, "/") {
+		baseURL, err := url.Parse(base)
+		if err != nil {
+			return "", err
+		}
+		relativeURL, err := url.Parse(path)
+		if err != nil {
+			return "", err
+		}
+		u := baseURL.ResolveReference(relativeURL)
+		return u.String(), nil
+	}
+	return path, nil
+}
+
 // ExtractFeedLinks extract feed links from HTML content
-func ExtractFeedLinks(content io.Reader) (links []string, err error) {
+func ExtractFeedLinks(content io.Reader, base string) (links []string, err error) {
 	z := html.NewTokenizer(content)
 
 	for {
@@ -35,9 +53,10 @@ func ExtractFeedLinks(content io.Reader) (links []string, err error) {
 			if t.Data == "link" {
 				linkType, ok := extractProperty(t, "type")
 				if ok && common.ValidFeedContentType.MatchString(linkType) {
-					href, ok := extractProperty(t, "href")
-					if ok {
-						links = append(links, href)
+					if href, ok := extractProperty(t, "href"); ok {
+						if link, err := absoluteURL(base, href); err == nil {
+							links = append(links, link)
+						}
 					}
 				}
 			}
