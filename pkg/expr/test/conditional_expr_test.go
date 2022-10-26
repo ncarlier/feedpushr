@@ -57,3 +57,16 @@ or Title == "World")`)
 	ok := condition.Match(article)
 	assert.True(t, ok, "article should match")
 }
+
+func TestExpressionWithPlugins(t *testing.T) {
+	condition, err := expr.NewConditionalExpression("toUpper(Title) contains \"BEAUTIFUL\"")
+	assert.Nil(t, err, "expression should be valid")
+	assert.NotNil(t, condition)
+
+	article := &model.Article{
+		Title: "Hello my beautiful friend",
+	}
+
+	ok := condition.Match(article)
+	assert.True(t, ok, "article should match")
+}

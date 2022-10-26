@@ -47,6 +47,8 @@ Article properties can be accessed by using their name:
 * `contains` (string contains)
 * `startsWith` (has prefix)
 * `endsWith` (has suffix)
+* `toLower` (to lower case)
+* `toUpper` (to upper case)
 
 To test if a string does *not* match a regex, use the logical `not` operator in combination with the `matches` operator:
 

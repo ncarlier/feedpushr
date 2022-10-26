@@ -6,10 +6,16 @@ import (
 
 	"github.com/antonmedv/expr"
 	"github.com/antonmedv/expr/vm"
+	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog/log"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
+
+var exprPlugins = map[string]interface{}{
+	"toLower": strings.ToLower,
+	"toUpper": strings.ToUpper,
+}
 
 // ConditionalExpression is a model for a conditional expression applied on an article
 type ConditionalExpression struct {
@@ -20,9 +26,17 @@ type ConditionalExpression struct {
 // NewConditionalExpression creates a new conditional expression
 func NewConditionalExpression(expression string) (*ConditionalExpression, error) {
 	var prog *vm.Program
-	var err error
 	if strings.TrimSpace(expression) != "" {
-		prog, err = expr.Compile(expression, expr.Env(model.Article{}))
+		args, err := buildExprArgs(model.Article{})
+		if err != nil {
+			return nil, fmt.Errorf("unable to build expression arguments: %s", err.Error())
+		}
+
+		options := []expr.Option{
+			expr.Env(args),
+			expr.AsBool(),
+		}
+		prog, err = expr.Compile(expression, options...)
 		if err != nil {
 			return nil, fmt.Errorf("invalid conditional expression: %s", err.Error())
 		}
@@ -38,12 +52,17 @@ func (c *ConditionalExpression) Match(article *model.Article) bool {
 	if c.prog == nil {
 		return true
 	}
-	output, err := expr.Run(c.prog, article)
+	args, err := buildExprArgs(article)
+	if err != nil {
+		log.Error().Err(err).Str("expr", c.expression).Str("article", article.Link).Msg("unable to build expression arguments")
+		return false
+	}
+	output, err := expr.Run(c.prog, args)
 	if err != nil {
 		log.Error().Err(err).Str("expr", c.expression).Str("article", article.Link).Msg("unable to run expression on the article")
 		return false
 	}
-	return asBooleanValue(output)
+	return output.(bool)
 }
 
 // String returns the string expression
@@ -51,33 +70,13 @@ func (c *ConditionalExpression) String() string {
 	return c.expression
 }
 
-func asBooleanValue(i1 interface{}) bool {
-	if i1 == nil {
-		return false
+func buildExprArgs(obj interface{}) (map[string]interface{}, error) {
+	env := map[string]interface{}{}
+	if err := mapstructure.Decode(obj, &env); err != nil {
+		return nil, err
 	}
-	switch i2 := i1.(type) {
-	default:
-		return false
-	case bool:
-		return i2
-	case string:
-		return i2 == "true"
-	case int:
-		return i2 != 0
-	case *bool:
-		if i2 == nil {
-			return false
-		}
-		return *i2
-	case *string:
-		if i2 == nil {
-			return false
-		}
-		return *i2 == "true"
-	case *int:
-		if i2 == nil {
-			return false
-		}
-		return *i2 != 0
+	for k, v := range exprPlugins {
+		env[k] = v
 	}
+	return env, nil
 }
