@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	bolt "github.com/coreos/bbolt"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	bolt "go.etcd.io/bbolt"
 )
 
 // CacheBucketName bucket name

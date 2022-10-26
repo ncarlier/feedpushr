@@ -5,9 +5,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 
-	bolt "github.com/coreos/bbolt"
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
+	bolt "go.etcd.io/bbolt"
 )
 
 // FeedBucketName bucket name

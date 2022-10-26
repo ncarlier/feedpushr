@@ -6,9 +6,9 @@ import (
 	"net/url"
 
 	"github.com/blevesearch/bleve"
-	bolt "github.com/coreos/bbolt"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/pkg/errors"
+	bolt "go.etcd.io/bbolt"
 )
 
 // BoltStore is a data store backed by BoltDB
