@@ -302,7 +302,7 @@ To be able to build the project you will need to:
   ```
 - Install dependencies if you want to build the launcher:
   ```bash
-  $ sudo apt-get install gcc pkg-config libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev
+  $ sudo apt-get install gcc pkg-config libgtk-3-dev libappindicator3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev
   ```
 
 Then you can build the project using make:

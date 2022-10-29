@@ -6,8 +6,8 @@ import (
 	"sync/atomic"
 
 	"github.com/iancoleman/strcase"
+	"github.com/jdkato/prose/v2"
 	"github.com/k3a/html2text"
-	"gopkg.in/jdkato/prose.v2"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/expr"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
