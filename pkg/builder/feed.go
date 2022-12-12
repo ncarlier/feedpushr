@@ -1,8 +1,8 @@
 package builder
 
 import (
-	"context"
 	"crypto/md5"
+	"crypto/tls"
 	"encoding/hex"
 	"fmt"
 	"mime"
@@ -18,6 +18,13 @@ import (
 	"github.com/ncarlier/feedpushr/v3/pkg/strcase"
 )
 
+var httpClient = &http.Client{
+	Timeout: common.DefaultTimeout,
+	Transport: &http.Transport{
+		TLSClientConfig: &tls.Config{},
+	},
+}
+
 // GetFeedID converts URL to feed ID (HASH)
 func GetFeedID(url string) string {
 	hasher := md5.New()
@@ -27,27 +34,19 @@ func GetFeedID(url string) string {
 
 // NewFeed creates new Feed DTO
 func NewFeed(url string, tags *string) (*model.FeedDef, error) {
-	// Set timeout context
-	ctx, cancel := context.WithCancel(context.TODO())
-	timeout := time.AfterFunc(common.DefaultTimeout, func() {
-		cancel()
-	})
-
 	// Create the request
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req = req.WithContext(ctx)
 	req.Header.Set("User-Agent", common.UserAgent)
 
 	// Do HTTP call
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
-	timeout.Stop()
 
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return nil, fmt.Errorf("http error: %s", res.Status)

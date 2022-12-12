@@ -2,6 +2,7 @@ package aggregator
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net/http"
 	"time"
@@ -26,21 +27,26 @@ const (
 
 // FeedHandler handles feed refresh
 type FeedHandler struct {
-	log     zerolog.Logger
-	feed    *model.FeedDef
-	status  *FeedStatus
-	parser  *gofeed.Parser
-	timeout time.Duration
+	log        zerolog.Logger
+	feed       *model.FeedDef
+	status     *FeedStatus
+	parser     *gofeed.Parser
+	httpClient *http.Client
 }
 
 // NewFeedHandler create new feed handler
 func NewFeedHandler(feed *model.FeedDef, timeout time.Duration) *FeedHandler {
 	handler := FeedHandler{
-		log:     log.With().Str("handler", feed.ID).Logger(),
-		feed:    feed,
-		status:  &FeedStatus{},
-		parser:  gofeed.NewParser(),
-		timeout: timeout,
+		log:    log.With().Str("handler", feed.ID).Logger(),
+		feed:   feed,
+		status: &FeedStatus{},
+		parser: gofeed.NewParser(),
+		httpClient: &http.Client{
+			Timeout: timeout,
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{},
+			},
+		},
 	}
 	return &handler
 }
@@ -50,12 +56,6 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	// defer timer.ExecutionTime(fh.log, time.Now(), "refresh")
 
 	var items []*model.Article
-
-	// Set timeout context
-	ctx, cancel := context.WithCancel(context.TODO())
-	timeout := time.AfterFunc(fh.timeout, func() {
-		cancel()
-	})
 
 	// Update status check date
 	fh.status.CheckedAt = time.Now()
@@ -67,7 +67,6 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 		fh.status.Err(err)
 		return *fh.status, nil
 	}
-	req = req.WithContext(ctx)
 
 	// Set custom headers
 	req.Header.Set("User-Agent", common.UserAgent)
@@ -81,9 +80,9 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	}
 
 	// Do HTTP call
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := fh.httpClient.Do(req)
 	if err != nil {
-		if ctx.Err() != nil && ctx.Err() == context.Canceled {
+		if err == context.DeadlineExceeded {
 			fh.log.Warn().Err(err).Msg(errDoRequest)
 		} else {
 			fh.log.Error().Err(err).Msg(errDoRequest)
@@ -92,7 +91,6 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 		return *fh.status, nil
 	}
 	defer resp.Body.Close()
-	timeout.Stop()
 
 	switch resp.StatusCode {
 	case 200:
