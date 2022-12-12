@@ -176,6 +176,7 @@ func (op *EmailOutputProvider) buildEmailPayload(subject, body string) string {
 	headers["Subject"] = subject
 	headers["MIME-version"] = "1.0"
 	headers["Content-Type"] = `text/html; charset="UTF-8"`
+	headers["Date"] = time.Now().Format(time.RFC1123Z)
 
 	// Build email payload
 	payload := ""
