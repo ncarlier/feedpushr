@@ -1,4 +1,4 @@
-package builder
+package filter
 
 import (
 	"net/url"
@@ -8,33 +8,33 @@ import (
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
-// FilterBuilder is a builder to create an Filter definition
-type FilterBuilder struct {
+// Builder is used to create an Filter definition
+type Builder struct {
 	filter *model.FilterDef
 }
 
-// NewFilterBuilder creates new Filter definition builder instance
-func NewFilterBuilder() *FilterBuilder {
+// NewBuilder creates new Filter definition builder instance
+func NewBuilder() *Builder {
 	filter := &model.FilterDef{
 		Props: make(model.FilterProps),
 	}
-	return &FilterBuilder{filter}
+	return &Builder{filter}
 }
 
 // Build creates the filter definition
-func (fb *FilterBuilder) Build() *model.FilterDef {
+func (fb *Builder) Build() *model.FilterDef {
 	return fb.filter
 }
 
 // From creates filter form an other
-func (fb *FilterBuilder) From(source model.FilterDef) *FilterBuilder {
+func (fb *Builder) From(source model.FilterDef) *Builder {
 	clone := source
 	fb.filter = &clone
 	return fb
 }
 
 // FromURI creates a filter definition form an URI
-func (fb *FilterBuilder) FromURI(URI string) *FilterBuilder {
+func (fb *Builder) FromURI(URI string) *Builder {
 	u, err := url.Parse(URI)
 	if err != nil {
 		return fb
@@ -49,19 +49,19 @@ func (fb *FilterBuilder) FromURI(URI string) *FilterBuilder {
 }
 
 // ID set ID
-func (fb *FilterBuilder) ID(ID string) *FilterBuilder {
+func (fb *Builder) ID(ID string) *Builder {
 	fb.filter.ID = ID
 	return fb
 }
 
 // NewID set new ID
-func (fb *FilterBuilder) NewID() *FilterBuilder {
+func (fb *Builder) NewID() *Builder {
 	fb.filter.ID = uuid.New().String()
 	return fb
 }
 
 // Alias set alias
-func (fb *FilterBuilder) Alias(alias *string) *FilterBuilder {
+func (fb *Builder) Alias(alias *string) *Builder {
 	if alias != nil {
 		fb.filter.Alias = *alias
 	}
@@ -69,13 +69,13 @@ func (fb *FilterBuilder) Alias(alias *string) *FilterBuilder {
 }
 
 // Spec set spec name
-func (fb *FilterBuilder) Spec(name string) *FilterBuilder {
+func (fb *Builder) Spec(name string) *Builder {
 	fb.filter.Name = name
 	return fb
 }
 
 // Condition set condition
-func (fb *FilterBuilder) Condition(condition *string) *FilterBuilder {
+func (fb *Builder) Condition(condition *string) *Builder {
 	if condition != nil {
 		fb.filter.Condition = *condition
 	}
@@ -83,7 +83,7 @@ func (fb *FilterBuilder) Condition(condition *string) *FilterBuilder {
 }
 
 // Props set props
-func (fb *FilterBuilder) Props(props model.FilterProps) *FilterBuilder {
+func (fb *Builder) Props(props model.FilterProps) *Builder {
 	if len(props) > 0 {
 		fb.filter.Props = props
 	}
@@ -91,7 +91,7 @@ func (fb *FilterBuilder) Props(props model.FilterProps) *FilterBuilder {
 }
 
 // Enable set enabled status
-func (fb *FilterBuilder) Enable(status bool) *FilterBuilder {
+func (fb *Builder) Enable(status bool) *Builder {
 	fb.filter.Enabled = status
 	return fb
 }

@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/goadesign/goa"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/output"
@@ -28,7 +27,7 @@ func NewOutputController(service *goa.Service, db store.DB, outputs *output.Mana
 
 // Create runs the create action.
 func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
-	def := builder.NewOutputBuilder().Alias(
+	def := output.NewBuilder().Alias(
 		&ctx.Payload.Alias,
 	).Spec(
 		ctx.Payload.Name,
@@ -48,7 +47,7 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 		c.outputs.RemoveOutputProcessor(&_def)
 		return err
 	}
-	return ctx.Created(builder.NewOutputResponseFromDef(def))
+	return ctx.Created(output.NewOutputResponseFromDef(def))
 }
 
 // Delete runs the delete action.
@@ -76,7 +75,7 @@ func (c *OutputController) Get(ctx *app.GetOutputContext) error {
 	}
 
 	def := processor.GetDef()
-	return ctx.OK(builder.NewOutputResponseFromDef(&def))
+	return ctx.OK(output.NewOutputResponseFromDef(&def))
 }
 
 // Update runs the update action.
@@ -89,7 +88,7 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 		return err
 	}
 
-	update := builder.NewOutputBuilder().From(
+	update := output.NewBuilder().From(
 		processor.GetDef(),
 	).Alias(
 		ctx.Payload.Alias,
@@ -111,7 +110,7 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 		return err
 	}
 
-	return ctx.OK(builder.NewOutputResponseFromDef(def))
+	return ctx.OK(output.NewOutputResponseFromDef(def))
 }
 
 // List runs the list action.
@@ -119,7 +118,7 @@ func (c *OutputController) List(ctx *app.ListOutputContext) error {
 	res := app.OutputResponseCollection{}
 	outputs := c.outputs.GetOutputDefs()
 	for _, def := range outputs {
-		res = append(res, builder.NewOutputResponseFromDef(&def))
+		res = append(res, output.NewOutputResponseFromDef(&def))
 	}
 	return ctx.OK(res)
 }

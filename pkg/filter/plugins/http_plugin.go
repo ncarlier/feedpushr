@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/expr"
 	"github.com/ncarlier/feedpushr/v3/pkg/format"
+	httpc "github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
@@ -87,10 +87,9 @@ func (f *HTTPFilter) DoFilter(article *model.Article) (bool, error) {
 		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, err
 	}
-	req.Header.Set("User-Agent", common.UserAgent)
-	req.Header.Set("Content-Type", common.ContentTypeJSON)
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	req.Header.Set("User-Agent", httpc.UserAgent)
+	req.Header.Set("Content-Type", httpc.ContentTypeJSON)
+	resp, err := httpc.DefaultClient.Do(req)
 	if err != nil {
 		atomic.AddUint32(&f.definition.NbError, 1)
 		return false, err

@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 	"github.com/ncarlier/feedpushr/v3/pkg/filter"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
@@ -20,7 +19,7 @@ func buildChainFilter(t *testing.T, URIs ...string) *filter.Chain {
 			URI = parts[0]
 			condition = parts[1]
 		}
-		filter := builder.NewFilterBuilder().FromURI(URI).Condition(&condition).Build()
+		filter := filter.NewBuilder().FromURI(URI).Condition(&condition).Build()
 		chain.Add(filter)
 	}
 	return chain
@@ -71,7 +70,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	id := _filter.ID
 
 	// UPDATE
-	update := builder.NewFilterBuilder().Spec(_filter.Name).Build()
+	update := filter.NewBuilder().Spec(_filter.Name).Build()
 	update.Props["prefix"] = "Updated"
 	_, err := chain.Update(id, update)
 	assert.Nil(t, err)
@@ -80,7 +79,7 @@ func TestFilterChainCRUD(t *testing.T) {
 	assert.Equal(t, "Updated", _filter.Props["prefix"], "invalid filter property")
 
 	// ADD
-	add := builder.NewFilterBuilder().FromURI("minify://").Build()
+	add := filter.NewBuilder().FromURI("minify://").Build()
 	_, err = chain.Add(add)
 	assert.Nil(t, err)
 	defs = chain.GetFilterDefs()

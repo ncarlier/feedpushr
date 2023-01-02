@@ -1,8 +1,7 @@
-package builder
+package feed
 
 import (
 	"crypto/md5"
-	"crypto/tls"
 	"encoding/hex"
 	"fmt"
 	"mime"
@@ -12,18 +11,10 @@ import (
 
 	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
-	"github.com/ncarlier/feedpushr/v3/pkg/common"
-	"github.com/ncarlier/feedpushr/v3/pkg/html"
+	httpc "github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/strcase"
 )
-
-var httpClient = &http.Client{
-	Timeout: common.DefaultTimeout,
-	Transport: &http.Transport{
-		TLSClientConfig: &tls.Config{},
-	},
-}
 
 // GetFeedID converts URL to feed ID (HASH)
 func GetFeedID(url string) string {
@@ -39,10 +30,10 @@ func NewFeed(url string, tags *string) (*model.FeedDef, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", common.UserAgent)
+	req.Header.Set("User-Agent", httpc.UserAgent)
 
 	// Do HTTP call
-	res, err := httpClient.Do(req)
+	res, err := httpc.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +51,7 @@ func NewFeed(url string, tags *string) (*model.FeedDef, error) {
 	}
 
 	if contentType == "text/html" {
-		urls, err := html.ExtractFeedLinks(res.Body, url)
+		urls, err := ExtractFeedLinks(res.Body, url)
 		if err != nil {
 			return nil, err
 		}
@@ -70,7 +61,7 @@ func NewFeed(url string, tags *string) (*model.FeedDef, error) {
 		return NewFeed(urls[0], tags)
 	}
 
-	if !common.ValidFeedContentType.MatchString(contentType) {
+	if !ValidFeedContentType.MatchString(contentType) {
 		return nil, fmt.Errorf("unsupported content type: %s", contentType)
 	}
 

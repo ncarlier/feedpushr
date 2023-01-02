@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
+	"github.com/ncarlier/feedpushr/v3/pkg/feed"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/output"
 	"github.com/ncarlier/feedpushr/v3/pkg/pshb"
@@ -141,7 +141,7 @@ func (fa *FeedAggregator) StartWithDelay(delay time.Duration) {
 
 // GetFeedWithAggregationStatus get a copy of the aggregator feed hydrated with aggregation status.
 func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.FeedResponse {
-	result := builder.NewFeedResponseFromDef(fa.feed)
+	result := feed.NewFeedResponseFromDef(fa.feed)
 	status := fa.status.String()
 	result.Status = &status
 	lastCheck := fa.lastCheck

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
+	"github.com/ncarlier/feedpushr/v3/pkg/filter"
 )
 
 // CreateFilter runs the createFilter action.
@@ -12,7 +12,7 @@ func (c *OutputController) CreateFilter(ctx *app.CreateFilterOutputContext) erro
 		return ctx.NotFound()
 	}
 
-	filterDef := builder.NewFilterBuilder().Alias(
+	filterDef := filter.NewBuilder().Alias(
 		&ctx.Payload.Alias,
 	).Spec(
 		ctx.Payload.Name,
@@ -31,7 +31,7 @@ func (c *OutputController) CreateFilter(ctx *app.CreateFilterOutputContext) erro
 		return err
 	}
 	def := f.GetDef()
-	return ctx.Created(builder.NewFilterResponseFromDef(&def))
+	return ctx.Created(filter.NewFilterResponseFromDef(&def))
 }
 
 // DeleteFilter runs the deleteFilter action.
@@ -60,7 +60,7 @@ func (c *OutputController) UpdateFilter(ctx *app.UpdateFilterOutputContext) erro
 	if err != nil {
 		return ctx.NotFound()
 	}
-	filterDef := builder.NewFilterBuilder().From(
+	filterDef := filter.NewBuilder().From(
 		f.GetDef(),
 	).Alias(
 		ctx.Payload.Alias,
@@ -80,5 +80,5 @@ func (c *OutputController) UpdateFilter(ctx *app.UpdateFilterOutputContext) erro
 		return err
 	}
 	def := f.GetDef()
-	return ctx.OK(builder.NewFilterResponseFromDef(&def))
+	return ctx.OK(filter.NewFilterResponseFromDef(&def))
 }

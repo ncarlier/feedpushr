@@ -6,14 +6,14 @@ import (
 	"net/url"
 	"sync/atomic"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/format"
+	httpc "github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 var supportedContentTypes = map[string]string{
-	common.ContentTypeJSON: "JSON",
-	common.ContentTypeText: "Text",
+	httpc.ContentTypeJSON: "JSON",
+	httpc.ContentTypeText: "Text",
 }
 
 var httpSpec = model.Spec{
@@ -61,7 +61,7 @@ func (p *HTTPOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
 	if err != nil {
 		return nil, err
 	}
-	contentType := common.ContentTypeJSON
+	contentType := httpc.ContentTypeJSON
 	if val, ok := def.Props["contentType"]; ok {
 		_contentType := fmt.Sprintf("%v", val)
 		if _, supported := supportedContentTypes[_contentType]; supported {
@@ -102,10 +102,9 @@ func (op *HTTPOutputProvider) Send(article *model.Article) (bool, error) {
 		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err
 	}
-	req.Header.Set("User-Agent", common.UserAgent)
+	req.Header.Set("User-Agent", httpc.UserAgent)
 	req.Header.Set("Content-Type", op.contentType)
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := httpc.DefaultClient.Do(req)
 	if err != nil {
 		atomic.AddUint32(&op.definition.NbError, 1)
 		return false, err

@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/feed"
 	"github.com/ncarlier/feedpushr/v3/pkg/store"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -90,7 +90,7 @@ func (job *ImportJob) importOutlines(outlines []Outline, category string) {
 	for _, outline := range outlines {
 		if len(outline.Outlines) > 0 {
 			job.workload.Add(1)
-			job.importOutlines(outline.Outlines, builder.JoinTags(category, outline.Title))
+			job.importOutlines(outline.Outlines, feed.JoinTags(category, outline.Title))
 			continue
 		}
 		logger := job.logger.With().Str("url", outline.XMLURL).Logger()
@@ -99,26 +99,26 @@ func (job *ImportJob) importOutlines(outlines []Outline, category string) {
 			job.writeResult(outline.XMLURL, common.ErrFeedAlreadyExists)
 			continue
 		}
-		cat := builder.JoinTags(category, outline.Category)
+		cat := feed.JoinTags(category, outline.Category)
 		logger.Debug().Msg("importing feed")
-		feed, err := builder.NewFeed(outline.XMLURL, &cat)
+		_feed, err := feed.NewFeed(outline.XMLURL, &cat)
 		if err != nil {
 			logger.Warn().Err(err).Msg("unable to create feed: skipped")
 			job.writeResult(outline.XMLURL, err)
 			continue
 		}
 		if len(strings.TrimSpace(outline.Title)) > 0 {
-			feed.Title = outline.Title
+			_feed.Title = outline.Title
 		}
 		// TODO register new feed aggregators
-		err = job.db.SaveFeed(feed)
+		err = job.db.SaveFeed(_feed)
 		if err != nil {
 			logger.Warn().Err(err).Msg("unable to save feed: skipped")
 			job.writeResult(outline.XMLURL, err)
 			continue
 		}
 		job.writeResult(outline.XMLURL, nil)
-		logger.Info().Str("title", feed.Title).Msg("feed imported")
+		logger.Info().Str("title", _feed.Title).Msg("feed imported")
 	}
 	if category == "" {
 		job.wOutputFile.WriteString("done\n")

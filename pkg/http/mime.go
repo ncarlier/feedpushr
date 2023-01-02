@@ -1,12 +1,4 @@
-package common
-
-import "time"
-
-// UserAgent used by HTTP client
-const UserAgent = "Mozilla/5.0 (compatible; Feedpushr/1.0; +https://github.com/ncarlier/feedpushr)"
-
-// DefaultTimeout for HTTP requests
-const DefaultTimeout = time.Duration(5 * time.Second)
+package http
 
 const (
 	// ContentTypeBinary for binary Content-Type

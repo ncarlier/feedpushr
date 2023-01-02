@@ -1,4 +1,4 @@
-package builder
+package feed
 
 import (
 	"github.com/mmcdole/gofeed"

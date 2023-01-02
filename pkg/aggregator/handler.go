@@ -2,15 +2,14 @@ package aggregator
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
-	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/feed"
 	"github.com/ncarlier/feedpushr/v3/pkg/helper"
+	httpc "github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -37,16 +36,11 @@ type FeedHandler struct {
 // NewFeedHandler create new feed handler
 func NewFeedHandler(feed *model.FeedDef, timeout time.Duration) *FeedHandler {
 	handler := FeedHandler{
-		log:    log.With().Str("handler", feed.ID).Logger(),
-		feed:   feed,
-		status: &FeedStatus{},
-		parser: gofeed.NewParser(),
-		httpClient: &http.Client{
-			Timeout: timeout,
-			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{},
-			},
-		},
+		log:        log.With().Str("handler", feed.ID).Logger(),
+		feed:       feed,
+		status:     &FeedStatus{},
+		parser:     gofeed.NewParser(),
+		httpClient: httpc.New(timeout),
 	}
 	return &handler
 }
@@ -69,7 +63,7 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	}
 
 	// Set custom headers
-	req.Header.Set("User-Agent", common.UserAgent)
+	req.Header.Set("User-Agent", httpc.UserAgent)
 
 	// Add cache headers
 	if fh.status.LastModifiedHeader != "" {
@@ -121,7 +115,7 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 		fh.status.Err(err)
 		return *fh.status, nil
 	}
-	feed, err := fh.parser.Parse(body)
+	f, err := fh.parser.Parse(body)
 	if err != nil {
 		fh.log.Error().Err(err).Msg(errParssingBody)
 		fh.status.Err(err)
@@ -131,9 +125,9 @@ func (fh *FeedHandler) Refresh() (FeedStatus, []*model.Article) {
 	// Reset error status
 	fh.status.Err(nil)
 
-	// fh.log.Debug().Int("items", len(feed.Items)).Msg("feed fetched")
+	// fh.log.Debug().Int("items", len(f.Items)).Msg("f fetched")
 
-	return *fh.status, builder.NewArticles(fh.feed, feed.Items)
+	return *fh.status, feed.NewArticles(fh.feed, f.Items)
 }
 
 // ResetStatus reset handler status

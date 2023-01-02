@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/format/fn"
+	httpc "github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
@@ -88,11 +88,10 @@ func sendToReadflow(url string, apiKey string, article *model.Article) (int, err
 	if err != nil {
 		return result, err
 	}
-	req.Header.Set("User-Agent", common.UserAgent)
-	req.Header.Set("Content-Type", common.ContentTypeJSON)
+	req.Header.Set("User-Agent", httpc.UserAgent)
+	req.Header.Set("Content-Type", httpc.ContentTypeJSON)
 	req.SetBasicAuth("api", apiKey)
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := httpc.DefaultClient.Do(req)
 	if err != nil {
 		return result, err
 	}
@@ -107,7 +106,7 @@ func sendToReadflow(url string, apiKey string, article *model.Article) (int, err
 		}
 		// log.Println("respJSON", respJSON)
 	default:
-		data, err := ioutil.ReadAll(resp.Body)
+		data, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return result, fmt.Errorf("unable to read response: %s", err.Error())
 		}

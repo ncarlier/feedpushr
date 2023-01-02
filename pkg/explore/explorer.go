@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/common"
-	"github.com/ncarlier/feedpushr/v3/pkg/html"
+	"github.com/ncarlier/feedpushr/v3/pkg/feed"
+	httpc "github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/rs/zerolog/log"
 )
 
@@ -46,7 +46,7 @@ func NewExplorer(provider string) (Explorer, error) {
 func searchByURL(u url.URL) (*SearchResults, error) {
 	// Set timeout context
 	ctx, cancel := context.WithCancel(context.TODO())
-	timeout := time.AfterFunc(common.DefaultTimeout, func() {
+	timeout := time.AfterFunc(httpc.DefaultTimeout, func() {
 		cancel()
 	})
 
@@ -56,7 +56,7 @@ func searchByURL(u url.URL) (*SearchResults, error) {
 		return nil, err
 	}
 	req = req.WithContext(ctx)
-	req.Header.Set("User-Agent", common.UserAgent)
+	req.Header.Set("User-Agent", httpc.UserAgent)
 
 	// Do HTTP call
 	res, err := http.DefaultClient.Do(req)
@@ -81,7 +81,7 @@ func searchByURL(u url.URL) (*SearchResults, error) {
 		return nil, fmt.Errorf("not a valid HTML page: %s", u.String())
 	}
 
-	urls, err := html.ExtractFeedLinks(res.Body, u.String())
+	urls, err := feed.ExtractFeedLinks(res.Body, u.String())
 	if err != nil {
 		return nil, err
 	}

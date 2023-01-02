@@ -1,40 +1,41 @@
-package builder
+package output
 
 import (
 	"net/url"
 
 	"github.com/google/uuid"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
+	"github.com/ncarlier/feedpushr/v3/pkg/filter"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
-// OutputBuilder is a builder to create an Output definition
-type OutputBuilder struct {
+// Builder is used to create an Output definition
+type Builder struct {
 	output *model.OutputDef
 }
 
-// NewOutputBuilder creates new Output definition builder instance
-func NewOutputBuilder() *OutputBuilder {
+// NewBuilder creates new Output definition builder instance
+func NewBuilder() *Builder {
 	output := &model.OutputDef{
 		Props: make(model.OutputProps),
 	}
-	return &OutputBuilder{output}
+	return &Builder{output}
 }
 
 // Build creates the output definition
-func (ob *OutputBuilder) Build() *model.OutputDef {
+func (ob *Builder) Build() *model.OutputDef {
 	return ob.output
 }
 
 // From creates output form an other
-func (ob *OutputBuilder) From(source model.OutputDef) *OutputBuilder {
+func (ob *Builder) From(source model.OutputDef) *Builder {
 	clone := source
 	ob.output = &clone
 	return ob
 }
 
 // FromURI creates a output definition form an URI
-func (ob *OutputBuilder) FromURI(URI string) *OutputBuilder {
+func (ob *Builder) FromURI(URI string) *Builder {
 	u, err := url.Parse(URI)
 	if err != nil {
 		return ob
@@ -48,19 +49,19 @@ func (ob *OutputBuilder) FromURI(URI string) *OutputBuilder {
 }
 
 // ID set ID
-func (ob *OutputBuilder) ID(ID string) *OutputBuilder {
+func (ob *Builder) ID(ID string) *Builder {
 	ob.output.ID = ID
 	return ob
 }
 
 // NewID set new ID
-func (ob *OutputBuilder) NewID() *OutputBuilder {
+func (ob *Builder) NewID() *Builder {
 	ob.output.ID = uuid.New().String()
 	return ob
 }
 
 // Alias set alias
-func (ob *OutputBuilder) Alias(alias *string) *OutputBuilder {
+func (ob *Builder) Alias(alias *string) *Builder {
 	if alias != nil {
 		ob.output.Alias = *alias
 	}
@@ -68,13 +69,13 @@ func (ob *OutputBuilder) Alias(alias *string) *OutputBuilder {
 }
 
 // Spec set spec name
-func (ob *OutputBuilder) Spec(name string) *OutputBuilder {
+func (ob *Builder) Spec(name string) *Builder {
 	ob.output.Name = name
 	return ob
 }
 
 // Condition set condition
-func (ob *OutputBuilder) Condition(condition *string) *OutputBuilder {
+func (ob *Builder) Condition(condition *string) *Builder {
 	if condition != nil {
 		ob.output.Condition = *condition
 	}
@@ -82,7 +83,7 @@ func (ob *OutputBuilder) Condition(condition *string) *OutputBuilder {
 }
 
 // Props set props
-func (ob *OutputBuilder) Props(props model.OutputProps) *OutputBuilder {
+func (ob *Builder) Props(props model.OutputProps) *Builder {
 	if len(props) > 0 {
 		ob.output.Props = props
 	}
@@ -90,7 +91,7 @@ func (ob *OutputBuilder) Props(props model.OutputProps) *OutputBuilder {
 }
 
 // Enable set enabled status
-func (ob *OutputBuilder) Enable(status bool) *OutputBuilder {
+func (ob *Builder) Enable(status bool) *Builder {
 	ob.output.Enabled = status
 	return ob
 }
@@ -113,7 +114,7 @@ func NewOutputResponseFromDef(def *model.OutputDef) *app.OutputResponse {
 	}
 
 	for _, filterDef := range def.Filters {
-		result.Filters = append(result.Filters, NewFilterResponseFromDef(filterDef))
+		result.Filters = append(result.Filters, filter.NewFilterResponseFromDef(filterDef))
 	}
 
 	return &result

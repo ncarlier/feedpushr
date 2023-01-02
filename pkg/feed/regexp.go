@@ -1,4 +1,4 @@
-package common
+package feed
 
 import "regexp"
 

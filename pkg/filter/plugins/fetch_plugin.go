@@ -6,6 +6,7 @@ import (
 	"sync/atomic"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/expr"
+	"github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
@@ -61,7 +62,7 @@ func (p *FetchFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 		return nil, err
 	}
 
-	scraperProvider := scraper.NewInternalWebScraper()
+	scraperProvider := scraper.NewInternalWebScraper(http.DefaultClient)
 	if val, ok := def.Props["scraper"]; ok {
 		selectedScraper := fmt.Sprintf("%v", val)
 		if selectedScraper == "external" {
@@ -70,7 +71,7 @@ func (p *FetchFilterPlugin) Build(def *model.FilterDef) (model.Filter, error) {
 				return nil, fmt.Errorf("missing URL property")
 			}
 			uri := fmt.Sprintf("%v", val)
-			scraperProvider, err = scraper.NewExternalWebScraper(uri)
+			scraperProvider, err = scraper.NewExternalWebScraper(http.DefaultClient, uri)
 			if err != nil {
 				return nil, err
 			}

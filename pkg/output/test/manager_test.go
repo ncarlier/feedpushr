@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 	"github.com/ncarlier/feedpushr/v3/pkg/filter"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/output"
@@ -17,9 +16,9 @@ func TestNewManager(t *testing.T) {
 	defer teardown(t)
 
 	// New output definition
-	def := builder.NewOutputBuilder().FromURI("stdout://").NewID().Enable(true).Build()
+	def := output.NewBuilder().FromURI("stdout://").NewID().Enable(true).Build()
 	// New filter
-	f1 := builder.NewFilterBuilder().FromURI("title://?prefix=hello").NewID().Build()
+	f1 := filter.NewBuilder().FromURI("title://?prefix=hello").NewID().Build()
 	// New chain filter
 	chain, err := filter.NewChainFilter(model.FilterDefCollection{})
 	assert.Nil(t, err)

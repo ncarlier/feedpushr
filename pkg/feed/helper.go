@@ -1,4 +1,4 @@
-package html
+package feed
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"golang.org/x/net/html"
 )
 
@@ -52,7 +51,7 @@ func ExtractFeedLinks(content io.Reader, base string) (links []string, err error
 			}
 			if t.Data == "link" {
 				linkType, ok := extractProperty(t, "type")
-				if ok && common.ValidFeedContentType.MatchString(linkType) {
+				if ok && ValidFeedContentType.MatchString(linkType) {
 					if href, ok := extractProperty(t, "href"); ok {
 						if link, err := absoluteURL(base, href); err == nil {
 							links = append(links, link)

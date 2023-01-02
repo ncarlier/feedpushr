@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
+	"github.com/ncarlier/feedpushr/v3/pkg/feed"
 )
 
 var tests = []struct {
@@ -25,7 +25,7 @@ var tests = []struct {
 }
 
 func testFeedHandler(t *testing.T, url, title string) *aggregator.FeedHandler {
-	feed, err := builder.NewFeed(url, nil)
+	feed, err := feed.NewFeed(url, nil)
 	require.Nil(t, err)
 	require.NotNil(t, feed)
 	timeout := time.Duration(5) * time.Second

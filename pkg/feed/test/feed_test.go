@@ -3,9 +3,8 @@ package builder_test
 import (
 	"testing"
 
+	"github.com/ncarlier/feedpushr/v3/pkg/feed"
 	"github.com/stretchr/testify/require"
-
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 )
 
 var tt = struct {
@@ -19,7 +18,7 @@ var tt = struct {
 }
 
 func TestNewDirectFeed(t *testing.T) {
-	feed, err := builder.NewFeed(tt.xmlurl, nil)
+	feed, err := feed.NewFeed(tt.xmlurl, nil)
 	require.Nil(t, err)
 	require.NotNil(t, feed)
 	require.NotEmpty(t, feed.ID)
@@ -29,7 +28,7 @@ func TestNewDirectFeed(t *testing.T) {
 }
 
 func TestNewIndirectFeed(t *testing.T) {
-	feed, err := builder.NewFeed(tt.htmlurl, nil)
+	feed, err := feed.NewFeed(tt.htmlurl, nil)
 	require.Nil(t, err)
 	require.NotNil(t, feed)
 	require.NotEmpty(t, feed.ID)
@@ -39,14 +38,14 @@ func TestNewIndirectFeed(t *testing.T) {
 
 func TestBadNewFeed(t *testing.T) {
 	url := "https://keeper.nunux.org/doc/en/"
-	_, err := builder.NewFeed(url, nil)
+	_, err := feed.NewFeed(url, nil)
 	require.NotNil(t, err)
 }
 
 func TestNewFeedWithHubAndTags(t *testing.T) {
 	url := "https://medium.com/feed/netflix-techblog"
 	tags := "foo,/bar_barè,/foo"
-	feed, err := builder.NewFeed(url, &tags)
+	feed, err := feed.NewFeed(url, &tags)
 	require.Nil(t, err)
 	require.NotNil(t, feed)
 	require.NotEmpty(t, feed.ID)
@@ -58,6 +57,6 @@ func TestNewFeedWithHubAndTags(t *testing.T) {
 }
 
 func TestJoinTags(t *testing.T) {
-	require.Equal(t, "foo,bar", builder.JoinTags("foo", "bar"))
-	require.Equal(t, "bar,foo", builder.JoinTags("", "bar", "foo", ""))
+	require.Equal(t, "foo,bar", feed.JoinTags("foo", "bar"))
+	require.Equal(t, "bar,foo", feed.JoinTags("", "bar", "foo", ""))
 }

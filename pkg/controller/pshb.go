@@ -9,8 +9,8 @@ import (
 	"github.com/mmcdole/gofeed"
 	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
-	"github.com/ncarlier/feedpushr/v3/pkg/builder"
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
+	"github.com/ncarlier/feedpushr/v3/pkg/feed"
 	"github.com/ncarlier/feedpushr/v3/pkg/helper"
 	"github.com/ncarlier/feedpushr/v3/pkg/output"
 	"github.com/ncarlier/feedpushr/v3/pkg/store"
@@ -33,8 +33,8 @@ type PshbController struct {
 // NewPshbController creates a pshb controller.
 func NewPshbController(service *goa.Service, db store.DB, am *aggregator.Manager, outputs *output.Manager) *PshbController {
 	parser := gofeed.NewParser()
-	parser.AtomTranslator = builder.NewCustomAtomTranslator()
-	parser.RSSTranslator = builder.NewCustomRSSTranslator()
+	parser.AtomTranslator = feed.NewCustomAtomTranslator()
+	parser.RSSTranslator = feed.NewCustomRSSTranslator()
 	return &PshbController{
 		Controller: service.NewController("PshbController"),
 		db:         db,
@@ -61,14 +61,14 @@ func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
 		link = self
 	}
 
-	id := builder.GetFeedID(link)
-	feed, err := c.db.GetFeed(id)
+	id := feed.GetFeedID(link)
+	_feed, err := c.db.GetFeed(id)
 	if err != nil {
 		c.log.Warn().Str("id", id).Str("link", link).Msg("PSHB callback received an unknown feed link")
 		return ctx.BadRequest(goa.ErrBadRequest(err))
 	}
 
-	c.outputs.Push(builder.NewArticles(feed, parsedFeed.Items))
+	c.outputs.Push(feed.NewArticles(_feed, parsedFeed.Items))
 
 	return ctx.OK([]byte("ok"))
 }
