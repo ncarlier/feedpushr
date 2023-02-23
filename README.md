@@ -46,7 +46,21 @@ $ curl -sf https://gobinaries.com/ncarlier/feedpushr | sh
 **Or** use Docker:
 
 ```bash
-$ docker run -d --name=feedpushr ncarlier/feedpushr
+$ docker run -d --name=feedpushr -v ./feedpushr:/usr/local/share/feedpushr ncarlier/feedpushr
+```
+**Or** use Docker compose:
+
+```yml
+version: "3.9"
+services:
+  feedpushr:
+    container_name: feedpushr
+    image: ncarlier/feedpushr
+    volumes:
+    - ./feedpushr:/usr/local/share/feedpushr
+    ports:
+    - 8001:8080
+    restart: always
 ```
 
 ## Configuration
