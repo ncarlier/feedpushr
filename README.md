@@ -59,7 +59,7 @@ services:
     volumes:
     - ./feedpushr:/usr/local/share/feedpushr
     ports:
-    - 8001:8080
+    - 8080:8080
     restart: always
 ```
 
