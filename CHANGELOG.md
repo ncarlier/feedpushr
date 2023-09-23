@@ -1,5 +1,23 @@
 <a name=""></a>
-# [](https://github.com/ncarlier/feedpushr/compare/v3.3.1...v) (2022-10-01)
+# [](https://github.com/ncarlier/feedpushr/compare/v3.4.0...v) (2023-09-23)
+
+
+
+<a name="3.4.0"></a>
+# [3.4.0](https://github.com/ncarlier/feedpushr/compare/v3.3.1...v3.4.0) (2023-09-23)
+
+
+### Bug Fixes
+
+* **aggregator:** remove usage of default HTTP client ([e38a6ee](https://github.com/ncarlier/feedpushr/commit/e38a6ee)), closes [#68](https://github.com/ncarlier/feedpushr/issues/68)
+* **output:** add Date to email header ([bb26324](https://github.com/ncarlier/feedpushr/commit/bb26324)), closes [#70](https://github.com/ncarlier/feedpushr/issues/70)
+
+
+### Features
+
+* **contrib:** add language selector for mastodon plugin ([a914213](https://github.com/ncarlier/feedpushr/commit/a914213))
+* **ui:** configure client_id ([6dbbc3e](https://github.com/ncarlier/feedpushr/commit/6dbbc3e)), closes [#84](https://github.com/ncarlier/feedpushr/issues/84)
+* add conditional expression functions ([11d053f](https://github.com/ncarlier/feedpushr/commit/11d053f))
 
 
 
