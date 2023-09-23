@@ -51,7 +51,7 @@ body {
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/oidc-client/1.11.5/oidc-client.min.js"></script>
   <script>
-    var mgr = new Oidc.UserManager();
+    var mgr = new Oidc.UserManager({ response_mode: "query" });
     mgr.signinRedirectCallback().then(function () {
       document.getElementById("message").textContent = "redirecting...";
       var urlParams = new URLSearchParams(window.location.search);
