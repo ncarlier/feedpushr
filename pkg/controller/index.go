@@ -11,14 +11,16 @@ import (
 // IndexController implements the index resource.
 type IndexController struct {
 	*goa.Controller
-	issuer string
+	issuer   string
+	clientID string
 }
 
 // NewIndexController creates a index controller.
-func NewIndexController(service *goa.Service, issuer string) *IndexController {
+func NewIndexController(service *goa.Service, issuer, clientID string) *IndexController {
 	return &IndexController{
 		Controller: service.NewController("IndexController"),
 		issuer:     issuer,
+		clientID:   clientID,
 	}
 }
 
@@ -38,10 +40,11 @@ func (c *IndexController) Get(ctx *app.GetIndexContext) error {
 		}
 	}
 	res := &app.Info{
-		Name:    "feedpushr",
-		Desc:    "Feed aggregator daemon with sugar on top",
-		Version: version.Version,
-		Links:   links,
+		Name:     "feedpushr",
+		Desc:     "Feed aggregator daemon with sugar on top",
+		Version:  version.Version,
+		ClientID: c.clientID,
+		Links:    links,
 	}
 	return ctx.OK(res)
 }

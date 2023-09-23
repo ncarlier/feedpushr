@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v3/design
-// --out=/home/fr23972/workspace/fe/feedpushr/autogen
+// --out=/home/nicolas/workspace/feedpushr/autogen
 // --version=v1.4.3
 
 package app

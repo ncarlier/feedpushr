@@ -485,6 +485,7 @@ definitions:
       _links:
         Culpa mollitia modi consequatur maxime occaecati necessitatibus.:
           href: url
+      client_id: feedpushr-ui
       desc: Feed aggregator daemon with sugar on top
       name: feedpushr
       version: v3.0.0
@@ -496,6 +497,10 @@ definitions:
           Culpa mollitia modi consequatur maxime occaecati necessitatibus.:
             href: url
         type: object
+      client_id:
+        description: Default UI ClientID
+        example: feedpushr-ui
+        type: string
       desc:
         description: Service description
         example: Feed aggregator daemon with sugar on top
@@ -512,6 +517,7 @@ definitions:
     - name
     - desc
     - version
+    - client_id
     - _links
     title: 'Mediatype identifier: application/vnd.feedpushr.info.v2+json; view=default'
     type: object

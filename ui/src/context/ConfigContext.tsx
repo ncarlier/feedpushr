@@ -7,11 +7,13 @@ interface LinkType {
 
 interface ConfigContextType {
   version: string
+  client_id: string
   _links: Record<string, LinkType>
 }
 
 const defaultConfig: ConfigContextType = {
   version: 'snapshot',
+  client_id: 'feedpushr-ui',
   _links: {},
 }
 
@@ -37,7 +39,7 @@ const ConfigProvider = ({ children }: Props) => {
           return
         }
         throw new Error(res.statusText)
-      } catch (e) {
+      } catch (e: any) {
         setError(e)
       } finally {
         setLoading(false)

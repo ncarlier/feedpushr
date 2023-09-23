@@ -20,14 +20,18 @@ var InfoResponse = MediaType("application/vnd.feedpushr.info.v2+json", func() {
 		Attribute("version", String, "Service version", func() {
 			Example("v3.0.0")
 		})
+		Attribute("client_id", String, "Default UI ClientID", func() {
+			Example("feedpushr-ui")
+		})
 		Attribute("_links", HashOf(String, HALLink), "HAL links")
-		Required("name", "desc", "version", "_links")
+		Required("name", "desc", "version", "client_id", "_links")
 	})
 
 	View("default", func() {
 		Attribute("name")
 		Attribute("desc")
 		Attribute("version")
+		Attribute("client_id")
 		Attribute("_links")
 	})
 })

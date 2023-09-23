@@ -142,7 +142,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	}
 
 	// Mount "index" controller
-	app.MountIndexController(srv, controller.NewIndexController(srv, issuer))
+	app.MountIndexController(srv, controller.NewIndexController(srv, issuer, conf.ClientID))
 	// Mount "feed" controller
 	app.MountFeedController(srv, controller.NewFeedController(srv, db, am))
 	// Mount "filter" controller

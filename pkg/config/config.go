@@ -22,6 +22,7 @@ type Config struct {
 	LogOutput          string        `flag:"log-output" desc:"Log output (STDOUT if empty)" default:""`
 	Authn              string        `flag:"authn" desc:"Authentication method (Basic HTTP with password file, OIDC issuer URL or none)" default:".htpasswd"`
 	AuthorizedUsername string        `flag:"authorized-username" desc:"Authorized username" default:"*"`
+	ClientID           string        `flag:"client-id" desc:"UI default ClientID" default:"feedpushr-ui"`
 	SentryDSN          string        `flag:"sentry-dsn" desc:"Sentry DSN URL" default:""`
 	ExploreProvider    string        `flag:"explore-provider" desc:"Provider used to find RSS feeds" default:"default"`
 	ServiceName        string        `flag:"service-name" desc:"Service name used by the service registry" default:"feedpushr"`

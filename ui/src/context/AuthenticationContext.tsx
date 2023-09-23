@@ -15,7 +15,7 @@ const AuthNProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error>()
   const [user, setUser] = useState<User | null>(null)
-  const { _links } = useContext(ConfigContext)
+  const { _links, client_id } = useContext(ConfigContext)
 
   useEffect(() => {
     const { origin, href, pathname } = document.location
@@ -29,7 +29,7 @@ const AuthNProvider = ({ children }: Props) => {
       }
       const client = new OIDCClient({
         authority: issuer.href,
-        client_id: 'feedpushr-ui',
+        client_id,
         redirect_uri: `${origin}${pathname}signin-callback.html?redirect=${redirect}`,
         silent_redirect_uri: `${origin}${pathname}silent-renew.html`,
         post_logout_redirect_uri: origin + pathname,
@@ -43,7 +43,7 @@ const AuthNProvider = ({ children }: Props) => {
           user = await client.renewToken()
         }
         setUser(user)
-      } catch (e) {
+      } catch (e: any) {
         setError(e)
       } finally {
         setLoading(false)

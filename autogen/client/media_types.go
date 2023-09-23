@@ -5,7 +5,7 @@
 // Command:
 // $ goagen
 // --design=github.com/ncarlier/feedpushr/v3/design
-// --out=/home/fr23972/workspace/fe/feedpushr/autogen
+// --out=/home/nicolas/workspace/feedpushr/autogen
 // --version=v1.4.3
 
 package client
@@ -476,6 +476,8 @@ func (c *Client) DecodeHALLink(resp *http.Response) (*HALLink, error) {
 type Info struct {
 	// HAL links
 	Links map[string]*HALLink `form:"_links" json:"_links" yaml:"_links" xml:"_links"`
+	// Default UI ClientID
+	ClientID string `form:"client_id" json:"client_id" yaml:"client_id" xml:"client_id"`
 	// Service description
 	Desc string `form:"desc" json:"desc" yaml:"desc" xml:"desc"`
 	// Service name
@@ -494,6 +496,9 @@ func (mt *Info) Validate() (err error) {
 	}
 	if mt.Version == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "version"))
+	}
+	if mt.ClientID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "client_id"))
 	}
 	if mt.Links == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "_links"))
