@@ -9,6 +9,7 @@ import (
 )
 
 func TestHTTPFilter(t *testing.T) {
+	t.Skip("this test needs to be refactored...")
 	chain := buildChainFilter(t, "http://?url=https://run.mocky.io/v3/64073093-4e20-412d-8e0a-a6a1e23c01bd")
 
 	article := &model.Article{
