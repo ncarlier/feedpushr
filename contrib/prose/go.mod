@@ -8,7 +8,7 @@ require (
 )
 
 require (
-	github.com/antonmedv/expr v1.9.0 // indirect
+	github.com/antonmedv/expr v1.15.3 // indirect
 	github.com/deckarep/golang-set v1.7.1 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190910122728-9d188e94fb99 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -16,9 +16,8 @@ require (
 	github.com/mingrammer/commonregex v1.0.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/neurosnap/sentences v1.0.7 // indirect
-	github.com/rs/zerolog v1.28.0 // indirect
-	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 // indirect
-	golang.org/x/sys v0.3.0 // indirect
+	github.com/rs/zerolog v1.30.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
 	gonum.org/v1/gonum v0.7.0 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect
 )

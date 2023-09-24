@@ -734,6 +734,8 @@ github.com/ncarlier/readflow v0.0.0-20230102194251-8dcde2333a3e h1:S7s8n2+VpWTrv
 github.com/ncarlier/readflow v0.0.0-20230102194251-8dcde2333a3e/go.mod h1:WK7z7pbwgu2+hdtiv+2Vl51WTo7rDjTUPr/sQu48MaY=
 github.com/ncarlier/readflow v0.2.0 h1:oPdP2eO717+8gnhf72Rd3Pe2Rp0NbpB8IVOP0YBLpho=
 github.com/ncarlier/readflow v0.2.0/go.mod h1:4bygSVzhn13f7D/MCEJwnUzHp4q90eT/O3UTyzFe7PA=
+github.com/ncarlier/readflow v0.2.1 h1:eqPj+VRe2NP1RX47KpoesZRh4Qa4sEhaIVVrTo8n5DU=
+github.com/ncarlier/readflow v0.2.1/go.mod h1:4bygSVzhn13f7D/MCEJwnUzHp4q90eT/O3UTyzFe7PA=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=

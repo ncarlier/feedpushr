@@ -29,7 +29,6 @@ func NewJWTAuthenticator(issuer, username string) (*JWTAuthenticator, error) {
 	if err != nil {
 		return nil, err
 	}
-	go keystore.Start()
 	return &JWTAuthenticator{
 		issuer:   issuer,
 		username: username,
