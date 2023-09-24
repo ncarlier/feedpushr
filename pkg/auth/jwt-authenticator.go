@@ -25,10 +25,15 @@ func NewJWTAuthenticator(issuer, username string) (*JWTAuthenticator, error) {
 	if err != nil {
 		return nil, err
 	}
+	keystore, err := oidc.NewOIDCKeystore(cfg)
+	if err != nil {
+		return nil, err
+	}
+	go keystore.Start()
 	return &JWTAuthenticator{
 		issuer:   issuer,
 		username: username,
-		keystore: oidc.NewOIDCKeystore(cfg),
+		keystore: keystore,
 		logger:   log.With().Str("component", "jwt-autenticator").Logger(),
 	}, nil
 }
