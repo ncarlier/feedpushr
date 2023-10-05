@@ -1,6 +1,7 @@
 release/
 data.db
 TODO.md
+CHANGELOG.md
 var/assets/ui/
 .vscode/
 data.idx/

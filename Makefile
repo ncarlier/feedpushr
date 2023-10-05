@@ -130,13 +130,12 @@ image:
 	docker build --rm -t ncarlier/$(APPNAME) .
 .PHONY: image
 
-## Generate changelog
-changelog:
+# Generate changelog
+CHANGELOG.md:
 	standard-changelog --first-release
-.PHONY: changelog
 
 ## Create archive
-archive:
+archive: release/$(MAIN_EXE) CHANGELOG.md
 	echo ">>> Creating release/$(ARCHIVE) archive..."
 	tar czf release/$(ARCHIVE) \
 		--exclude=*.tgz \

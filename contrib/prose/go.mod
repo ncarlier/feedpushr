@@ -12,11 +12,11 @@ require (
 	github.com/deckarep/golang-set v1.7.1 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190910122728-9d188e94fb99 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.17 // indirect
+	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mingrammer/commonregex v1.0.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/neurosnap/sentences v1.0.7 // indirect
-	github.com/rs/zerolog v1.30.0 // indirect
+	github.com/rs/zerolog v1.31.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 	gonum.org/v1/gonum v0.7.0 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect
@@ -24,4 +24,4 @@ require (
 
 replace github.com/ncarlier/feedpushr/v3 => ../..
 
-go 1.17
+go 1.19
