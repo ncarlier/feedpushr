@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/smtp"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -77,7 +78,7 @@ var emailSpec = model.Spec{
 		},
 		{
 			Name: "to",
-			Desc: "To",
+			Desc: "To (comma-separated list of email addresses)",
 			Type: model.Text,
 		},
 		{
@@ -237,8 +238,11 @@ func (op *EmailOutputProvider) Send(article *model.Article) (bool, error) {
 	if err := client.Mail(op.from); err != nil {
 		return false, err
 	}
-	if err := client.Rcpt(op.to); err != nil {
-		return false, err
+	tos := strings.Split(op.to, ",")
+	for _, to := range tos {
+		if err := client.Rcpt(to); err != nil {
+			return false, err
+		}
 	}
 
 	// Send the email body.
