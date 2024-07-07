@@ -12,7 +12,7 @@ import (
 
 // Manager of the feed aggregators
 type Manager struct {
-	feedAggregators   map[string]*FeedAggregator
+	feedAggregators   sync.Map
 	shutdownWaitGroup sync.WaitGroup
 	outputs           *output.Manager
 	log               zerolog.Logger
@@ -24,7 +24,7 @@ type Manager struct {
 // NewAggregatorManager creates a new aggregator manager
 func NewAggregatorManager(outputs *output.Manager, delay time.Duration, timeout time.Duration, callbackURL string) *Manager {
 	return &Manager{
-		feedAggregators: make(map[string]*FeedAggregator),
+		feedAggregators: sync.Map{},
 		outputs:         outputs,
 		log:             log.With().Str("component", "aggregator").Logger(),
 		delay:           delay,
@@ -35,7 +35,13 @@ func NewAggregatorManager(outputs *output.Manager, delay time.Duration, timeout 
 
 // GetFeedAggregator returns a feed aggregator
 func (m *Manager) GetFeedAggregator(id string) *FeedAggregator {
-	return m.feedAggregators[id]
+	fa, found := m.feedAggregators.Load(id)
+	if found {
+		return fa.(*FeedAggregator)
+	} else {
+		m.log.Debug().Str("source", id).Msg("feed aggregator not found")
+		return nil
+	}
 }
 
 // RegisterFeedAggregator register and start a new feed aggregator
@@ -46,7 +52,7 @@ func (m *Manager) RegisterFeedAggregator(feed *model.FeedDef, delay time.Duratio
 		return fa
 	}
 	fa = NewFeedAggregator(feed, m.outputs, m.delay, m.timeout, m.callbackURL)
-	m.feedAggregators[feed.ID] = fa
+	m.feedAggregators.Store(feed.ID, fa)
 	m.shutdownWaitGroup.Add(1)
 	if delay > 0 {
 		fa.StartWithDelay(delay)
@@ -65,8 +71,8 @@ func (m *Manager) UnRegisterFeedAggregator(id string) {
 		return
 	}
 	fa.Stop()
-	m.feedAggregators[id] = nil
-	delete(m.feedAggregators, id)
+	m.feedAggregators.Store(id, nil)
+	m.feedAggregators.Delete(id)
 	m.shutdownWaitGroup.Done()
 	m.log.Debug().Str("feed", id).Msg("feed aggregator unregistered")
 }
@@ -86,11 +92,13 @@ func (m *Manager) RestartFeedAggregator(id string, delay time.Duration) {
 func (m *Manager) Shutdown() {
 	m.log.Debug().Msg("shutting down all aggregators")
 	// Build temporary list of IDs
-	// This is necessary because feddAggregators will be mutate
-	ids := make([]string, 0, len(m.feedAggregators))
-	for id := range m.feedAggregators {
+	// This is necessary because feddAggregators will be mutated
+	var ids []string
+	m.feedAggregators.Range(func(key any, value any) bool {
+		id := key.(string)
 		ids = append(ids, id)
-	}
+		return true
+	})
 	for _, id := range ids {
 		go m.UnRegisterFeedAggregator(id)
 	}
