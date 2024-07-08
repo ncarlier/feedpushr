@@ -19,8 +19,8 @@ var tests = []struct {
 		title: "Le Monde.fr - Actualités et Infos en France et dans le monde",
 	},
 	{
-		URL:   "https://www.reddit.com/r/selfhosted.rss",
-		title: "Self-Hosted Alternatives to Popular Services",
+		URL:   "http://rss.cnn.com/rss/edition.rss",
+		title: "CNN.com - RSS Channel - App International Edition",
 	},
 }
 
