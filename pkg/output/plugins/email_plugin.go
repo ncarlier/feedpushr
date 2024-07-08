@@ -82,6 +82,11 @@ var emailSpec = model.Spec{
 			Type: model.Text,
 		},
 		{
+			Name: "bcc",
+			Desc: "Bcc (comma-separated list of email addresses)",
+			Type: model.Text,
+		},
+		{
 			Name: "subject",
 			Desc: "Subject format (by default: \"[feedpushr] {{.Title}}\"",
 			Type: model.Text,
@@ -121,8 +126,9 @@ func (p *EmailOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
 		return nil, fmt.Errorf("missing From property")
 	}
 	to := def.Props.Get("to")
-	if to == "" {
-		return nil, fmt.Errorf("missing To property")
+	bcc := def.Props.Get("bcc")
+	if to == "" && bcc == "" {
+		return nil, fmt.Errorf("missing To or Bcc property")
 	}
 	formatValue := defaultEmailBodyFormat
 	if formatProp, ok := def.Props["format"]; ok && formatProp != "" {
@@ -153,6 +159,7 @@ func (p *EmailOutputPlugin) Build(def *model.OutputDef) (model.Output, error) {
 		conn:           conn,
 		from:           from,
 		to:             to,
+		bcc:            bcc,
 	}, nil
 }
 
@@ -167,6 +174,7 @@ type EmailOutputProvider struct {
 	conn           string
 	from           string
 	to             string
+	bcc            string
 }
 
 func (op *EmailOutputProvider) buildEmailPayload(subject, body string) string {
@@ -238,9 +246,13 @@ func (op *EmailOutputProvider) Send(article *model.Article) (bool, error) {
 	if err := client.Mail(op.from); err != nil {
 		return false, err
 	}
-	tos := strings.Split(op.to, ",")
-	for _, to := range tos {
-		if err := client.Rcpt(to); err != nil {
+	recipients := strings.Split(op.to, ",")
+	recipients = append(recipients, strings.Split(op.bcc, ",")[:]...)
+	for _, recipient := range recipients {
+		if recipient == "" {
+			continue
+		}
+		if err := client.Rcpt(recipient); err != nil {
 			return false, err
 		}
 	}
