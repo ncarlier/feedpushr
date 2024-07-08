@@ -71,7 +71,6 @@ func (m *Manager) UnRegisterFeedAggregator(id string) {
 		return
 	}
 	fa.Stop()
-	m.feedAggregators.Store(id, nil)
 	m.feedAggregators.Delete(id)
 	m.shutdownWaitGroup.Done()
 	m.log.Debug().Str("feed", id).Msg("feed aggregator unregistered")
