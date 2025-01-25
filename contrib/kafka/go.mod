@@ -12,4 +12,6 @@ require (
 
 replace github.com/ncarlier/feedpushr/v3 => ../..
 
-go 1.19
+go 1.23
+
+toolchain go1.23.4

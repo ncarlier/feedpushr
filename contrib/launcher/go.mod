@@ -1,6 +1,8 @@
 module github.com/ncarlier/feedpushr/v3/contrib/launcher
 
-go 1.19
+go 1.23
+
+toolchain go1.23.4
 
 require (
 	github.com/getlantern/systray v1.2.1
@@ -9,7 +11,7 @@ require (
 
 require (
 	github.com/getlantern/context v0.0.0-20220418194847-3d5e7a086201 // indirect
-	github.com/getlantern/errors v1.0.3 // indirect
+	github.com/getlantern/errors v1.0.4 // indirect
 	github.com/getlantern/golog v0.0.0-20190830074920-4ef2e798c2d7 // indirect
 	github.com/getlantern/hex v0.0.0-20190417191902-c6586a6fe0b7 // indirect
 	github.com/getlantern/hidden v0.0.0-20201229170000-e66e7f878730 // indirect
@@ -20,7 +22,7 @@ require (
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	go.opentelemetry.io/otel v1.9.0 // indirect
 	go.opentelemetry.io/otel/trace v1.9.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 )
 
 replace github.com/ncarlier/feedpushr/v3 => ../..

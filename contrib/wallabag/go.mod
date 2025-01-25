@@ -7,11 +7,13 @@ require (
 
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
-	golang.org/x/net v0.15.0 // indirect
+	golang.org/x/net v0.34.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 )
 
 replace github.com/ncarlier/feedpushr/v3 => ../..
 
-go 1.19
+go 1.23
+
+toolchain go1.23.4
