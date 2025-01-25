@@ -2,7 +2,7 @@ package opml
 
 import (
 	"encoding/xml"
-	"io/ioutil"
+	"os"
 	"time"
 )
 
@@ -52,7 +52,7 @@ func NewOPML(title string) *OPML {
 
 // NewOPMLFromFile creates a new OPML object from a file.
 func NewOPMLFromFile(filename string) (*OPML, error) {
-	b, err := ioutil.ReadFile(filename)
+	b, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}

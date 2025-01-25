@@ -38,10 +38,9 @@ func (m *Manager) GetFeedAggregator(id string) *FeedAggregator {
 	fa, found := m.feedAggregators.Load(id)
 	if found {
 		return fa.(*FeedAggregator)
-	} else {
-		m.log.Debug().Str("source", id).Msg("feed aggregator not found")
-		return nil
 	}
+	m.log.Debug().Str("source", id).Msg("feed aggregator not found")
+	return nil
 }
 
 // RegisterFeedAggregator register and start a new feed aggregator
