@@ -26,18 +26,15 @@ func NewJWTAuthenticator(issuer, username string) (*JWTAuthenticator, error) {
 	if _, err := url.ParseRequestURI(issuer); err != nil {
 		return nil, fmt.Errorf("invalid issuer URL: %w", err)
 	}
-	cfg, err := oidc.GetOIDCConfiguration(issuer)
+	client, err := oidc.NewOIDCClient(issuer, "", "")
 	if err != nil {
 		return nil, err
 	}
-	keystore, err := oidc.NewOIDCKeystore(cfg)
-	if err != nil {
-		return nil, err
-	}
+
 	return &JWTAuthenticator{
 		issuer:   issuer,
 		username: username,
-		keystore: keystore,
+		keystore: client.Keystore,
 		logger:   log.With().Str("component", "jwt-autenticator").Logger(),
 	}, nil
 }
