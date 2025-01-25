@@ -2,7 +2,9 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/dgrijalva/jwt-go"
 	jwtRequest "github.com/dgrijalva/jwt-go/request"
@@ -21,6 +23,9 @@ type JWTAuthenticator struct {
 
 // NewJWTAuthenticator create new JWT authenticator
 func NewJWTAuthenticator(issuer, username string) (*JWTAuthenticator, error) {
+	if _, err := url.ParseRequestURI(issuer); err != nil {
+		return nil, fmt.Errorf("invalid issuer URL: %w", err)
+	}
 	cfg, err := oidc.GetOIDCConfiguration(issuer)
 	if err != nil {
 		return nil, err

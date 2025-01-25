@@ -3,10 +3,12 @@ package auth
 import (
 	"context"
 	"net/http"
-	"net/url"
+	"strings"
 
 	"github.com/goadesign/goa"
 )
+
+const noAuth = "none"
 
 func isWhiteListed(path string, whitelist []string) bool {
 	for _, allowed := range whitelist {
@@ -33,12 +35,13 @@ func NewMiddleware(authn Authenticator, whitelist ...string) goa.Middleware {
 
 // NewAuthenticator create new authenticator
 func NewAuthenticator(uri, username string) (Authenticator, error) {
-	if uri == "none" {
+	if uri == noAuth {
 		return nil, nil
 	}
-	_, err := url.ParseRequestURI(uri)
-	if err == nil {
+
+	if strings.HasPrefix(uri, "https://") {
 		return NewJWTAuthenticator(uri, username)
 	}
+
 	return NewHtpasswdFromFile(uri, username)
 }
