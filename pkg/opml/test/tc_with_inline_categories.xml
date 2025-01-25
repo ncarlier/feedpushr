@@ -6,7 +6,7 @@
     </head>
     <body>
         <outline text="" type="rss" category="/Computer Science" xmlUrl="http://martinfowler.com/feed.atom" title="Martin Fowler"></outline>
-        <outline text="" type="rss" category="/Games" title="NoFrag" xmlUrl="http://www.nofrag.com/nofrag.rss" htmlUrl="https://nofrag.com"/>
+        <outline text="" type="rss" category="/Games" title="NoFrag" xmlUrl="https://nofrag.com/feed/" htmlUrl="https://nofrag.com"/>
         <outline text="" type="rss" category="/Computer Science" title="Hashicorp Blog" xmlUrl="https://www.hashicorp.com/blog/feed.xml" />
     </body>
 </opml>

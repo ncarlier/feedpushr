@@ -22,7 +22,7 @@ var testCases = []struct {
 	url string
 	tag string
 }{
-	{"http://www.nofrag.com/nofrag.rss", "games"},
+	{"https://nofrag.com/feed/", "games"},
 	{"https://www.hashicorp.com/blog/feed.xml", "computer_science"},
 }
 

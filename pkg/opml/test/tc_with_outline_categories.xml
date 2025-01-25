@@ -10,7 +10,7 @@
             <outline text="" type="rss" xmlUrl="https://www.hashicorp.com/blog/feed.xml" title="Hashicorp Blog"></outline>
         </outline>
         <outline text="games" title="Games">
-            <outline type="rss" text="NoFrag" title="NoFrag" xmlUrl="http://www.nofrag.com/nofrag.rss" htmlUrl="https://nofrag.com"/>
+            <outline type="rss" text="NoFrag" title="NoFrag" xmlUrl="https://nofrag.com/feed/" htmlUrl="https://nofrag.com"/>
         </outline>
     </body>
 </opml>
