@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/blevesearch/bleve"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/getlantern/errors"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/rs/zerolog/log"

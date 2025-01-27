@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/blevesearch/bleve"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/pkg/errors"
 	bolt "go.etcd.io/bbolt"

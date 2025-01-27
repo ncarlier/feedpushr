@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/dgrijalva/jwt-go"
-	jwtRequest "github.com/dgrijalva/jwt-go/request"
+	"github.com/golang-jwt/jwt/v5"
+	jwtRequest "github.com/golang-jwt/jwt/v5/request"
 	"github.com/ncarlier/readflow/pkg/oidc"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
