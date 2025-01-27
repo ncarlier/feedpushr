@@ -43,7 +43,8 @@ BUILT:=`date`
 define LDFLAGS
 -X '$(PKG_VERSION).Version=$(VERSION)' \
 -X '$(PKG_VERSION).GitCommit=$(GIT_COMMIT)' \
--X '$(PKG_VERSION).Built=$(BUILT)'
+-X '$(PKG_VERSION).Built=$(BUILT)' \
+-s -w -buildid=
 endef
 
 all: build
