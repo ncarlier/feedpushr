@@ -51,13 +51,14 @@ $ docker run -d --name=feedpushr ncarlier/feedpushr
 **Or** use Docker compose:
 
 ```yml
-version: "3"
 services:
   feedpushr:
     image: ncarlier/feedpushr
     ports:
-    - 8080:8080
+      - 8080:8080
     restart: always
+    volumes:  # If you want to make data persistent 
+      - ./feedpushr-data:/var/opt/feedpushr
 ```
 
 ## Configuration
