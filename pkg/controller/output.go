@@ -40,7 +40,7 @@ func (c *OutputController) Create(ctx *app.CreateOutputContext) error {
 	if err != nil {
 		return err
 	}
-	def, err = c.db.SaveOutput(processor.GetDef())
+	def, err = c.db.SaveOutput(ctx, processor.GetDef())
 	if err != nil {
 		// cleanup previous created processor
 		_def := processor.GetDef()
@@ -59,7 +59,7 @@ func (c *OutputController) Delete(ctx *app.DeleteOutputContext) error {
 	if err != nil {
 		return ctx.NotFound()
 	}
-	_, err = c.db.DeleteOutput(def.ID)
+	_, err = c.db.DeleteOutput(ctx, def.ID)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (c *OutputController) Update(ctx *app.UpdateOutputContext) error {
 		return err
 	}
 
-	def, err := c.db.SaveOutput(processor.GetDef())
+	def, err := c.db.SaveOutput(ctx, processor.GetDef())
 	if err != nil {
 		return err
 	}

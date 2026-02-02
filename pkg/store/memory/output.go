@@ -1,12 +1,14 @@
 package store
 
 import (
+	"context"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // ClearOutputs clear all outputs
-func (store *InMemoryStore) ClearOutputs() error {
+func (store *InMemoryStore) ClearOutputs(ctx context.Context) error {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
 	store.outputs = make(map[string]model.OutputDef)
@@ -14,7 +16,7 @@ func (store *InMemoryStore) ClearOutputs() error {
 }
 
 // GetOutput returns a stored Output.
-func (store *InMemoryStore) GetOutput(ID string) (*model.OutputDef, error) {
+func (store *InMemoryStore) GetOutput(ctx context.Context, ID string) (*model.OutputDef, error) {
 	output, exists := store.outputs[ID]
 	if !exists {
 		return nil, common.ErrOutputNotFound
@@ -23,10 +25,10 @@ func (store *InMemoryStore) GetOutput(ID string) (*model.OutputDef, error) {
 }
 
 // DeleteOutput removes a output.
-func (store *InMemoryStore) DeleteOutput(ID string) (*model.OutputDef, error) {
+func (store *InMemoryStore) DeleteOutput(ctx context.Context, ID string) (*model.OutputDef, error) {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
-	output, err := store.GetOutput(ID)
+	output, err := store.GetOutput(ctx, ID)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +37,7 @@ func (store *InMemoryStore) DeleteOutput(ID string) (*model.OutputDef, error) {
 }
 
 // SaveOutput stores a output.
-func (store *InMemoryStore) SaveOutput(output model.OutputDef) (*model.OutputDef, error) {
+func (store *InMemoryStore) SaveOutput(ctx context.Context, output model.OutputDef) (*model.OutputDef, error) {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
 	store.outputs[output.ID] = output
@@ -43,7 +45,7 @@ func (store *InMemoryStore) SaveOutput(output model.OutputDef) (*model.OutputDef
 }
 
 // ListOutputs returns a paginated list of outputs.
-func (store *InMemoryStore) ListOutputs(page, limit int) (*model.OutputDefCollection, error) {
+func (store *InMemoryStore) ListOutputs(ctx context.Context, page, limit int) (*model.OutputDefCollection, error) {
 	outputs := model.OutputDefCollection{}
 	startOffset := (page - 1) * limit
 	offset := 0
@@ -65,7 +67,7 @@ func (store *InMemoryStore) ListOutputs(page, limit int) (*model.OutputDefCollec
 }
 
 // ForEachOutput iterates over all outputs
-func (store *InMemoryStore) ForEachOutput(cb func(*model.OutputDef) error) error {
+func (store *InMemoryStore) ForEachOutput(ctx context.Context, cb func(*model.OutputDef) error) error {
 	store.outputsLock.RLock()
 	defer store.outputsLock.RUnlock()
 	for _, output := range store.outputs {

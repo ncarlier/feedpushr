@@ -1,15 +1,19 @@
 package store
 
-import "github.com/ncarlier/feedpushr/v3/pkg/model"
+import (
+	"context"
+
+	"github.com/ncarlier/feedpushr/v3/pkg/model"
+)
 
 // BuildInitialIndex create initial index (only if empty)
-func (store *InMemoryStore) BuildInitialIndex() error {
+func (store *InMemoryStore) BuildInitialIndex(ctx context.Context) error {
 	// NOT IMPLEMENTED
 	return nil
 }
 
 // SearchFeeds search feeds using search index
-func (store *InMemoryStore) SearchFeeds(query string, page, size int) (*model.FeedDefPage, error) {
+func (store *InMemoryStore) SearchFeeds(ctx context.Context, query string, page, size int) (*model.FeedDefPage, error) {
 	result := model.FeedDefPage{
 		Page: page,
 		Size: size,

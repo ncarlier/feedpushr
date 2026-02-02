@@ -36,7 +36,7 @@ func NewOpmlController(service *goa.Service, db store.DB) *OpmlController {
 func (c *OpmlController) Get(ctx *app.GetOpmlContext) error {
 	result := opml.NewOPML("Feedpushr exports")
 
-	err := c.db.ForEachFeed(func(feed *model.FeedDef) error {
+	err := c.db.ForEachFeed(ctx, func(feed *model.FeedDef) error {
 		outline := opml.Outline{}
 		outline.Title = feed.Title
 		outline.Type = "rss"

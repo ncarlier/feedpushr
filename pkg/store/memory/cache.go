@@ -1,13 +1,14 @@
 package store
 
 import (
+	"context"
 	"time"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // GetFromCache returns a cached item.
-func (store *InMemoryStore) GetFromCache(key string) (*model.CacheItem, error) {
+func (store *InMemoryStore) GetFromCache(ctx context.Context, key string) (*model.CacheItem, error) {
 	item, exists := store.cache[key]
 	if !exists {
 		return nil, nil
@@ -16,7 +17,7 @@ func (store *InMemoryStore) GetFromCache(key string) (*model.CacheItem, error) {
 }
 
 // StoreToCache stores a item into the cache.
-func (store *InMemoryStore) StoreToCache(key string, item *model.CacheItem) error {
+func (store *InMemoryStore) StoreToCache(ctx context.Context, key string, item *model.CacheItem) error {
 	store.cacheLock.RLock()
 	defer store.cacheLock.RUnlock()
 	store.cache[key] = *item
@@ -24,7 +25,7 @@ func (store *InMemoryStore) StoreToCache(key string, item *model.CacheItem) erro
 }
 
 // ClearCache removes all items from the cache.
-func (store *InMemoryStore) ClearCache() error {
+func (store *InMemoryStore) ClearCache(ctx context.Context) error {
 	store.cacheLock.RLock()
 	defer store.cacheLock.RUnlock()
 	store.cache = make(map[string]model.CacheItem)
@@ -32,7 +33,7 @@ func (store *InMemoryStore) ClearCache() error {
 }
 
 // EvictFromCache manage the cache eviction.
-func (store *InMemoryStore) EvictFromCache(before time.Time) error {
+func (store *InMemoryStore) EvictFromCache(ctx context.Context, before time.Time) error {
 	store.cacheLock.RLock()
 	defer store.cacheLock.RUnlock()
 	for key, item := range store.cache {

@@ -62,7 +62,7 @@ func (c *PshbController) Pub(ctx *app.PubPshbContext) error {
 	}
 
 	id := feed.GetFeedID(link)
-	_feed, err := c.db.GetFeed(id)
+	_feed, err := c.db.GetFeed(ctx, id)
 	if err != nil {
 		c.log.Warn().Str("id", id).Str("link", link).Msg("PSHB callback received an unknown feed link")
 		return ctx.BadRequest(goa.ErrBadRequest(err))
@@ -81,7 +81,7 @@ func (c *PshbController) Sub(ctx *app.SubPshbContext) error {
 	id := hex.EncodeToString(hasher.Sum(nil))
 
 	// Get feed from DB
-	_, err := c.db.GetFeed(id)
+	_, err := c.db.GetFeed(ctx, id)
 	if err != nil {
 		// Acknowledge the unsubscribtion
 		if err == common.ErrFeedNotFound && ctx.HubMode == "unsubscribe" {

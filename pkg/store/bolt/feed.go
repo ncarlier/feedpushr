@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
@@ -14,7 +15,7 @@ import (
 var FeedBucketName = []byte("FEED")
 
 // ExistsFeed returns true if a feed exists for this url.
-func (store *BoltStore) ExistsFeed(url string) bool {
+func (store *BoltStore) ExistsFeed(ctx context.Context, url string) bool {
 	hasher := md5.New()
 	hasher.Write([]byte(url))
 	id := hex.EncodeToString(hasher.Sum(nil))
@@ -27,7 +28,7 @@ func (store *BoltStore) ExistsFeed(url string) bool {
 }
 
 // GetFeed returns a stored Feed.
-func (store *BoltStore) GetFeed(id string) (*model.FeedDef, error) {
+func (store *BoltStore) GetFeed(ctx context.Context, id string) (*model.FeedDef, error) {
 	var result model.FeedDef
 	err := store.get(FeedBucketName, []byte(id), &result)
 	if err != nil {
@@ -40,8 +41,8 @@ func (store *BoltStore) GetFeed(id string) (*model.FeedDef, error) {
 }
 
 // DeleteFeed removes a feed.
-func (store *BoltStore) DeleteFeed(id string) (*model.FeedDef, error) {
-	feed, err := store.GetFeed(id)
+func (store *BoltStore) DeleteFeed(ctx context.Context, id string) (*model.FeedDef, error) {
+	feed, err := store.GetFeed(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -57,12 +58,12 @@ func (store *BoltStore) DeleteFeed(id string) (*model.FeedDef, error) {
 	return feed, nil
 }
 
-func (store *BoltStore) assertFeedQuota(feed *model.FeedDef) error {
+func (store *BoltStore) assertFeedQuota(ctx context.Context, feed *model.FeedDef) error {
 	if store.quota.MaxNbFeeds > 0 {
 		if exists, err := store.exists(FeedBucketName, []byte(feed.ID)); err != nil {
 			return err
 		} else if !exists {
-			total, err := store.CountFeeds()
+			total, err := store.CountFeeds(ctx)
 			if err != nil {
 				return err
 			}
@@ -75,8 +76,8 @@ func (store *BoltStore) assertFeedQuota(feed *model.FeedDef) error {
 }
 
 // SaveFeed stores a feed.
-func (store *BoltStore) SaveFeed(feed *model.FeedDef) error {
-	if err := store.assertFeedQuota(feed); err != nil {
+func (store *BoltStore) SaveFeed(ctx context.Context, feed *model.FeedDef) error {
+	if err := store.assertFeedQuota(ctx, feed); err != nil {
 		return err
 	}
 	err := store.save(FeedBucketName, []byte(feed.ID), &feed)
@@ -87,13 +88,13 @@ func (store *BoltStore) SaveFeed(feed *model.FeedDef) error {
 }
 
 // ListFeeds returns a paginated list of feeds.
-func (store *BoltStore) ListFeeds(page, size int) (*model.FeedDefPage, error) {
+func (store *BoltStore) ListFeeds(ctx context.Context, page, size int) (*model.FeedDefPage, error) {
 	bufs, err := store.allAsRaw(FeedBucketName, page, size)
 	if err != nil {
 		return nil, err
 	}
 
-	total, err := store.CountFeeds()
+	total, err := store.CountFeeds(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -114,12 +115,12 @@ func (store *BoltStore) ListFeeds(page, size int) (*model.FeedDefPage, error) {
 }
 
 // CountFeeds returns total numer of feeds.
-func (store *BoltStore) CountFeeds() (int, error) {
+func (store *BoltStore) CountFeeds(ctx context.Context) (int, error) {
 	return store.count(FeedBucketName)
 }
 
 // ForEachFeed iterates over all feeds
-func (store *BoltStore) ForEachFeed(cb func(*model.FeedDef) error) error {
+func (store *BoltStore) ForEachFeed(ctx context.Context, cb func(*model.FeedDef) error) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket(FeedBucketName).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {

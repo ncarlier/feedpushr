@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"encoding/json"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 var CacheBucketName = []byte("CACHE")
 
 // GetFromCache returns a cached item.
-func (store *BoltStore) GetFromCache(key string) (*model.CacheItem, error) {
+func (store *BoltStore) GetFromCache(ctx context.Context, key string) (*model.CacheItem, error) {
 	var result model.CacheItem
 	err := store.get(CacheBucketName, []byte(key), &result)
 	if err != nil {
@@ -25,12 +26,12 @@ func (store *BoltStore) GetFromCache(key string) (*model.CacheItem, error) {
 }
 
 // StoreToCache stores a item into the cache.
-func (store *BoltStore) StoreToCache(key string, item *model.CacheItem) error {
+func (store *BoltStore) StoreToCache(ctx context.Context, key string, item *model.CacheItem) error {
 	return store.save(CacheBucketName, []byte(key), &item)
 }
 
 // ClearCache removes all items from the cache.
-func (store *BoltStore) ClearCache() error {
+func (store *BoltStore) ClearCache(ctx context.Context) error {
 	err := store.db.Update(func(tx *bolt.Tx) error {
 		err := tx.DeleteBucket(CacheBucketName)
 		if err != nil {
@@ -46,7 +47,7 @@ func (store *BoltStore) ClearCache() error {
 }
 
 // EvictFromCache manage the cache eviction.
-func (store *BoltStore) EvictFromCache(before time.Time) error {
+func (store *BoltStore) EvictFromCache(ctx context.Context, before time.Time) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(CacheBucketName)
 		c := b.Cursor()

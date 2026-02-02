@@ -48,7 +48,7 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 		status = aggregator.RunningStatus.String()
 	}
 	_feed.Status = &status
-	err = c.db.SaveFeed(_feed)
+	err = c.db.SaveFeed(ctx, _feed)
 	if err != nil {
 		return goa.ErrInternal(err)
 	}
@@ -66,7 +66,7 @@ func (c *FeedController) Create(ctx *app.CreateFeedContext) error {
 // Update updates a new feed
 func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 	// Get feed from the database
-	_feed, err := c.db.GetFeed(ctx.ID)
+	_feed, err := c.db.GetFeed(ctx, ctx.ID)
 	if err != nil {
 		if err == common.ErrFeedNotFound {
 			return ctx.NotFound()
@@ -85,7 +85,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 	// Update feed tags
 	_feed.Tags = feed.GetFeedTags(ctx.Tags)
 	_feed.Mdate = time.Now()
-	err = c.db.SaveFeed(_feed)
+	err = c.db.SaveFeed(ctx, _feed)
 	if err != nil {
 		return goa.ErrInternal(err)
 	}
@@ -110,7 +110,7 @@ func (c *FeedController) Update(ctx *app.UpdateFeedContext) error {
 // Delete removes a feed
 func (c *FeedController) Delete(ctx *app.DeleteFeedContext) error {
 	c.aggregator.UnRegisterFeedAggregator(ctx.ID)
-	_, err := c.db.DeleteFeed(ctx.ID)
+	_, err := c.db.DeleteFeed(ctx, ctx.ID)
 	if err != nil {
 		if err == common.ErrFeedNotFound {
 			return ctx.NotFound()
@@ -126,9 +126,9 @@ func (c *FeedController) List(ctx *app.ListFeedContext) error {
 	var page *model.FeedDefPage
 	var err error
 	if ctx.Q != nil && *ctx.Q != "" {
-		page, err = c.db.SearchFeeds(*ctx.Q, ctx.Page, ctx.Size)
+		page, err = c.db.SearchFeeds(ctx, *ctx.Q, ctx.Page, ctx.Size)
 	} else {
-		page, err = c.db.ListFeeds(ctx.Page, ctx.Size)
+		page, err = c.db.ListFeeds(ctx, ctx.Page, ctx.Size)
 	}
 	if err != nil {
 		return goa.ErrInternal(err)
@@ -157,7 +157,7 @@ func (c *FeedController) List(ctx *app.ListFeedContext) error {
 // Get shows a feed
 func (c *FeedController) Get(ctx *app.GetFeedContext) error {
 	// Get feed from the database
-	_feed, err := c.db.GetFeed(ctx.ID)
+	_feed, err := c.db.GetFeed(ctx, ctx.ID)
 	if err != nil {
 		if err == common.ErrFeedNotFound {
 			return ctx.NotFound()
@@ -174,7 +174,7 @@ func (c *FeedController) Get(ctx *app.GetFeedContext) error {
 
 // Start starts feed aggregation
 func (c *FeedController) Start(ctx *app.StartFeedContext) error {
-	_feed, err := c.db.GetFeed(ctx.ID)
+	_feed, err := c.db.GetFeed(ctx, ctx.ID)
 	if err != nil {
 		if err == common.ErrFeedNotFound {
 			return ctx.NotFound()
@@ -190,7 +190,7 @@ func (c *FeedController) Start(ctx *app.StartFeedContext) error {
 	// Update feed DB status
 	status := aggregator.RunningStatus.String()
 	_feed.Status = &status
-	err = c.db.SaveFeed(_feed)
+	err = c.db.SaveFeed(ctx, _feed)
 	if err != nil {
 		return goa.ErrInternal(err)
 	}
@@ -200,7 +200,7 @@ func (c *FeedController) Start(ctx *app.StartFeedContext) error {
 
 // Stop stops feed aggregation
 func (c *FeedController) Stop(ctx *app.StopFeedContext) error {
-	_feed, err := c.db.GetFeed(ctx.ID)
+	_feed, err := c.db.GetFeed(ctx, ctx.ID)
 	if err != nil {
 		if err == common.ErrFeedNotFound {
 			return ctx.NotFound()
@@ -216,7 +216,7 @@ func (c *FeedController) Stop(ctx *app.StopFeedContext) error {
 	// Update feed DB status
 	status := aggregator.StoppedStatus.String()
 	_feed.Status = &status
-	err = c.db.SaveFeed(_feed)
+	err = c.db.SaveFeed(ctx, _feed)
 	if err != nil {
 		return goa.ErrInternal(err)
 	}

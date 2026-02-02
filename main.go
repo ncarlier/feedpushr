@@ -76,7 +76,7 @@ func main() {
 	}
 
 	// Init search index
-	if err := db.BuildInitialIndex(); err != nil {
+	if err := db.BuildInitialIndex(context.Background()); err != nil {
 		log.Fatal().Err(err).Msg("unable to init search index")
 	}
 

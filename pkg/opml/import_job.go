@@ -2,6 +2,7 @@ package opml
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"path"
@@ -94,7 +95,7 @@ func (job *ImportJob) importOutlines(outlines []Outline, category string) {
 			continue
 		}
 		logger := job.logger.With().Str("url", outline.XMLURL).Logger()
-		if job.db.ExistsFeed(outline.XMLURL) {
+		if job.db.ExistsFeed(context.Background(), outline.XMLURL) {
 			logger.Debug().Msg("feed already exists: skipped")
 			job.writeResult(outline.XMLURL, common.ErrFeedAlreadyExists)
 			continue
@@ -111,7 +112,7 @@ func (job *ImportJob) importOutlines(outlines []Outline, category string) {
 			_feed.Title = outline.Title
 		}
 		// TODO register new feed aggregators
-		err = job.db.SaveFeed(_feed)
+		err = job.db.SaveFeed(context.Background(), _feed)
 		if err != nil {
 			logger.Warn().Err(err).Msg("unable to save feed: skipped")
 			job.writeResult(outline.XMLURL, err)

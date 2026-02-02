@@ -7,6 +7,7 @@ import (
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	bolt "github.com/ncarlier/feedpushr/v3/pkg/store/bolt"
 	memory "github.com/ncarlier/feedpushr/v3/pkg/store/memory"
+	sqlite "github.com/ncarlier/feedpushr/v3/pkg/store/sqlite"
 	"github.com/rs/zerolog/log"
 )
 
@@ -38,6 +39,12 @@ func NewDB(datasource string, quota model.Quota) (DB, error) {
 			return nil, err
 		}
 		log.Info().Str("component", "db").Str("uri", u.String()).Msg("using BoltDB")
+	case "sqlite":
+		db, err = sqlite.NewSQLiteStore(u, quota)
+		if err != nil {
+			return nil, err
+		}
+		log.Info().Str("component", "db").Str("uri", u.String()).Msg("using SQLite")
 	default:
 		return nil, fmt.Errorf("unsupported database provider: %s", provider)
 	}

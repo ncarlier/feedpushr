@@ -26,7 +26,7 @@ func (c *OutputController) CreateFilter(ctx *app.CreateFilterOutputContext) erro
 	if err != nil {
 		return err
 	}
-	_, err = c.db.SaveOutput(processor.GetDef())
+	_, err = c.db.SaveOutput(ctx, processor.GetDef())
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,7 @@ func (c *OutputController) DeleteFilter(ctx *app.DeleteFilterOutputContext) erro
 	if err := processor.Filters.Remove(ctx.IDFilter); err != nil {
 		return err
 	}
-	_, err = c.db.SaveOutput(processor.GetDef())
+	_, err = c.db.SaveOutput(ctx, processor.GetDef())
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (c *OutputController) UpdateFilter(ctx *app.UpdateFilterOutputContext) erro
 	if err != nil {
 		return err
 	}
-	_, err = c.db.SaveOutput(processor.GetDef())
+	_, err = c.db.SaveOutput(ctx, processor.GetDef())
 	if err != nil {
 		return err
 	}

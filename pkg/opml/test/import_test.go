@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -44,6 +45,7 @@ func TestImportSimpleOPML(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
+	ctx := context.Background()
 	job, err := importer.ImportOPMLFile("./tc_simple.xml")
 	assert.Nil(t, err)
 	assert.True(t, job.ID > 0, "invalid job ID")
@@ -55,10 +57,11 @@ func TestImportSimpleOPML(t *testing.T) {
 		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
 	}
 
-	assert.True(t, db.ExistsFeed("https://www.hashicorp.com/blog/feed.xml"), "feed should be created")
+	assert.True(t, db.ExistsFeed(ctx, "https://www.hashicorp.com/blog/feed.xml"), "feed should be created")
 }
 
 func testImportOPML(t *testing.T, filename string) {
+	ctx := context.Background()
 	job, err := importer.ImportOPMLFile(filename)
 	assert.Nil(t, err)
 	assert.True(t, job.ID > 0, "invalid job ID")
@@ -68,9 +71,9 @@ func testImportOPML(t *testing.T, filename string) {
 		assert.True(t, strings.HasSuffix(line, "ok") || line == "done", "invalid job output content")
 	}
 	for idx, tc := range testCases {
-		assert.True(t, db.ExistsFeed(tc.url), fmt.Sprintf("feed #%d should be created", idx))
+		assert.True(t, db.ExistsFeed(ctx, tc.url), fmt.Sprintf("feed #%d should be created", idx))
 		id := helper.Hash(tc.url)
-		feed, err := db.GetFeed(id)
+		feed, err := db.GetFeed(ctx, id)
 		assert.Nil(t, err, fmt.Sprintf("error #%d should be nil", idx))
 		assert.NotNil(t, feed, fmt.Sprintf("feed #%d should not be nil", idx))
 		assert.Contains(t, feed.Tags, tc.tag, fmt.Sprintf("invalid tags for feed #%d", idx))

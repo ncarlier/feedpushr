@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -24,14 +25,14 @@ func openSearchIndex(dbPath string) (bleve.Index, error) {
 }
 
 // BuildInitialIndex create initial index (only if empty)
-func (store *BoltStore) BuildInitialIndex() error {
+func (store *BoltStore) BuildInitialIndex(ctx context.Context) error {
 	nb, err := store.index.DocCount()
 	if err != nil {
 		return fmt.Errorf("unable to initialize index: %w", err)
 	}
 	if nb == 0 {
 		log.Debug().Msg("initializing search index...")
-		return store.ForEachFeed(func(f *model.FeedDef) error {
+		return store.ForEachFeed(ctx, func(f *model.FeedDef) error {
 			if f == nil {
 				return errors.New("unable to index feed: feed is null")
 			}
@@ -43,7 +44,7 @@ func (store *BoltStore) BuildInitialIndex() error {
 }
 
 // SearchFeeds search feeds using search index
-func (store *BoltStore) SearchFeeds(query string, page, size int) (*model.FeedDefPage, error) {
+func (store *BoltStore) SearchFeeds(ctx context.Context, query string, page, size int) (*model.FeedDefPage, error) {
 	matchQuery := bleve.NewMatchQuery(query)
 	searchRequest := bleve.NewSearchRequest(matchQuery)
 	searchRequest.Size = size
@@ -60,7 +61,7 @@ func (store *BoltStore) SearchFeeds(query string, page, size int) (*model.FeedDe
 	}
 	hits := searchResults.Hits
 	for _, doc := range hits {
-		feed, err := store.GetFeed(doc.ID)
+		feed, err := store.GetFeed(ctx, doc.ID)
 		if err != nil {
 			return nil, fmt.Errorf("unable to get feed %s: %w", doc.ID, err)
 		}

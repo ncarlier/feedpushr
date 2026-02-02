@@ -81,7 +81,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 
 	// Clear configuration if asked
 	if conf.ClearConfig {
-		if err := db.ClearOutputs(); err != nil {
+		if err := db.ClearOutputs(context.Background()); err != nil {
 			log.Error().Err(err).Msg("unable to clear outputs")
 			return nil, err
 		}

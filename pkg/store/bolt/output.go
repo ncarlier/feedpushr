@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
@@ -12,12 +13,12 @@ import (
 var OutputBucketName = []byte("OUTPUT")
 
 // ClearOutputs clear all outputs
-func (store *BoltStore) ClearOutputs() error {
+func (store *BoltStore) ClearOutputs(ctx context.Context) error {
 	return store.clear(OutputBucketName)
 }
 
 // GetOutput returns a stored Output.
-func (store *BoltStore) GetOutput(ID string) (*model.OutputDef, error) {
+func (store *BoltStore) GetOutput(ctx context.Context, ID string) (*model.OutputDef, error) {
 	var result model.OutputDef
 	err := store.get(OutputBucketName, []byte(ID), &result)
 	if err != nil {
@@ -30,8 +31,8 @@ func (store *BoltStore) GetOutput(ID string) (*model.OutputDef, error) {
 }
 
 // DeleteOutput removes a output.
-func (store *BoltStore) DeleteOutput(ID string) (*model.OutputDef, error) {
-	output, err := store.GetOutput(ID)
+func (store *BoltStore) DeleteOutput(ctx context.Context, ID string) (*model.OutputDef, error) {
+	output, err := store.GetOutput(ctx, ID)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +44,7 @@ func (store *BoltStore) DeleteOutput(ID string) (*model.OutputDef, error) {
 	return output, nil
 }
 
-func (store *BoltStore) assertOutputQuota(output *model.OutputDef) error {
+func (store *BoltStore) assertOutputQuota(ctx context.Context, output *model.OutputDef) error {
 	if store.quota.MaxNbOutputs > 0 {
 		if exists, err := store.exists(OutputBucketName, []byte(output.ID)); err != nil {
 			return err
@@ -61,8 +62,8 @@ func (store *BoltStore) assertOutputQuota(output *model.OutputDef) error {
 }
 
 // SaveOutput stores a output.
-func (store *BoltStore) SaveOutput(output model.OutputDef) (*model.OutputDef, error) {
-	if err := store.assertOutputQuota(&output); err != nil {
+func (store *BoltStore) SaveOutput(ctx context.Context, output model.OutputDef) (*model.OutputDef, error) {
+	if err := store.assertOutputQuota(ctx, &output); err != nil {
 		return nil, err
 	}
 	err := store.save(OutputBucketName, []byte(output.ID), &output)
@@ -70,7 +71,7 @@ func (store *BoltStore) SaveOutput(output model.OutputDef) (*model.OutputDef, er
 }
 
 // ListOutputs returns a paginated list of outputs.
-func (store *BoltStore) ListOutputs(page, limit int) (*model.OutputDefCollection, error) {
+func (store *BoltStore) ListOutputs(ctx context.Context, page, limit int) (*model.OutputDefCollection, error) {
 	bufs, err := store.allAsRaw(OutputBucketName, page, limit)
 	if err != nil {
 		return nil, err
@@ -88,7 +89,7 @@ func (store *BoltStore) ListOutputs(page, limit int) (*model.OutputDefCollection
 }
 
 // ForEachOutput iterates over all outputs
-func (store *BoltStore) ForEachOutput(cb func(*model.OutputDef) error) error {
+func (store *BoltStore) ForEachOutput(ctx context.Context, cb func(*model.OutputDef) error) error {
 	err := store.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket(OutputBucketName).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {

@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"context"
 	"time"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/config"
@@ -24,7 +25,7 @@ func NewCacheManager(repository store.CacheRepository, conf config.Config) (*Man
 	// Clear cache if asked
 	if conf.ClearCache {
 		logger.Debug().Msg("clearing the cache...")
-		if err := repository.ClearCache(); err != nil {
+		if err := repository.ClearCache(context.Background()); err != nil {
 			logger.Error().Err(err).Msg("unable to clear the cache")
 			return nil, err
 		}
@@ -52,12 +53,12 @@ func (m *Manager) MaxAge() time.Time {
 
 // Get item from cache
 func (m *Manager) Get(key string) (*model.CacheItem, error) {
-	return m.repository.GetFromCache(key)
+	return m.repository.GetFromCache(context.Background(), key)
 }
 
 // Set item into the cache
 func (m *Manager) Set(key string, item *model.CacheItem) error {
-	return m.repository.StoreToCache(key, item)
+	return m.repository.StoreToCache(context.Background(), key, item)
 }
 
 func (m *Manager) startCacheBusterJob() {
@@ -65,7 +66,7 @@ func (m *Manager) startCacheBusterJob() {
 	for range m.ticker.C {
 		m.logger.Debug().Msg("cleaning cache...")
 		maxAge := time.Now().Add(-m.retention)
-		err := m.repository.EvictFromCache(maxAge)
+		err := m.repository.EvictFromCache(context.Background(), maxAge)
 		if err != nil {
 			m.logger.Error().Err(err).Msg("unable to clean cache")
 			break

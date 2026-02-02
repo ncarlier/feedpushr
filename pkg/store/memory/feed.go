@@ -1,20 +1,22 @@
 package store
 
 import (
+	"context"
+
 	"github.com/ncarlier/feedpushr/v3/pkg/common"
 	"github.com/ncarlier/feedpushr/v3/pkg/helper"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
 // ExistsFeed returns true if a feed exists for this url.
-func (store *InMemoryStore) ExistsFeed(url string) bool {
+func (store *InMemoryStore) ExistsFeed(ctx context.Context, url string) bool {
 	id := helper.Hash(url)
 	_, exists := store.feeds[id]
 	return exists
 }
 
 // GetFeed returns a stored Feed.
-func (store *InMemoryStore) GetFeed(id string) (*model.FeedDef, error) {
+func (store *InMemoryStore) GetFeed(ctx context.Context, id string) (*model.FeedDef, error) {
 	feed, exists := store.feeds[id]
 	if !exists {
 		return nil, common.ErrFeedNotFound
@@ -23,10 +25,10 @@ func (store *InMemoryStore) GetFeed(id string) (*model.FeedDef, error) {
 }
 
 // DeleteFeed removes a feed.
-func (store *InMemoryStore) DeleteFeed(id string) (*model.FeedDef, error) {
+func (store *InMemoryStore) DeleteFeed(ctx context.Context, id string) (*model.FeedDef, error) {
 	store.feedsLock.RLock()
 	defer store.feedsLock.RUnlock()
-	feed, err := store.GetFeed(id)
+	feed, err := store.GetFeed(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +37,7 @@ func (store *InMemoryStore) DeleteFeed(id string) (*model.FeedDef, error) {
 }
 
 // SaveFeed stores a feed.
-func (store *InMemoryStore) SaveFeed(feed *model.FeedDef) error {
+func (store *InMemoryStore) SaveFeed(ctx context.Context, feed *model.FeedDef) error {
 	store.feedsLock.RLock()
 	defer store.feedsLock.RUnlock()
 	store.feeds[feed.ID] = *feed
@@ -43,7 +45,7 @@ func (store *InMemoryStore) SaveFeed(feed *model.FeedDef) error {
 }
 
 // ListFeeds returns a paginated list of feeds.
-func (store *InMemoryStore) ListFeeds(page, size int) (*model.FeedDefPage, error) {
+func (store *InMemoryStore) ListFeeds(ctx context.Context, page, size int) (*model.FeedDefPage, error) {
 	if page <= 0 {
 		page = 1
 	}
@@ -72,12 +74,12 @@ func (store *InMemoryStore) ListFeeds(page, size int) (*model.FeedDefPage, error
 }
 
 // CountFeeds returns total numer of feeds.
-func (store *InMemoryStore) CountFeeds() (int, error) {
+func (store *InMemoryStore) CountFeeds(ctx context.Context) (int, error) {
 	return len(store.feeds), nil
 }
 
 // ForEachFeed iterates over all feeds
-func (store *InMemoryStore) ForEachFeed(cb func(*model.FeedDef) error) error {
+func (store *InMemoryStore) ForEachFeed(ctx context.Context, cb func(*model.FeedDef) error) error {
 	store.feedsLock.RLock()
 	defer store.feedsLock.RUnlock()
 	for _, feed := range store.feeds {

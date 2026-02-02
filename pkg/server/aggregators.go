@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 func loadFeedAggregators(db store.DB, m *aggregator.Manager, interval time.Duration) error {
 	// Delay used to manage progressive load increase
 	delay := interval
-	return db.ForEachFeed(func(f *model.FeedDef) error {
+	return db.ForEachFeed(context.Background(), func(f *model.FeedDef) error {
 		if f == nil {
 			return fmt.Errorf("feed is null")
 		}

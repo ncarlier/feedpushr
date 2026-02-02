@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
@@ -10,7 +11,7 @@ import (
 
 func loadOutputs(db store.DB, om *output.Manager) error {
 	// Load output outputs from DB
-	return db.ForEachOutput(func(o *model.OutputDef) error {
+	return db.ForEachOutput(context.Background(), func(o *model.OutputDef) error {
 		if o == nil {
 			return fmt.Errorf("output is null")
 		}
