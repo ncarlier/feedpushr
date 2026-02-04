@@ -57,15 +57,8 @@ include $(makefiles)/help.Makefile
 ## Clean built files
 clean:
 	echo ">>> Removing generated files ..."
-	-rm -rf release autogen pkg/assets/content/*
+	-rm -rf release pkg/assets/content/*
 .PHONY: clean
-
-## Run code generation
-autogen:
-	echo ">>> Generating code ..."
-	goagen bootstrap -o autogen -d $(BASE_PACKAGE)/$(APPNAME)/v3/design
-	echo ">>> Moving Swagger files to assets ..."
-	cp -f $(root_dir)/autogen/swagger/** $(root_dir)/pkg/assets/content
 
 ## Build web UI
 ui:
@@ -90,7 +83,7 @@ contrib/launcher/main.syso:
 	rsrc -arch="amd64" -ico ui/public/favicon.ico -o contrib/launcher/main.syso
 
 ## Build executable
-build: autogen pkg/assets/content/ui
+build: pkg/assets/content/ui
 	-mkdir -p release
 	echo ">>> Building: $(MAIN_EXE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -o release/$(MAIN_EXE)
@@ -116,7 +109,7 @@ release/$(MAIN_EXE): build
 ## Run tests
 test:
 	-golint pkg/...
-	go test `go list ./... | grep -v autogen`
+	go test `go list ./...`
 .PHONY: test
 
 ## Install executable

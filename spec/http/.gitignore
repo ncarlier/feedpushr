@@ -1,0 +1,12 @@
+# httpYac test artifacts
+*.log
+.httpyac/
+httpyac.config.js
+
+# Test results
+test-results.xml
+*.junit
+
+# Temporary files
+*.tmp
+*.temp

@@ -9,10 +9,7 @@ import fetchAPI from '../helpers/fetchAPI'
 import { usePageTitle } from '../hooks'
 import FeedConfig from './FeedConfig'
 import { Feed, FeedForm } from './Types'
-
-const headers = {
-  'Content-Type': 'application/x-www-form-urlencoded',
-}
+import { DefaultHeaders as headers } from '../common/constants'
 
 export default withRouter(({ history }: RouteComponentProps) => {
   usePageTitle('new feed')
@@ -27,7 +24,8 @@ export default withRouter(({ history }: RouteComponentProps) => {
   async function handleSave(form: FeedForm) {
     try {
       const { title, xmlUrl: url, tags } = form
-      const res = await fetchAPI('/feeds', { title, url, tags }, { method: 'POST', headers })
+      const body = JSON.stringify({ title, url, tags })
+      const res = await fetchAPI('/feeds', null, { method: 'POST', headers, body })
       if (!res.ok) {
         const _err = await res.json()
         throw new Error(_err.detail || res.statusText)
@@ -36,7 +34,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       const data = (await res.json()) as Feed
       showMessage(`${data.title} feed created`)
       return history.push('/feeds')
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     }
   }

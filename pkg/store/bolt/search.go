@@ -48,7 +48,7 @@ func (store *BoltStore) SearchFeeds(ctx context.Context, query string, page, siz
 	matchQuery := bleve.NewMatchQuery(query)
 	searchRequest := bleve.NewSearchRequest(matchQuery)
 	searchRequest.Size = size
-	searchRequest.From = (page - 1) * size
+	searchRequest.From = page * size
 	searchResults, err := store.index.Search(searchRequest)
 	if err != nil {
 		return nil, fmt.Errorf("unable to search feed: %w", err)

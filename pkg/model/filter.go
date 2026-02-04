@@ -33,7 +33,7 @@ type FilterDef struct {
 	Alias string `json:"alias"`
 	Spec
 	Condition string      `json:"condition"`
-	Props     FilterProps `json:"props:omitempty"`
+	Props     FilterProps `json:"props"`
 	Enabled   bool        `json:"enabled"`
 	NbSuccess uint32      `json:"nbSuccess"`
 	NbError   uint32      `json:"nbError"`

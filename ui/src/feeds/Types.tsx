@@ -6,9 +6,9 @@ export interface Feed {
   hubUrl?: string
   status: string
   tags: string[]
-  errorCount?: number
-  errorMsg?: string
   nbProcessedItems?: number
+  nbErrors?: number
+  lastErrorMsg?: string
   lastCheck?: string
   nextCheck?: string
   cdate: string

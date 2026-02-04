@@ -1,0 +1,114 @@
+# Feedpushr API Tests - Filter Management
+# httpYac test file for filter operations
+
+@baseUrl = {{baseUrl}}
+@apiVersion = {{apiVersion}}
+
+### Get Filter Specifications
+# @name getFilterSpecs
+GET {{baseUrl}}/{{apiVersion}}/filters/_specs
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("query response is valid", () => {
+    const specs = response.parsedBody
+    specs.forEach(spec => {
+      ok(spec.name)
+      ok(spec.desc)
+      ok(Array.isArray(spec.props))
+      const found = specs.some(s => s.name === "title")
+      ok(found)
+    })
+  })
+}}
+
+### Setup: Create Output for Filter Tests
+# @name setupOutput
+POST {{baseUrl}}/{{apiVersion}}/outputs
+Content-Type: application/json
+
+{
+  "name": "stdout",
+  "alias": "filter-test-output"
+}
+
+?? status == 201
+
+{{
+  const { ok } = require('assert')
+  test("setup output response is valid", () => {
+    const { id, alias, name, enabled } = response.parsedBody
+    ok(id)
+    $global.outputId = id
+    ok(alias === "filter-test-output")
+    ok(name === "stdout")
+    ok(enabled === false)
+  })
+}}
+
+### Create Filter - Fetch Content
+# @name createFilter
+POST {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}/filters
+Content-Type: application/json
+
+{
+  "name": "fetch",
+  "alias": "content-fetcher",
+  "props": {
+    "scraper": "builtin"
+  }
+}
+
+?? status == 201
+
+{{
+  const { ok } = require('assert')
+  test("create filter response is valid", () => {
+    const { id, name, alias, props } = response.parsedBody
+    ok(id)
+    $global.filterId = id
+    ok(name === "fetch")
+    ok(alias === "content-fetcher")
+    ok(props.scraper === "builtin")
+  })
+}}
+
+### Update Filter
+# @name updateFilter
+PUT {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}/filters/{{$global.filterId}}
+Content-Type: application/json
+
+{
+  "alias": "updated-fetcher",
+  "props": {
+    "scraper": "external",
+    "url": "https://readability.example.com"
+  }
+}
+
+?? status == 200
+
+### Delete Filter
+# @name deleteFilter
+DELETE {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}/filters/{{$global.filterId}}
+
+?? status == 204
+
+### Cleanup: Delete Output
+# @name cleanupOutput
+DELETE {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}
+
+?? status == 204
+
+### Error Case - Create Filter for Non-existent Output
+# @name createFilterError
+POST {{baseUrl}}/{{apiVersion}}/outputs/non-existent-id/filters
+Content-Type: application/json
+
+{
+  "name": "fetch"
+}
+
+?? status == 404

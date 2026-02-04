@@ -13,6 +13,7 @@ import ConfigForm from '../ConfigForm'
 import { descFilter, descOutput } from '../helpers'
 import { FilterForm, Output } from '../Types'
 import { FilterSpecsContext } from './FilterSpecsContext'
+import { DefaultHeaders as headers } from '../../common/constants'
 
 type Props = RouteComponentProps<{
   id: string
@@ -36,6 +37,7 @@ export default ({ match, history }: Props) => {
     try {
       const res = await fetchAPI(`/outputs/${id}/filters/${filterId}`, null, {
         method: 'PUT',
+        headers,
         body: JSON.stringify(form),
       })
       if (!res.ok) {
@@ -46,7 +48,7 @@ export default ({ match, history }: Props) => {
       const filterDesc = descFilter(data)
       showMessage(`${filterDesc} configured`)
       history.push('/outputs')
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     }
   }

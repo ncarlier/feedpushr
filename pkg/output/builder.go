@@ -4,8 +4,6 @@ import (
 	"net/url"
 
 	"github.com/google/uuid"
-	"github.com/ncarlier/feedpushr/v3/autogen/app"
-	"github.com/ncarlier/feedpushr/v3/pkg/filter"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
@@ -94,28 +92,4 @@ func (ob *Builder) Props(props model.OutputProps) *Builder {
 func (ob *Builder) Enable(status bool) *Builder {
 	ob.output.Enabled = status
 	return ob
-}
-
-// NewOutputResponseFromDef creates new Output response from a definition
-func NewOutputResponseFromDef(def *model.OutputDef) *app.OutputResponse {
-	if def == nil {
-		return nil
-	}
-	result := app.OutputResponse{
-		ID:        def.ID,
-		Alias:     def.Alias,
-		Name:      def.Name,
-		Desc:      def.Desc,
-		Props:     def.Props,
-		Condition: def.Condition,
-		Enabled:   def.Enabled,
-		NbSuccess: int(def.NbSuccess),
-		NbError:   int(def.NbError),
-	}
-
-	for _, filterDef := range def.Filters {
-		result.Filters = append(result.Filters, filter.NewFilterResponseFromDef(filterDef))
-	}
-
-	return &result
 }

@@ -12,6 +12,7 @@ import { useAPI, usePageTitle } from '../hooks'
 import ConfigForm from './ConfigForm'
 import { OutputSpecsContext } from './OutputSpecsContext'
 import { Output, OutputForm } from './Types'
+import { DefaultHeaders as headers } from '../common/constants'
 
 type Props = RouteComponentProps<{ id: string }>
 
@@ -32,6 +33,7 @@ export default ({ match, history }: Props) => {
     try {
       const res = await fetchAPI(`/outputs/${id}`, null, {
         method: 'PUT',
+        headers,
         body: JSON.stringify(form),
       })
       if (!res.ok) {
@@ -42,7 +44,7 @@ export default ({ match, history }: Props) => {
       const desc = data.alias ? data.alias : data.name
       showMessage(`${desc} output configured`)
       history.push('/outputs')
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     }
   }

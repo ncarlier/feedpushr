@@ -181,7 +181,7 @@ func (store *BoltStore) delete(bucketName, key []byte) error {
 
 func (store *BoltStore) allAsRaw(bucket []byte, page, size int) ([][]byte, error) {
 	entries := [][]byte{}
-	startOffset := (page - 1) * size
+	startOffset := page * size
 	err := store.db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket(bucket).Cursor()
 		offset := 0

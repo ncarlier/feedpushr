@@ -4,7 +4,6 @@ import (
 	"net/url"
 
 	"github.com/google/uuid"
-	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 )
 
@@ -94,22 +93,4 @@ func (fb *Builder) Props(props model.FilterProps) *Builder {
 func (fb *Builder) Enable(status bool) *Builder {
 	fb.filter.Enabled = status
 	return fb
-}
-
-// NewFilterResponseFromDef creates new Filter response from a definition
-func NewFilterResponseFromDef(def *model.FilterDef) *app.FilterResponse {
-	if def == nil {
-		return nil
-	}
-	return &app.FilterResponse{
-		ID:        def.ID,
-		Alias:     def.Alias,
-		Name:      def.Name,
-		Desc:      def.Desc,
-		Props:     def.Props,
-		Condition: def.Condition,
-		Enabled:   def.Enabled,
-		NbSuccess: int(def.NbSuccess),
-		NbError:   int(def.NbError),
-	}
 }

@@ -4,19 +4,18 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"time"
 
-	"github.com/goadesign/goa"
-	"github.com/goadesign/goa/middleware"
-	consul "github.com/hashicorp/consul/api"
-	"github.com/ncarlier/feedpushr/v3/autogen/app"
+	"github.com/hashicorp/consul/api"
 	"github.com/ncarlier/feedpushr/v3/pkg/aggregator"
+	pkgapi "github.com/ncarlier/feedpushr/v3/pkg/api"
 	"github.com/ncarlier/feedpushr/v3/pkg/auth"
 	"github.com/ncarlier/feedpushr/v3/pkg/cache"
 	"github.com/ncarlier/feedpushr/v3/pkg/config"
 	"github.com/ncarlier/feedpushr/v3/pkg/controller"
 	"github.com/ncarlier/feedpushr/v3/pkg/explore"
 	"github.com/ncarlier/feedpushr/v3/pkg/filter"
-	"github.com/ncarlier/feedpushr/v3/pkg/logging"
+	"github.com/ncarlier/feedpushr/v3/pkg/handler"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/output"
 	"github.com/ncarlier/feedpushr/v3/pkg/store"
@@ -27,16 +26,16 @@ import (
 type Server struct {
 	conf       config.Config
 	db         store.DB
-	srv        *goa.Service
+	httpServer *http.Server
 	aggregator *aggregator.Manager
 	outputs    *output.Manager
 	cache      *cache.Manager
 	listener   net.Listener
-	agent      *consul.Agent
+	agent      *api.Agent
 }
 
 // ListenAndServe starts server
-func (s *Server) ListenAndServe(ListenAddr string) error {
+func (s *Server) ListenAndServe(listenAddr string) error {
 	log.Debug().Msg("loading output manager...")
 	if err := loadOutputs(s.db, s.outputs); err != nil {
 		return err
@@ -45,7 +44,7 @@ func (s *Server) ListenAndServe(ListenAddr string) error {
 	if err := loadFeedAggregators(s.db, s.aggregator, s.conf.FanOutDelay); err != nil {
 		return err
 	}
-	listener, err := net.Listen("tcp", ListenAddr)
+	listener, err := net.Listen("tcp", listenAddr)
 	if err != nil {
 		return err
 	}
@@ -55,7 +54,7 @@ func (s *Server) ListenAndServe(ListenAddr string) error {
 	}
 
 	log.Debug().Msg("starting HTTP server...")
-	if err := s.srv.Serve(s.listener); err != nil && err != http.ErrServerClosed {
+	if err := s.httpServer.Serve(s.listener); err != nil && err != http.ErrServerClosed {
 		return err
 	}
 	return nil
@@ -67,9 +66,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	s.aggregator.Shutdown()
 	s.outputs.Shutdown()
 	s.deregister()
-	s.srv.CancelAll()
-	s.srv.Server.SetKeepAlivesEnabled(false)
-	return s.srv.Server.Shutdown(ctx)
+	return s.httpServer.Shutdown(ctx)
 }
 
 // NewServer creates new server instance
@@ -93,7 +90,7 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 		return nil, err
 	}
 
-	// Creat empty chain filter (for filter controller)
+	// Create empty chain filter (for filter controller)
 	cf, err := filter.NewChainFilter(model.FilterDefCollection{})
 	if err != nil {
 		return nil, err
@@ -119,58 +116,52 @@ func NewServer(db store.DB, conf config.Config) (*Server, error) {
 	}
 	am := aggregator.NewAggregatorManager(om, conf.Delay, conf.Timeout, callbackURL)
 
-	// Create service
-	srv := goa.New("feedpushr")
-
-	// Set custom logger
-	logger := log.With().Str("component", "server").Logger()
-	srv.WithLogger(logging.NewLogAdapter(logger))
-
-	// Mount middleware
-	srv.Use(middleware.RequestID())
-	srv.Use(middleware.LogRequest(false))
-	srv.Use(middleware.ErrorHandler(srv, true))
-	srv.Use(middleware.Recover())
+	// Create authenticator
 	issuer := ""
 	authenticator, err := auth.NewAuthenticator(conf.Authn, conf.AuthorizedUsername)
 	if err != nil {
-		logger.Info().Err(err).Str("authn", conf.Authn).Msg("unable to load authenticator")
+		log.Info().Err(err).Str("authn", conf.Authn).Msg("unable to load authenticator")
+		authenticator = nil
 	} else if authenticator != nil {
 		issuer = authenticator.Issuer()
-		logger.Info().Str("authn", conf.Authn).Msg("using authenticator")
-		srv.Use(auth.NewMiddleware(authenticator, "/v2/", "/v2/healthz", "/v2/pshb"))
+		log.Info().Str("authn", conf.Authn).Msg("using authenticator")
 	}
 
-	// Mount "index" controller
-	app.MountIndexController(srv, controller.NewIndexController(srv, issuer, conf.ClientID))
-	// Mount "feed" controller
-	app.MountFeedController(srv, controller.NewFeedController(srv, db, am))
-	// Mount "filter" controller
-	app.MountFilterController(srv, controller.NewFilterController(srv, cf))
-	// Mount "output" controller
-	app.MountOutputController(srv, controller.NewOutputController(srv, db, om))
-	// Mount "health" controller
-	app.MountHealthController(srv, controller.NewHealthController(srv))
-	// Mount "swagger" controller
-	app.MountSwaggerController(srv, controller.NewSwaggerController(srv))
-	// Mount "opml" controller
-	app.MountOpmlController(srv, controller.NewOpmlController(srv, db))
-	// Mount "explore" controller
-	app.MountExploreController(srv, controller.NewExploreController(srv, explorer))
-	// Mount "vars" controller
-	app.MountVarsController(srv, controller.NewVarsController(srv))
-	// Mount "pshb" controller (only if public URL is configured)
-	if conf.PublicURL != "" {
-		app.MountPshbController(srv, controller.NewPshbController(srv, db, am, om))
+	// Create router
+	router := pkgapi.NewRouter()
+
+	// Create handlers
+	h := handler.New(db, am, om, explorer, cf, issuer, conf.ClientID)
+
+	// Register all API routes
+	h.RegisterRoutes(router)
+
+	// Mount custom handlers (UI and redirects)
+	router.Handle("GET", "/ui/{path...}", controller.NewUIHandler())
+	router.HandleFunc("GET", "/", controller.NewRedirectHandler(conf.PublicURL+"/ui/"))
+
+	// Build middleware chain
+	authMiddleware := auth.GetAuthMiddleware(authenticator, "/v2/", "/v2/healthz", "/v2/pshb")
+
+	middlewares := pkgapi.Chain(
+		pkgapi.RequestIDMiddleware,
+		pkgapi.LoggingMiddleware,
+		pkgapi.RecoverMiddleware,
+		pkgapi.CORSMiddleware,
+		authMiddleware,
+	)
+
+	// Create HTTP server
+	httpServer := &http.Server{
+		Handler:      middlewares(router),
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
-	// Mount custom handlers (aka: not generated)...
-	srv.Mux.Handle("GET", "/ui/*", controller.UIHandler())
-	srv.Mux.Handle("GET", "/ui/", controller.UIHandler())
-	srv.Mux.Handle("GET", "/", controller.Redirect(conf.PublicURL+"/ui/"))
 
 	return &Server{
 		db:         db,
-		srv:        srv,
+		httpServer: httpServer,
 		conf:       conf,
 		aggregator: am,
 		outputs:    om,

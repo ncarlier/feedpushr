@@ -10,6 +10,7 @@ import { usePageTitle } from '../hooks'
 import ConfigForm from './ConfigForm'
 import SpecSelector from './SpecSelector'
 import { Output, OutputForm, Spec } from './Types'
+import { DefaultHeaders as headers } from '../common/constants'
 
 export default withRouter(({ history }: RouteComponentProps) => {
   usePageTitle('add output')
@@ -32,6 +33,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       const res = await fetchAPI('/outputs', null, {
         method: 'POST',
         body: JSON.stringify(form),
+        headers,
       })
       if (!res.ok) {
         const msg = await res.text()
@@ -41,7 +43,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       const desc = data.alias ? data.alias : data.name
       showMessage(`${desc} output added`)
       history.push('/outputs')
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     }
   }

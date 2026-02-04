@@ -35,9 +35,9 @@ export default ({ feed }: Props) => {
   const classes = useStyles()
   let $status = <div className={classNames(classes.status)}>0</div>
   let title = 'No feed aggregated'
-  if (feed.errorCount) {
-    title = feed.errorMsg ? feed.errorMsg : 'unexpected error'
-    $status = <div className={classNames(classes.status, classes.error)}>{feed.errorCount}</div>
+  if (feed.nbErrors) {
+    title = feed.lastErrorMsg ? feed.lastErrorMsg : 'unexpected error'
+    $status = <div className={classNames(classes.status, classes.error)}>{feed.nbErrors}</div>
   } else if (feed.nbProcessedItems) {
     title = 'Aggregation success'
     $status = <div className={classNames(classes.status, classes.success)}>{feed.nbProcessedItems}</div>

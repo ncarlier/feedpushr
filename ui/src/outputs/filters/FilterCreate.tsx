@@ -10,6 +10,7 @@ import { usePageTitle } from '../../hooks'
 import ConfigForm from '../ConfigForm'
 import SpecSelector from '../SpecSelector'
 import { FilterForm, Spec } from '../Types'
+import { DefaultHeaders as headers } from '../../common/constants'
 
 type Props = RouteComponentProps<{ id: string }>
 
@@ -34,6 +35,7 @@ export default ({ match, history }: Props) => {
     try {
       const res = await fetchAPI(`/outputs/${id}/filters`, null, {
         method: 'POST',
+        headers,
         body: JSON.stringify(form),
       })
       if (!res.ok) {
@@ -43,7 +45,7 @@ export default ({ match, history }: Props) => {
       const data = await res.json()
       showMessage(`Filter ${data.name} added`)
       history.push('/outputs')
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     }
   }

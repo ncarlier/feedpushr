@@ -9,10 +9,7 @@ import MaterialTable, { Query, QueryResult } from '@material-table/core'
 import { MessageContext } from '../context/MessageContext'
 import { Feed } from '../feeds/Types'
 import Message from '../common/Message'
-
-const headers = {
-  'Content-Type': 'application/x-www-form-urlencoded',
-}
+import { DefaultHeaders as headers } from '../common/constants'
 
 const columns = [
   {
@@ -39,7 +36,8 @@ export default () => {
     setLoading(true)
     try {
       const { title, xmlUrl: url } = form
-      const res = await fetchAPI('/feeds', { title, url }, { method: 'POST', headers })
+      const body = JSON.stringify({ title, url })
+      const res = await fetchAPI('/feeds', null, { method: 'POST', headers, body })
       if (!res.ok) {
         const _err = await res.json()
         throw new Error(_err.detail || res.statusText)
@@ -47,7 +45,7 @@ export default () => {
       setError(null)
       const data = (await res.json()) as Feed
       showMessage(`${data.title} feed created`)
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     } finally {
       setLoading(false)

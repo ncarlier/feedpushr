@@ -1,0 +1,29 @@
+# Feedpushr API Tests - Core Endpoints
+# httpYac test file for core API functionality
+
+@baseUrl = {{baseUrl}}
+@apiVersion = {{apiVersion}}
+
+### Health Check
+# @name healthCheck
+GET {{baseUrl}}/{{apiVersion}}/healthz
+
+### API Info
+# @name apiInfo
+GET {{baseUrl}}/{{apiVersion}}/
+
+?? status == 200
+?? js response.parsedBody.name == feedpushr
+
+### Metrics (expvar)
+# @name metrics
+GET {{baseUrl}}/{{apiVersion}}/vars
+
+?? status == 200
+
+### OpenAPI Specification
+# @name openapiSpec
+GET {{baseUrl}}/{{apiVersion}}/openapi.json
+
+?? status == 200
+?? js response.parsedBody.openapi == 3.0.3

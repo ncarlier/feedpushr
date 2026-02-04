@@ -1,0 +1,155 @@
+# Feedpushr API Tests - Feed Management
+# httpYac test file for feed CRUD operations
+
+@baseUrl = {{baseUrl}}
+@apiVersion = {{apiVersion}}
+
+### List Feeds (Empty)
+# @name listFeedsEmpty
+GET {{baseUrl}}/{{apiVersion}}/feeds
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("query response is valid", () => {
+    const { size, total, data } = response.parsedBody
+    ok(size === 10)
+    ok(total >= 0)
+    ok(Array.isArray(data))
+  })
+}}
+
+### Create Feed - Hacker News
+# @name createFeed
+POST {{baseUrl}}/{{apiVersion}}/feeds
+Content-Type: application/json
+
+{
+  "url": "https://news.ycombinator.com/rss",
+  "tags": ["tech", "news"]
+}
+
+?? status == 201
+
+{{
+  const { ok } = require('assert')
+  test("create feed response is valid", () => {
+    const { id, title, xmlUrl, tags, status } = response.parsedBody
+    ok(id)
+    $global.feedId = id
+    ok(title)
+    ok(xmlUrl === "https://news.ycombinator.com/rss")
+    ok(tags.includes("tech"))
+    ok(tags.includes("news"))
+    ok(status === "stopped")
+  })
+}}
+
+### Get Feed by ID
+# @name getFeed
+GET {{baseUrl}}/{{apiVersion}}/feeds/{{$global.feedId}}
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("get feed response is valid", () => {
+    const { id, title, xmlUrl } = response.parsedBody
+    ok(id === $global.feedId)
+    ok(title)
+    ok(xmlUrl === "https://news.ycombinator.com/rss")
+  })
+}}
+
+### List Feeds (With Data)
+# @name listFeeds
+GET {{baseUrl}}/{{apiVersion}}/feeds
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("list feeds response is valid", () => {
+    const { total, data } = response.parsedBody
+    ok(total > 0)
+    ok(Array.isArray(data))
+    ok(data.length > 0)
+  })
+}}
+
+### List Feeds with Pagination
+# @name listFeedsPaginated
+GET {{baseUrl}}/{{apiVersion}}/feeds?page=0&size=5
+
+?? status == 200
+?? js response.parsedBody.size == 5
+
+### Search Feeds
+# @name searchFeeds
+GET {{baseUrl}}/{{apiVersion}}/feeds?q=hacker
+
+?? status == 200
+?? js response.parsedBody.total > 0
+
+### Update Feed
+# @name updateFeed
+PUT {{baseUrl}}/{{apiVersion}}/feeds/{{$global.feedId}}
+Content-Type: application/json
+
+{
+  "tags": ["tech", "news", "updated"]
+}
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("update feed response is valid", () => {
+    const { id, tags } = response.parsedBody
+    ok(id === $global.feedId)
+    ok(tags.includes("updated"))
+  })
+}}
+
+### Start Feed Aggregation
+# @name startFeed
+POST {{baseUrl}}/{{apiVersion}}/feeds/{{$global.feedId}}/start
+
+?? status == 202
+
+### Stop Feed Aggregation
+# @name stopFeed
+POST {{baseUrl}}/{{apiVersion}}/feeds/{{$global.feedId}}/stop
+
+?? status == 202
+
+### Delete Feed
+# @name deleteFeed
+DELETE {{baseUrl}}/{{apiVersion}}/feeds/{{$global.feedId}}
+
+?? status == 204
+
+### Verify Feed Deleted
+# @name verifyDeleted
+GET {{baseUrl}}/{{apiVersion}}/feeds/{{$global.feedId}}
+
+?? status == 404
+?? js response.parsedBody.error.includes("not found")
+
+### Error Case - Create Feed without URL
+# @name createFeedError
+POST {{baseUrl}}/{{apiVersion}}/feeds
+Content-Type: application/json
+
+{
+  "tags": ["test"]
+}
+
+?? status == 400
+
+### Error Case - Get Non-existent Feed
+# @name getFeedNotFound
+GET {{baseUrl}}/{{apiVersion}}/feeds/non-existent-id
+
+?? status == 404

@@ -11,12 +11,9 @@ import matchResponse from '../helpers/matchResponse'
 import { useAPI, usePageTitle } from '../hooks'
 import FeedConfig from './FeedConfig'
 import { Feed, FeedForm } from './Types'
+import { DefaultHeaders as headers } from '../common/constants'
 
 type Props = RouteComponentProps<{ id: string }>
-
-const headers = {
-  'Content-Type': 'application/x-www-form-urlencoded',
-}
 
 export default ({ match, history }: Props) => {
   const { id } = match.params
@@ -34,7 +31,8 @@ export default ({ match, history }: Props) => {
   async function handleSave(form: FeedForm) {
     try {
       const { title, tags } = form
-      const res = await fetchAPI(`/feeds/${id}`, { title, tags }, { method: 'PUT', headers })
+      const body = JSON.stringify({ title, tags })
+      const res = await fetchAPI(`/feeds/${id}`, null, { method: 'PUT', headers, body })
       if (!res.ok) {
         const _err = await res.json()
         throw new Error(_err.detail || res.statusText)
@@ -43,7 +41,7 @@ export default ({ match, history }: Props) => {
       const data = (await res.json()) as Feed
       showMessage(`${data.title} feed updated`)
       return history.push('/feeds')
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     }
   }

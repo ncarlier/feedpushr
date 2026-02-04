@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/ncarlier/feedpushr/v3/autogen/app"
 	httpc "github.com/ncarlier/feedpushr/v3/pkg/http"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/strcase"
@@ -132,22 +131,4 @@ func deduplicate(list []string) []string {
 		}
 	}
 	return result
-}
-
-// NewFeedResponseFromDef creates new Feed response from a definition
-func NewFeedResponseFromDef(def *model.FeedDef) *app.FeedResponse {
-	if def == nil {
-		return nil
-	}
-	return &app.FeedResponse{
-		ID:      def.ID,
-		Title:   def.Title,
-		XMLURL:  def.XMLURL,
-		HTMLURL: def.HTMLURL,
-		HubURL:  def.HubURL,
-		Tags:    def.Tags,
-		Status:  def.Status,
-		Cdate:   def.Cdate,
-		Mdate:   def.Mdate,
-	}
 }

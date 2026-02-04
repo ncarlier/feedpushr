@@ -1,0 +1,70 @@
+# Feedpushr API Tests - OPML Import/Export
+# httpYac test file for OPML operations
+
+@baseUrl = {{baseUrl}}
+@apiVersion = {{apiVersion}}
+
+### Setup: Create Test Feeds
+# @name createTestFeed1
+POST {{baseUrl}}/{{apiVersion}}/feeds
+Content-Type: application/json
+
+{
+  "url": "https://blog.golang.org/feed.atom",
+  "tags": ["golang", "programming"]
+}
+
+### Create Test Feed 2
+# @name createTestFeed2
+POST {{baseUrl}}/{{apiVersion}}/feeds
+Content-Type: application/json
+
+{
+  "url": "https://github.blog/feed/",
+  "tags": ["github", "development"]
+}
+
+### Export Feeds as OPML
+# @name exportOpml
+GET {{baseUrl}}/{{apiVersion}}/opml
+
+?? status == 200
+?? js response.headers["content-type"].includes("text/xml")
+?? xpath /opml/head/title == Feedpushr exports
+?? xpath count(/opml/body/outline) >= 2
+
+### Import OPML
+# @name importOpml
+POST {{baseUrl}}/{{apiVersion}}/opml
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary
+
+--WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="subscriptions.opml"
+Content-Type: application/xml
+
+< ./subscriptions.xml
+--WebKitFormBoundary--
+
+?? status == 202
+
+{{
+  const { ok } = require('assert')
+  test("import OPML response is valid", () => {
+    const { id } = response.parsedBody
+    ok(id)
+    $global.importId = id
+  })
+}}
+
+### Get Import Status (SSE)
+# @name importStatus
+
+SSE {{baseUrl}}/{{apiVersion}}/opml/status/{{$global.importId}}
+Event: message
+
+{{@streaming
+  async function writeStream(){
+    await sleep(1000);
+  }
+  exports.waitPromise = writeStream();
+}}

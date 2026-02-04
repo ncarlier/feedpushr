@@ -1,0 +1,147 @@
+# Feedpushr API Tests - Output Management
+# httpYac test file for output CRUD operations
+
+@baseUrl = {{baseUrl}}
+@apiVersion = {{apiVersion}}
+
+### Get Output Specifications
+# @name getOutputSpecs
+GET {{baseUrl}}/{{apiVersion}}/outputs/_specs
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("query response is valid", () => {
+    const specs = response.parsedBody
+    specs.forEach(spec => {
+      ok(spec.name)
+      ok(spec.desc)
+      ok(Array.isArray(spec.props))
+      const found = specs.some(s => s.name === "stdout")
+      ok(found)
+    })
+  })
+}}
+
+### List Outputs (Empty)
+# @name listOutputsEmpty
+GET {{baseUrl}}/{{apiVersion}}/outputs
+
+?? status == 200
+?? js Array.isArray(response.body)
+
+### Create Output - stdout
+# @name createStdoutOutput
+POST {{baseUrl}}/{{apiVersion}}/outputs
+Content-Type: application/json
+
+{
+  "name": "stdout",
+  "alias": "test-stdout",
+  "props": {
+    "format": "\{\{.Title\}\}: \{\{.Link\}\}"
+  }
+}
+
+?? status == 201
+
+{{
+  const { ok } = require('assert')
+  test("create output response is valid", () => {
+    const { id, alias, name, enabled } = response.parsedBody
+    ok(id)
+    $global.outputId = id
+    ok(alias === "test-stdout")
+    ok(name === "stdout")
+    ok(enabled === false)
+  })
+}}
+
+
+### Get Output by ID
+# @name getOutput
+GET {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("get output response is valid", () => {
+    const { id, alias, name } = response.parsedBody
+    ok(id === $global.outputId)
+    ok(alias === "test-stdout")
+    ok(name === "stdout")
+  })
+}}
+
+
+### List Outputs (With Data)
+# @name listOutputs
+GET {{baseUrl}}/{{apiVersion}}/outputs
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("list outputs response is valid", () => {
+    const outputs = response.parsedBody
+    ok(Array.isArray(outputs))
+    ok(outputs.length > 0)
+    const found = outputs.some(o => o.id === $global.outputId)
+    ok(found)
+  })
+}}
+
+### Update Output - Enable
+# @name updateOutput
+PUT {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}
+Content-Type: application/json
+
+{
+  "enabled": true,
+  "props": {
+    "format": "Updated: \{\{.Title\}\}"
+  }
+}
+
+?? status == 200
+
+{{
+  const { ok } = require('assert')
+  test("update output response is valid", () => {
+    const { id, enabled, props } = response.parsedBody
+    ok(id === $global.outputId)
+    ok(enabled === true)
+    ok(props.format === "Updated: {{.Title}}")
+  })
+}}
+
+### Delete stdout Output
+# @name deleteStdoutOutput
+DELETE {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}
+
+?? status == 204
+
+### Verify Output Deleted
+# @name verifyOutputDeleted
+GET {{baseUrl}}/{{apiVersion}}/outputs/{{$global.outputId}}
+
+?? status == 404
+
+### Error Case - Create Output without name
+# @name createOutputError
+POST {{baseUrl}}/{{apiVersion}}/outputs
+Content-Type: application/json
+
+{
+  "alias": "no-name"
+}
+
+?? status == 500
+
+### Error Case - Get Non-existent Output
+# @name getOutputNotFound
+GET {{baseUrl}}/{{apiVersion}}/outputs/non-existent-id
+
+?? status == 404

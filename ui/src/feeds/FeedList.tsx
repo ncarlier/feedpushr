@@ -65,7 +65,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
   const search = async (query: Query<Feed>): Promise<QueryResult<Feed>> => {
     const req = {
       q: query.search.trim(),
-      page: query.page + 1,
+      page: query.page,
       size: query.pageSize,
     }
     const res = await fetchAPI('/feeds', req, { method: 'GET' })
@@ -95,7 +95,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
         history.push('/')
         history.goBack()
       })
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
       throw err
     }

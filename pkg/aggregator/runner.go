@@ -4,8 +4,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ncarlier/feedpushr/v3/autogen/app"
-	"github.com/ncarlier/feedpushr/v3/pkg/feed"
+	"github.com/ncarlier/feedpushr/v3/pkg/api"
 	"github.com/ncarlier/feedpushr/v3/pkg/model"
 	"github.com/ncarlier/feedpushr/v3/pkg/output"
 	"github.com/ncarlier/feedpushr/v3/pkg/pshb"
@@ -140,23 +139,23 @@ func (fa *FeedAggregator) StartWithDelay(delay time.Duration) {
 }
 
 // GetFeedWithAggregationStatus get a copy of the aggregator feed hydrated with aggregation status.
-func (fa *FeedAggregator) GetFeedWithAggregationStatus() *app.FeedResponse {
-	result := feed.NewFeedResponseFromDef(fa.feed)
+func (fa *FeedAggregator) GetFeedWithAggregationStatus() *api.FeedResponse {
+	result := &api.FeedResponse{
+		FeedDef: *fa.feed,
+	}
 	status := fa.status.String()
 	result.Status = &status
-	lastCheck := fa.lastCheck
-	result.LastCheck = &lastCheck
 	nextCheck := fa.nextCheck
 	result.NextCheck = &nextCheck
 	nbProcessedItems := int(fa.nbProcessedItems)
 	result.NbProcessedItems = &nbProcessedItems
 	if fa.handler.status.ErrorMsg != "" {
 		msg := fa.handler.status.ErrorMsg
-		result.ErrorMsg = &msg
+		result.LastErrorMsg = &msg
 	}
 	if fa.handler.status.ErrorCount != 0 {
 		count := fa.handler.status.ErrorCount
-		result.ErrorCount = &count
+		result.NbErrors = &count
 	}
 	if fa.callbackURL != "" && fa.feed.HubURL != nil {
 		result.HubURL = pshb.GetSubscriptionDetailsURL(*fa.feed.HubURL, fa.feed.XMLURL, fa.callbackURL)

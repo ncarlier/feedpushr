@@ -35,7 +35,7 @@ type OutputDef struct {
 	Alias string `json:"alias"`
 	Spec
 	Condition string              `json:"condition"`
-	Props     OutputProps         `json:"props:omitempty"`
+	Props     OutputProps         `json:"props"`
 	Filters   FilterDefCollection `json:"filters"`
 	Enabled   bool                `json:"enabled"`
 	NbSuccess uint32              `json:"nbSuccess"`
