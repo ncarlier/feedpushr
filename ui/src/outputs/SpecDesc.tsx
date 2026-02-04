@@ -1,8 +1,7 @@
 /*global marked*/
-import React from 'react'
 
-import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import { Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import { headline, afterHeadline } from '../helpers/text'
 import { Spec } from './Types'
@@ -19,13 +18,13 @@ export default ({ spec }: Props) => {
   }
 
   return (
-    <ExpansionPanel style={{ boxShadow: 'none' }}>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+    <Accordion style={{ boxShadow: 'none' }}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography color="textSecondary" dangerouslySetInnerHTML={{ __html: marked(headline(spec.desc)) }} />
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
+      </AccordionSummary>
+      <AccordionDetails>
         <Typography color="textSecondary" dangerouslySetInnerHTML={{ __html: marked(help) }} />
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+      </AccordionDetails>
+    </Accordion>
   )
 }

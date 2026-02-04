@@ -1,7 +1,7 @@
 import React from 'react'
 import { format } from 'timeago.js'
 
-import { Tooltip } from '@material-ui/core'
+import { Tooltip } from '@mui/material'
 
 interface Props {
   value?: string

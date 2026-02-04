@@ -1,10 +1,10 @@
-import { Log, UserManager, UserManagerSettings } from 'oidc-client'
+import { UserManager, UserManagerSettings } from 'oidc-client-ts'
 
 export class OIDCClient {
   public userManager: UserManager
   private origin: string
 
-  constructor(settings: Partial<UserManagerSettings>, origin = document.location.origin) {
+  constructor(settings: UserManagerSettings, origin = document.location.origin) {
     settings = {
       response_type: 'code',
       scope: 'openid profile email',
@@ -18,8 +18,9 @@ export class OIDCClient {
     })
     this.userManager.clearStaleState()
 
-    Log.logger = console
-    Log.level = Log.WARN
+    // Log configuration for debugging (oidc-client-ts uses different approach)
+    // Log.logger = console
+    // Log.level = Log.WARN
   }
 
   public getUser() {

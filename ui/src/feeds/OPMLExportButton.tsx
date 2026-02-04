@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
-import { Tooltip, Button } from '@material-ui/core'
-import { CloudDownload as CloudDownloadIcon } from '@material-ui/icons'
+import { Tooltip, Button } from '@mui/material'
+import { CloudDownload as CloudDownloadIcon } from '@mui/icons-material'
 
 import fetchAPI from '../helpers/fetchAPI'
 import { MessageContext } from '../context/MessageContext'
@@ -26,15 +26,14 @@ export default () => {
         throw new Error(err.detail || res.statusText)
       }
     } catch (err) {
-      showMessage(`Unable to export feeds to OPML file: ${err.message}`, 'error')
+      showMessage(`Unable to export feeds to OPML file: ${(err as Error).message}`, 'error')
     }
   }
 
   return (
     <Tooltip title="Export to OPML file">
-      <Button size="small" variant="contained" color="default" onClick={handleOnClick}>
+      <Button size="small" variant="contained" onClick={handleOnClick} endIcon={<CloudDownloadIcon />}>
         Export
-        <CloudDownloadIcon />
       </Button>
     </Tooltip>
   )

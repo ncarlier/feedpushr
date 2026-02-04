@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react'
-import { RouteComponentProps } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 
 import Loader from '../common/Loader'
 import Message from '../common/Message'
@@ -13,10 +13,10 @@ import FeedConfig from './FeedConfig'
 import { Feed, FeedForm } from './Types'
 import { DefaultHeaders as headers } from '../common/constants'
 
-type Props = RouteComponentProps<{ id: string }>
-
-export default ({ match, history }: Props) => {
-  const { id } = match.params
+export default () => {
+  const navigate = useNavigate()
+  const params = useParams<{ id: string }>()
+  const { id } = params
   usePageTitle(`edit feed #${id}`)
 
   const [error, setError] = useState<Error | null>(null)
@@ -25,7 +25,7 @@ export default ({ match, history }: Props) => {
 
   function handleBack() {
     setError(null)
-    history.push('/feeds')
+    navigate('/feeds')
   }
 
   async function handleSave(form: FeedForm) {
@@ -40,7 +40,7 @@ export default ({ match, history }: Props) => {
       setError(null)
       const data = (await res.json()) as Feed
       showMessage(`${data.title} feed updated`)
-      return history.push('/feeds')
+      return navigate('/feeds')
     } catch (err: any) {
       setError(err)
     }

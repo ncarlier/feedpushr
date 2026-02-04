@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 
-import { Link } from '@material-ui/core'
+import { Link } from '@mui/material'
 
 import fetchAPI from '../helpers/fetchAPI'
 import { usePageTitle } from '../hooks'
@@ -92,7 +92,7 @@ export default () => {
           () => ({
             icon: 'add_box',
             tooltip: 'Add feed',
-            onClick: (event, rowData) => save(rowData as SearchResult),
+            onClick: (_event, rowData) => save(rowData as SearchResult),
           }),
         ]}
       />

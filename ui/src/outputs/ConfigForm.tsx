@@ -1,27 +1,11 @@
 /*eslint no-undef: "error"*/
 import React, { useCallback } from 'react'
 
-import { Button, MenuItem, Paper, TextField, Typography } from '@material-ui/core'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Box, Button, MenuItem, Paper, TextField, Typography } from '@mui/material'
 
 import Doc from '../common/Doc'
 import { BaseForm, Filter, Output, Props, Spec } from './Types'
 import SpecDesc from './SpecDesc'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    condition: {
-      marginTop: theme.spacing(2),
-    },
-    button: {
-      marginRight: theme.spacing(1),
-      marginTop: theme.spacing(2),
-    },
-  })
-)
 
 export type ConfigFormPayload = BaseForm & {
   id?: string
@@ -35,7 +19,6 @@ interface ConfigFormProps {
 }
 
 export default ({ onSave, onCancel, spec, source }: ConfigFormProps) => {
-  const classes = useStyles()
   const [alias, setAlias] = React.useState<string>(source ? source.alias : '')
   const [props, setProps] = React.useState<Props>(source ? source.props : {})
   const [condition, setCondition] = React.useState<string>(source ? source.condition : '')
@@ -72,12 +55,12 @@ export default ({ onSave, onCancel, spec, source }: ConfigFormProps) => {
   }, [onSave, alias, spec, props, condition, source])
 
   return (
-    <Paper className={classes.root}>
+    <Paper sx={{ padding: 2 }}>
       <Typography variant="h4" gutterBottom>
         {spec.name}
       </Typography>
       <SpecDesc spec={spec} />
-      <form>
+      <Box component="form" sx={{ '& .MuiTextField-root': { m: 1 } }} >
         <Typography variant="h5">Alias</Typography>
         <TextField id="alias" helperText="Alias" value={alias} onChange={handleChangeAlias()} fullWidth />
         {spec.props.length > 0 && <Typography variant="h5">Properties</Typography>}
@@ -102,7 +85,7 @@ export default ({ onSave, onCancel, spec, source }: ConfigFormProps) => {
               ))}
           </TextField>
         ))}
-        <Typography variant="h5" className={classes.condition}>
+        <Typography variant="h5" sx={{ marginTop: 2 }}>
           Condition
         </Typography>
         <TextField
@@ -118,11 +101,11 @@ export default ({ onSave, onCancel, spec, source }: ConfigFormProps) => {
           onChange={handleChangeCondition()}
           fullWidth
         />
-      </form>
-      <Button variant="contained" className={classes.button} onClick={onCancel}>
+      </Box>
+      <Button variant="outlined" sx={{ marginRight: 1, marginTop: 2 }} onClick={onCancel}>
         Cancel
       </Button>
-      <Button variant="contained" color="primary" className={classes.button} onClick={handleSave}>
+      <Button variant="contained" color="primary" sx={{ marginRight: 1, marginTop: 2 }} onClick={handleSave}>
         Save
       </Button>
     </Paper>

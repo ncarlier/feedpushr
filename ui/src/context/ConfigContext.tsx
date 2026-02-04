@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useEffect, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import fetchAPI from '../helpers/fetchAPI'
 
 interface LinkType {
@@ -29,10 +29,9 @@ const ConfigProvider = ({ children }: Props) => {
   const [config, setConfig] = useState<ConfigContextType>(defaultConfig)
 
   useEffect(() => {
-    const abortController = new AbortController()
     const doFetchAPI = async () => {
       try {
-        const res = await fetchAPI('/', null, { signal: abortController.signal })
+        const res = await fetchAPI('/', null, { method: 'GET' })
         if (res.ok) {
           const json = await res.json()
           setConfig(json)
@@ -46,7 +45,6 @@ const ConfigProvider = ({ children }: Props) => {
       }
     }
     doFetchAPI()
-    return () => abortController.abort()
   }, [])
 
   return (

@@ -1,5 +1,4 @@
-import React from 'react'
-import { Route, RouteComponentProps, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import OutputCreate from './OutputCreate'
 import OutputEdit from './OutputEdit'
@@ -9,16 +8,16 @@ import { FilterSpecsProvider } from './filters/FilterSpecsContext'
 import FilterCreate from './filters/FilterCreate'
 import FilterEdit from './filters/FilterEdit'
 
-export default ({ match }: RouteComponentProps) => (
+export default () => (
   <OutputSpecsProvider>
     <FilterSpecsProvider>
-      <Switch>
-        <Route exact path={match.path + '/'} component={Outputs} />
-        <Route exact path={match.path + '/add'} component={OutputCreate} />
-        <Route exact path={match.path + '/:id/filters/add'} component={FilterCreate} />
-        <Route exact path={match.path + '/:id/filters/:filterId'} component={FilterEdit} />
-        <Route path={match.path + '/:id'} component={OutputEdit} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<Outputs />} />
+        <Route path="/add" element={<OutputCreate />} />
+        <Route path="/:id/filters/add" element={<FilterCreate />} />
+        <Route path="/:id/filters/:filterId" element={<FilterEdit />} />
+        <Route path="/:id" element={<OutputEdit />} />
+      </Routes>
     </FilterSpecsProvider>
   </OutputSpecsProvider>
 )

@@ -1,6 +1,6 @@
-import React, { useContext, SyntheticEvent, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Snackbar } from '@material-ui/core'
+import { Snackbar, SnackbarCloseReason } from '@mui/material'
 
 import { MessageContext } from '../context/MessageContext'
 import Message from './Message'
@@ -13,7 +13,7 @@ export default () => {
     setOpen(message.text !== '')
   }, [message])
 
-  const handleClose = (event?: SyntheticEvent, reason?: string) => {
+  const handleClose = (_event: any, reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') {
       return
     }
@@ -30,7 +30,9 @@ export default () => {
       autoHideDuration={5000}
       onClose={handleClose}
     >
-      <Message text={message.text} variant={message.variant} onClose={handleClose} />
+      <div>
+        <Message text={message.text} variant={message.variant} onClose={() => setOpen(false)} />
+      </div>
     </Snackbar>
   )
 }

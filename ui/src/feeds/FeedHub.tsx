@@ -1,28 +1,16 @@
-import React from 'react'
-
-import { Chip, Theme, Tooltip } from '@material-ui/core'
-import { Cloud as CloudIcon } from '@material-ui/icons'
-import { createStyles, makeStyles } from '@material-ui/styles'
+import { Chip, Tooltip } from '@mui/material'
+import { Cloud as CloudIcon } from '@mui/icons-material'
 
 import { Feed } from './Types'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    margin: {
-      margin: theme.spacing(1),
-    },
-  })
-)
 
 interface Props {
   feed: Feed
 }
 
 export default ({ feed }: Props) => {
-  const classes = useStyles()
   if (feed.hubUrl) {
     return (
-      <Tooltip title="WebSub ready" className={classes.margin}>
+      <Tooltip title="WebSub ready" sx={{ margin: 1 }}>
         <Chip
           variant="outlined"
           size="small"

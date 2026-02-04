@@ -1,5 +1,3 @@
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'
-
 import { useEffect, useState } from 'react'
 
 import fetchAPI from '../helpers/fetchAPI'
@@ -31,7 +29,7 @@ export default <T>(
         const data = await res.json()
         setData(data)
       } catch (e) {
-        if (e.name !== 'AbortError') setError(e)
+        if ((e as any).name !== 'AbortError') setError(e as Error)
       } finally {
         setLoading(false)
       }

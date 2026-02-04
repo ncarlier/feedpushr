@@ -1,5 +1,5 @@
-import { User } from 'oidc-client'
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { User } from 'oidc-client-ts'
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { addRequestInterceptor } from '../helpers/fetchAPI'
 import { OIDCClient } from '../helpers/oidc-client'
 import { ConfigContext } from './ConfigContext'
@@ -33,6 +33,8 @@ const AuthNProvider = ({ children }: Props) => {
         redirect_uri: `${origin}${pathname}signin-callback.html?redirect=${redirect}`,
         silent_redirect_uri: `${origin}${pathname}silent-renew.html`,
         post_logout_redirect_uri: origin + pathname,
+        response_type: 'code',
+        scope: 'openid profile email',
       })
       addRequestInterceptor(oidcInterceptor(client))
       try {

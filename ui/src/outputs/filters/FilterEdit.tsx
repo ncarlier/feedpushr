@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react'
-import { RouteComponentProps } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 
 import Loader from '../../common/Loader'
 import Message from '../../common/Message'
@@ -15,13 +15,10 @@ import { FilterForm, Output } from '../Types'
 import { FilterSpecsContext } from './FilterSpecsContext'
 import { DefaultHeaders as headers } from '../../common/constants'
 
-type Props = RouteComponentProps<{
-  id: string
-  filterId: string
-}>
-
-export default ({ match, history }: Props) => {
-  const { id, filterId } = match.params
+export default () => {
+  const navigate = useNavigate()
+  const params = useParams<{ id: string; filterId: string }>()
+  const { id, filterId } = params
   usePageTitle(`edit filter`)
 
   const [error, setError] = useState<Error | null>(null)
@@ -30,7 +27,7 @@ export default ({ match, history }: Props) => {
   const { specs } = useContext(FilterSpecsContext)
 
   function handleBack() {
-    history.push('/outputs')
+    navigate('/outputs')
   }
 
   async function handleSave(form: FilterForm) {
@@ -47,7 +44,7 @@ export default ({ match, history }: Props) => {
       const data = await res.json()
       const filterDesc = descFilter(data)
       showMessage(`${filterDesc} configured`)
-      history.push('/outputs')
+      navigate('/outputs')
     } catch (err: any) {
       setError(err)
     }

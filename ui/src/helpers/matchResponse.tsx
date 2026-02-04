@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 export interface ResponsePattern<T> {
   Loading: () => ReactNode

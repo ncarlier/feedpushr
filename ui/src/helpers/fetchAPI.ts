@@ -1,5 +1,5 @@
 export const API_ROOT =
-  process.env.REACT_APP_API_ROOT || window.location.origin + window.location.pathname.replace(/\/ui(\/)*$/, '')
+  import.meta.env.VITE_API_ROOT || window.location.origin + window.location.pathname.replace(/\/ui(\/)*$/, '')
 
 export type RequestInterceptor = (init: RequestInit) => Promise<RequestInit>
 

@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react'
-import { RouteComponentProps } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 
 import Loader from '../common/Loader'
 import Message from '../common/Message'
@@ -14,10 +14,10 @@ import { OutputSpecsContext } from './OutputSpecsContext'
 import { Output, OutputForm } from './Types'
 import { DefaultHeaders as headers } from '../common/constants'
 
-type Props = RouteComponentProps<{ id: string }>
-
-export default ({ match, history }: Props) => {
-  const { id } = match.params
+export default () => {
+  const navigate = useNavigate()
+  const params = useParams<{ id: string }>()
+  const { id } = params
   usePageTitle('edit output')
 
   const [error, setError] = useState<Error | null>(null)
@@ -26,7 +26,7 @@ export default ({ match, history }: Props) => {
   const { specs } = useContext(OutputSpecsContext)
 
   function handleBack() {
-    history.push('/outputs')
+    navigate('/outputs')
   }
 
   async function handleSave(form: OutputForm) {
@@ -43,7 +43,7 @@ export default ({ match, history }: Props) => {
       const data = (await res.json()) as Output
       const desc = data.alias ? data.alias : data.name
       showMessage(`${desc} output configured`)
-      history.push('/outputs')
+      navigate('/outputs')
     } catch (err: any) {
       setError(err)
     }

@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { SnackbarContent, IconButton } from '@material-ui/core'
+import { SnackbarContent, IconButton, Box } from '@mui/material'
 
 import {
   CheckCircle as CheckCircleIcon,
@@ -8,12 +6,9 @@ import {
   Error as ErrorIcon,
   Info as InfoIcon,
   Close as CloseIcon,
-} from '@material-ui/icons'
+} from '@mui/icons-material'
 
-import { amber, green } from '@material-ui/core/colors'
-import { makeStyles, Theme } from '@material-ui/core/styles'
-
-import classNames from '../helpers/classNames'
+import { amber, green } from '@mui/material/colors'
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -21,32 +16,6 @@ const variantIcon = {
   error: ErrorIcon,
   info: InfoIcon,
 }
-
-const useStyles = makeStyles((theme: Theme) => ({
-  success: {
-    backgroundColor: green[600],
-  },
-  error: {
-    backgroundColor: theme.palette.error.dark,
-  },
-  info: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  warning: {
-    backgroundColor: amber[700],
-  },
-  icon: {
-    fontSize: 20,
-  },
-  iconVariant: {
-    opacity: 0.9,
-    marginRight: theme.spacing(1),
-  },
-  message: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-}))
 
 export interface Props {
   className?: string
@@ -56,23 +25,41 @@ export interface Props {
 }
 
 export default (props: Props) => {
-  const classes = useStyles()
   const { className, text, onClose, variant, ...other } = props
   const Icon = variantIcon[variant]
 
   return (
     <SnackbarContent
-      className={classNames(classes[variant], className)}
+      sx={(theme) => ({
+        backgroundColor:
+          variant === 'success'
+            ? green[600]
+            : variant === 'warning'
+            ? amber[700]
+            : variant === 'info'
+            ? theme.palette.primary.main
+            : variant === 'error'
+            ? theme.palette.error.dark
+            : undefined,
+      })}
+      className={className}
       aria-describedby="client-snackbar"
       message={
-        <span id="client-snackbar" className={classes.message}>
-          <Icon className={classNames(classes.icon, classes.iconVariant)} />
+        <Box
+          component="span"
+          id="client-snackbar"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Icon sx={{ fontSize: 20, opacity: 0.9, marginRight: 1 }} />
           {text}
-        </span>
+        </Box>
       }
       action={[
         <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-          <CloseIcon className={classes.icon} />
+          <CloseIcon sx={{ fontSize: 20 }} />
         </IconButton>,
       ]}
       {...other}

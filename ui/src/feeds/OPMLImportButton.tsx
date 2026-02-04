@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import {
   Tooltip,
@@ -10,8 +10,8 @@ import {
   DialogActions,
   Button,
   DialogTitle,
-} from '@material-ui/core'
-import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
+} from '@mui/material'
+import { CloudUpload as CloudUploadIcon } from '@mui/icons-material'
 
 import UploadButton from '../common/UploadButton'
 import { MessageContext } from '../context/MessageContext'
@@ -26,17 +26,17 @@ interface Props {
   style?: React.CSSProperties
 }
 
-export default withRouter(({ style, history }: Props & RouteComponentProps) => {
-  const [open, setOpen] = React.useState(false)
-  const [jobID, setJobID] = React.useState('')
+export default ({ style }: Props) => {
+  const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
+  const [jobID, setJobID] = useState('')
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const { showMessage } = useContext(MessageContext)
 
   const handleClose = () => {
     setOpen(false)
-    history.push('/')
-    history.replace('/feeds')
+    navigate('/feeds', { replace: true })
   }
 
   const handleOnSelectFile = async (file: File) => {
@@ -53,16 +53,15 @@ export default withRouter(({ style, history }: Props & RouteComponentProps) => {
       setJobID(id)
       setOpen(true)
     } catch (err) {
-      showMessage(`Unable to import OPML file: ${err.message}`, 'error')
+      showMessage(`Unable to import OPML file: ${(err as Error).message}`, 'error')
     }
   }
 
   return (
     <>
       <Tooltip title="Import from OPML file" style={style}>
-        <UploadButton size="small" variant="contained" color="default" onSelectFile={handleOnSelectFile}>
+        <UploadButton size="small" variant="contained" onSelectFile={handleOnSelectFile} endIcon={<CloudUploadIcon />}>
           Import
-          <CloudUploadIcon />
         </UploadButton>
       </Tooltip>
       <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="import-dialog-title">
@@ -78,4 +77,4 @@ export default withRouter(({ style, history }: Props & RouteComponentProps) => {
       </Dialog>
     </>
   )
-})
+}

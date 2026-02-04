@@ -1,60 +1,58 @@
-import React from 'react'
+import { useState } from 'react'
 import { HashRouter as Router, Link } from 'react-router-dom'
 
-import { AppBar, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core'
-import { blue, pink } from '@material-ui/core/colors'
-import { createMuiTheme, makeStyles, Theme } from '@material-ui/core/styles'
-import { ChevronLeft as ChevronLeftIcon, Info as AboutIcon, Menu as MenuIcon } from '@material-ui/icons'
-import { ThemeProvider } from '@material-ui/styles'
+import { AppBar, Container, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
+import { blue, pink } from '@mui/material/colors'
+import { createTheme, Theme } from '@mui/material/styles'
+import { ChevronLeft as ChevronLeftIcon, Info as AboutIcon, Menu as MenuIcon } from '@mui/icons-material'
+import { ThemeProvider } from '@mui/material/styles'
 
 import { AuthNProvider } from './context/AuthenticationContext'
 import { ConfigProvider } from './context/ConfigContext'
 import { MessageProvider } from './context/MessageContext'
-import classNames from './helpers/classNames'
 import Menu from './Menu'
 import Snackbar from './common/Snackbar'
 import Routes from './Routes'
 
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-    secondary: pink,
+const theme = createTheme({
+  colorSchemes: {
+    dark: false,
   },
 })
 
 const drawerWidth = 240
 
-const useStyles = makeStyles<Theme, any>((theme) => ({
+const styles = {
   root: {
     display: 'flex',
   },
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
+    paddingRight: '24px', // keep right padding when drawer closed
   },
-  toolbarIcon: {
+  toolbarIcon: (theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: '0 8px',
     ...theme.mixins.toolbar,
-  },
-  appBar: {
+  }),
+  appBar: (theme: Theme) => ({
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-  },
-  appBarShift: {
+  }),
+  appBarShift: (theme: Theme) => ({
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-  },
+  }),
   menuButton: {
-    marginRight: 36,
+    marginRight: '36px',
   },
   menuButtonHidden: {
     display: 'none',
@@ -62,51 +60,49 @@ const useStyles = makeStyles<Theme, any>((theme) => ({
   title: {
     flexGrow: 1,
   },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
+  drawerPaper: (theme: Theme) => ({
+    position: 'relative' as const,
+    whiteSpace: 'nowrap' as const,
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
+  }),
+  drawerPaperClose: (theme: Theme) => ({
+    overflowX: 'hidden' as const,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing(7),
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
+      width: theme.spacing(6.5),
     },
-  },
-  appBarSpacer: theme.mixins.toolbar,
+  }),
+  appBarSpacer: (theme: Theme) => theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
   },
-  container: {
+  container: (theme: Theme) => ({
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
-  },
-  paper: {
+  }),
+  paper: (theme: Theme) => ({
     padding: theme.spacing(2),
     display: 'flex',
     overflow: 'auto',
-    flexDirection: 'column',
-  },
+    flexDirection: 'column' as const,
+  }),
   fixedHeight: {
     height: 240,
   },
-}))
+}
 
 export default () => {
-  const classes = useStyles({})
-
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = useState(true)
   const handleDrawerOpen = () => setOpen(true)
   const handleDrawerClose = () => setOpen(false)
 
@@ -116,18 +112,27 @@ export default () => {
         <Router>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <AppBar position="absolute" className={classNames(classes.appBar, open ? classes.appBarShift : null)}>
-              <Toolbar className={classes.toolbar}>
+            <AppBar 
+              position="absolute" 
+              sx={{
+                ...styles.appBar(theme),
+                ...(open && styles.appBarShift(theme)),
+              }}
+            >
+              <Toolbar sx={styles.toolbar}>
                 <IconButton
                   edge="start"
                   color="inherit"
                   aria-label="Open drawer"
                   onClick={handleDrawerOpen}
-                  className={classNames(classes.menuButton, open ? classes.menuButtonHidden : null)}
+                  sx={{
+                    ...styles.menuButton,
+                    ...(open && styles.menuButtonHidden),
+                  }}
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                <Typography component="h1" variant="h6" color="inherit" noWrap sx={styles.title}>
                   Feedpushr
                 </Typography>
                 <IconButton color="inherit" component={Link} to="/about">
@@ -137,12 +142,17 @@ export default () => {
             </AppBar>
             <Drawer
               variant="permanent"
-              classes={{
-                paper: classNames(classes.drawerPaper, !open ? classes.drawerPaperClose : null),
+              sx={{
+                '& .MuiDrawer-paper': {
+                  ...styles.drawerPaper(theme),
+                  ...(!open && styles.drawerPaperClose(theme)),
+                },
               }}
               open={open}
             >
-              <div className={classes.toolbarIcon}>
+              <div style={{
+                ...styles.toolbarIcon(theme) as React.CSSProperties,
+              }}>
                 <IconButton onClick={handleDrawerClose}>
                   <ChevronLeftIcon />
                 </IconButton>
@@ -151,9 +161,9 @@ export default () => {
               <Menu />
             </Drawer>
             <MessageProvider>
-              <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
-                <Container maxWidth="lg" className={classes.container}>
+              <main style={styles.content}>
+                <div style={styles.appBarSpacer(theme) as React.CSSProperties} />
+                <Container maxWidth="lg" sx={styles.container(theme)}>
                   <Routes />
                 </Container>
               </main>

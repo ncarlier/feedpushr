@@ -1,30 +1,28 @@
-import React from 'react'
+import { ListItemIcon, ListItemText, Divider, MenuList, MenuItem } from '@mui/material'
 
-import { List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core'
-
-import { RssFeed as FeedIcon, Backup as OutputIcon, Explore as ExploreIcon } from '@material-ui/icons'
+import { RssFeed as FeedIcon, Backup as OutputIcon, Explore as ExploreIcon } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 
 export default () => (
-  <List component="nav" aria-label="Main mailbox folders">
-    <ListItem button component={Link} to="/feeds">
+  <MenuList component="nav" aria-label="Main mailbox folders">
+    <MenuItem component={Link} to="/feeds">
       <ListItemIcon>
         <FeedIcon />
       </ListItemIcon>
       <ListItemText primary="Feeds" />
-    </ListItem>
-    <ListItem button component={Link} to="/outputs">
+    </MenuItem>
+    <MenuItem component={Link} to="/outputs">
       <ListItemIcon>
         <OutputIcon />
       </ListItemIcon>
       <ListItemText primary="Outputs" />
-    </ListItem>
+    </MenuItem>
     <Divider />
-    <ListItem button component={Link} to="/explore">
+    <MenuItem component={Link} to="/explore">
       <ListItemIcon>
         <ExploreIcon />
       </ListItemIcon>
       <ListItemText primary="Explore" />
-    </ListItem>
-  </List>
+    </MenuItem>
+  </MenuList>
 )

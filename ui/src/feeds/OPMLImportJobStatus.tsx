@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core'
+import { List, ListItem, ListItemText, ListItemIcon } from '@mui/material'
 
-import { CheckCircle as SuccessIcon, Error as ErrorIcon } from '@material-ui/icons'
-import { green, red } from '@material-ui/core/colors'
+import { CheckCircle as SuccessIcon, Error as ErrorIcon } from '@mui/icons-material'
+import { green, red } from '@mui/material/colors'
 
 import Message from '../common/Message'
 import Loader from '../common/Loader'

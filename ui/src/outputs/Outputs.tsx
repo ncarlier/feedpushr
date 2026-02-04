@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Loader from '../common/Loader'
 import Message from '../common/Message'
 import matchResponse from '../helpers/matchResponse'

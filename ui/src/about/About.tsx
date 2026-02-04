@@ -1,45 +1,27 @@
-import React from 'react'
-
 import {
   BottomNavigation,
   BottomNavigationAction,
-  createStyles,
   Link,
-  makeStyles,
   Paper,
-  Theme,
-} from '@material-ui/core'
-import { Favorite as SupportIcon, NewReleases as FeatureIcon } from '@material-ui/icons'
+} from '@mui/material'
+import { Favorite as SupportIcon, NewReleases as FeatureIcon } from '@mui/icons-material'
 
 import logo from './feedpushr.svg'
 import SourceIcon from './Github'
 import Version from './Version'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3, 2),
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    logo: {
-      maxWidth: '50vw',
-      alignSelf: 'center',
-    },
-    link: {
-      color: 'rgba(0, 0, 0, 0.54)',
-    },
-  })
-)
-
 export default () => {
-  const classes = useStyles()
-
   return (
     <div>
-      <Paper className={classes.root}>
+      <Paper
+        sx={{
+          padding: 3,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Version />
-        <img src={logo} alt="feedpushr" className={classes.logo} />
+        <img src={logo} alt="feedpushr" style={{ maxWidth: '50vw', alignSelf: 'center' }} />
         <BottomNavigation showLabels>
           <BottomNavigationAction
             label="Sources"
@@ -48,7 +30,7 @@ export default () => {
             href="https://github.com/ncarlier/feedpushr"
             target="_blank"
             rel="noreferrer"
-            className={classes.link}
+            sx={{ color: 'rgba(0, 0, 0, 0.54)' }}
           />
           <BottomNavigationAction
             label="Features &amp; Bugs"
@@ -57,7 +39,7 @@ export default () => {
             href="https://github.com/ncarlier/feedpushr/issues"
             target="_blank"
             rel="noreferrer"
-            className={classes.link}
+            sx={{ color: 'rgba(0, 0, 0, 0.54)' }}
           />
           <BottomNavigationAction
             label="Support this project"
@@ -66,7 +48,7 @@ export default () => {
             href="https://www.paypal.me/nunux"
             target="_blank"
             rel="noreferrer"
-            className={classes.link}
+            sx={{ color: 'rgba(0, 0, 0, 0.54)' }}
           />
         </BottomNavigation>
       </Paper>

@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Switch } from '@material-ui/core'
+import { Switch } from '@mui/material'
 
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
@@ -18,7 +18,7 @@ export default ({ feed }: Props) => {
     setStatus(feed.status === 'running')
   }, [feed])
 
-  const switchFeedStatus = (event: React.ChangeEvent, check: boolean) => {
+  const switchFeedStatus = (_event: React.ChangeEvent, check: boolean) => {
     const action = check ? 'start' : 'stop'
     fetchAPI(`/feeds/${feed.id}/${action}`, null, { method: 'POST' })
       .then((/*res*/) => {

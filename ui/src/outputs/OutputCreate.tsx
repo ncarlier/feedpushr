@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 
 import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
@@ -12,7 +12,8 @@ import SpecSelector from './SpecSelector'
 import { Output, OutputForm, Spec } from './Types'
 import { DefaultHeaders as headers } from '../common/constants'
 
-export default withRouter(({ history }: RouteComponentProps) => {
+export default () => {
+  const navigate = useNavigate()
   usePageTitle('add output')
   const [spec, setSpec] = useState<Spec | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -42,7 +43,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       const data = (await res.json()) as Output
       const desc = data.alias ? data.alias : data.name
       showMessage(`${desc} output added`)
-      history.push('/outputs')
+      navigate('/outputs')
     } catch (err: any) {
       setError(err)
     }
@@ -68,4 +69,4 @@ export default withRouter(({ history }: RouteComponentProps) => {
       <ConfigForm onSave={handleSave} onCancel={handleBack} spec={spec} />
     </>
   )
-})
+}

@@ -1,5 +1,4 @@
-import React from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom'
 
 import About from './about/About'
 import Explore from './explore/Explore'
@@ -7,13 +6,13 @@ import FeedRoutes from './feeds/Routes'
 import OutputRoutes from './outputs/Routes'
 
 const Routes = () => (
-  <Switch>
-    <Redirect exact from="/" to="/feeds" />
-    <Route path="/feeds" component={FeedRoutes} />
-    <Route path="/outputs" component={OutputRoutes} />
-    <Route path="/explore" component={Explore} />
-    <Route path="/about" component={About} />
-  </Switch>
+  <RouterRoutes>
+    <Route path="/" element={<Navigate to="/feeds" replace />} />
+    <Route path="/feeds/*" element={<FeedRoutes />} />
+    <Route path="/outputs/*" element={<OutputRoutes />} />
+    <Route path="/explore" element={<Explore />} />
+    <Route path="/about" element={<About />} />
+  </RouterRoutes>
 )
 
 export default Routes

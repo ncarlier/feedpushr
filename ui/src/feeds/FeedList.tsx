@@ -1,8 +1,8 @@
 import MaterialTable, { MTableToolbar, Query, QueryResult } from '@material-table/core'
-import React, { useContext, useState } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Link as Href } from '@material-ui/core'
+import { Link as Href } from '@mui/material'
 
 import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
@@ -56,7 +56,8 @@ const columns = [
   },
 ]
 
-export default withRouter(({ history }: RouteComponentProps) => {
+export default () => {
+  const navigate = useNavigate()
   usePageTitle('feeds')
 
   const [error, setError] = useState<Error | null>(null)
@@ -76,7 +77,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
     const page = (await res.json()) as FeedPage
     return {
       data: page.data,
-      page: page.current - 1,
+      page: page.current,
       totalCount: page.total,
     }
   }
@@ -91,10 +92,6 @@ export default withRouter(({ history }: RouteComponentProps) => {
       }
       setError(null)
       showMessage(`${title} feed removed`)
-      setTimeout(() => {
-        history.push('/')
-        history.goBack()
-      })
     } catch (err: any) {
       setError(err)
       throw err
@@ -117,23 +114,24 @@ export default withRouter(({ history }: RouteComponentProps) => {
           paging: true,
           pageSize: 20,
           pageSizeOptions: [10, 20, 50, 100],
-          sorting: false,
+          maxColumnSort: 0,
+          emptyRowsWhenPaging: false,
         }}
         actions={[
           {
             icon: 'edit',
             tooltip: 'Edit',
-            onClick: (event, rowData) => history.push(`/feeds/${(rowData as Feed).id}`),
+            onClick: (_event, rowData) => navigate(`/feeds/${(rowData as Feed).id}`),
           },
           {
             icon: 'add_box',
             tooltip: 'Add',
             isFreeAction: true,
-            onClick: () => history.push('/feeds/add'),
+            onClick: () => navigate('/feeds/add'),
           },
         ]}
         components={{
-          Toolbar: (props) => (
+          Toolbar: props => (
             <div>
               <MTableToolbar {...props} />
               <div style={{ padding: '5px 10px' }}>
@@ -146,4 +144,4 @@ export default withRouter(({ history }: RouteComponentProps) => {
       />
     </>
   )
-})
+}

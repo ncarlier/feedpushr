@@ -1,6 +1,6 @@
 import MaterialTable from '@material-table/core'
-import React, { useContext, useState } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import Ellipsis from '../common/Ellipsis'
 import Message from '../common/Message'
@@ -47,7 +47,8 @@ const columns = [
   },
 ]
 
-export default withRouter(({ entities, history }: Props & RouteComponentProps) => {
+export default ({ entities }: Props) => {
+  const navigate = useNavigate()
   const [data, setData] = useState<Entity[]>(entities)
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
@@ -68,7 +69,7 @@ export default withRouter(({ entities, history }: Props & RouteComponentProps) =
       const _err = await res.json()
       throw new Error(_err.detail || res.statusText)
     } catch (err) {
-      setError(err)
+      setError(err as Error)
       throw err
     }
   }
@@ -93,30 +94,30 @@ export default withRouter(({ entities, history }: Props & RouteComponentProps) =
           (rowData: Entity) => ({
             icon: 'build',
             tooltip: 'Configure',
-            onClick: (event, rowData) => history.push(`/outputs/${(rowData as Entity).id}`),
+            onClick: (_event, rowData) => navigate(`/outputs/${(rowData as Entity).id}`),
             hidden: rowData.type !== 'output',
           }),
           (rowData: Entity) => ({
             icon: 'playlist_add',
             tooltip: 'Add filter',
-            onClick: (event, rowData) => history.push(`/outputs/${(rowData as Entity).id}/filters/add`),
+            onClick: (_event, rowData) => navigate(`/outputs/${(rowData as Entity).id}/filters/add`),
             hidden: rowData.type !== 'output',
           }),
           (rowData: Entity) => ({
             icon: 'build',
             tooltip: 'Configure',
-            onClick: (event, rowData) =>
-              history.push(`/outputs/${(rowData as Entity).parentId}/filters/${(rowData as Entity).id}`),
+            onClick: (_event, rowData) =>
+              navigate(`/outputs/${(rowData as Entity).parentId}/filters/${(rowData as Entity).id}`),
             hidden: rowData.type !== 'filter',
           }),
           {
             icon: 'add_box',
             tooltip: 'Add',
             isFreeAction: true,
-            onClick: () => history.push('/outputs/add'),
+            onClick: () => navigate('/outputs/add'),
           },
         ]}
       />
     </>
   )
-})
+}

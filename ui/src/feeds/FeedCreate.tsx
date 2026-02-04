@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 
 import Message from '../common/Message'
 import { MessageContext } from '../context/MessageContext'
@@ -11,14 +11,15 @@ import FeedConfig from './FeedConfig'
 import { Feed, FeedForm } from './Types'
 import { DefaultHeaders as headers } from '../common/constants'
 
-export default withRouter(({ history }: RouteComponentProps) => {
+export default () => {
+  const navigate = useNavigate()
   usePageTitle('new feed')
   const [error, setError] = useState<Error | null>(null)
   const { showMessage } = useContext(MessageContext)
 
   function handleBack() {
     setError(null)
-    history.push('/feeds')
+    navigate('/feeds')
   }
 
   async function handleSave(form: FeedForm) {
@@ -33,7 +34,7 @@ export default withRouter(({ history }: RouteComponentProps) => {
       setError(null)
       const data = (await res.json()) as Feed
       showMessage(`${data.title} feed created`)
-      return history.push('/feeds')
+      return navigate('/feeds')
     } catch (err: any) {
       setError(err)
     }
@@ -48,4 +49,4 @@ export default withRouter(({ history }: RouteComponentProps) => {
       <FeedConfig onSave={handleSave} onCancel={handleBack} />
     </>
   )
-})
+}

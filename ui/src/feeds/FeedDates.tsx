@@ -1,5 +1,3 @@
-import React from 'react'
-
 import TimeAgo from '../common/TimeAgo'
 import { Feed } from './Types'
 

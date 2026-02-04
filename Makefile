@@ -68,13 +68,13 @@ ui:
 
 ## Start web UI dev server
 ui-dev-server:
-	cd ui && REACT_APP_API_ROOT="http://localhost:8080" npm start
+	cd ui && VITE_API_ROOT="http://localhost:8080" npm run dev
 .PHONY: ui-dev-server
 
 # Build web UI
 pkg/assets/content/ui:
 	echo ">>> Building web UI ..."
-	cd ui && npm install && npm run-script build
+	cd ui && npm install && npm run build
 	mv ui/build pkg/assets/content/ui
 
 # Build SYSO Windows file

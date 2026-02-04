@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 
-import { Switch, Tooltip } from '@material-ui/core'
+import { Switch, Tooltip } from '@mui/material'
 
 import { MessageContext } from '../context/MessageContext'
 import fetchAPI from '../helpers/fetchAPI'
@@ -20,7 +20,7 @@ export default ({ entity }: Props) => {
     url = `/outputs/${entity.parentId}/filters/${entity.id}`
   }
 
-  async function switchEntityStatus(event: React.ChangeEvent, check: boolean) {
+  async function switchEntityStatus(_event: React.ChangeEvent, check: boolean) {
     const update = { ...entity, enabled: check }
     try {
       const res = await fetchAPI(url, null, {
@@ -34,7 +34,7 @@ export default ({ entity }: Props) => {
         throw new Error(res.statusText)
       }
     } catch (err) {
-      showMessage(`Unable to update ${descEntity(entity)}: ${err.message}`, 'error')
+      showMessage(`Unable to update ${descEntity(entity)}: ${(err as Error).message}`, 'error')
     }
   }
 
