@@ -48,6 +48,14 @@ $ curl -sf https://gobinaries.com/ncarlier/feedpushr | sh
 ```bash
 $ docker run -d --name=feedpushr ncarlier/feedpushr
 ```
+
+**Or** deploy with [Easypanel](https://easypanel.io), a self-hosted Docker deployment platform — feedpushr has a one-click deployment template there:
+
+[![Deploy on Easypanel][easypanel-btn]][easypanel-deploy]
+
+[easypanel-btn]: https://easypanel.io/img/deploy-on-easypanel-40.svg
+[easypanel-deploy]: https://easypanel.io/templates/feedpushr
+
 **Or** use Docker compose:
 
 ```yml
