@@ -20,19 +20,18 @@ func extractProperty(token html.Token, prop string) (value string, ok bool) {
 }
 
 func absoluteURL(base, path string) (string, error) {
-	if strings.HasPrefix(path, "/") {
-		baseURL, err := url.Parse(base)
-		if err != nil {
-			return "", err
-		}
-		relativeURL, err := url.Parse(path)
-		if err != nil {
-			return "", err
-		}
-		u := baseURL.ResolveReference(relativeURL)
-		return u.String(), nil
+	relativeURL, err := url.Parse(path)
+	if err != nil {
+		return "", err
 	}
-	return path, nil
+	if relativeURL.IsAbs() {
+		return path, nil
+	}
+	baseURL, err := url.Parse(base)
+	if err != nil {
+		return "", err
+	}
+	return baseURL.ResolveReference(relativeURL).String(), nil
 }
 
 // ExtractFeedLinks extract feed links from HTML content
@@ -53,6 +52,9 @@ func ExtractFeedLinks(content io.Reader, base string) (links []string, err error
 				linkType, ok := extractProperty(t, "type")
 				if ok && ValidFeedContentType.MatchString(linkType) {
 					if href, ok := extractProperty(t, "href"); ok {
+						if href == "" || strings.HasPrefix(href, "#") {
+							continue
+						}
 						if link, err := absoluteURL(base, href); err == nil {
 							links = append(links, link)
 						}
